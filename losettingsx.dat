@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Settings LastUsed="Default">
+  <Setting Name="Default">
+    <DirTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;} ({&lt;year&gt;}{ &lt;format&gt;)}</DirTemplate>
+    <BaseDir>C:\Users\Andrew\Desktop\Test destination</BaseDir>
+    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;startyear&gt;} {#&lt;number3&gt;}{ (&lt;month&gt;,{ &lt;year&gt;)}}</FileTemplate>
+    <EmptyDir />
+    <ExcludeOperator>Any</ExcludeOperator>
+    <UseFileName>true</UseFileName>
+    <UseDirectory>true</UseDirectory>
+    <Post>
+      <Item Name="Title" Value="" />
+      <Item Name="AltSeries" Value="" />
+      <Item Name="AltNumber" Value="" />
+      <Item Name="Series" Value="" />
+      <Item Name="Number" Value="" />
+      <Item Name="Volume" Value="" />
+      <Item Name="Month" Value="" />
+      <Item Name="Imprint" Value="" />
+      <Item Name="Publisher" Value="" />
+      <Item Name="Year" Value=")" />
+      <Item Name="AltCount" Value="" />
+      <Item Name="Count" Value="" />
+      <Item Name="StartYear" Value="" />
+      <Item Name="Format" Value=")" />
+      <Item Name="Month#" Value="" />
+    </Post>
+    <Pre>
+      <Item Name="Title" Value="" />
+      <Item Name="AltSeries" Value="" />
+      <Item Name="AltNumber" Value="" />
+      <Item Name="Series" Value="" />
+      <Item Name="Number" Value="#" />
+      <Item Name="Volume" Value="" />
+      <Item Name="Month" Value=" (" />
+      <Item Name="Imprint" Value="" />
+      <Item Name="Publisher" Value="" />
+      <Item Name="Year" Value=" " />
+      <Item Name="AltCount" Value="" />
+      <Item Name="Count" Value="" />
+      <Item Name="StartYear" Value=" Vol." />
+      <Item Name="Format" Value=" " />
+      <Item Name="Month#" Value="" />
+    </Pre>
+    <EmptyData>
+      <Item Name="Month" Value="" />
+      <Item Name="Publisher" Value="" />
+      <Item Name="Volume" Value="" />
+      <Item Name="Imprint" Value="" />
+      <Item Name="Series" Value="" />
+      <Item Name="StartYear" Value="" />
+      <Item Name="Title" Value="" />
+      <Item Name="AlternateNumber" Value="" />
+      <Item Name="AlternateSeries" Value="" />
+      <Item Name="Number" Value="" />
+      <Item Name="Count" Value="" />
+      <Item Name="AlternateCount" Value="" />
+      <Item Name="Format" Value="Series" />
+      <Item Name="Year" Value="" />
+    </EmptyData>
+    <ExcludeFolders />
+    <ExcludeMetaData />
+    <MoveFileless>true</MoveFileless>
+    <FilelessFormat>.jpg</FilelessFormat>
+    <RemoveEmptyDir>true</RemoveEmptyDir>
+    <ExcludedEmptyDir />
+  </Setting>
+</Settings>
