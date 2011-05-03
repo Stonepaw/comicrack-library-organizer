@@ -1,0 +1,9 @@
+Much of the code is based from wadegiles's Guided eComic file renaming was used. Kudos to him for creating it in the first place.
+That script can be found at: http://comicrack.cyolito.com/user-forum/13-scripts/807-guided-ecomic-file-renaming-full-gui
+
+Thanks to pescuma for the fix in duplicate naming.
+
+The very nice icons are by David Vignoni and are released under the LGPL licence which can be found here:
+http://www.gnu.org/licenses/lgpl.html
+
+The icon itself was found at: http://www.iconfinder.com/icondetails/1228/128/bookcase_books_school_icon
