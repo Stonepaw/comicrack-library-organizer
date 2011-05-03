@@ -669,6 +669,8 @@ class RuleGroup(object):
 class ExcludeRule(object):
 	"""This class is the object of a rule. It can either be in a rule group or by itself"""
 	
+	
+	
 	def __init__(self, parent, index):
 		
 		#Flow Layout Panel

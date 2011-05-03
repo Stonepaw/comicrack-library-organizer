@@ -1698,9 +1698,7 @@ class ConfigForm(Form):
 		
 		r = ExcludeRule(self, index)
 		
-		"""
-		
-		
+		"""		
 		controls = []
 		controls.append(System.Windows.Forms.FlowLayoutPanel())
 		controls[0].Size = System.Drawing.Size(451, 30)
