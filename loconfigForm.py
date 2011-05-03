@@ -26,7 +26,7 @@ from System.Windows.Forms import *
 
 import losettings
 
-from locommon import PathMaker, ICON, ExcludePath
+from locommon import PathMaker, ICON, ExcludePath, ExcludeRule
 
 class ConfigForm(Form):
 	def __init__(self, books, allsettings, lastused):
@@ -46,7 +46,7 @@ class ConfigForm(Form):
 			
 		self._cmbEmptyData.SelectedIndex = 0
 			
-		#Array for excludes adding of metadata rules. Each list item will contain a list of a flowlayout panel, combobox, combobox and button in that order.
+		#Array for excludes adding of metadata rules. Each list item will contain an ExcludeRule object or ExcludeGroup object.
 		self.Excludes = []
 		
 		self.LoadSettings()
@@ -1530,6 +1530,9 @@ class ConfigForm(Form):
 		self.CmbEmptyDataSelectedIndexChanged(self._cmbEmptyData, None)
 		
 		#Excludes
+		
+		#TODO: Temporaraly disbabled
+		"""
 		self._lbExFolder.Items.Clear()
 		for i in self.settings.ExcludeFolders:
 			self._lbExFolder.Items.Add(i)
@@ -1548,7 +1551,7 @@ class ConfigForm(Form):
 			count += 1
 			
 		self._cmbExMatchType.SelectedItem = self.settings.ExcludeOperator
-		
+		"""
 		self._ckbFileless.Checked = self.settings.MoveFileless
 		self._cmbImageFormat.SelectedItem = self.settings.FilelessFormat
 
@@ -1644,7 +1647,8 @@ class ConfigForm(Form):
 		self.settings.UseFileName = self._ckbFileNaming.Checked
 		
 		#Excludes
-		
+		#TODO: Temporaraly disabled
+		"""
 		self.settings.ExcludeFolders = list(self._lbExFolder.Items)
 		
 		self.settings.ExcludeMetaData = []
@@ -1657,7 +1661,7 @@ class ConfigForm(Form):
 				self.settings.ExcludeMetaData.append(a)
 		
 		self.settings.ExcludeOperator = self._cmbExMatchType.SelectedItem
-
+		"""
 		self.settings.MoveFileless = self._ckbFileless.Checked
 		self.settings.FilelessFormat = self._cmbImageFormat.SelectedItem
 
@@ -1689,7 +1693,13 @@ class ConfigForm(Form):
 	def CreateRuleSet(self, sender, e):
 		#This will be the index of the new set of controls.
 		#Don't have to add to the number because len() returns the number of items and a list is a zero based index
+		#so the number returned will be the index of the newly created item.
 		index = len(self.Excludes)
+		
+		r = ExcludeRule(self, index)
+		
+		"""
+		
 		
 		controls = []
 		controls.append(System.Windows.Forms.FlowLayoutPanel())
@@ -1732,15 +1742,15 @@ class ConfigForm(Form):
 		controls[0].Controls.Add(controls[1])
 		controls[0].Controls.Add(controls[2])
 		controls[0].Controls.Add(controls[3])
-		controls[0].Controls.Add(controls[4])
-		self.Excludes.append(controls)
-		self._flpExcludes.Controls.Add(self.Excludes[-1][0])
-		self._ExPanel.ScrollControlIntoView(controls[0])
+		controls[0].Controls.Add(controls[4])"""
+		self.Excludes.append(r)
+		self._flpExcludes.Controls.Add(self.Excludes[-1].Panel)
+		self._ExPanel.ScrollControlIntoView(r.Panel)
 
 	def RemoveRuleSet(self, sender, e):
 		index = sender.Tag
 		
-		self._flpExcludes.Controls.Remove(self.Excludes[index][0])
+		self._flpExcludes.Controls.Remove(self.Excludes[index].Panel)
 		#Don't delete the index of the list as that will screw up other deletion methods
 		#Instead make it a null index so that it is skipped when putting it into settings
 		self.Excludes[index] = None
