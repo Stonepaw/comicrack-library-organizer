@@ -31,6 +31,10 @@ from System import Func
 
 clr.AddReference("System.Drawing")
 from System.Drawing.Imaging import ImageFormat
+from System.Drawing import Size
+
+clr.AddReference("System.Windows.Forms")
+from System.Windows.Forms import TextBox, Button, ComboBox, FlowLayoutPanel
 
 
 
@@ -650,3 +654,79 @@ class PathMaker:
 		return result
 		
 						
+class RuleGroup(object):
+	"""This class is the object that contains a rule group"
+	
+	"""
+	
+	#rules is the rules this rule group contains. it can contain either rules or more rule groups
+	rules = []
+	
+	#matchType = RuleGroupMatchType.Any
+	
+	controls = []
+	
+class ExcludeRule(object):
+	"""This class is the object of a rule. It can either be in a rule group or by itself"""
+	
+	def __init__(self, parent, index):
+		
+		#Flow Layout Panel
+		self.Panel = FlowLayoutPanel()
+		self.Panel.Size = Size(451, 30)
+		
+		#Field selector
+		self.Field = ComboBox()
+		self.Field.Items.AddRange(System.Array[System.String](
+			["Alternate Count",
+			"Alternate Number",
+			"Alternate Series",
+			"Count",			
+			"Format",
+			"Imprint",
+			"Month",
+			"Number",
+			"Publisher",
+			"Rating",
+			"Tag",
+			"Title",
+			"Series",			
+			"Year"]))
+			
+		self.Field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self.Field.SelectedIndex = 0
+		self.Field.Size = Size(121, 21)
+		
+		#Operator selector
+		self.Operator = ComboBox()
+		self.Operator.Items.AddRange(System.Array[System.String](
+			["contains",
+			"does not contain",
+			"is",
+			"is not"]))
+		self.Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self.Operator.Size = Size(110, 21)
+		self.Operator.SelectedIndex = 0
+		
+		#Textbox
+		self.TextBox = TextBox()
+		self.TextBox.Size = Size(175, 20)
+		
+		#Remove Button
+		self.Remove = Button()
+		self.Remove.Size = Size(18, 23)
+		self.Remove.Click += parent.RemoveRuleSet
+		self.Remove.Text = "-"
+		self.Remove.Tag = index
+		
+		#Add controls
+		self.Panel.Controls.Add(self.Field)
+		self.Panel.Controls.Add(self.Operator)
+		self.Panel.Controls.Add(self.TextBox)
+		self.Panel.Controls.Add(self.Remove)
+
+	
+class RuleGroupMatchType(object):
+	
+	Any = 0
+	All = 1
