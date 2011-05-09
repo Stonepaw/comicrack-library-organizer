@@ -26,19 +26,29 @@ from System.Windows.Forms import *
 
 import losettings
 
-from locommon import PathMaker, ICON, ExcludePath, ExcludeRule
+from locommon import PathMaker, ICON, ExcludePath, ExcludeRule, ExcludeGroup, Mode, ExcludeMeta
+
+import pyevent
 
 class ConfigForm(Form):
 	def __init__(self, books, allsettings, lastused):
 
 		self.Icon = System.Drawing.Icon(ICON)
-		self.InitializeComponent()		
+		InsertControl.Insert += self.InsertItem
+		self.InitializeComponent()
+		
+		#Books for displaying sample text
 		self.allbooks = books
 		self.samplebook = self.allbooks[self._vsbBookSelector.Value]
 		self._vsbBookSelector.Maximum = len(self.allbooks)
+		
+		#Holds all the profiles
 		self.allsettings = allsettings
+		
+		#Sample text creator
 		self.PathCreator = PathMaker()
-		#In the case that lastused is null
+		
+		#In the case that lastused is none
 		try:
 			self.settings = allsettings[lastused]
 		except KeyError:
@@ -46,9 +56,6 @@ class ConfigForm(Form):
 			
 		self._cmbEmptyData.SelectedIndex = 0
 			
-		#Array for excludes adding of metadata rules. Each list item will contain an ExcludeRule object or ExcludeGroup object.
-		self.Excludes = []
-		
 		self.LoadSettings()
 		
 		for i in allsettings:
@@ -61,7 +68,6 @@ class ConfigForm(Form):
 		
 		
 	def InitializeComponent(self):
-		self._components = System.ComponentModel.Container()
 		self._tabs = System.Windows.Forms.TabControl()
 		self._tpDirOrganize = System.Windows.Forms.TabPage()
 		self._tpFileNames = System.Windows.Forms.TabPage()
@@ -73,66 +79,32 @@ class ConfigForm(Form):
 		self._ckbDirectory = System.Windows.Forms.CheckBox()
 		self._groupBox1 = System.Windows.Forms.GroupBox()
 		self._btnSep = System.Windows.Forms.Button()
-		self._btnInsertPub = System.Windows.Forms.Button()
-		self._btnImprint = System.Windows.Forms.Button()
-		self._btnSeries = System.Windows.Forms.Button()
-		self._btnVolume = System.Windows.Forms.Button()
-		self._btnNumber = System.Windows.Forms.Button()
-		self._btnYear = System.Windows.Forms.Button()
-		self._btnMonthNumber = System.Windows.Forms.Button()
-		self._btnCount = System.Windows.Forms.Button()
-		self._btnTitle = System.Windows.Forms.Button()
-		self._btnFormat = System.Windows.Forms.Button()
-		self._btnAltSeries = System.Windows.Forms.Button()
-		self._btnAltNumber = System.Windows.Forms.Button()
-		self._btnAltCount = System.Windows.Forms.Button()
 		self._ckbFileNaming = System.Windows.Forms.CheckBox()
 		self._txbFileStruct = System.Windows.Forms.TextBox()
 		self._lblFileStruct = System.Windows.Forms.Label()
 		self._btnMonthText = System.Windows.Forms.Button()
-		self._txbPubPre = System.Windows.Forms.TextBox()
-		self._txbPubPost = System.Windows.Forms.TextBox()
-		self._txbImprintPre = System.Windows.Forms.TextBox()
-		self._txbImprintPost = System.Windows.Forms.TextBox()
-		self._txbSeriesPost = System.Windows.Forms.TextBox()
-		self._txbSeriesPre = System.Windows.Forms.TextBox()
-		self._txbTitlePost = System.Windows.Forms.TextBox()
-		self._txbTitlePre = System.Windows.Forms.TextBox()
-		self._txbFormatPost = System.Windows.Forms.TextBox()
-		self._txbFormatPre = System.Windows.Forms.TextBox()
-		self._txbVolumePost = System.Windows.Forms.TextBox()
-		self._txbVolumePre = System.Windows.Forms.TextBox()
-		self._txbAltSeriesPost = System.Windows.Forms.TextBox()
-		self._txbAltSeriesPre = System.Windows.Forms.TextBox()
-		self._txbAltNumberPost = System.Windows.Forms.TextBox()
-		self._txbAltNumberPre = System.Windows.Forms.TextBox()
-		self._txbAltCountPost = System.Windows.Forms.TextBox()
-		self._txbAltCountPre = System.Windows.Forms.TextBox()
-		self._txbYearPost = System.Windows.Forms.TextBox()
-		self._txbYearPre = System.Windows.Forms.TextBox()
-		self._txbMonthPost = System.Windows.Forms.TextBox()
-		self._txbMonthPre = System.Windows.Forms.TextBox()
-		self._txbMonthNumberPost = System.Windows.Forms.TextBox()
-		self._txbMonthNumberPre = System.Windows.Forms.TextBox()
-		self._txbCountPost = System.Windows.Forms.TextBox()
-		self._txbCountPre = System.Windows.Forms.TextBox()
-		self._txbNumberPost = System.Windows.Forms.TextBox()
-		self._txbNumberPre = System.Windows.Forms.TextBox()
+		self.Publisher = InsertControl()
+		self.Imprint = InsertControl()
+		self.Series = InsertControl()
+		self.Title = InsertControl()
+		self.Format = InsertControl()
+		self.Volume = InsertControlPadding()
+		self.Count = InsertControl()
+		self.Number = InsertControlPadding()
+		self.Month = InsertControl()
+		self.MonthNumber = InsertControlPadding()
+		self.AlternateSeries = InsertControl()
+		self.AlternateNumber = InsertControlPadding()
+		self.AlternateCount = InsertControlPadding()
+		self.Year = InsertControl()
 		self._label1 = System.Windows.Forms.Label()
 		self._label2 = System.Windows.Forms.Label()
 		self._label3 = System.Windows.Forms.Label()
 		self._label4 = System.Windows.Forms.Label()
 		self._label5 = System.Windows.Forms.Label()
 		self._label6 = System.Windows.Forms.Label()
-		self._nudVolume = System.Windows.Forms.NumericUpDown()
-		self._nudNumber = System.Windows.Forms.NumericUpDown()
-		self._nudCount = System.Windows.Forms.NumericUpDown()
-		self._nudMonth = System.Windows.Forms.NumericUpDown()
-		self._nudAltCount = System.Windows.Forms.NumericUpDown()
-		self._nudAltNumber = System.Windows.Forms.NumericUpDown()
 		self._FolderBrowser = System.Windows.Forms.FolderBrowserDialog()
 		self._ckbSpace = System.Windows.Forms.CheckBox()
-		self._tooltip = System.Windows.Forms.ToolTip(self._components)
 		self._label12 = System.Windows.Forms.Label()
 		self._sampleTextDir = System.Windows.Forms.Label()
 		self._sampleTextFile = System.Windows.Forms.Label()
@@ -145,8 +117,7 @@ class ConfigForm(Form):
 		self._btnAddExFolder = System.Windows.Forms.Button()
 		self._btnRemoveExFolder = System.Windows.Forms.Button()
 		self._ExPanel = System.Windows.Forms.Panel()
-		self._cmbExMatchType = System.Windows.Forms.ComboBox()
-		self._label16 = System.Windows.Forms.Label()
+		self._cmbExcludeOperator = System.Windows.Forms.ComboBox()
 		self._label17 = System.Windows.Forms.Label()
 		self._btnExMetaAdd = System.Windows.Forms.Button()
 		self._flpExcludes = System.Windows.Forms.FlowLayoutPanel()
@@ -157,9 +128,6 @@ class ConfigForm(Form):
 		self._btnProDelete = System.Windows.Forms.Button()
 		self._cmbProfiles = System.Windows.Forms.ComboBox()
 		self._vsbBookSelector = System.Windows.Forms.VScrollBar()
-		self._txbStartYearPost = System.Windows.Forms.TextBox()
-		self._txbStartYearPre = System.Windows.Forms.TextBox()
-		self._btnStartYear = System.Windows.Forms.Button()
 		self._label15 = System.Windows.Forms.Label()
 		self._tabPage1 = System.Windows.Forms.TabPage()
 		self._txbEmptyData = System.Windows.Forms.TextBox()
@@ -178,20 +146,37 @@ class ConfigForm(Form):
 		self._btnRemoveEmptyDir = System.Windows.Forms.Button()
 		self._cmbImageFormat = System.Windows.Forms.ComboBox()
 		self._label19 = System.Windows.Forms.Label()
+		self._btnAddGroup = System.Windows.Forms.Button()
+		self._label20 = System.Windows.Forms.Label()
+		self._cmbExcludeMode = System.Windows.Forms.ComboBox()
+		self._gbMode = System.Windows.Forms.GroupBox()
+		self._rdbModeMove = System.Windows.Forms.RadioButton()
+		self._rdbMoveCopy = System.Windows.Forms.RadioButton()
+		self._rdbModeTest = System.Windows.Forms.RadioButton()
+		self._insertTabs = System.Windows.Forms.TabControl()
+		self._tabPage2 = System.Windows.Forms.TabPage()
+		self._tpInsertAdvanced = System.Windows.Forms.TabPage()		
+		self._label16 = System.Windows.Forms.Label()
+		self._label21 = System.Windows.Forms.Label()
+		self.StartYear = InsertControl()
+		self.Manga = InsertControlTextBox()
+		self.Character = InsertControlCheckBox()
+		self.Writer = InsertControlCheckBox()
+		self.Genre = InsertControlCheckBox()
+		self.Tags = InsertControlCheckBox()
+		self._label22 = System.Windows.Forms.Label()
 		self._tabs.SuspendLayout()
 		self._tpDirOrganize.SuspendLayout()
 		self._tpFileNames.SuspendLayout()
 		self._groupBox1.SuspendLayout()
-		self._nudVolume.BeginInit()
-		self._nudNumber.BeginInit()
-		self._nudCount.BeginInit()
-		self._nudMonth.BeginInit()
-		self._nudAltCount.BeginInit()
-		self._nudAltNumber.BeginInit()
 		self._tpExcludes.SuspendLayout()
 		self._ExPanel.SuspendLayout()
 		self._groupBox2.SuspendLayout()
 		self._tabPage1.SuspendLayout()
+		self._gbMode.SuspendLayout()
+		self._insertTabs.SuspendLayout()
+		self._tabPage2.SuspendLayout()
+		self._tpInsertAdvanced.SuspendLayout()
 		self.SuspendLayout()
 		# 
 		# tabs
@@ -249,8 +234,7 @@ class ConfigForm(Form):
 		self._txbDirStruct.Size = System.Drawing.Size(397, 20)
 		self._txbDirStruct.TabIndex = 5
 		self._txbDirStruct.TextChanged += self.TxbStructTextChanged
-		self._txbDirStruct.Enter += self.TxbFocusEnter
-		self._txbDirStruct.Leave += self.TxbFocusLeave
+		self._txbDirStruct.HideSelection = False
 		# 
 		# lblDirStruct
 		# 
@@ -300,65 +284,8 @@ class ConfigForm(Form):
 		# 
 		# groupBox1
 		# 
-		self._groupBox1.Controls.Add(self._label15)
-		self._groupBox1.Controls.Add(self._txbStartYearPost)
-		self._groupBox1.Controls.Add(self._txbStartYearPre)
-		self._groupBox1.Controls.Add(self._btnStartYear)
+		self._groupBox1.Controls.Add(self._insertTabs)
 		self._groupBox1.Controls.Add(self._ckbSpace)
-		self._groupBox1.Controls.Add(self._nudAltNumber)
-		self._groupBox1.Controls.Add(self._nudAltCount)
-		self._groupBox1.Controls.Add(self._nudMonth)
-		self._groupBox1.Controls.Add(self._nudCount)
-		self._groupBox1.Controls.Add(self._nudNumber)
-		self._groupBox1.Controls.Add(self._nudVolume)
-		self._groupBox1.Controls.Add(self._label6)
-		self._groupBox1.Controls.Add(self._label5)
-		self._groupBox1.Controls.Add(self._label3)
-		self._groupBox1.Controls.Add(self._label4)
-		self._groupBox1.Controls.Add(self._label2)
-		self._groupBox1.Controls.Add(self._label1)
-		self._groupBox1.Controls.Add(self._txbAltNumberPost)
-		self._groupBox1.Controls.Add(self._txbAltNumberPre)
-		self._groupBox1.Controls.Add(self._txbAltCountPost)
-		self._groupBox1.Controls.Add(self._txbAltCountPre)
-		self._groupBox1.Controls.Add(self._txbYearPost)
-		self._groupBox1.Controls.Add(self._txbYearPre)
-		self._groupBox1.Controls.Add(self._txbMonthPost)
-		self._groupBox1.Controls.Add(self._txbMonthPre)
-		self._groupBox1.Controls.Add(self._txbMonthNumberPost)
-		self._groupBox1.Controls.Add(self._txbMonthNumberPre)
-		self._groupBox1.Controls.Add(self._txbCountPost)
-		self._groupBox1.Controls.Add(self._txbCountPre)
-		self._groupBox1.Controls.Add(self._txbNumberPost)
-		self._groupBox1.Controls.Add(self._txbNumberPre)
-		self._groupBox1.Controls.Add(self._txbAltSeriesPost)
-		self._groupBox1.Controls.Add(self._txbAltSeriesPre)
-		self._groupBox1.Controls.Add(self._txbVolumePost)
-		self._groupBox1.Controls.Add(self._txbVolumePre)
-		self._groupBox1.Controls.Add(self._txbFormatPost)
-		self._groupBox1.Controls.Add(self._txbFormatPre)
-		self._groupBox1.Controls.Add(self._txbTitlePost)
-		self._groupBox1.Controls.Add(self._txbTitlePre)
-		self._groupBox1.Controls.Add(self._txbSeriesPost)
-		self._groupBox1.Controls.Add(self._txbSeriesPre)
-		self._groupBox1.Controls.Add(self._txbImprintPost)
-		self._groupBox1.Controls.Add(self._txbImprintPre)
-		self._groupBox1.Controls.Add(self._txbPubPost)
-		self._groupBox1.Controls.Add(self._txbPubPre)
-		self._groupBox1.Controls.Add(self._btnMonthText)
-		self._groupBox1.Controls.Add(self._btnAltCount)
-		self._groupBox1.Controls.Add(self._btnAltNumber)
-		self._groupBox1.Controls.Add(self._btnAltSeries)
-		self._groupBox1.Controls.Add(self._btnFormat)
-		self._groupBox1.Controls.Add(self._btnTitle)
-		self._groupBox1.Controls.Add(self._btnCount)
-		self._groupBox1.Controls.Add(self._btnMonthNumber)
-		self._groupBox1.Controls.Add(self._btnYear)
-		self._groupBox1.Controls.Add(self._btnNumber)
-		self._groupBox1.Controls.Add(self._btnVolume)
-		self._groupBox1.Controls.Add(self._btnSeries)
-		self._groupBox1.Controls.Add(self._btnImprint)
-		self._groupBox1.Controls.Add(self._btnInsertPub)
 		self._groupBox1.Controls.Add(self._btnSep)
 		self._groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom
 		self._groupBox1.Location = System.Drawing.Point(3, 121)
@@ -377,136 +304,6 @@ class ConfigForm(Form):
 		self._btnSep.Text = "Directory Seperator"
 		self._btnSep.UseVisualStyleBackColor = True
 		self._btnSep.Click += self.BtnSepClick
-		# 
-		# btnInsertPub
-		# 
-		self._btnInsertPub.Location = System.Drawing.Point(73, 67)
-		self._btnInsertPub.Name = "btnInsertPub"
-		self._btnInsertPub.Size = System.Drawing.Size(75, 23)
-		self._btnInsertPub.TabIndex = 6
-		self._btnInsertPub.Text = "Publisher"
-		self._btnInsertPub.UseVisualStyleBackColor = True
-		self._btnInsertPub.Click += self.BtnInsertPubClick
-		# 
-		# btnImprint
-		# 
-		self._btnImprint.Location = System.Drawing.Point(73, 95)
-		self._btnImprint.Name = "btnImprint"
-		self._btnImprint.Size = System.Drawing.Size(75, 23)
-		self._btnImprint.TabIndex = 9
-		self._btnImprint.Text = "Imprint"
-		self._btnImprint.UseVisualStyleBackColor = True
-		self._btnImprint.Click += self.BtnImprintClick
-		# 
-		# btnSeries
-		# 
-		self._btnSeries.Location = System.Drawing.Point(73, 123)
-		self._btnSeries.Name = "btnSeries"
-		self._btnSeries.Size = System.Drawing.Size(75, 23)
-		self._btnSeries.TabIndex = 12
-		self._btnSeries.Text = "Series"
-		self._btnSeries.UseVisualStyleBackColor = True
-		self._btnSeries.Click += self.BtnSeriesClick
-		# 
-		# btnVolume
-		# 
-		self._btnVolume.Location = System.Drawing.Point(73, 207)
-		self._btnVolume.Name = "btnVolume"
-		self._btnVolume.Size = System.Drawing.Size(75, 23)
-		self._btnVolume.TabIndex = 21
-		self._btnVolume.Text = "Volume"
-		self._btnVolume.UseVisualStyleBackColor = True
-		self._btnVolume.Click += self.BtnVolumeClick
-		# 
-		# btnNumber
-		# 
-		self._btnNumber.Location = System.Drawing.Point(328, 67)
-		self._btnNumber.Name = "btnNumber"
-		self._btnNumber.Size = System.Drawing.Size(75, 23)
-		self._btnNumber.TabIndex = 30
-		self._btnNumber.Text = "Number"
-		self._btnNumber.UseVisualStyleBackColor = True
-		self._btnNumber.Click += self.BtnNumberClick
-		# 
-		# btnYear
-		# 
-		self._btnYear.Location = System.Drawing.Point(328, 179)
-		self._btnYear.Name = "btnYear"
-		self._btnYear.Size = System.Drawing.Size(75, 23)
-		self._btnYear.TabIndex = 45
-		self._btnYear.Text = "Year"
-		self._btnYear.UseVisualStyleBackColor = True
-		self._btnYear.Click += self.BtnYearClick
-		# 
-		# btnMonthNumber
-		# 
-		self._btnMonthNumber.Location = System.Drawing.Point(328, 123)
-		self._btnMonthNumber.Name = "btnMonthNumber"
-		self._btnMonthNumber.Size = System.Drawing.Size(75, 23)
-		self._btnMonthNumber.TabIndex = 38
-		self._btnMonthNumber.Text = "Month (#)"
-		self._btnMonthNumber.UseVisualStyleBackColor = True
-		self._btnMonthNumber.Click += self.BtnMonthNumberClick
-		# 
-		# btnCount
-		# 
-		self._btnCount.Location = System.Drawing.Point(328, 95)
-		self._btnCount.Name = "btnCount"
-		self._btnCount.Size = System.Drawing.Size(75, 23)
-		self._btnCount.TabIndex = 34
-		self._btnCount.Text = "Count"
-		self._btnCount.UseVisualStyleBackColor = True
-		self._btnCount.Click += self.BtnCountClick
-		# 
-		# btnTitle
-		# 
-		self._btnTitle.Location = System.Drawing.Point(73, 151)
-		self._btnTitle.Name = "btnTitle"
-		self._btnTitle.Size = System.Drawing.Size(75, 23)
-		self._btnTitle.TabIndex = 15
-		self._btnTitle.Text = "Title"
-		self._btnTitle.UseVisualStyleBackColor = True
-		self._btnTitle.Click += self.BtnTitleClick
-		# 
-		# btnFormat
-		# 
-		self._btnFormat.Location = System.Drawing.Point(73, 179)
-		self._btnFormat.Name = "btnFormat"
-		self._btnFormat.Size = System.Drawing.Size(75, 23)
-		self._btnFormat.TabIndex = 18
-		self._btnFormat.Text = "Format"
-		self._btnFormat.UseVisualStyleBackColor = True
-		self._btnFormat.Click += self.BtnFormatClick
-		# 
-		# btnAltSeries
-		# 
-		self._btnAltSeries.Location = System.Drawing.Point(73, 235)
-		self._btnAltSeries.Name = "btnAltSeries"
-		self._btnAltSeries.Size = System.Drawing.Size(75, 23)
-		self._btnAltSeries.TabIndex = 24
-		self._btnAltSeries.Text = "Alt. Series"
-		self._btnAltSeries.UseVisualStyleBackColor = True
-		self._btnAltSeries.Click += self.BtnAltSeriesClick
-		# 
-		# btnAltNumber
-		# 
-		self._btnAltNumber.Location = System.Drawing.Point(328, 235)
-		self._btnAltNumber.Name = "btnAltNumber"
-		self._btnAltNumber.Size = System.Drawing.Size(75, 23)
-		self._btnAltNumber.TabIndex = 52
-		self._btnAltNumber.Text = "Alt. Number"
-		self._btnAltNumber.UseVisualStyleBackColor = True
-		self._btnAltNumber.Click += self.BtnAltNumberClick
-		# 
-		# btnAltCount
-		# 
-		self._btnAltCount.Location = System.Drawing.Point(328, 207)
-		self._btnAltCount.Name = "btnAltCount"
-		self._btnAltCount.Size = System.Drawing.Size(75, 23)
-		self._btnAltCount.TabIndex = 48
-		self._btnAltCount.Text = "Alt. Count"
-		self._btnAltCount.UseVisualStyleBackColor = True
-		self._btnAltCount.Click += self.BtnAltCountClick
 		# 
 		# ckbFileNaming
 		# 
@@ -528,8 +325,7 @@ class ConfigForm(Form):
 		self._txbFileStruct.Size = System.Drawing.Size(424, 20)
 		self._txbFileStruct.TabIndex = 1
 		self._txbFileStruct.TextChanged += self.TxbStructTextChanged
-		self._txbFileStruct.Enter += self.TxbFocusEnter
-		self._txbFileStruct.Leave += self.TxbFocusLeave
+		self._txbFileStruct.HideSelection = False
 		# 
 		# lblFileStruct
 		# 
@@ -538,217 +334,81 @@ class ConfigForm(Form):
 		self._lblFileStruct.Size = System.Drawing.Size(71, 35)
 		self._lblFileStruct.TabIndex = 2
 		self._lblFileStruct.Text = "File Structure"
+		#
+		# Publisher
+		#
+		self.Publisher.Location = Point(6, 25)
+		self.Publisher.SetTemplate("publisher", "Publisher")
 		# 
-		# btnMonthText
+		# Imprint
 		# 
-		self._btnMonthText.Location = System.Drawing.Point(328, 149)
-		self._btnMonthText.Name = "btnMonthText"
-		self._btnMonthText.Size = System.Drawing.Size(75, 23)
-		self._btnMonthText.TabIndex = 42
-		self._btnMonthText.Text = "Month"
-		self._btnMonthText.UseVisualStyleBackColor = True
-		self._btnMonthText.Click += self.BtnMonthTextClick
+		self.Imprint.Location = Point(6, 53)
+		self.Imprint.SetTemplate("imprint", "Imprint")
 		# 
-		# txbPubPre
+		# Series
 		# 
-		self._txbPubPre.Location = System.Drawing.Point(8, 68)
-		self._txbPubPre.Name = "txbPubPre"
-		self._txbPubPre.Size = System.Drawing.Size(58, 20)
-		self._txbPubPre.TabIndex = 5
+		self.Series.Location = Point(6, 82)
+		self.Series.SetTemplate("series", "Series")
 		# 
-		# txbPubPost
+		# Title
 		# 
-		self._txbPubPost.Location = System.Drawing.Point(154, 68)
-		self._txbPubPost.Name = "txbPubPost"
-		self._txbPubPost.Size = System.Drawing.Size(58, 20)
-		self._txbPubPost.TabIndex = 7
+		self.Title.Location = Point(6, 110)
+		self.Title.SetTemplate("title", "Title")
 		# 
-		# txbImprintPre
+		# Format
+		#
+		self.Format.Location = Point(6, 138)
+		self.Format.SetTemplate("format", "Format")
 		# 
-		self._txbImprintPre.Location = System.Drawing.Point(8, 96)
-		self._txbImprintPre.Name = "txbImprintPre"
-		self._txbImprintPre.Size = System.Drawing.Size(58, 20)
-		self._txbImprintPre.TabIndex = 8
+		# Volume
+		#
+		self.Volume.Location = Point(6, 166)
+		self.Volume.SetTemplate ("volume", "Volume")
 		# 
-		# txbImprintPost
+		# AlternateSeries
 		# 
-		self._txbImprintPost.Location = System.Drawing.Point(154, 96)
-		self._txbImprintPost.Name = "txbImprintPost"
-		self._txbImprintPost.Size = System.Drawing.Size(58, 20)
-		self._txbImprintPost.TabIndex = 10
+		self.AlternateSeries.Location = Point(6, 194)
+		self.AlternateSeries.SetTemplate("altSeries", "Alt. Series")
 		# 
-		# txbSeriesPost
+		# AlternateNumber
 		# 
-		self._txbSeriesPost.Location = System.Drawing.Point(155, 124)
-		self._txbSeriesPost.Name = "txbSeriesPost"
-		self._txbSeriesPost.Size = System.Drawing.Size(58, 20)
-		self._txbSeriesPost.TabIndex = 13
+		self.AlternateNumber.Location = Point(262, 194)
+		self.AlternateNumber.SetTemplate("altNumber", "Alt. Num.")
 		# 
-		# txbSeriesPre
+		# AlternateCount
 		# 
-		self._txbSeriesPre.Location = System.Drawing.Point(8, 124)
-		self._txbSeriesPre.Name = "txbSeriesPre"
-		self._txbSeriesPre.Size = System.Drawing.Size(58, 20)
-		self._txbSeriesPre.TabIndex = 11
+		self.AlternateCount.Location = Point(262, 166)
+		self.AlternateCount.SetTemplate("altCount", "Alt. Count")
 		# 
-		# txbTitlePost
+		# Year
 		# 
-		self._txbTitlePost.Location = System.Drawing.Point(155, 152)
-		self._txbTitlePost.Name = "txbTitlePost"
-		self._txbTitlePost.Size = System.Drawing.Size(58, 20)
-		self._txbTitlePost.TabIndex = 16
+		self.Year.Location = Point(262, 138)
+		self.Year.SetTemplate("year", "Year")
 		# 
-		# txbTitlePre
+		# Month
 		# 
-		self._txbTitlePre.Location = System.Drawing.Point(8, 152)
-		self._txbTitlePre.Name = "txbTitlePre"
-		self._txbTitlePre.Size = System.Drawing.Size(58, 20)
-		self._txbTitlePre.TabIndex = 14
+		self.Month.Location = Point(262, 108)
+		self.Month.SetTemplate("month", "Month")
 		# 
-		# txbFormatPost
+		# Month Number
 		# 
-		self._txbFormatPost.Location = System.Drawing.Point(154, 180)
-		self._txbFormatPost.Name = "txbFormatPost"
-		self._txbFormatPost.Size = System.Drawing.Size(58, 20)
-		self._txbFormatPost.TabIndex = 3
+		self.MonthNumber.Location = Point(262, 82)
+		self.MonthNumber.SetTemplate("month#", "Month #")
 		# 
-		# txbFormatPre
+		# Count
 		# 
-		self._txbFormatPre.Location = System.Drawing.Point(8, 180)
-		self._txbFormatPre.Name = "txbFormatPre"
-		self._txbFormatPre.Size = System.Drawing.Size(58, 20)
-		self._txbFormatPre.TabIndex = 17
+		self.Count.Location = Point(262, 54)
+		self.Count.SetTemplate("count", "Count")
 		# 
-		# txbVolumePost
+		# Number
 		# 
-		self._txbVolumePost.Location = System.Drawing.Point(154, 208)
-		self._txbVolumePost.Name = "txbVolumePost"
-		self._txbVolumePost.Size = System.Drawing.Size(58, 20)
-		self._txbVolumePost.TabIndex = 0
-		# 
-		# txbVolumePre
-		# 
-		self._txbVolumePre.Location = System.Drawing.Point(8, 208)
-		self._txbVolumePre.Name = "txbVolumePre"
-		self._txbVolumePre.Size = System.Drawing.Size(58, 20)
-		self._txbVolumePre.TabIndex = 20
-		# 
-		# txbAltSeriesPost
-		# 
-		self._txbAltSeriesPost.Location = System.Drawing.Point(155, 236)
-		self._txbAltSeriesPost.Name = "txbAltSeriesPost"
-		self._txbAltSeriesPost.Size = System.Drawing.Size(58, 20)
-		self._txbAltSeriesPost.TabIndex = 2
-		# 
-		# txbAltSeriesPre
-		# 
-		self._txbAltSeriesPre.Location = System.Drawing.Point(8, 236)
-		self._txbAltSeriesPre.Name = "txbAltSeriesPre"
-		self._txbAltSeriesPre.Size = System.Drawing.Size(58, 20)
-		self._txbAltSeriesPre.TabIndex = 23
-		# 
-		# txbAltNumberPost
-		# 
-		self._txbAltNumberPost.Location = System.Drawing.Point(410, 236)
-		self._txbAltNumberPost.Name = "txbAltNumberPost"
-		self._txbAltNumberPost.Size = System.Drawing.Size(58, 20)
-		self._txbAltNumberPost.TabIndex = 53
-		# 
-		# txbAltNumberPre
-		# 
-		self._txbAltNumberPre.Location = System.Drawing.Point(264, 236)
-		self._txbAltNumberPre.Name = "txbAltNumberPre"
-		self._txbAltNumberPre.Size = System.Drawing.Size(58, 20)
-		self._txbAltNumberPre.TabIndex = 51
-		# 
-		# txbAltCountPost
-		# 
-		self._txbAltCountPost.Location = System.Drawing.Point(410, 208)
-		self._txbAltCountPost.Name = "txbAltCountPost"
-		self._txbAltCountPost.Size = System.Drawing.Size(58, 20)
-		self._txbAltCountPost.TabIndex = 49
-		# 
-		# txbAltCountPre
-		# 
-		self._txbAltCountPre.Location = System.Drawing.Point(264, 208)
-		self._txbAltCountPre.Name = "txbAltCountPre"
-		self._txbAltCountPre.Size = System.Drawing.Size(58, 20)
-		self._txbAltCountPre.TabIndex = 47
-		# 
-		# txbYearPost
-		# 
-		self._txbYearPost.Location = System.Drawing.Point(410, 180)
-		self._txbYearPost.Name = "txbYearPost"
-		self._txbYearPost.Size = System.Drawing.Size(58, 20)
-		self._txbYearPost.TabIndex = 46
-		# 
-		# txbYearPre
-		# 
-		self._txbYearPre.Location = System.Drawing.Point(264, 180)
-		self._txbYearPre.Name = "txbYearPre"
-		self._txbYearPre.Size = System.Drawing.Size(58, 20)
-		self._txbYearPre.TabIndex = 44
-		# 
-		# txbMonthPost
-		# 
-		self._txbMonthPost.Location = System.Drawing.Point(410, 150)
-		self._txbMonthPost.Name = "txbMonthPost"
-		self._txbMonthPost.Size = System.Drawing.Size(58, 20)
-		self._txbMonthPost.TabIndex = 43
-		# 
-		# txbMonthPre
-		# 
-		self._txbMonthPre.Location = System.Drawing.Point(264, 150)
-		self._txbMonthPre.Name = "txbMonthPre"
-		self._txbMonthPre.Size = System.Drawing.Size(58, 20)
-		self._txbMonthPre.TabIndex = 41
-		# 
-		# txbMonthNumberPost
-		# 
-		self._txbMonthNumberPost.Location = System.Drawing.Point(410, 124)
-		self._txbMonthNumberPost.Name = "txbMonthNumberPost"
-		self._txbMonthNumberPost.Size = System.Drawing.Size(58, 20)
-		self._txbMonthNumberPost.TabIndex = 39
-		# 
-		# txbMonthNumberPre
-		# 
-		self._txbMonthNumberPre.Location = System.Drawing.Point(264, 124)
-		self._txbMonthNumberPre.Name = "txbMonthNumberPre"
-		self._txbMonthNumberPre.Size = System.Drawing.Size(58, 20)
-		self._txbMonthNumberPre.TabIndex = 37
-		# 
-		# txbCountPost
-		# 
-		self._txbCountPost.Location = System.Drawing.Point(410, 96)
-		self._txbCountPost.Name = "txbCountPost"
-		self._txbCountPost.Size = System.Drawing.Size(58, 20)
-		self._txbCountPost.TabIndex = 35
-		# 
-		# txbCountPre
-		# 
-		self._txbCountPre.Location = System.Drawing.Point(264, 96)
-		self._txbCountPre.Name = "txbCountPre"
-		self._txbCountPre.Size = System.Drawing.Size(58, 20)
-		self._txbCountPre.TabIndex = 33
-		# 
-		# txbNumberPost
-		# 
-		self._txbNumberPost.Location = System.Drawing.Point(410, 68)
-		self._txbNumberPost.Name = "txbNumberPost"
-		self._txbNumberPost.Size = System.Drawing.Size(58, 20)
-		self._txbNumberPost.TabIndex = 31
-		# 
-		# txbNumberPre
-		# 
-		self._txbNumberPre.Location = System.Drawing.Point(264, 68)
-		self._txbNumberPre.Name = "txbNumberPre"
-		self._txbNumberPre.Size = System.Drawing.Size(58, 20)
-		self._txbNumberPre.TabIndex = 29
+		self.Number.Location = Point(262, 26)
+		self.Number.SetTemplate("number", "Number")
 		# 
 		# label1
 		# 
 		self._label1.AutoSize = True
-		self._label1.Location = System.Drawing.Point(21, 47)
+		self._label1.Location = System.Drawing.Point(21, 3)
 		self._label1.Name = "label1"
 		self._label1.Size = System.Drawing.Size(33, 13)
 		self._label1.TabIndex = 2
@@ -757,7 +417,7 @@ class ConfigForm(Form):
 		# label2
 		# 
 		self._label2.AutoSize = True
-		self._label2.Location = System.Drawing.Point(165, 45)
+		self._label2.Location = System.Drawing.Point(148, 3)
 		self._label2.Name = "label2"
 		self._label2.Size = System.Drawing.Size(38, 13)
 		self._label2.TabIndex = 3
@@ -766,7 +426,7 @@ class ConfigForm(Form):
 		# label3
 		# 
 		self._label3.AutoSize = True
-		self._label3.Location = System.Drawing.Point(420, 43)
+		self._label3.Location = System.Drawing.Point(404, 3)
 		self._label3.Name = "label3"
 		self._label3.Size = System.Drawing.Size(38, 13)
 		self._label3.TabIndex = 27
@@ -775,7 +435,7 @@ class ConfigForm(Form):
 		# label4
 		# 
 		self._label4.AutoSize = True
-		self._label4.Location = System.Drawing.Point(277, 45)
+		self._label4.Location = System.Drawing.Point(275, 3)
 		self._label4.Name = "label4"
 		self._label4.Size = System.Drawing.Size(33, 13)
 		self._label4.TabIndex = 26
@@ -784,7 +444,7 @@ class ConfigForm(Form):
 		# label5
 		# 
 		self._label5.AutoSize = True
-		self._label5.Location = System.Drawing.Point(222, 45)
+		self._label5.Location = System.Drawing.Point(210, 3)
 		self._label5.Name = "label5"
 		self._label5.Size = System.Drawing.Size(26, 13)
 		self._label5.TabIndex = 4
@@ -793,53 +453,11 @@ class ConfigForm(Form):
 		# label6
 		# 
 		self._label6.AutoSize = True
-		self._label6.Location = System.Drawing.Point(478, 43)
+		self._label6.Location = System.Drawing.Point(466, 3)
 		self._label6.Name = "label6"
 		self._label6.Size = System.Drawing.Size(26, 13)
 		self._label6.TabIndex = 28
 		self._label6.Text = "Pad"
-		# 
-		# nudVolume
-		# 
-		self._nudVolume.Location = System.Drawing.Point(218, 208)
-		self._nudVolume.Name = "nudVolume"
-		self._nudVolume.Size = System.Drawing.Size(34, 20)
-		self._nudVolume.TabIndex = 1
-		# 
-		# nudNumber
-		# 
-		self._nudNumber.Location = System.Drawing.Point(474, 68)
-		self._nudNumber.Name = "nudNumber"
-		self._nudNumber.Size = System.Drawing.Size(34, 20)
-		self._nudNumber.TabIndex = 32
-		# 
-		# nudCount
-		# 
-		self._nudCount.Location = System.Drawing.Point(474, 96)
-		self._nudCount.Name = "nudCount"
-		self._nudCount.Size = System.Drawing.Size(34, 20)
-		self._nudCount.TabIndex = 36
-		# 
-		# nudMonth
-		# 
-		self._nudMonth.Location = System.Drawing.Point(474, 124)
-		self._nudMonth.Name = "nudMonth"
-		self._nudMonth.Size = System.Drawing.Size(34, 20)
-		self._nudMonth.TabIndex = 40
-		# 
-		# nudAltCount
-		# 
-		self._nudAltCount.Location = System.Drawing.Point(474, 208)
-		self._nudAltCount.Name = "nudAltCount"
-		self._nudAltCount.Size = System.Drawing.Size(34, 20)
-		self._nudAltCount.TabIndex = 50
-		# 
-		# nudAltNumber
-		# 
-		self._nudAltNumber.Location = System.Drawing.Point(474, 236)
-		self._nudAltNumber.Name = "nudAltNumber"
-		self._nudAltNumber.Size = System.Drawing.Size(34, 20)
-		self._nudAltNumber.TabIndex = 54
 		# 
 		# FolderBrowser
 		# 
@@ -867,7 +485,7 @@ class ConfigForm(Form):
 		# 
 		self._sampleTextDir.Location = System.Drawing.Point(63, 98)
 		self._sampleTextDir.Name = "sampleTextDir"
-		self._sampleTextDir.Size = System.Drawing.Size(424, 35)
+		self._sampleTextDir.Size = System.Drawing.Size(424, 26)
 		self._sampleTextDir.TabIndex = 7
 		# 
 		# sampleTextFile
@@ -963,45 +581,39 @@ class ConfigForm(Form):
 		# 
 		self._ExPanel.AutoScroll = True
 		self._ExPanel.Controls.Add(self._flpExcludes)
-		self._ExPanel.Location = System.Drawing.Point(3, 49)
+		self._ExPanel.Location = System.Drawing.Point(3, 46)
 		self._ExPanel.Name = "ExPanel"
-		self._ExPanel.Size = System.Drawing.Size(504, 204)
+		self._ExPanel.Size = System.Drawing.Size(495, 207)
 		self._ExPanel.TabIndex = 4
 		# 
-		# cmbExMatchType
+		# cmbExcludeOperator
 		# 
-		self._cmbExMatchType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self._cmbExMatchType.FormattingEnabled = True
-		self._cmbExMatchType.Items.AddRange(System.Array[System.Object](
+		self._cmbExcludeOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbExcludeOperator.FormattingEnabled = True
+		self._cmbExcludeOperator.Items.AddRange(System.Array[System.Object](
 			["Any",
 			"All"]))
-		self._cmbExMatchType.Location = System.Drawing.Point(46, 22)
-		self._cmbExMatchType.Name = "cmbExMatchType"
-		self._cmbExMatchType.Size = System.Drawing.Size(60, 21)
-		self._cmbExMatchType.TabIndex = 0
-		# 
-		# label16
-		# 
-		self._label16.Location = System.Drawing.Point(6, 25)
-		self._label16.Name = "label16"
-		self._label16.Size = System.Drawing.Size(100, 23)
-		self._label16.TabIndex = 1
-		self._label16.Text = "Match"
+		self._cmbExcludeOperator.Location = System.Drawing.Point(204, 19)
+		self._cmbExcludeOperator.Name = "cmbExcludeOperator"
+		self._cmbExcludeOperator.Size = System.Drawing.Size(43, 21)
+		self._cmbExcludeOperator.TabIndex = 0
+		self._cmbExcludeOperator.SelectedIndexChanged += self.ExcludeOperatorChange
 		# 
 		# label17
 		# 
-		self._label17.Location = System.Drawing.Point(112, 25)
+		self._label17.AutoSize = True
+		self._label17.Location = System.Drawing.Point(250, 22)
 		self._label17.Name = "label17"
-		self._label17.Size = System.Drawing.Size(214, 23)
+		self._label17.Size = System.Drawing.Size(106, 13)
 		self._label17.TabIndex = 2
 		self._label17.Text = "of the following rules."
 		# 
 		# btnExMetaAdd
 		# 
 		self._btnExMetaAdd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
-		self._btnExMetaAdd.Location = System.Drawing.Point(388, 20)
+		self._btnExMetaAdd.Location = System.Drawing.Point(439, 17)
 		self._btnExMetaAdd.Name = "btnExMetaAdd"
-		self._btnExMetaAdd.Size = System.Drawing.Size(72, 23)
+		self._btnExMetaAdd.Size = System.Drawing.Size(59, 23)
 		self._btnExMetaAdd.TabIndex = 3
 		self._btnExMetaAdd.Text = "Add rule"
 		self._btnExMetaAdd.UseVisualStyleBackColor = True
@@ -1010,25 +622,27 @@ class ConfigForm(Form):
 		# flpExcludes
 		# 
 		self._flpExcludes.AutoSize = True
+		self._flpExcludes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
 		self._flpExcludes.Location = System.Drawing.Point(3, 3)
-		self._flpExcludes.MaximumSize = System.Drawing.Size(482, 0)
 		self._flpExcludes.Name = "flpExcludes"
 		self._flpExcludes.Size = System.Drawing.Size(482, 40)
 		self._flpExcludes.TabIndex = 8
 		# 
 		# groupBox2
 		# 
+		self._groupBox2.Controls.Add(self._cmbExcludeMode)
+		self._groupBox2.Controls.Add(self._label20)
+		self._groupBox2.Controls.Add(self._btnAddGroup)
 		self._groupBox2.Controls.Add(self._btnExMetaAdd)
 		self._groupBox2.Controls.Add(self._ExPanel)
 		self._groupBox2.Controls.Add(self._label17)
-		self._groupBox2.Controls.Add(self._cmbExMatchType)
-		self._groupBox2.Controls.Add(self._label16)
-		self._groupBox2.Location = System.Drawing.Point(8, 167)
+		self._groupBox2.Controls.Add(self._cmbExcludeOperator)
+		self._groupBox2.Location = System.Drawing.Point(8, 156)
 		self._groupBox2.Name = "groupBox2"
-		self._groupBox2.Size = System.Drawing.Size(507, 253)
+		self._groupBox2.Size = System.Drawing.Size(504, 264)
 		self._groupBox2.TabIndex = 6
 		self._groupBox2.TabStop = False
-		self._groupBox2.Text = "Do not move eComics if their metadata is as follows"
+		self._groupBox2.Text = "Metadata Rules"
 		# 
 		# button1
 		# 
@@ -1090,41 +704,22 @@ class ConfigForm(Form):
 		self._vsbBookSelector.TabIndex = 10
 		self._vsbBookSelector.ValueChanged += self.BookIndexChanged
 		# 
-		# txbStartYearPost
+		# Start Year
 		# 
-		self._txbStartYearPost.Location = System.Drawing.Point(155, 262)
-		self._txbStartYearPost.Name = "txbStartYearPost"
-		self._txbStartYearPost.Size = System.Drawing.Size(58, 20)
-		self._txbStartYearPost.TabIndex = 55
-		# 
-		# txbStartYearPre
-		# 
-		self._txbStartYearPre.Location = System.Drawing.Point(8, 262)
-		self._txbStartYearPre.Name = "txbStartYearPre"
-		self._txbStartYearPre.Size = System.Drawing.Size(58, 20)
-		self._txbStartYearPre.TabIndex = 56
-		# 
-		# btnStartYear
-		# 
-		self._btnStartYear.Location = System.Drawing.Point(73, 261)
-		self._btnStartYear.Name = "btnStartYear"
-		self._btnStartYear.Size = System.Drawing.Size(75, 23)
-		self._btnStartYear.TabIndex = 57
-		self._btnStartYear.Text = "Start Year*"
-		self._btnStartYear.UseVisualStyleBackColor = True
-		self._btnStartYear.Click += self.BtnStartYearClick
+		self.StartYear.Location = Point(6, 23)
+		self.StartYear.SetTemplate("startyear", "Start Year")
 		# 
 		# label15
 		# 
-		self._label15.Font = System.Drawing.Font("Microsoft Sans Serif", 7, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0)
-		self._label15.Location = System.Drawing.Point(8, 285)
+		self._label15.Location = System.Drawing.Point(6, 48)
 		self._label15.Name = "label15"
-		self._label15.Size = System.Drawing.Size(205, 17)
+		self._label15.Size = System.Drawing.Size(205, 30)
 		self._label15.TabIndex = 58
-		self._label15.Text = "* Calculated from available data in library"
+		self._label15.Text = "Start year is calculated from the earliest year for the series in your library"
 		# 
 		# tabPage1
 		# 
+		self._tabPage1.Controls.Add(self._gbMode)
 		self._tabPage1.Controls.Add(self._cmbImageFormat)
 		self._tabPage1.Controls.Add(self._label19)
 		self._tabPage1.Controls.Add(self._btnRemoveEmptyDir)
@@ -1151,7 +746,7 @@ class ConfigForm(Form):
 		# 
 		# txbEmptyData
 		# 
-		self._txbEmptyData.Location = System.Drawing.Point(275, 112)
+		self._txbEmptyData.Location = System.Drawing.Point(275, 149)
 		self._txbEmptyData.Name = "txbEmptyData"
 		self._txbEmptyData.Size = System.Drawing.Size(235, 20)
 		self._txbEmptyData.TabIndex = 22
@@ -1160,7 +755,7 @@ class ConfigForm(Form):
 		# label11
 		# 
 		self._label11.AutoSize = True
-		self._label11.Location = System.Drawing.Point(195, 115)
+		self._label11.Location = System.Drawing.Point(195, 152)
 		self._label11.Name = "label11"
 		self._label11.Size = System.Drawing.Size(74, 13)
 		self._label11.TabIndex = 21
@@ -1169,7 +764,7 @@ class ConfigForm(Form):
 		# label10
 		# 
 		self._label10.AutoSize = True
-		self._label10.Location = System.Drawing.Point(8, 115)
+		self._label10.Location = System.Drawing.Point(8, 152)
 		self._label10.Name = "label10"
 		self._label10.Size = System.Drawing.Size(55, 13)
 		self._label10.TabIndex = 20
@@ -1194,7 +789,7 @@ class ConfigForm(Form):
 			"Title",
 			"Volume",
 			"Year"]))
-		self._cmbEmptyData.Location = System.Drawing.Point(68, 112)
+		self._cmbEmptyData.Location = System.Drawing.Point(68, 149)
 		self._cmbEmptyData.Name = "cmbEmptyData"
 		self._cmbEmptyData.Size = System.Drawing.Size(121, 21)
 		self._cmbEmptyData.Sorted = True
@@ -1204,7 +799,7 @@ class ConfigForm(Form):
 		# label9
 		# 
 		self._label9.AutoSize = True
-		self._label9.Location = System.Drawing.Point(8, 88)
+		self._label9.Location = System.Drawing.Point(8, 124)
 		self._label9.Name = "label9"
 		self._label9.Size = System.Drawing.Size(441, 13)
 		self._label9.TabIndex = 15
@@ -1213,7 +808,7 @@ class ConfigForm(Form):
 		# label8
 		# 
 		self._label8.AutoSize = True
-		self._label8.Location = System.Drawing.Point(8, 30)
+		self._label8.Location = System.Drawing.Point(8, 94)
 		self._label8.Name = "label8"
 		self._label8.Size = System.Drawing.Size(204, 13)
 		self._label8.TabIndex = 18
@@ -1222,7 +817,7 @@ class ConfigForm(Form):
 		# label7
 		# 
 		self._label7.AutoSize = True
-		self._label7.Location = System.Drawing.Point(8, 10)
+		self._label7.Location = System.Drawing.Point(8, 74)
 		self._label7.Name = "label7"
 		self._label7.Size = System.Drawing.Size(181, 13)
 		self._label7.TabIndex = 17
@@ -1231,7 +826,7 @@ class ConfigForm(Form):
 		# 
 		# txbEmptyDir
 		# 
-		self._txbEmptyDir.Location = System.Drawing.Point(226, 15)
+		self._txbEmptyDir.Location = System.Drawing.Point(226, 79)
 		self._txbEmptyDir.Name = "txbEmptyDir"
 		self._txbEmptyDir.Size = System.Drawing.Size(284, 20)
 		self._txbEmptyDir.TabIndex = 16
@@ -1242,7 +837,7 @@ class ConfigForm(Form):
 		self._ckbRemoveEmptyDir.CheckState = System.Windows.Forms.CheckState.Checked
 		self._ckbRemoveEmptyDir.Location = System.Drawing.Point(8, 177)
 		self._ckbRemoveEmptyDir.Name = "ckbRemoveEmptyDir"
-		self._ckbRemoveEmptyDir.Size = System.Drawing.Size(154, 24)
+		self._ckbRemoveEmptyDir.Size = System.Drawing.Size(261, 24)
 		self._ckbRemoveEmptyDir.TabIndex = 23
 		self._ckbRemoveEmptyDir.Text = "Remove empty directories"
 		self._ckbRemoveEmptyDir.UseVisualStyleBackColor = True
@@ -1316,6 +911,201 @@ class ConfigForm(Form):
 		self._label19.TabIndex = 30
 		self._label19.Text = "Save image as:"
 		# 
+		# btnAddGroup
+		# 
+		self._btnAddGroup.Location = System.Drawing.Point(362, 17)
+		self._btnAddGroup.Name = "btnAddGroup"
+		self._btnAddGroup.Size = System.Drawing.Size(71, 23)
+		self._btnAddGroup.TabIndex = 5
+		self._btnAddGroup.Text = "Add Group"
+		self._btnAddGroup.UseVisualStyleBackColor = True
+		self._btnAddGroup.Click += self.CreateRuleGroup
+		# 
+		# label20
+		# 
+		self._label20.AutoSize = True
+		self._label20.Location = System.Drawing.Point(69, 22)
+		self._label20.Name = "label20"
+		self._label20.Size = System.Drawing.Size(129, 13)
+		self._label20.TabIndex = 6
+		self._label20.Text = "move eComics that match"
+		# 
+		# cmbExcludeMode
+		# 
+		self._cmbExcludeMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbExcludeMode.FormattingEnabled = True
+		self._cmbExcludeMode.Items.AddRange(System.Array[System.Object](
+			["Do not",
+			"Only"]))
+		self._cmbExcludeMode.Location = System.Drawing.Point(6, 19)
+		self._cmbExcludeMode.Name = "cmbExcludeMode"
+		self._cmbExcludeMode.Size = System.Drawing.Size(57, 21)
+		self._cmbExcludeMode.TabIndex = 7
+		self._cmbExcludeMode.SelectedIndexChanged += self.ExcludeModeChange
+		# 
+		# gbMode
+		# 
+		self._gbMode.Controls.Add(self._rdbModeTest)
+		self._gbMode.Controls.Add(self._rdbMoveCopy)
+		self._gbMode.Controls.Add(self._rdbModeMove)
+		self._gbMode.Location = System.Drawing.Point(8, 6)
+		self._gbMode.Name = "gbMode"
+		self._gbMode.Size = System.Drawing.Size(497, 49)
+		self._gbMode.TabIndex = 31
+		self._gbMode.TabStop = False
+		self._gbMode.Text = "Mode"
+		# 
+		# rdbModeMove
+		# 
+		self._rdbModeMove.AutoSize = True
+		self._rdbModeMove.Location = System.Drawing.Point(6, 19)
+		self._rdbModeMove.Name = "rdbModeMove"
+		self._rdbModeMove.Size = System.Drawing.Size(52, 17)
+		self._rdbModeMove.TabIndex = 0
+		self._rdbModeMove.TabStop = True
+		self._rdbModeMove.Tag = "Move"
+		self._rdbModeMove.Text = "Move"
+		self._rdbModeMove.UseVisualStyleBackColor = True
+		self._rdbModeMove.CheckedChanged += self.ModeChange
+		# 
+		# rdbMoveCopy
+		# 
+		self._rdbMoveCopy.AutoSize = True
+		self._rdbMoveCopy.Location = System.Drawing.Point(124, 19)
+		self._rdbMoveCopy.Name = "rdbMoveCopy"
+		self._rdbMoveCopy.Size = System.Drawing.Size(49, 17)
+		self._rdbMoveCopy.TabIndex = 1
+		self._rdbMoveCopy.TabStop = True
+		self._rdbMoveCopy.Tag = "Copy"
+		self._rdbMoveCopy.Text = "Copy"
+		self._rdbMoveCopy.UseVisualStyleBackColor = True
+		self._rdbMoveCopy.CheckedChanged += self.ModeChange
+		# 
+		# rdbModeTest
+		# 
+		self._rdbModeTest.AutoSize = True
+		self._rdbModeTest.Location = System.Drawing.Point(239, 19)
+		self._rdbModeTest.Name = "rdbModeTest"
+		self._rdbModeTest.Size = System.Drawing.Size(251, 17)
+		self._rdbModeTest.TabIndex = 2
+		self._rdbModeTest.TabStop = True
+		self._rdbModeTest.Tag = "Test"
+		self._rdbModeTest.Text = "Test (no files touched, complete log file created)"
+		self._rdbModeTest.UseVisualStyleBackColor = True
+		self._rdbModeTest.CheckedChanged += self.ModeChange
+		# 
+		# insertTabs
+		# 
+		self._insertTabs.Controls.Add(self._tabPage2)
+		self._insertTabs.Controls.Add(self._tpInsertAdvanced)
+		self._insertTabs.Location = System.Drawing.Point(3, 45)
+		self._insertTabs.Name = "insertTabs"
+		self._insertTabs.SelectedIndex = 0
+		self._insertTabs.Size = System.Drawing.Size(506, 254)
+		self._insertTabs.TabIndex = 59
+		# 
+		# tabPage2
+		# 
+		self._tabPage2.Controls.Add(self._label2)
+		self._tabPage2.Controls.Add(self.Publisher)
+		self._tabPage2.Controls.Add(self.Imprint)
+		self._tabPage2.Controls.Add(self.Volume)
+		self._tabPage2.Controls.Add(self.Title)
+		self._tabPage2.Controls.Add(self.Format)
+		self._tabPage2.Controls.Add(self.Series)
+		self._tabPage2.Controls.Add(self.Number)
+		self._tabPage2.Controls.Add(self.AlternateNumber)
+		self._tabPage2.Controls.Add(self.Year)
+		self._tabPage2.Controls.Add(self.MonthNumber)
+		self._tabPage2.Controls.Add(self.Count)
+		self._tabPage2.Controls.Add(self.AlternateSeries)
+		self._tabPage2.Controls.Add(self._label6)
+		self._tabPage2.Controls.Add(self.AlternateNumber)
+		self._tabPage2.Controls.Add(self._label5)
+		self._tabPage2.Controls.Add(self.AlternateCount)
+		self._tabPage2.Controls.Add(self._label3)
+		self._tabPage2.Controls.Add(self.Month)
+		self._tabPage2.Controls.Add(self._label4)
+		self._tabPage2.Controls.Add(self._label1)
+		self._tabPage2.Location = System.Drawing.Point(4, 22)
+		self._tabPage2.Name = "tabPage2"
+		self._tabPage2.Padding = System.Windows.Forms.Padding(3)
+		self._tabPage2.Size = System.Drawing.Size(500, 228)
+		self._tabPage2.TabIndex = 0
+		self._tabPage2.Text = "Basic"
+		self._tabPage2.UseVisualStyleBackColor = True
+		# 
+		# tpInsertAdvanced
+		# 
+		self._tpInsertAdvanced.Controls.Add(self.StartYear)
+		self._tpInsertAdvanced.Controls.Add(self._label22)
+		self._tpInsertAdvanced.Controls.Add(self.Manga)
+		self._tpInsertAdvanced.Controls.Add(self.Character)
+		self._tpInsertAdvanced.Controls.Add(self.Genre)
+		self._tpInsertAdvanced.Controls.Add(self.Tags)
+		self._tpInsertAdvanced.Controls.Add(self.Writer)
+		self._tpInsertAdvanced.Controls.Add(self._label21)
+		self._tpInsertAdvanced.Controls.Add(self._label16)
+		self._tpInsertAdvanced.Controls.Add(self._label15)
+
+		self._tpInsertAdvanced.Location = System.Drawing.Point(4, 22)
+		self._tpInsertAdvanced.Name = "tpInsertAdvanced"
+		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
+		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 228)
+		self._tpInsertAdvanced.TabIndex = 1
+		self._tpInsertAdvanced.Text = "Advanced"
+		self._tpInsertAdvanced.UseVisualStyleBackColor = True
+		# 
+		# Manga
+		# 
+		self.Manga.Location = Point(240, 23)
+		self.Manga.SetTemplate("manga", "Manga")
+		# 
+		# label16
+		# 
+		self._label16.AutoSize = True
+		self._label16.Location = System.Drawing.Point(453, 3)
+		self._label16.Name = "label16"
+		self._label16.Size = System.Drawing.Size(33, 13)
+		self._label16.TabIndex = 63
+		self._label16.Text = "Other"
+		# 
+		# label21
+		# 
+		self._label21.Location = System.Drawing.Point(240, 48)
+		self._label21.Name = "label21"
+		self._label21.Size = System.Drawing.Size(255, 44)
+		self._label21.TabIndex = 64
+		self._label21.Text = "Fill in the other box for the text to be inserted when the item is marked as manga. If the item is not manga, nothing will be inserted"
+		# 
+		# Character
+		# 
+		self.Character.Location = Point(6, 143)
+		self.Character.SetTemplate("character", "Character")
+		# 
+		# Writer
+		# 
+		self.Writer.Location = Point(241, 183)
+		self.Writer.SetTemplate("writer", "Writer")
+		# 
+		# Genre
+		# 
+		self.Genre.Location = Point(241, 144)
+		self.Genre.SetTemplate("genre", "Genre")
+		# 
+		# Tags
+		# 
+		self.Tags.Location = Point(6, 182)
+		self.Tags.SetTemplate("tags", "Tags")
+		# 
+		# label22
+		# 
+		self._label22.Location = System.Drawing.Point(6, 100)
+		self._label22.Name = "label22"
+		self._label22.Size = System.Drawing.Size(494, 40)
+		self._label22.TabIndex = 77
+		self._label22.Text = "For these fields that can have multiple entries the script will ask which ones you would like to use. If you want to select for all the issues in the series at once, check the checkbox beside the field before inserting. In the selction box is an option to have each entry as its own folder"
+		# 
 		# ConfigForm
 		# 
 		self.AcceptButton = self._ok
@@ -1340,18 +1130,20 @@ class ConfigForm(Form):
 		self._tpFileNames.PerformLayout()
 		self._groupBox1.ResumeLayout(False)
 		self._groupBox1.PerformLayout()
-		self._nudVolume.EndInit()
-		self._nudNumber.EndInit()
-		self._nudCount.EndInit()
-		self._nudMonth.EndInit()
-		self._nudAltCount.EndInit()
-		self._nudAltNumber.EndInit()
 		self._tpExcludes.ResumeLayout(False)
 		self._ExPanel.ResumeLayout(False)
 		self._ExPanel.PerformLayout()
 		self._groupBox2.ResumeLayout(False)
+		self._groupBox2.PerformLayout()
 		self._tabPage1.ResumeLayout(False)
 		self._tabPage1.PerformLayout()
+		self._gbMode.ResumeLayout(False)
+		self._gbMode.PerformLayout()
+		self._insertTabs.ResumeLayout(False)
+		self._tabPage2.ResumeLayout(False)
+		self._tabPage2.PerformLayout()
+		self._tpInsertAdvanced.ResumeLayout(False)
+		self._tpInsertAdvanced.PerformLayout()
 		self.ResumeLayout(False)
 
 
@@ -1361,8 +1153,6 @@ class ConfigForm(Form):
 	def ChkFileNamingCheckedChanged(self, sender, e):
 		self._txbFileStruct.Enabled = self._ckbFileNaming.Checked
 		self._lblFileStruct.Enabled = self._ckbFileNaming.Checked
-		#self._label14.Enabled = self._ckbFileNaming.Checked
-		#self._sampleTextFile.Enabled = self._ckbFileNaming.Checked
 		self.UpdateSampleText()
 
 	def TabsSelectedIndexChanged(self, sender, e):
@@ -1391,54 +1181,43 @@ class ConfigForm(Form):
 		self._lblBaseDir.Enabled = self._ckbDirectory.Checked
 		self._lblDirStruct.Enabled = self._ckbDirectory.Checked
 		self._btnBrowse.Enabled = self._ckbDirectory.Checked
-		#self._label12.Enabled = self._ckbDirectory.Checked
-		#self._sampleTextDir.Enabled = self._ckbDirectory.Checked
 		self.UpdateSampleText()
 
-	def InsertItem(self, pre, post, item):
-		#TODO: Replace with formatted string
-		if self._ckbSpace.Checked:
-			post += " "
-		string = "{" + pre + "<" + item + ">" + post + "}"
+	#The following three function insert text into the correct textboxes
+	def InsertItem(self, sender, e):
+		s = sender.GetTemplateText(self._ckbSpace.Checked)
 
 		if self._tabs.SelectedIndex == 0:
-			self.InsertText(string, self._txbDirStruct)
+			self.InsertText(s, self._txbDirStruct)
 
 		elif self._tabs.SelectedIndex == 1:
-			self.InsertText(string, self._txbFileStruct)
+			self.InsertText(s, self._txbFileStruct)
 
-	def InsertItemPad(self, pre, post, item, pad):
-		if self._ckbSpace.Checked:
-			post += " "
-		string = "{" + pre + "<" + item + pad + ">" + post + "}"
-
-		if self._tabs.SelectedIndex == 0:
-			self.InsertText(string, self._txbDirStruct)
-			
-		elif self._tabs.SelectedIndex == 1:
-			self.InsertText(string, self._txbFileStruct)
-	
 	def InsertText(self, string, textbox):
-		if textbox.Tag[1] > 0:
-			s = textbox.Text
-			s = s.Remove(textbox.Tag[0], textbox.Tag[1])
-			s = s.Insert(textbox.Tag[0], string)
-			textbox.Text = s
-			textbox.Tag[1] = len(string)
-			textbox.Focus()
+		start = textbox.SelectionStart
+		length = textbox.SelectionLength
+		s = textbox.Text
+		if length > 0:
+			s = s.Remove(start, length)
+			length = len(string)
+			textbox.Text = s.Insert(start, string)
+			textbox.SelectionStart = start
+			textbox.SelectionLength = length
 		else:
-			textbox.Text = textbox.Text.Insert(textbox.Tag[0], string)
-			textbox.Tag[0] += len(string)
-			textbox.Focus()
-			
+			textbox.Text = s.Insert(start, string)
+			textbox.SelectionStart = start + len(string)
+
 	def UpdateSampleText(self):
+		#Directory Preview
 		if self._tabs.SelectedIndex == 0:
-			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not self.ExcludeMeta(self.samplebook, self.Excludes, self._cmbExMatchType.SelectedItem) and self._ckbDirectory.Checked:
+			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbDirectory.Checked:
 				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseDir.Text, self._txbEmptyDir.Text, self.settings.EmptyData)
 			else:
 				self._sampleTextDir.Text = self.samplebook.FileDirectory
+				
+		#Filename preview
 		elif self._tabs.SelectedIndex == 1:
-			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not self.ExcludeMeta(self.samplebook, self.Excludes, self._cmbExMatchType.SelectedItem) and self._ckbFileNaming.Checked:
+			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFileNaming.Checked:
 				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem)
 			else:
 				self._sampleTextFile.Text = self.samplebook.FileNameWithExtension
@@ -1446,62 +1225,8 @@ class ConfigForm(Form):
 	def BtnBrowseClick(self, sender, e):
 		self._FolderBrowser.ShowDialog()
 		self._txbBaseDir.Text = self._FolderBrowser.SelectedPath
-		self.UpdateSampleText()
+		self.UpdateSampleText()		
 		
-	def BtnInsertPubClick(self, sender, e):
-		self.InsertItem(self._txbPubPre.Text, self._txbPubPost.Text, "publisher")
-
-	def BtnImprintClick(self, sender, e):
-		self.InsertItem(self._txbImprintPre.Text, self._txbImprintPost.Text, "imprint")
-
-	def BtnSeriesClick(self, sender, e):
-		self.InsertItem(self._txbSeriesPre.Text, self._txbSeriesPost.Text, "series")
-	
-	def BtnTitleClick(self, sender, e):
-		self.InsertItem(self._txbTitlePre.Text, self._txbTitlePost.Text, "title")
-
-	def BtnFormatClick(self, sender, e):
-		self.InsertItem(self._txbFormatPre.Text, self._txbFormatPost.Text, "format")
-
-	def BtnVolumeClick(self, sender, e):
-		self.InsertItemPad(self._txbVolumePre.Text, self._txbVolumePost.Text, "volume", str(self._nudVolume.Value))
-
-	def BtnAltSeriesClick(self, sender, e):
-		self.InsertItem(self._txbAltSeriesPre.Text, self._txbAltSeriesPost.Text, "altseries")
-
-	def BtnNumberClick(self, sender, e):
-		self.InsertItemPad(self._txbNumberPre.Text, self._txbNumberPost.Text, "number", str(self._nudNumber.Value))
-
-	def BtnCountClick(self, sender, e):
-		self.InsertItemPad(self._txbCountPre.Text, self._txbCountPost.Text, "count", str(self._nudCount.Value))
-	
-	def BtnMonthNumberClick(self, sender, e):
-		self.InsertItemPad(self._txbMonthNumberPre.Text, self._txbMonthNumberPost.Text, "month#", str(self._nudMonth.Value))
-
-	def BtnMonthTextClick(self, sender, e):
-		self.InsertItem(self._txbMonthPre.Text, self._txbMonthPost.Text, "month")
-
-	def BtnYearClick(self, sender, e):
-		self.InsertItem(self._txbYearPre.Text, self._txbYearPost.Text, "year")
-
-	def BtnAltCountClick(self, sender, e):
-		self.InsertItemPad(self._txbAltCountPre.Text, self._txbAltCountPost.Text, "altcount", str(self._nudAltCount.Value))
-
-	def BtnAltNumberClick(self, sender, e):
-		self.InsertItemPad(self._txbAltNumberPre.Text, self._txbAltNumberPost.Text, "altnumber", str(self._nudAltNumber.Value))
-		
-	def BtnStartYearClick(self, sender, e):
-		self.InsertItem(self._txbStartYearPre.Text, self._txbStartYearPost.Text, "startyear")
-
-	def TxbFocusLeave(self, sender, e):
-		sender.Tag[0] = sender.SelectionStart
-		sender.Tag[1] = sender.SelectionLength
-
-	def TxbFocusEnter(self, sender, e):
-		if sender.Tag:
-			sender.SelectionStart = sender.Tag[0]
-			sender.SelectionLength = sender.Tag[1]
-			
 	def TxbStructTextChanged(self, sender, e):
 		self.UpdateSampleText()
 
@@ -1526,32 +1251,37 @@ class ConfigForm(Form):
 		self._ckbDirectory.Checked = self.settings.UseDirectory
 		self._ckbFileNaming.Checked = self.settings.UseFileName
 		
+		if self.settings.Mode == Mode.Move:
+			self._rdbModeMove.Checked = True
+		elif self.settings.Mode == Mode.Copy:
+			self._rdbModeCopy.Checked = True
+		elif self.settings.Mode == Mode.Test:
+			self._rdbModeTest.Checked = True
+		
 		#Reload the selected index of the emptydata cmb
 		self.CmbEmptyDataSelectedIndexChanged(self._cmbEmptyData, None)
 		
 		#Excludes
 		
-		#TODO: Temporaraly disbabled
-		"""
+
 		self._lbExFolder.Items.Clear()
 		for i in self.settings.ExcludeFolders:
 			self._lbExFolder.Items.Add(i)
 		
-		#If changing settings to a different one. Delete the existing rule sets.
-
+		#If changing settings to a different one. Clear the exlcude rule  container
+		
 		self._flpExcludes.Controls.Clear()
-		self.Excludes = []
 
-		count = 0
-		for i in self.settings.ExcludeMetaData:
-			self.CreateRuleSet(None, None)
-			self.Excludes[count][1].SelectedItem = i[0]
-			self.Excludes[count][2].SelectedItem = i[1]
-			self.Excludes[count][3].Text = i[2]
-			count += 1
-			
-		self._cmbExMatchType.SelectedItem = self.settings.ExcludeOperator
-		"""
+		for i in self.settings.ExcludeRules:
+			#Check for none in the case of switching profiles with deleted rules
+			if not i == None:
+				i.Remove.Click += self.RemoveRuleSet
+				self._flpExcludes.Controls.Add(i.Panel)
+
+		
+		self._cmbExcludeOperator.SelectedItem = self.settings.ExcludeOperator
+		self._cmbExcludeMode.SelectedItem = self.settings.ExcludeMode
+		
 		self._ckbFileless.Checked = self.settings.MoveFileless
 		self._cmbImageFormat.SelectedItem = self.settings.FilelessFormat
 
@@ -1560,37 +1290,40 @@ class ConfigForm(Form):
 		self._lbRemoveEmptyDir.Items.AddRange(System.Array[System.String](self.settings.ExcludedEmptyDir))
 
 		#post &  pre
-		self._txbPubPre.Text = self.settings.Pre["Publisher"]
-		self._txbPubPost.Text = self.settings.Post["Publisher"]
-		self._txbImprintPre.Text = self.settings.Pre["Imprint"]
-		self._txbImprintPost.Text = self.settings.Post["Imprint"]
-		self._txbSeriesPost.Text = self.settings.Post["Series"]
-		self._txbSeriesPre.Text = self.settings.Pre["Series"]
-		self._txbTitlePost.Text = self.settings.Post["Title"]
-		self._txbTitlePre.Text = self.settings.Pre["Title"]
-		self._txbFormatPost.Text = self.settings.Post["Format"]
-		self._txbFormatPre.Text = self.settings.Pre["Format"]
-		self._txbVolumePost.Text = self.settings.Post["Volume"]
-		self._txbVolumePre.Text = self.settings.Pre["Volume"]
-		self._txbAltSeriesPost.Text = self.settings.Post["AltSeries"]
-		self._txbAltSeriesPre.Text = self.settings.Pre["AltSeries"]
-		self._txbAltNumberPost.Text = self.settings.Post["AltNumber"]
-		self._txbAltNumberPre.Text = self.settings.Pre["AltNumber"]
-		self._txbAltCountPost.Text = self.settings.Post["AltCount"]
-		self._txbAltCountPre.Text = self.settings.Pre["AltCount"]
-		self._txbYearPost.Text = self.settings.Post["Year"]
-		self._txbYearPre.Text = self.settings.Pre["Year"]
-		self._txbMonthPost.Text = self.settings.Post["Month"]
-		self._txbMonthPre.Text = self.settings.Pre["Month"]
-		self._txbMonthNumberPost.Text = self.settings.Post["Month#"]
-		self._txbMonthNumberPre.Text = self.settings.Pre["Month#"]
-		self._txbCountPost.Text = self.settings.Post["Count"]
-		self._txbCountPre.Text = self.settings.Pre["Count"]
-		self._txbNumberPost.Text = self.settings.Post["Number"]
-		self._txbNumberPre.Text = self.settings.Pre["Number"]
+		self.Publisher.SetPrefixText(self.settings.Pre["Publisher"])
+		self.Publisher.SetPostfixText(self.settings.Post["Publisher"])
+		self.Imprint.SetPrefixText(self.settings.Pre["Imprint"])
+		self.Imprint.SetPostfixText(self.settings.Post["Imprint"])
+		self.Series.SetPostfixText(self.settings.Post["Series"])
+		self.Series.SetPrefixText(self.settings.Pre["Series"])
+		self.Title.SetPostfixText(self.settings.Post["Title"])
+		self.Title.SetPrefixText(self.settings.Pre["Title"])
+		self.Format.SetPostfixText(self.settings.Post["Format"])
+		self.Format.SetPrefixText(self.settings.Pre["Format"])
+		self.Volume.SetPostfixText(self.settings.Post["Volume"])
+		self.Volume.SetPrefixText(self.settings.Pre["Volume"])
+		self.AlternateSeries.SetPostfixText(self.settings.Post["AltSeries"])
+		self.AlternateSeries.SetPrefixText(self.settings.Pre["AltSeries"])
+		self.AlternateNumber.SetPostfixText(self.settings.Post["AltNumber"])
+		self.AlternateNumber.SetPrefixText(self.settings.Pre["AltNumber"])
+		self.AlternateCount.SetPostfixText(self.settings.Post["AltCount"])
+		self.AlternateCount.SetPrefixText(self.settings.Pre["AltCount"])
+		self.Year.SetPostfixText(self.settings.Post["Year"])
+		self.Year.SetPrefixText(self.settings.Pre["Year"])
+		self.Month.SetPostfixText(self.settings.Post["Month"])
+		self.Month.SetPrefixText(self.settings.Pre["Month"])
+		self.MonthNumber.SetPostfixText(self.settings.Post["Month#"])
+		self.MonthNumber.SetPrefixText(self.settings.Pre["Month#"])
+		self.Count.SetPostfixText(self.settings.Post["Count"])
+		self.Count.SetPrefixText(self.settings.Pre["Count"])
+		self.Number.SetPostfixText(self.settings.Post["Number"])
+		self.Number.SetPrefixText(self.settings.Pre["Number"])
+		""" Temportaly disabled while switching to new insert controls
+
 		self._txbStartYearPost.Text = self.settings.Post["StartYear"]
 		self._txbStartYearPre.Text = self.settings.Pre["StartYear"]
-		
+		"""
+
 		#Other stuff has to be loaded before text boxes, otherwise they may have the wrong calculated value.
 		#Base Textboxes
 		self._txbBaseDir.Text = self.settings.BaseDir
@@ -1598,10 +1331,9 @@ class ConfigForm(Form):
 		self._txbFileStruct.Text = self.settings.FileTemplate
 		self._txbEmptyDir.Text = self.settings.EmptyDir
 		
-		#Set up textbox tags, this is to keep the selected position when clicking the add buttons
-		self._txbDirStruct.Tag = [len(self._txbDirStruct.Text),0]
-		self._txbFileStruct.Tag = [len(self._txbFileStruct.Text),0]
-		
+		self._txbDirStruct.SelectionStart = len(self._txbDirStruct.Text)
+		self._txbFileStruct.SelectionStart = len(self._txbFileStruct.Text)
+
 	def SaveSettings(self):
 		#Base Textboxes
 		self.settings.BaseDir = self._txbBaseDir.Text
@@ -1610,69 +1342,62 @@ class ConfigForm(Form):
 		self.settings.EmptyDir = self._txbEmptyDir.Text
 		
 		#post &  pre
-		self.settings.Pre["Publisher"] = self._txbPubPre.Text
-		self.settings.Post["Publisher"] = self._txbPubPost.Text
-		self.settings.Pre["Imprint"] = self._txbImprintPre.Text
-		self.settings.Post["Imprint"] = self._txbImprintPost.Text
-		self.settings.Post["Series"] = self._txbSeriesPost.Text
-		self.settings.Pre["Series"] = self._txbSeriesPre.Text
-		self.settings.Post["Title"] = self._txbTitlePost.Text
-		self.settings.Pre["Title"] = self._txbTitlePre.Text
-		self.settings.Post["Format"] = self._txbFormatPost.Text
-		self.settings.Pre["Format"] = self._txbFormatPre.Text
-		self.settings.Post["Volume"] = self._txbVolumePost.Text
-		self.settings.Pre["Volume"] = self._txbVolumePre.Text
-		self.settings.Post["AltSeries"] = self._txbAltSeriesPost.Text
-		self.settings.Pre["AltSeries"] = self._txbAltSeriesPre.Text
-		self.settings.Post["AltNumber"] = self._txbAltNumberPost.Text
-		self.settings.Pre["AltNumber"] = self._txbAltNumberPre.Text
-		self.settings.Post["AltCount"] = self._txbAltCountPost.Text
-		self.settings.Pre["AltCount"] = self._txbAltCountPre.Text
-		self.settings.Post["Year"] = self._txbYearPost.Text
-		self.settings.Pre["Year"] = self._txbYearPre.Text
-		self.settings.Post["Month"] = self._txbMonthPost.Text
-		self.settings.Pre["Month"] = self._txbMonthPre.Text
-		self.settings.Post["Month#"] = self._txbMonthNumberPost.Text
-		self.settings.Pre["Month#"] = self._txbMonthNumberPre.Text
-		self.settings.Post["Count"] = self._txbCountPost.Text
-		self.settings.Pre["Count"] = self._txbCountPre.Text
-		self.settings.Post["Number"] = self._txbNumberPost.Text
-		self.settings.Pre["Number"] = self._txbNumberPre.Text
-		self.settings.Post["StartYear"] = self._txbStartYearPost.Text
-		self.settings.Pre["StartYear"] = self._txbStartYearPre.Text
-		
+		self.settings.Pre["Publisher"] = self.Publisher.GetPrefixText()
+		self.settings.Post["Publisher"] = self.Publisher.GetPostfixText()
+		self.settings.Pre["Imprint"] = self.Imprint.GetPrefixText()
+		self.settings.Post["Imprint"] = self.Imprint.GetPostfixText()
+		self.settings.Post["Series"] = self.Series.GetPostfixText()
+		self.settings.Pre["Series"] = self.Series.GetPrefixText()
+		self.settings.Post["Title"] = self.Title.GetPostfixText()
+		self.settings.Pre["Title"] = self.Title.GetPrefixText()
+		self.settings.Post["Format"] = self.Format.GetPostfixText()
+		self.settings.Pre["Format"] = self.Format.GetPrefixText()
+		self.settings.Post["Volume"] = self.Volume.GetPostfixText()
+		self.settings.Pre["Volume"] = self.Volume.GetPrefixText()
+		self.settings.Post["AltSeries"] = self.AlternateSeries.GetPostfixText()
+		self.settings.Pre["AltSeries"] = self.AlternateSeries.GetPrefixText()
+		self.settings.Post["AltNumber"] = self.AlternateNumber.GetPostfixText()
+		self.settings.Pre["AltNumber"] = self.AlternateNumber.GetPrefixText()
+		self.settings.Post["AltCount"] = self.AlternateCount.GetPostfixText()
+		self.settings.Pre["AltCount"] = self.AlternateCount.GetPrefixText()
+		self.settings.Post["Year"] = self.Year.GetPostfixText()
+		self.settings.Pre["Year"] = self.Year.GetPrefixText()
+		self.settings.Post["Month"] = self.Month.GetPostfixText()
+		self.settings.Pre["Month"] = self.Month.GetPrefixText()
+		self.settings.Post["Month#"] = self.MonthNumber.GetPostfixText()
+		self.settings.Pre["Month#"] = self.MonthNumber.GetPrefixText()
+		self.settings.Post["Count"] = self.Count.GetPostfixText()
+		self.settings.Pre["Count"] = self.Count.GetPrefixText()
+		self.settings.Post["Number"] = self.Number.GetPostfixText()
+		self.settings.Pre["Number"] = self.Number.GetPrefixText()
+		#self.settings.Post["StartYear"] = self._txbStartYearPost.Text
+		#self.settings.Pre["StartYear"] = self._txbStartYearPre.Text
 		#Checkboxes
 		
 		self.settings.UseDirectory = self._ckbDirectory.Checked
 		self.settings.UseFileName = self._ckbFileNaming.Checked
 		
-		#Excludes
-		#TODO: Temporaraly disabled
-		"""
-		self.settings.ExcludeFolders = list(self._lbExFolder.Items)
-		
-		self.settings.ExcludeMetaData = []
-		for i in self.Excludes:
-			if i:
-				a = []
-				a.append(i[1].SelectedItem)
-				a.append(i[2].SelectedItem)
-				a.append(i[3].Text)
-				self.settings.ExcludeMetaData.append(a)
-		
-		self.settings.ExcludeOperator = self._cmbExMatchType.SelectedItem
-		"""
 		self.settings.MoveFileless = self._ckbFileless.Checked
 		self.settings.FilelessFormat = self._cmbImageFormat.SelectedItem
 
 		self.settings.RemoveEmptyDir = self._ckbRemoveEmptyDir.Checked
 		self.settings.ExcludedEmptyDir = list(self._lbRemoveEmptyDir.Items)
 
+		#Note for excludes. Have to remove the event handlers for the excluderules since they have to get added in the 
+		#LoadSettings method.
+		for i in self.settings.ExcludeRules:
+			if not i == None:
+				i.Remove.Click -= self.RemoveRuleSet
+		
+
 	def OkClick(self, sender, e):
 		if not self.CheckFields():
 			self.DialogResult = DialogResult.None
 	
 	def CheckFields(self):
+		"""
+		Make sure all the needed fields are filled in
+		"""
 		errors = ""
 		if self._txbBaseDir.Text == "" and self._ckbDirectory.Checked:
 			errors += "The base directory cannot be empty\n"
@@ -1689,76 +1414,38 @@ class ConfigForm(Form):
 			return False
 		else:
 			return True
+		
+
+#The following 3 functions are for managing exclude rules
 	
 	def CreateRuleSet(self, sender, e):
-		#This will be the index of the new set of controls.
-		#Don't have to add to the number because len() returns the number of items and a list is a zero based index
-		#so the number returned will be the index of the newly created item.
-		index = len(self.Excludes)
-		
-		r = ExcludeRule(self, index)
-		
-		"""		
-		controls = []
-		controls.append(System.Windows.Forms.FlowLayoutPanel())
-		controls[0].Size = System.Drawing.Size(451, 30)
-		controls.append(System.Windows.Forms.ComboBox())
-		controls[1].Items.AddRange(System.Array[System.String](
-			["Alternate Count",
-			"Alternate Number",
-			"Alternate Series",
-			"Count",			
-			"Format",
-			"Imprint",
-			"Month",
-			"Number",
-			"Publisher",
-			"Rating",
-			"Tag",
-			"Title",
-			"Series",			
-			"Year"]))
-		controls[1].DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		controls[1].SelectedIndex = 0
-		controls[1].Size = System.Drawing.Size(121, 21)
-		controls.append(System.Windows.Forms.ComboBox())
-		controls[2].Items.AddRange(System.Array[System.String](
-			["contains",
-			"does not contain",
-			"is",
-			"is not"]))
-		controls[2].DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		controls[2].Size = System.Drawing.Size(110, 21)
-		controls[2].SelectedIndex = 0
-		controls.append(System.Windows.Forms.TextBox())
-		controls[3].Size = System.Drawing.Size(175, 20)
-		controls.append(System.Windows.Forms.Button())
-		controls[4].Size = System.Drawing.Size(18, 23)
-		controls[4].Click += self.RemoveRuleSet
-		controls[4].Text = "-"
-		controls[4].Tag = index
-		controls[0].Controls.Add(controls[1])
-		controls[0].Controls.Add(controls[2])
-		controls[0].Controls.Add(controls[3])
-		controls[0].Controls.Add(controls[4])"""
-		self.Excludes.append(r)
-		self._flpExcludes.Controls.Add(self.Excludes[-1].Panel)
+		r = ExcludeRule()
+		r.Remove.Click += self.RemoveRuleSet
+		self.settings.ExcludeRules.append(r)
+		self._flpExcludes.Controls.Add(self.settings.ExcludeRules[-1].Panel)
 		self._ExPanel.ScrollControlIntoView(r.Panel)
+	
+	def CreateRuleGroup(self, sender, e):
+		g = ExcludeGroup()
+		g.Remove.Click += self.RemoveRuleSet
+		g.CreateRule(None, None)
+		self.settings.ExcludeRules.append(g)
+		self._flpExcludes.Controls.Add(self.settings.ExcludeRules[-1].Panel)
 
 	def RemoveRuleSet(self, sender, e):
 		index = sender.Tag
-		
-		self._flpExcludes.Controls.Remove(self.Excludes[index].Panel)
+		i = self.settings.ExcludeRules.index(index)
+		self._flpExcludes.Controls.Remove(self.settings.ExcludeRules[i].Panel)
 		#Don't delete the index of the list as that will screw up other deletion methods
-		#Instead make it a null index so that it is skipped when putting it into settings
-		self.Excludes[index] = None
+		#Instead make it a null index so that it is skipped when calculated
+		del(self.settings.ExcludeRules[i])
 		
-		
+
+
 	def CkbRemoveEmptyDirCheckedChanged(self, sender, e):
 		self._lbRemoveEmptyDir.Enabled = sender.Checked
 		self._btnAddEmptyDir.Enabled = sender.Checked
 		self._btnRemoveEmptyDir.Enabled = sender.Checked
-		
 		
 	def CkbFilelessCheckedChanged(self, sender, e):
 		self._cmbImageFormat.Enabled = sender.Checked
@@ -1776,7 +1463,10 @@ class ConfigForm(Form):
 
 	def BtnRemoveExFolderClick(self, sender, e):
 		self._lbExFolder.Items.Remove(self._lbExFolder.SelectedItem)
-		
+
+
+
+	#Profiles features
 	def BtnProSaveAsClick(self, sender, e):
 		if self.CheckFields():	
 			self.CreateNewSetting()
@@ -1800,7 +1490,6 @@ class ConfigForm(Form):
 			self._cmbProfiles.Tag = self._cmbProfiles.Items.IndexOf(i)
 			self.settings = self.allsettings[i]
 
-			
 	def BtnProDeleteClick(self, sender, e):
 		if self._cmbProfiles.Items.Count > 1:
 			i = self._cmbProfiles.SelectedItem
@@ -1836,44 +1525,21 @@ class ConfigForm(Form):
 		else:
 			sender.SelectedIndex = sender.Tag
 			return
+
+
+
+	def ModeChange(self, sender, e):
+		self.settings.Mode = sender.Tag
+	
+
+	#For exclude rules combo boxes
+	def ExcludeOperatorChange(self, sender, e):
+		self.settings.ExcludeOperator = sender.SelectedItem
 		
+	def ExcludeModeChange(self, sender, e):
+		self.settings.ExcludeMode =  sender.SelectedItem
 		
-	def ExcludeMeta(self, book, MetaSets, opperator):
-		"""The reason the configform has it's own version of this fuction as opposed to using the one in libraryorganizer.py
-		is because the pass MetaSets is a list of controls, not a list of strings.
-		"""
-		count = 0
-		for set in MetaSets:
-			if set == None:
-				continue
-			#0 is the field, 1 is the opeartor, 2 is the text to match
-			if set[2].SelectedItem == "is":
-				#Convert to string just in case
-				#Replace the space in the altnerate fields so the it can get the attribute without erroring.
-				if str(getattr(book, set[1].SelectedItem.replace(" ", ""))) == set[3].Text:
-					count += 1
-			elif set[2].SelectedItem == "does not contain":
-				if set[3].Text not in str(getattr(book, set[1].SelectedItem.replace(" ", ""))):
-					count += 1
-			elif set[2].SelectedItem == "contains":
-				if set[3].Text in str(getattr(book, set[1].SelectedItem.replace(" ", ""))):
-					count += 1
-			elif set[2].SelectedItem == "is not":
-				if set[3].Text != str(getattr(book, set[1].SelectedItem.replace(" ", ""))):
-					count += 1
-		
-		if opperator == "Any":
-			if count > 0:
-				return True
-			else:
-				return False
-		
-		elif opperator == "All":
-			if count == len(MetaSets):
-				return True
-			else:
-				return False
-		
+
 		
 class InputBox(Form):
 	def __init__(self):
@@ -1921,6 +1587,130 @@ class InputBox(Form):
 		if self.TextBox.Text.strip() in self.Owner.allsettings:
 			MessageBox.Show("The entered name is already in use. Please enter another")
 			self.DialogResult = DialogResult.None
+
+class InsertControl(Panel):
+	"""
+	Custom class to simplfy inserting template items
+	"""	
+	Insert, _insert = pyevent.make_event()
+
+	def __init__(self):
+
+		self.Template = ""
+
+		self.Prefix = TextBox()
+		self.InsertButton = Button()
+		self.Postfix = TextBox()
+		
+
+		self.Prefix.Size = Size(58, 22)
+		self.Prefix.Location = Point(0, 2)
+		self.Prefix.TabIndex = 0
+
+		self.InsertButton.Size = Size(66, 23)
+		self.InsertButton.Location = Point(64, 0)
+		self.InsertButton.Click += self.ButtonClick
+		self.InsertButton.TabIndex = 1
+
+		self.Postfix.Size = Size(58, 22)
+		self.Postfix.Location = Point(136, 2)
+		self.Postfix.TabIndex = 2
+
+		self.Size = Size(194, 23)
+
+		self.Controls.Add(self.Prefix)
+		self.Controls.Add(self.Postfix)
+		self.Controls.Add(self.InsertButton)
+
+	def SetPrefixText(self, text):
+		self.Prefix.Text = text
+
+	def SetPostfixText(self, text):
+		self.Postfix.Text = text
+
+	def SetTemplate(self, template, text):
+		"""
+		sets the template field of the control. template is a string. Text sets the text of the button.
+		"""
+		self.Template = template
+		self.InsertButton.Text = text
+
+	def GetPrefixText(self):
+		return self.Prefix.Text
+
+	def GetPostfixText(self):
+		return self.Postfix.Text
+
+	def ButtonClick(self, sender, e):
+		self._insert(self, None)
+
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+		return "{" + self.Prefix.Text + "<" + self.Template + ">" + self.Postfix.Text + s + "}"
+
+class InsertControlPadding(InsertControl):
+	
+	def __init__(self):
+		super(InsertControlPadding,self).__init__()
+		self.Pad = NumericUpDown()
+		self.Pad.Size = Size(34, 22)
+		self.Pad.Location = Point(200, 2)
+		self.Pad.TabIndex = 3
+
+		self.Width = 234
+		self.Controls.Add(self.Pad)
+		
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+		return "{" + self.Prefix.Text + "<" + self.Template + str(self.Pad.Value) + ">" + self.Postfix.Text + s + "}"
+
+class InsertControlCheckBox(InsertControl):
+	
+	def __init__(self):
+		super(InsertControlCheckBox,self).__init__()
+		self.Check = CheckBox()
+		self.Check.Size = Size(15, 14)
+		self.Check.Location = Point(200, 4)
+		self.Check.TabIndex = 3
+
+		self.Width = 220
+		self.Controls.Add(self.Check)
+		
+
+	def GetTemplateText(self, space):
+		if self.Check.Checked:
+			checktext = "(series)"
+		else:
+			checktext = "(issue)"
+		s = ""
+		if space:
+			s = " "
+		return "{" + self.Prefix.Text + "<" + self.Template + checktext + ">" + self.Postfix.Text + s + "}"
+
+class InsertControlTextBox(InsertControl):
+	
+	def __init__(self):
+		super(InsertControlTextBox,self).__init__()
+		self.TextBox = TextBox()
+		self.TextBox.Size = Size(58, 22)
+		self.TextBox.Location = Point(200, 2)
+		self.TextBox.TabIndex = 3
+
+		self.Width = 258
+		self.Controls.Add(self.TextBox)
+		
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+		return "{" + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")>" + self.Postfix.Text + s + "}"
 
 
 
