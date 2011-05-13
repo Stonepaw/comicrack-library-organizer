@@ -25,14 +25,13 @@ from System.Xml import XmlWriter, Formatting, XmlTextWriter, XmlWriterSettings, 
 clr.AddReference("System.Core")
 from System import Func
 import loconfigForm
-
+import loforms
 try:
 	#sfrom libraryorganizer import OverwriteAction
 #	i.ShowDialog()
 #	"""	print __file__[0:-len("Program.py")]
-	
-	s = libraryorganizer.LoadSettings()
-	
+	Application.EnableVisualStyles()
+	#s = libraryorganizer.LoadSettings()
 	f = FileStream("Sample.dat", FileMode.Open)
 	s = BinaryFormatter()
 	books = s.Deserialize(f)
@@ -41,7 +40,12 @@ try:
 	    #print book.Series
 	    #print book.Number
 	f.Close()
-	
+
+	#a = loforms.SelectionFormArgs(["test", "test", "testt"], "Writer", "Green Lantern Vol. 2009 #12", False)
+	#fff = loforms.SelectionForm(a)
+	#fff.ShowDialog()
+
+
 	settings, lastused = libraryorganizer.LoadSettings()
 	#Get a random book to use as an example
 	config = loconfigForm.ConfigForm(books, settings, lastused)
