@@ -5,11 +5,11 @@ Contains the worker form. All the copying is done in the background worker of th
 
 Author: Stonepaw
 
-Version 1.1
+Version 1.4
 
-Changes: 	Actual moving code moved to locommon.py
-			Added profile chooser
-			Moved report form here from lomessagebox.py
+			
+
+Changes: 	Added undo worker form.
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
@@ -20,6 +20,9 @@ import System
 import System.Drawing
 clr.AddReference("System.Windows.Forms")
 
+import System.IO
+from System.IO import StreamWriter, TextWriter
+
 import System.Windows.Forms
 
 from System.Drawing import *
@@ -27,7 +30,9 @@ from System.Windows.Forms import *
 
 from loduplicate import DuplicateForm
 
-from locommon import OverwriteAction, BookMover, ICON
+from locommon import ICON, Mode
+
+from lobookmover import BookMover, OverwriteAction, UndoMover
 
 class WorkerForm(Form):
 	def __init__(self, b, s):
@@ -89,14 +94,29 @@ class WorkerForm(Form):
 	def WorkerRunWorkerCompleted(self, sender, e):
 		#print "Thread completed"
 		if not e.Error:
-			if e.Result[0] > 0:
-				result = MessageBox.Show(e.Result[1] + "\n\nYou you like to see a detailed report of the failed or skipped files?", "View full report?", MessageBoxButtons.YesNo)
-				if result == DialogResult.Yes:
-					report = ReportForm(e.Result[2])
-					report.ShowDialog()
-					report.Dispose()
+			if self.settings.Mode == Mode.Test:
+				save = SaveFileDialog()
+				save.AddExtension = True
+				save.Filter = "Text files (*.txt)|*.txt"
+				if save.ShowDialog() == DialogResult.OK:
+					try:
+						sw = open(save.FileName, "w")
+						sw.write("Library Organizer Report:\n\n" + e.Result[1] + "\n\n")
+						sw.write(e.Result[2])
+						sw.close()
+					except:
+						MessageBox.Show("something went wrong saving the file")
 			else:
-				MessageBox.Show(e.Result[1])
+				if e.Result[0] > 0:
+					result = MessageBox.Show(e.Result[1] + "\n\nYou you like to see a detailed report of the failed or skipped files?", "View full report?", MessageBoxButtons.YesNo)
+					if result == DialogResult.Yes:
+						report = ReportForm(e.Result[2])
+						report.ShowDialog()
+						report.Dispose()
+
+				else:
+					MessageBox.Show(e.Result[1])
+
 		else:
 			MessageBox.Show(str(e.Error))
 		self.Close()
@@ -110,6 +130,7 @@ class WorkerForm(Form):
 				self._Worker.CancelAsync()
 			self.DialogResult = DialogResult.None
 
+	#TODO move to lobookmover.py. Change Duplicate form to use class for args and returns. Much easier
 	def AskOverwrite(self, oldfilepath, movingbook, existingbook):
 
 		dup = DuplicateForm(existingbook, movingbook, ComicRack, oldfilepath)
@@ -218,3 +239,33 @@ class ReportForm(Form):
 		self.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
 		self.Text = "Report"
 		self.ResumeLayout(False)
+
+class WorkerFormUndo(WorkerForm):
+	"""
+	Can use pretty much all the code from the WorkerForm. Just have to override a couple of things
+	"""
+	
+	def WorkerRunWorkerCompleted(self, sender, e):
+		#print "Thread completed"
+		if not e.Error:
+			if e.Result[0] > 0:
+				result = MessageBox.Show(e.Result[1] + "\n\nYou you like to see a detailed report of the failed or skipped files?", "View full report?", MessageBoxButtons.YesNo)
+				if result == DialogResult.Yes:
+					report = ReportForm(e.Result[2])
+					report.ShowDialog()
+					report.Dispose()
+
+			else:
+				MessageBox.Show(e.Result[1])
+
+		else:
+			MessageBox.Show(str(e.Error))
+		self.Close()
+
+	def WorkerDoWork(self, sender, e):
+		dict = e.Argument[0]
+		settings = e.Argument[1]
+		
+		mover = UndoMover(sender, self, dict, settings)
+		result = mover.MoveBooks()
+		e.Result = result

@@ -3,8 +3,9 @@ libraryorganizer.py
 
 The main script file. Some code is this file is based off of wadegiles's Guided eComic file renaming script. Credit is very much due to him
 
-Version 1.1:
-				Settings load/save changed and cleaned up imports
+Version 1.4:
+				
+				Added Undo script
 
 Author: Stonepaw
 
@@ -32,10 +33,12 @@ import losettings
 from losettings import settings
 
 import loworkerform
-from loworkerform import ProfileSelector, WorkerForm
+from loworkerform import ProfileSelector, WorkerForm, WorkerFormUndo
 
 import locommon
 from locommon import SETTINGSFILE, OLDSETTINGSFILE
+
+import lobookmover
 
 #@Name Library Organizer
 #@Hook Books
@@ -47,6 +50,7 @@ def LibraryOrganizer(books):
 			settings, lastused = LoadSettings()
 			loworkerform.ComicRack = ComicRack
 			locommon.ComicRack = ComicRack
+			lobookmover.ComicRack = ComicRack
 			#Create the config form
 			print "Creating config form"
 			config = ConfigForm(books, settings, lastused)
@@ -81,6 +85,7 @@ def LibraryOrganizerQuick(books):
 		try:
 			loworkerform.ComicRack = ComicRack
 			locommon.ComicRack = ComicRack
+			lobookmover.ComicRack = ComicRack
 			settings, lastused = LoadSettings()
 			selected = lastused
 			if len(settings) > 1:
@@ -109,6 +114,7 @@ def ConfigureLibraryOrganizer(books):
 		try:
 			loworkerform.ComicRack = ComicRack
 			locommon.ComicRack = ComicRack
+			lobookmover.ComicRack = ComicRack
 			settings, lastused = LoadSettings()
 			#Get a random book to use as an example
 			config = ConfigForm(books, settings, lastused)
@@ -123,6 +129,32 @@ def ConfigureLibraryOrganizer(books):
 				SaveSettings(settings, lastused)
 		except Exception, ex:
 			print "The Following error occured"
+			print Exception
+			print str(ex)
+
+#@Name Library Organizer - Undo last move
+#@Hook Library
+#@Image libraryorganizer.png
+def LibraryOrganizerUndo(books):
+	if books:
+		try:
+			loworkerform.ComicRack = ComicRack
+			locommon.ComicRack = ComicRack
+			lobookmover.ComicRack = ComicRack
+			settings, lastused = LoadSettings()
+			if File.Exists(locommon.UNDOFILE):
+				dict = locommon.LoadDict(locommon.UNDOFILE)
+				if dict:
+					workerForm = WorkerFormUndo(dict, settings[lastused])
+					workerForm.ShowDialog()
+					workerForm.Dispose()
+					File.Delete(locommon.UNDOFILE)
+				else:
+					MessageBox.Show("Error loading Undo file")
+			else:
+				MessageBox.Show("Nothing to Undo")
+		except Exception, ex:
+			print "The following error occured"
 			print Exception
 			print str(ex)
 
