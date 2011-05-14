@@ -29,6 +29,9 @@ import locommon
 
 from locommon import Mode
 
+clr.AddReference("System.Drawing")
+from System.Drawing.Imaging import ImageFormat
+
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
