@@ -24,7 +24,6 @@ import System
 
 
 clr.AddReference("System.Drawing")
-from System.Drawing.Imaging import ImageFormat
 from System.Drawing import Size, Point
 
 clr.AddReference("System.Windows.Forms")
