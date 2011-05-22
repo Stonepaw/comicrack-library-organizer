@@ -3,9 +3,9 @@ libraryorganizer.py
 
 The main script file. Some code is this file is based off of wadegiles's Guided eComic file renaming script. Credit is very much due to him
 
-Version 1.4:
+Version 1.6:
 				
-				Added Undo script
+			Added configscript hook script
 
 Author: Stonepaw
 
@@ -20,7 +20,7 @@ import System.IO
 from System.IO import File, StreamReader, StreamWriter
 
 clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import DialogResult
+from System.Windows.Forms import DialogResult, MessageBox
 
 clr.AddReference("System.Xml")
 import System.Xml
@@ -40,8 +40,10 @@ from locommon import SETTINGSFILE, OLDSETTINGSFILE
 
 import lobookmover
 
+
 #@Name Library Organizer
 #@Hook Books
+#@Key library-organizer-main
 #@Image libraryorganizer.png
 
 def LibraryOrganizer(books):
@@ -77,8 +79,14 @@ def LibraryOrganizer(books):
 			print Exception
 			print str(ex)
 
+#@Key library-organizer-main
+#@Hook ConfigScript
+def ConfigLibraryOrganizer():
+	ConfigureLibraryOrganizer(None)
+
 #@Name Library Organizer (Quick)
 #@Hook Books
+#@Key library-organizer-quick
 #@Image libraryorganizerquick.png
 def LibraryOrganizerQuick(books):
 	if books:
@@ -110,27 +118,27 @@ def LibraryOrganizerQuick(books):
 #@Hook Library
 #@Image libraryorganizer.png
 def ConfigureLibraryOrganizer(books):
-	if books:
-		try:
-			loworkerform.ComicRack = ComicRack
-			locommon.ComicRack = ComicRack
-			lobookmover.ComicRack = ComicRack
-			settings, lastused = LoadSettings()
-			#Get a random book to use as an example
-			config = ConfigForm(books, settings, lastused)
-			result = config.ShowDialog()
-			if result == DialogResult.Cancel:
-				#Dont save settings and quit the script
-				return
-			else:
-				config.SaveSettings()
-				lastused = config._cmbProfiles.SelectedItem
-				#Now save the settings
-				SaveSettings(settings, lastused)
-		except Exception, ex:
-			print "The Following error occured"
-			print Exception
-			print str(ex)
+	if books == None:
+		books = ComicRack.App.GetLibraryBooks()
+	try:
+		loworkerform.ComicRack = ComicRack
+		locommon.ComicRack = ComicRack
+		lobookmover.ComicRack = ComicRack
+		settings, lastused = LoadSettings()
+		config = ConfigForm(books, settings, lastused)
+		result = config.ShowDialog()
+		if result == DialogResult.Cancel:
+			#Dont save settings and quit the script
+			return
+		else:
+			config.SaveSettings()
+			lastused = config._cmbProfiles.SelectedItem
+			#Now save the settings
+			SaveSettings(settings, lastused)
+	except Exception, ex:
+		print "The Following error occured"
+		print Exception
+		print str(ex)
 
 #@Name Library Organizer - Undo last move
 #@Hook Library
@@ -138,11 +146,11 @@ def ConfigureLibraryOrganizer(books):
 def LibraryOrganizerUndo(books):
 	if books:
 		try:
-			loworkerform.ComicRack = ComicRack
-			locommon.ComicRack = ComicRack
-			lobookmover.ComicRack = ComicRack
-			settings, lastused = LoadSettings()
 			if File.Exists(locommon.UNDOFILE):
+				loworkerform.ComicRack = ComicRack
+				locommon.ComicRack = ComicRack
+				lobookmover.ComicRack = ComicRack
+				settings, lastused = LoadSettings()
 				dict = locommon.LoadDict(locommon.UNDOFILE)
 				if dict:
 					workerForm = WorkerFormUndo(dict, settings[lastused])
@@ -150,9 +158,9 @@ def LibraryOrganizerUndo(books):
 					workerForm.Dispose()
 					File.Delete(locommon.UNDOFILE)
 				else:
-					MessageBox.Show("Error loading Undo file")
+					MessageBox.Show("Error loading Undo file", "Library Organizer - Undo")
 			else:
-				MessageBox.Show("Nothing to Undo")
+				MessageBox.Show("Nothing to Undo", "Library Organizer - Undo")
 		except Exception, ex:
 			print "The following error occured"
 			print Exception

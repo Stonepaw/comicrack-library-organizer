@@ -1,0 +1,257 @@
+﻿<Window 
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+       Title="Duplicate found" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Height="593" Width="450" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <!-- Hover Brushes -->
+        <!-- This stuff to make the buttons look right was borrowed from http://blog.codenaked.com/post/2011/03/31/WPF-and-Windows-7-Theme.aspx -->
+        <LinearGradientBrush x:Key="HoverBackgroundBrushKey"
+						 StartPoint="0,0"
+						 EndPoint="0,1">
+            <GradientStop Color="#FCFCFC"
+					  Offset="0" />
+            <GradientStop Color="#EBF3FD"
+					  Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="HoverOuterBorderBrushKey"
+					 Color="#B8D6FB" />
+        <SolidColorBrush x:Key="HoverInnerBorderBrushKey"
+					 Color="#F2F7FE" />
+
+        <!-- Selected (Active) Brushes -->
+        <LinearGradientBrush x:Key="SelectedActiveBackgroundBrushKey"
+						 StartPoint="0,0"
+						 EndPoint="0,1">
+            <GradientStop Color="#DCEBFC"
+					  Offset="0" />
+            <GradientStop Color="#C1DBFC"
+					  Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="SelectedActiveOuterBorderBrushKey"
+					 Color="#7DA2CE" />
+        <SolidColorBrush x:Key="SelectedActiveInnerBorderBrushKey"
+					 Color="#EBF4FD" />
+
+        <!-- Selected (Inactive) Brushes -->
+        <LinearGradientBrush x:Key="SelectedInactiveBackgroundBrushKey"
+						 StartPoint="0,0"
+						 EndPoint="0,1">
+            <GradientStop Color="#F8F8F8"
+					  Offset="0" />
+            <GradientStop Color="#E5E5E5"
+					  Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="SelectedInactiveOuterBorderBrushKey"
+					 Color="#D9D9D9" />
+        <SolidColorBrush x:Key="SelectedInactiveInnerBorderBrushKey"
+					 Color="#F0F0F0" />
+        <Style x:Key="BigButton" TargetType="{x:Type Button}">
+            <Setter Property="BorderThickness"
+				Value="1" />
+            <Setter Property="Padding"
+				Value="2,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Border x:Name="outerBorder"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="2"
+								SnapsToDevicePixels="true">
+                                <Border x:Name="innerBorder"
+									Background="{TemplateBinding Background}"
+									BorderThickness="1"
+									CornerRadius="1"
+									Padding="{TemplateBinding Padding}"
+									SnapsToDevicePixels="true">
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+												  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+												  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                </Border>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+								 Value="true">
+                                <Setter TargetName="outerBorder"
+									Property="BorderBrush"
+									Value="{StaticResource HoverOuterBorderBrushKey}" />
+                                <Setter TargetName="innerBorder"
+									Property="Background"
+									Value="{StaticResource HoverBackgroundBrushKey}" />
+                                <Setter TargetName="innerBorder"
+									Property="BorderBrush"
+									Value="{StaticResource HoverInnerBorderBrushKey}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed"
+								 Value="true">
+                                <Setter TargetName="outerBorder"
+									Property="BorderBrush"
+									Value="{StaticResource SelectedActiveOuterBorderBrushKey}" />
+                                <Setter TargetName="innerBorder"
+									Property="Background"
+									Value="{StaticResource SelectedActiveBackgroundBrushKey}" />
+                                <Setter TargetName="innerBorder"
+									Property="BorderBrush"
+									Value="{StaticResource SelectedActiveInnerBorderBrushKey}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled"
+								 Value="false">
+                                <Setter Property="Foreground"
+									Value="Transparent" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Height="558">
+        <Label Content="There is already a file with the same name in this location" Height="31" HorizontalAlignment="Left" Margin="12,0,0,0" VerticalAlignment="Top" FontSize="16" Foreground="Navy" />
+        <Button x:Name="ReplaceButton" Margin="12,60,12,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="183" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ResourceKey=BigButton}">
+            <Grid Height="Auto" Width="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="15*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="112" />
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5">
+                    <Image Name="Arrow1"  Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="21" Source="C:\Users\Andrew\Documents\ComicRack Scripts stuff\Test WPF\WpfApplication1\arrow.png" />
+                    <Label Name="MoveHeader" Content="Move and Replace" HorizontalAlignment="Left" FontSize="18" Foreground="Navy" Padding="0" />
+                </StackPanel>
+                <Label Name="MoveText" Content="Replace the file in the destination folder with the file you are moving:" Padding="0" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" Foreground="Navy" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="1" />
+                
+                <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="3" >
+                    <Label Content="Series:" HorizontalAlignment="Left" Foreground="Navy" Grid.Row="1" Padding="2"/>
+                    <Label Name="NewSeries" Content="Series name is long" HorizontalAlignment="Stretch" Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" >
+                    <Label Content="Number:" Foreground="Navy" Padding="2" />
+                    <Label Name="NewNumber" Content="Series" Padding="2" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal" >
+                    <Label Content="Volume:" Foreground="Navy" Padding="2"/>
+                    <Label Name="NewVolume" Content="Volume" Padding="2" VerticalAlignment="Stretch"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4" Grid.Row="3" Orientation="Horizontal" >
+                    <Label Content="Pages:" Foreground="Navy" Padding="2" />
+                    <Label Name="NewPages" Content="Series" Height="20" HorizontalAlignment="Stretch" Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" >
+                    <Label Content="Published Date:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" VerticalAlignment="Top" />
+                    <Label Name="NewPublishedDate" Content="Series" HorizontalAlignment="Stretch" Padding="2" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="4">
+                    <Label Content="File size:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" />
+                    <Label Name="NewFileSize" Content="Series" HorizontalAlignment="Stretch" Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" >
+                    <Label Content="Added to Library:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" />
+                    <Label Name="NewAddedDate"  Content="Added to library" Height="20" HorizontalAlignment="Left" Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="3" Grid.RowSpan="3" Orientation="Horizontal" >
+                    <Label Content="Path:" Foreground="Navy" Height="Auto" HorizontalAlignment="Left" Padding="2" VerticalAlignment="Top" />
+                    <TextBlock Name="NewPath" FontSize="10" TextWrapping="Wrap" Padding="2" Width="248">File Path</TextBlock>
+                </StackPanel>
+                <Image Name="NewCover"  Grid.Row="2" Grid.RowSpan="6" Height="113" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Width="97" Margin="15,7,0,0" Grid.Column="1" />
+            </Grid>
+        </Button>
+        <Button x:Name="CancelButton" Margin="12,250,12,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="183" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ResourceKey=BigButton}">
+            <Grid Height="Auto" Width="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="15*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="112" />
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="85" />
+                    <ColumnDefinition Width="110" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.ColumnSpan="5" Grid.Row="0">
+                    <Image Name="Arrow2" Height="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="21" Source="C:\Users\Andrew\Documents\ComicRack Scripts stuff\Test WPF\WpfApplication1\arrow.png" />
+                    <Label Name="DontMoveHeader" Content="Don't Move" HorizontalAlignment="Left" FontSize="18" Foreground="Navy" Padding="0" />
+                </StackPanel>
+                <Label Name="DontMoveText" Content="No files will be changed. Leave this file in the destination folder:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Navy" Grid.ColumnSpan="4" Grid.Column="1" Grid.Row="1" Padding="0" Margin="15, 0, 0, 0" />
+
+                <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Grid.ColumnSpan="3">
+                        <Label Content="Series:" HorizontalAlignment="Left" Foreground="Navy" Grid.Row="1" Padding="2"/>
+                        <Label Name="OldSeries" HorizontalAlignment="Stretch" Padding="2" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal">
+                        <Label Content="Number:" Foreground="Navy" Padding="2" />
+                        <Label Name="OldNumber" Padding="2" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal">
+                        <Label Content="Volume:" Foreground="Navy" Padding="2"/>
+                        <Label Name="OldVolume" Padding="2" VerticalAlignment="Stretch"/>
+                    </StackPanel>
+                <StackPanel Grid.Column="4" Grid.Row="3" Orientation="Horizontal">
+                        <Label Content="Pages:" Foreground="Navy" Padding="2" />
+                        <Label Name="OldPages" Height="20" HorizontalAlignment="Stretch" Padding="2" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="4" Grid.Row="4" Orientation="Horizontal">
+                        <Label Content="File size:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" />
+                        <Label Name="OldFileSize" HorizontalAlignment="Stretch" Padding="2" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
+                        <Label Content="Published Date:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" VerticalAlignment="Top" />
+                        <Label Name="OldPublishedDate" HorizontalAlignment="Stretch" Padding="2" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal">
+                        <Label Content="Added to Library:" Foreground="Navy" HorizontalAlignment="Left" Padding="2" />
+                        <Label Name="OldAddedDate"  Height="20" HorizontalAlignment="Left" Padding="2" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="3" Grid.RowSpan="3" Orientation="Horizontal">
+                        <Label Content="Path:" Foreground="Navy" Height="Auto" HorizontalAlignment="Left" Padding="2" VerticalAlignment="Top" />
+                        <TextBlock Name="OldPath" TextWrapping="Wrap" FontSize="10" HorizontalAlignment="Left" Padding="2" VerticalAlignment="Top" Height="59" Width="247" />
+                    </StackPanel>
+                <Image Name="OldCover"  Grid.Row="2" Grid.RowSpan="6" Height="113" HorizontalAlignment="Center" Stretch="Uniform" VerticalAlignment="Center" Width="97" Margin="15,7,0,0" Grid.Column="1" />
+                </Grid>
+        </Button>
+        <Button x:Name="RenameButton" Margin="12,440,12,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="70" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Style="{StaticResource ResourceKey=BigButton}">
+            <Grid Height="69" Width="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="39*" />
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <Image Name="Arrow3" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="21" Source="C:\Users\Andrew\Documents\ComicRack Scripts stuff\Test WPF\WpfApplication1\arrow.png" />
+                    <Label Name="RenameHeader" Content="Move, but keep both files" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0" FontSize="18" Foreground="Navy" />
+                </StackPanel>
+                <TextBlock Name="RenameText" Padding="0" TextWrapping="Wrap" Text='The file you are moving will be renamed: ' HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="376" Foreground="Navy" Grid.Row="1" Height="43" />
+            </Grid>
+        </Button>
+        <Button Name="Cancel" Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="338,528,0,0" VerticalAlignment="Top" Width="75" />
+        <Label Name="Subtitle" Content="Click the file you want to keep" Height="28" HorizontalAlignment="Left" Margin="12,29,0,0" VerticalAlignment="Top" />
+        <CheckBox Name="DoAll" Content="Do this for all conficts" Height="16" HorizontalAlignment="Left" Margin="18,532,0,0" VerticalAlignment="Top" />
+    </Grid>
+</Window>

@@ -5,7 +5,10 @@ Contains the worker form. All the copying is done in the background worker of th
 
 Author: Stonepaw
 
-Version 1.4
+Version 1.6
+			added cancel button
+		
+			Fixed progress bar percenage calculation for when proccessing file in amounts greated than 100
 
 			
 
@@ -20,6 +23,10 @@ import System
 import System.Drawing
 clr.AddReference("System.Windows.Forms")
 
+clr.AddReference("PresentationFramework")
+clr.AddReference("PresentationCore")
+from System.Windows.Interop import WindowInteropHelper
+
 import System.IO
 from System.IO import StreamWriter, TextWriter
 
@@ -28,6 +35,7 @@ import System.Windows.Forms
 from System.Drawing import *
 from System.Windows.Forms import *
 
+import loduplicate
 from loduplicate import DuplicateForm
 
 from locommon import ICON, Mode
@@ -41,19 +49,42 @@ class WorkerForm(Form):
 		self.books = b
 		self.settings = s
 		#The percentage to raise to progress bar of one book.
-		self.percentage = int(round(1.0/len(b)*100))
+		self.percentage = 1.0/len(b)*100
+		self.progress = 0.0
+		self.DuplicateForm = DuplicateForm(self.settings.Mode)
+		helper = WindowInteropHelper(self.DuplicateForm.win)
+		helper.Owner = self.Handle
+		#pass the ComicRack object
+		loduplicate.ComicRack = ComicRack
+		
+		if self.settings.Mode == Mode.Copy:
+			self.Text = "Copying Files..."
+
+		elif self.settings.Mode == Mode.Test:
+			self.Text = "Simulating Moving Files..."
+
 
 	def InitializeComponent(self):
 		self._progress = System.Windows.Forms.ProgressBar()
 		self._Worker = System.ComponentModel.BackgroundWorker()
+		self._Cancel = System.Windows.Forms.Button()
 		self.SuspendLayout()
 		# 
 		# progress
 		# 
-		self._progress.Location = System.Drawing.Point(0, 1)
+		self._progress.Dock = System.Windows.Forms.DockStyle.Top
+		self._progress.Location = System.Drawing.Point(0, 0)
 		self._progress.Name = "progress"
-		self._progress.Size = System.Drawing.Size(348, 23)
+		self._progress.Size = System.Drawing.Size(350, 23)
 		self._progress.TabIndex = 0
+		#
+		# Cancel
+		#
+		self._Cancel.Location = System.Drawing.Point(141, 29)
+		self._Cancel.Size = System.Drawing.Size(75, 23)
+		self._Cancel.TabIndex = 1
+		self._Cancel.Text = "Cancel"
+		self._Cancel.Click += self.WorkerFormFormClosing
 		# 
 		# Worker
 		# 
@@ -65,8 +96,10 @@ class WorkerForm(Form):
 		# 
 		# WorkerForm
 		# 
-		self.ClientSize = System.Drawing.Size(350, 27)
+		self.ClientSize = System.Drawing.Size(350, 55)
 		self.Controls.Add(self._progress)
+		self.Controls.Add(self._Cancel)
+		self.CancelButton = self._Cancel
 		self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
 		self.MaximizeBox = False
 		self.MinimizeBox = False
@@ -89,7 +122,8 @@ class WorkerForm(Form):
 
 	def WorkerProgressChanged(self, sender, e):
 		#self.Text = "Moving book " + str(e.ProgressPercentage) + " of " + self.total
-		self._progress.Increment(self.percentage)
+		self.progress += self.percentage
+		self._progress.Value = int(round(self.progress))
 
 	def WorkerRunWorkerCompleted(self, sender, e):
 		#print "Thread completed"
@@ -130,19 +164,6 @@ class WorkerForm(Form):
 				self._Worker.CancelAsync()
 			self.DialogResult = DialogResult.None
 
-	#TODO move to lobookmover.py. Change Duplicate form to use class for args and returns. Much easier
-	def AskOverwrite(self, oldfilepath, movingbook, existingbook):
-
-		dup = DuplicateForm(existingbook, movingbook, ComicRack, oldfilepath)
-		dup.ShowDialog()
-		if dup.DialogResult == DialogResult.Yes:
-			r = OverwriteAction.Overwrite
-		elif dup.DialogResult == DialogResult.Cancel:
-			r = OverwriteAction.Cancel
-		elif dup.DialogResult == DialogResult.Retry:
-			r = OverwriteAction.Rename
-		return [r, dup._always.Checked]
-	
 
 class ProfileSelector(Form):
 	
@@ -245,6 +266,10 @@ class WorkerFormUndo(WorkerForm):
 	Can use pretty much all the code from the WorkerForm. Just have to override a couple of things
 	"""
 	
+	def __init__(self, b, s):
+		super(WorkerFormUndo,self).__init__(b, s)
+		self.Text = "Undoing last move..."
+
 	def WorkerRunWorkerCompleted(self, sender, e):
 		#print "Thread completed"
 		if not e.Error:

@@ -3,10 +3,8 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.4
-				Move all book calculating to lobookmover.py. Added ExcludeRule and ExlcudeGroup
-				Change on how duplicate paths are calculated: Thanks pescuma
-                Changes from 1.1: Added catch for empty filename.
+Version: 1.6
+			
 
 Contains several classes and functions. All are used in several files
 
@@ -30,9 +28,9 @@ clr.AddReference("System.Windows.Forms")
 from System.Windows.Forms import TextBox, Button, ComboBox, FlowLayoutPanel, Panel, Label, ComboBoxStyle
 
 
-from System.IO import Path
+from System.IO import Path, FileInfo
 
-SCRIPTDIRECTORY = __file__[0:-len("locommon.py")]
+SCRIPTDIRECTORY = FileInfo(__file__).DirectoryName
 
 SETTINGSFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
 
@@ -214,18 +212,24 @@ class ExcludeRule(object):
 		#Field selector
 		self.Field = ComboBox()
 		self.Field.Items.AddRange(System.Array[System.String](
-			["Alternate Count",
+			["Age Rating",
+			"Alternate Count",
 			"Alternate Number",
 			"Alternate Series",
-			"Count",			
+			"Count",
+			"File Name",
+			"File Path",
+			"File Format",
 			"Format",
 			"Imprint",
 			"Month",
 			"Number",
+			"Notes",
 			"Publisher",
 			"Rating",
 			"Tags",
 			"Title",
+			"Scan Information",
 			"Series",
 			"Volume",			
 			"Year"]))
@@ -294,22 +298,22 @@ class ExcludeRule(object):
 		if operator == "is":
 			#Convert to string just in case
 			#Replace a space with nothing in the case of Alternate fields
-			if str(getattr(book, field.replace(" ", ""))) == text:
+			if unicode(getattr(book, field.replace(" ", ""))) == text:
 				return 1
 			else:
 				return 0
 		elif operator == "does not contain":
-			if text not in str(getattr(book, field.replace(" ", ""))):
+			if text not in unicode(getattr(book, field.replace(" ", ""))):
 				return 1
 			else:
 				return 0
 		elif operator == "contains":
-			if text in str(getattr(book, field.replace(" ", ""))):
+			if text in unicode(getattr(book, field.replace(" ", ""))):
 				return 1
 			else:
 				return 0
 		elif operator == "is not":
-			if text != str(getattr(book, field.replace(" ", ""))):
+			if text != unicode(getattr(book, field.replace(" ", ""))):
 				return 1
 			else:
 				return 0
@@ -322,7 +326,7 @@ class ExcludeRule(object):
 				else:
 					return 0
 			except ValueError:
-				if text < str(getattr(book, field.replace(" ", ""))):
+				if text < unicode(getattr(book, field.replace(" ", ""))):
 					return 1
 				else:
 					return 0
@@ -334,7 +338,7 @@ class ExcludeRule(object):
 				else:
 					return 0
 			except ValueError:
-				if text > str(getattr(book, field.replace(" ", ""))):
+				if text > unicode(getattr(book, field.replace(" ", ""))):
 					return 1
 				else:
 					return 0

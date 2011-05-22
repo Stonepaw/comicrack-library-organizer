@@ -1,10 +1,9 @@
 """
 loconfigform.py
 
-Version: 1.4
+Version: 1.6
 
-			Added the insertcontrol classes.
-			Added more fields and insert groups
+			Misc. GUI tweaks
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -89,27 +88,6 @@ class ConfigForm(Form):
 		self._ckbFileNaming = System.Windows.Forms.CheckBox()
 		self._txbFileStruct = System.Windows.Forms.TextBox()
 		self._lblFileStruct = System.Windows.Forms.Label()
-		self._btnMonthText = System.Windows.Forms.Button()
-		self.Publisher = InsertControl()
-		self.Imprint = InsertControl()
-		self.Series = InsertControl()
-		self.Title = InsertControl()
-		self.Format = InsertControl()
-		self.Volume = InsertControlPadding()
-		self.Count = InsertControl()
-		self.Number = InsertControlPadding()
-		self.Month = InsertControl()
-		self.MonthNumber = InsertControlPadding()
-		self.AlternateSeries = InsertControl()
-		self.AlternateNumber = InsertControlPadding()
-		self.AlternateCount = InsertControlPadding()
-		self.Year = InsertControl()
-		self._label1 = System.Windows.Forms.Label()
-		self._label2 = System.Windows.Forms.Label()
-		self._label3 = System.Windows.Forms.Label()
-		self._label4 = System.Windows.Forms.Label()
-		self._label5 = System.Windows.Forms.Label()
-		self._label6 = System.Windows.Forms.Label()
 		self._FolderBrowser = System.Windows.Forms.FolderBrowserDialog()
 		self._ckbSpace = System.Windows.Forms.CheckBox()
 		self._label12 = System.Windows.Forms.Label()
@@ -119,80 +97,23 @@ class ConfigForm(Form):
 		self._ok = System.Windows.Forms.Button()
 		self._cancel = System.Windows.Forms.Button()
 		self._tpExcludes = System.Windows.Forms.TabPage()
-		self._label13 = System.Windows.Forms.Label()
-		self._lbExFolder = System.Windows.Forms.ListBox()
-		self._btnAddExFolder = System.Windows.Forms.Button()
-		self._btnRemoveExFolder = System.Windows.Forms.Button()
-		self._ExPanel = System.Windows.Forms.Panel()
-		self._cmbExcludeOperator = System.Windows.Forms.ComboBox()
-		self._label17 = System.Windows.Forms.Label()
-		self._btnExMetaAdd = System.Windows.Forms.Button()
-		self._flpExcludes = System.Windows.Forms.FlowLayoutPanel()
-		self._groupBox2 = System.Windows.Forms.GroupBox()
 		self._button1 = System.Windows.Forms.Button()
 		self._btnProNew = System.Windows.Forms.Button()
 		self._btnProSaveAs = System.Windows.Forms.Button()
 		self._btnProDelete = System.Windows.Forms.Button()
 		self._cmbProfiles = System.Windows.Forms.ComboBox()
 		self._vsbBookSelector = System.Windows.Forms.VScrollBar()
-		self._label15 = System.Windows.Forms.Label()
 		self._tpOptions = System.Windows.Forms.TabPage()
-		self._txbEmptyData = System.Windows.Forms.TextBox()
-		self._label11 = System.Windows.Forms.Label()
-		self._label10 = System.Windows.Forms.Label()
-		self._cmbEmptyData = System.Windows.Forms.ComboBox()
-		self._label9 = System.Windows.Forms.Label()
-		self._label8 = System.Windows.Forms.Label()
-		self._label7 = System.Windows.Forms.Label()
-		self._txbEmptyDir = System.Windows.Forms.TextBox()
-		self._ckbRemoveEmptyDir = System.Windows.Forms.CheckBox()
-		self._lbRemoveEmptyDir = System.Windows.Forms.ListBox()
-		self._label18 = System.Windows.Forms.Label()
-		self._ckbFileless = System.Windows.Forms.CheckBox()
-		self._btnAddEmptyDir = System.Windows.Forms.Button()
-		self._btnRemoveEmptyDir = System.Windows.Forms.Button()
-		self._cmbImageFormat = System.Windows.Forms.ComboBox()
-		self._label19 = System.Windows.Forms.Label()
-		self._btnAddGroup = System.Windows.Forms.Button()
-		self._label20 = System.Windows.Forms.Label()
-		self._cmbExcludeMode = System.Windows.Forms.ComboBox()
-		self._gbMode = System.Windows.Forms.GroupBox()
-		self._rdbModeMove = System.Windows.Forms.RadioButton()
-		self._rdbModeCopy = System.Windows.Forms.RadioButton()
-		self._rdbModeTest = System.Windows.Forms.RadioButton()
-		self._ckbCopyMode = System.Windows.Forms.CheckBox()
 		self._insertTabs = System.Windows.Forms.TabControl()
 		self._tpInsertBasic = System.Windows.Forms.TabPage()
 		self._tpInsertAdvanced = System.Windows.Forms.TabPage()
 		self._tpInsertAdvanced2 = System.Windows.Forms.TabPage()
-		self._label16 = System.Windows.Forms.Label()
-		self._label21 = System.Windows.Forms.Label()
-		self.StartYear = InsertControl()
-		self.Manga = InsertControlTextBox()
-		self.SeriesComplete = InsertControlTextBox()
-		self.Characters = InsertControlCheckBox()
-		self.Writer = InsertControlCheckBox()
-		self.Genre = InsertControlCheckBox()
-		self.Tags = InsertControlCheckBox()
-		self.Teams = InsertControlCheckBox()
-		self._label22 = System.Windows.Forms.Label()
-		self._lblPre = System.Windows.Forms.Label()
-		self._lblPre2 = System.Windows.Forms.Label()
-		self._lblPre3 = System.Windows.Forms.Label()
-		self._lblPost = System.Windows.Forms.Label()
-		self._lblPost2 = System.Windows.Forms.Label()
-		self._lblPost3 = System.Windows.Forms.Label()
-		self._lblSep = System.Windows.Forms.Label()
-		self._lblSep2 = System.Windows.Forms.Label()
 		self._tabs.SuspendLayout()
 		self._tpDirectory.SuspendLayout()
 		self._tpFilename.SuspendLayout()
 		self._gbInsertButtons.SuspendLayout()
 		self._tpExcludes.SuspendLayout()
-		self._ExPanel.SuspendLayout()
-		self._groupBox2.SuspendLayout()
 		self._tpOptions.SuspendLayout()
-		self._gbMode.SuspendLayout()
 		self._insertTabs.SuspendLayout()
 		self._tpInsertBasic.SuspendLayout()
 		self._tpInsertAdvanced.SuspendLayout()
@@ -210,6 +131,12 @@ class ConfigForm(Form):
 		self._tabs.Size = System.Drawing.Size(526, 452)
 		self._tabs.TabIndex = 0
 		self._tabs.SelectedIndexChanged += self.TabsSelectedIndexChanged
+
+		self.CreateOptionsPage()
+		self.CreateBasicInsertControls()
+		self.CreateAdvancedInsertControls()
+		self.CreateAdvanced2InsertControls()
+		self.CreateRulesPage()
 		# 
 		# tpDirectory
 		# 
@@ -275,7 +202,7 @@ class ConfigForm(Form):
 		# 
 		# FolderBrowser
 		# 
-		self._FolderBrowser.Description = "Select the base folder for your comic library"
+		self._FolderBrowser.Description = "Select a folder"
 		# 
 		# ckbDirectory
 		# 
@@ -306,9 +233,9 @@ class ConfigForm(Form):
 		# 
 		# groupbox insert buttons
 		# 
-		self._gbInsertButtons.Controls.Add(self._insertTabs)
 		self._gbInsertButtons.Controls.Add(self._ckbSpace)
 		self._gbInsertButtons.Controls.Add(self._btnSep)
+		self._gbInsertButtons.Controls.Add(self._insertTabs)
 		self._gbInsertButtons.Dock = System.Windows.Forms.DockStyle.Bottom
 		self._gbInsertButtons.Location = System.Drawing.Point(3, 121)
 		self._gbInsertButtons.Name = "groupBox1"
@@ -319,7 +246,7 @@ class ConfigForm(Form):
 		# 
 		# btnSep
 		# 
-		self._btnSep.Location = System.Drawing.Point(53, 19)
+		self._btnSep.Location = System.Drawing.Point(185, 12)
 		self._btnSep.Name = "btnSep"
 		self._btnSep.Size = System.Drawing.Size(115, 23)
 		self._btnSep.TabIndex = 0
@@ -330,7 +257,7 @@ class ConfigForm(Form):
 		# ckbSpace
 		# 
 		self._ckbSpace.AutoSize = True
-		self._ckbSpace.Location = System.Drawing.Point(264, 22)
+		self._ckbSpace.Location = System.Drawing.Point(311, 16)
 		self._ckbSpace.Name = "ckbSpace"
 		self._ckbSpace.Size = System.Drawing.Size(188, 17)
 		self._ckbSpace.TabIndex = 1
@@ -406,725 +333,17 @@ class ConfigForm(Form):
 		self._vsbBookSelector.TabIndex = 10
 		self._vsbBookSelector.ValueChanged += self.BookIndexChanged
 		# 
-		# tpExcludes
-		# 
-		self._tpExcludes.Controls.Add(self._groupBox2)
-		self._tpExcludes.Controls.Add(self._btnRemoveExFolder)
-		self._tpExcludes.Controls.Add(self._btnAddExFolder)
-		self._tpExcludes.Controls.Add(self._lbExFolder)
-		self._tpExcludes.Controls.Add(self._label13)
-		self._tpExcludes.Location = System.Drawing.Point(4, 22)
-		self._tpExcludes.Name = "tpExcludes"
-		self._tpExcludes.Padding = System.Windows.Forms.Padding(3)
-		self._tpExcludes.Size = System.Drawing.Size(518, 426)
-		self._tpExcludes.TabIndex = 3
-		self._tpExcludes.Text = "Rules"
-		self._tpExcludes.UseVisualStyleBackColor = True
-		# 
-		# label13
-		# 
-		self._label13.Location = System.Drawing.Point(8, 16)
-		self._label13.Name = "label13"
-		self._label13.Size = System.Drawing.Size(502, 23)
-		self._label13.TabIndex = 0
-		self._label13.Text = "Do not move eComics if they are located in any of these folders:"
-		# 
-		# lbExFolder
-		# 
-		self._lbExFolder.FormattingEnabled = True
-		self._lbExFolder.HorizontalScrollbar = True
-		self._lbExFolder.Location = System.Drawing.Point(8, 42)
-		self._lbExFolder.Name = "lbExFolder"
-		self._lbExFolder.Size = System.Drawing.Size(391, 108)
-		self._lbExFolder.Sorted = True
-		self._lbExFolder.TabIndex = 1
-		# 
-		# btnAddExFolder
-		# 
-		self._btnAddExFolder.Location = System.Drawing.Point(421, 53)
-		self._btnAddExFolder.Name = "btnAddExFolder"
-		self._btnAddExFolder.Size = System.Drawing.Size(75, 23)
-		self._btnAddExFolder.TabIndex = 2
-		self._btnAddExFolder.Text = "Add"
-		self._btnAddExFolder.UseVisualStyleBackColor = True
-		self._btnAddExFolder.Click += self.BtnAddExFolderClick
-		# 
-		# btnRemoveExFolder
-		# 
-		self._btnRemoveExFolder.Location = System.Drawing.Point(421, 106)
-		self._btnRemoveExFolder.Name = "btnRemoveExFolder"
-		self._btnRemoveExFolder.Size = System.Drawing.Size(75, 23)
-		self._btnRemoveExFolder.TabIndex = 3
-		self._btnRemoveExFolder.Text = "Remove"
-		self._btnRemoveExFolder.UseVisualStyleBackColor = True
-		self._btnRemoveExFolder.Click += self.BtnRemoveExFolderClick
-		# 
-		# groupBox2
-		# 
-		self._groupBox2.Controls.Add(self._cmbExcludeMode)
-		self._groupBox2.Controls.Add(self._label20)
-		self._groupBox2.Controls.Add(self._btnAddGroup)
-		self._groupBox2.Controls.Add(self._btnExMetaAdd)
-		self._groupBox2.Controls.Add(self._ExPanel)
-		self._groupBox2.Controls.Add(self._label17)
-		self._groupBox2.Controls.Add(self._cmbExcludeOperator)
-		self._groupBox2.Location = System.Drawing.Point(8, 156)
-		self._groupBox2.Name = "groupBox2"
-		self._groupBox2.Size = System.Drawing.Size(504, 264)
-		self._groupBox2.TabIndex = 6
-		self._groupBox2.TabStop = False
-		self._groupBox2.Text = "Metadata Rules"
-		# 
-		# ExPanel
-		# 
-		self._ExPanel.AutoScroll = True
-		self._ExPanel.Controls.Add(self._flpExcludes)
-		self._ExPanel.Location = System.Drawing.Point(3, 46)
-		self._ExPanel.Name = "ExPanel"
-		self._ExPanel.Size = System.Drawing.Size(495, 207)
-		self._ExPanel.TabIndex = 4
-		# 
-		# cmbExcludeMode
-		# 
-		self._cmbExcludeMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self._cmbExcludeMode.FormattingEnabled = True
-		self._cmbExcludeMode.Items.AddRange(System.Array[System.Object](
-			["Do not",
-			"Only"]))
-		self._cmbExcludeMode.Location = System.Drawing.Point(6, 19)
-		self._cmbExcludeMode.Name = "cmbExcludeMode"
-		self._cmbExcludeMode.Size = System.Drawing.Size(57, 21)
-		self._cmbExcludeMode.TabIndex = 0
-		self._cmbExcludeMode.SelectedIndexChanged += self.ExcludeModeChange
-		# 
-		# label20
-		# 
-		self._label20.AutoSize = True
-		self._label20.Location = System.Drawing.Point(69, 22)
-		self._label20.Name = "label20"
-		self._label20.Size = System.Drawing.Size(129, 13)
-		self._label20.Text = "move eComics that match"
-		# 
-		# cmbExcludeOperator
-		# 
-		self._cmbExcludeOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self._cmbExcludeOperator.FormattingEnabled = True
-		self._cmbExcludeOperator.Items.AddRange(System.Array[System.Object](
-			["Any",
-			"All"]))
-		self._cmbExcludeOperator.Location = System.Drawing.Point(204, 19)
-		self._cmbExcludeOperator.Name = "cmbExcludeOperator"
-		self._cmbExcludeOperator.Size = System.Drawing.Size(43, 21)
-		self._cmbExcludeOperator.TabIndex = 1
-		self._cmbExcludeOperator.SelectedIndexChanged += self.ExcludeOperatorChange
-		# 
-		# label17
-		# 
-		self._label17.AutoSize = True
-		self._label17.Location = System.Drawing.Point(250, 22)
-		self._label17.Name = "label17"
-		self._label17.Size = System.Drawing.Size(106, 13)
-		self._label17.Text = "of the following rules."
-		# 
-		# btnAddGroup
-		# 
-		self._btnAddGroup.Location = System.Drawing.Point(362, 17)
-		self._btnAddGroup.Name = "btnAddGroup"
-		self._btnAddGroup.Size = System.Drawing.Size(71, 23)
-		self._btnAddGroup.TabIndex = 2
-		self._btnAddGroup.Text = "Add Group"
-		self._btnAddGroup.UseVisualStyleBackColor = True
-		self._btnAddGroup.Click += self.CreateRuleGroup
-		# 
-		# btnExMetaAdd
-		# 
-		self._btnExMetaAdd.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
-		self._btnExMetaAdd.Location = System.Drawing.Point(439, 17)
-		self._btnExMetaAdd.Name = "btnExMetaAdd"
-		self._btnExMetaAdd.Size = System.Drawing.Size(59, 23)
-		self._btnExMetaAdd.TabIndex = 3
-		self._btnExMetaAdd.Text = "Add rule"
-		self._btnExMetaAdd.UseVisualStyleBackColor = True
-		self._btnExMetaAdd.Click += self.CreateRuleSet
-		# 
-		# flpExcludes
-		# 
-		self._flpExcludes.AutoSize = True
-		self._flpExcludes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-		self._flpExcludes.Location = System.Drawing.Point(3, 3)
-		self._flpExcludes.Name = "flpExcludes"
-		self._flpExcludes.Size = System.Drawing.Size(482, 40)
-		self._flpExcludes.TabIndex = 4
-		# 
-		# tabPage1
-		# 
-		self._tpOptions.Controls.Add(self._gbMode)
-		self._tpOptions.Controls.Add(self._cmbImageFormat)
-		self._tpOptions.Controls.Add(self._label19)
-		self._tpOptions.Controls.Add(self._btnRemoveEmptyDir)
-		self._tpOptions.Controls.Add(self._btnAddEmptyDir)
-		self._tpOptions.Controls.Add(self._ckbFileless)
-		self._tpOptions.Controls.Add(self._label18)
-		self._tpOptions.Controls.Add(self._lbRemoveEmptyDir)
-		self._tpOptions.Controls.Add(self._ckbRemoveEmptyDir)
-		self._tpOptions.Controls.Add(self._txbEmptyData)
-		self._tpOptions.Controls.Add(self._label11)
-		self._tpOptions.Controls.Add(self._label10)
-		self._tpOptions.Controls.Add(self._cmbEmptyData)
-		self._tpOptions.Controls.Add(self._label9)
-		self._tpOptions.Controls.Add(self._label8)
-		self._tpOptions.Controls.Add(self._label7)
-		self._tpOptions.Controls.Add(self._txbEmptyDir)
-		self._tpOptions.Location = System.Drawing.Point(4, 22)
-		self._tpOptions.Name = "tabPage1"
-		self._tpOptions.Padding = System.Windows.Forms.Padding(3)
-		self._tpOptions.Size = System.Drawing.Size(518, 426)
-		self._tpOptions.TabIndex = 4
-		self._tpOptions.Text = "Options"
-		self._tpOptions.UseVisualStyleBackColor = True
-		# 
-		# gbMode
-		# 
-		self._gbMode.Controls.Add(self._rdbModeTest)
-		self._gbMode.Controls.Add(self._rdbModeCopy)
-		self._gbMode.Controls.Add(self._ckbCopyMode)
-		self._gbMode.Controls.Add(self._rdbModeMove)
-		self._gbMode.Location = System.Drawing.Point(8, 6)
-		self._gbMode.Name = "gbMode"
-		self._gbMode.Size = System.Drawing.Size(497, 71)
-		self._gbMode.TabIndex = 0
-		self._gbMode.TabStop = False
-		self._gbMode.Text = "Mode"
-		# 
-		# rdbModeMove
-		# 
-		self._rdbModeMove.AutoSize = True
-		self._rdbModeMove.Location = System.Drawing.Point(6, 19)
-		self._rdbModeMove.Name = "rdbModeMove"
-		self._rdbModeMove.Size = System.Drawing.Size(52, 17)
-		self._rdbModeMove.TabIndex = 0
-		self._rdbModeMove.TabStop = True
-		self._rdbModeMove.Tag = "Move"
-		self._rdbModeMove.Text = "Move"
-		self._rdbModeMove.UseVisualStyleBackColor = True
-		self._rdbModeMove.CheckedChanged += self.ModeChange
-		# 
-		# rdbModeCopy
-		# 
-		self._rdbModeCopy.AutoSize = True
-		self._rdbModeCopy.Location = System.Drawing.Point(124, 19)
-		self._rdbModeCopy.Name = "rdbModeCopy"
-		self._rdbModeCopy.Size = System.Drawing.Size(49, 17)
-		self._rdbModeCopy.TabIndex = 1
-		self._rdbModeCopy.TabStop = True
-		self._rdbModeCopy.Tag = "Copy"
-		self._rdbModeCopy.Text = "Copy"
-		self._rdbModeCopy.UseVisualStyleBackColor = True
-		self._rdbModeCopy.CheckedChanged += self.ModeChange
-		# 
-		# rdbModeTest
-		# 
-		self._rdbModeTest.AutoSize = True
-		self._rdbModeTest.Location = System.Drawing.Point(239, 19)
-		self._rdbModeTest.Name = "rdbModeTest"
-		self._rdbModeTest.Size = System.Drawing.Size(251, 17)
-		self._rdbModeTest.TabIndex = 2
-		self._rdbModeTest.TabStop = True
-		self._rdbModeTest.Tag = "Test"
-		self._rdbModeTest.Text = "Test (no files touched, complete log file created)"
-		self._rdbModeTest.UseVisualStyleBackColor = True
-		self._rdbModeTest.CheckedChanged += self.ModeChange
-		#
-		# ckbCopyMode
-		#
-		self._ckbCopyMode.Location = System.Drawing.Point(124, 42)
-		self._ckbCopyMode.Size = System.Drawing.Size(172, 24)
-		self._ckbCopyMode.Text = "Add copied book to Library"
-		# 
-		# label8
-		# 
-		self._label8.AutoSize = True
-		self._label8.Location = System.Drawing.Point(8, 111)
-		self._label8.Name = "label8"
-		self._label8.Size = System.Drawing.Size(204, 13)
-		self._label8.Text = "(Leave empty to remove blank directories)"
-		# 
-		# label7
-		# 
-		self._label7.AutoSize = True
-		self._label7.Location = System.Drawing.Point(8, 91)
-		self._label7.Name = "label7"
-		self._label7.Size = System.Drawing.Size(181, 13)
-		self._label7.Text = "Replace blank directory names with: "
-		self._label7.TextAlign = System.Drawing.ContentAlignment.TopCenter
-		# 
-		# txbEmptyDir
-		# 
-		self._txbEmptyDir.Location = System.Drawing.Point(226, 96)
-		self._txbEmptyDir.Name = "txbEmptyDir"
-		self._txbEmptyDir.Size = System.Drawing.Size(284, 20)
-		self._txbEmptyDir.TabIndex = 1
-		# 
-		# label9
-		# 
-		self._label9.AutoSize = True
-		self._label9.Location = System.Drawing.Point(8, 141)
-		self._label9.Name = "label9"
-		self._label9.Size = System.Drawing.Size(441, 13)
-		self._label9.Text = "To create a default value to be entered in the case of a blank data field, fill in the box below."
-		# 
-		# label10
-		# 
-		self._label10.AutoSize = True
-		self._label10.Location = System.Drawing.Point(8, 169)
-		self._label10.Name = "label10"
-		self._label10.Size = System.Drawing.Size(55, 13)
-		self._label10.Text = "Data field:"
-		# 
-		# cmbEmptyData
-		# 
-		self._cmbEmptyData.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self._cmbEmptyData.FormattingEnabled = True
-		self._cmbEmptyData.Items.AddRange(System.Array[System.Object](
-			["Alternate Count",
-			"Alternate Number",
-			"Alternate Series",
-			"Characters",
-			"Count",
-			"Format",
-			"Genre",
-			"Imprint",
-			"Manga",
-			"Month",
-			"Number",
-			"Publisher",
-			"Series",
-			"Series Complete", 
-			"Start Year",
-			"Tags",
-			"Title",
-			"Volume",
-			"Writer",
-			"Year"]))
-		self._cmbEmptyData.Location = System.Drawing.Point(68, 166)
-		self._cmbEmptyData.Name = "cmbEmptyData"
-		self._cmbEmptyData.Size = System.Drawing.Size(121, 21)
-		self._cmbEmptyData.Sorted = True
-		self._cmbEmptyData.TabIndex = 2
-		self._cmbEmptyData.SelectedIndexChanged += self.CmbEmptyDataSelectedIndexChanged
-		# 
-		# label11
-		# 
-		self._label11.AutoSize = True
-		self._label11.Location = System.Drawing.Point(195, 169)
-		self._label11.Name = "label11"
-		self._label11.Size = System.Drawing.Size(74, 13)
-		self._label11.Text = "Default Value:"
-		# 
-		# txbEmptyData
-		# 
-		self._txbEmptyData.Location = System.Drawing.Point(275, 166)
-		self._txbEmptyData.Name = "txbEmptyData"
-		self._txbEmptyData.Size = System.Drawing.Size(235, 20)
-		self._txbEmptyData.TabIndex = 3
-		self._txbEmptyData.Leave += self.TxbEmptyDataLeave
-
-		# 
-		# ckbRemoveEmptyDir
-		# 
-		self._ckbRemoveEmptyDir.Checked = True
-		self._ckbRemoveEmptyDir.CheckState = System.Windows.Forms.CheckState.Checked
-		self._ckbRemoveEmptyDir.Location = System.Drawing.Point(8, 194)
-		self._ckbRemoveEmptyDir.Name = "ckbRemoveEmptyDir"
-		self._ckbRemoveEmptyDir.Size = System.Drawing.Size(261, 24)
-		self._ckbRemoveEmptyDir.TabIndex = 4
-		self._ckbRemoveEmptyDir.Text = "Remove empty directories"
-		self._ckbRemoveEmptyDir.UseVisualStyleBackColor = True
-		self._ckbRemoveEmptyDir.CheckedChanged += self.CkbRemoveEmptyDirCheckedChanged
-		# 
-		# label18
-		# 
-		self._label18.Location = System.Drawing.Point(39, 220)
-		self._label18.Name = "label18"
-		self._label18.Size = System.Drawing.Size(230, 18)
-		self._label18.Text = "...but never remove the following directories:"
-		# 
-		# lbRemoveEmptyDir
-		# 
-		self._lbRemoveEmptyDir.FormattingEnabled = True
-		self._lbRemoveEmptyDir.Location = System.Drawing.Point(52, 241)
-		self._lbRemoveEmptyDir.Name = "lbRemoveEmptyDir"
-		self._lbRemoveEmptyDir.Size = System.Drawing.Size(383, 108)
-		self._lbRemoveEmptyDir.TabIndex = 5
-		# 
-		# btnAddEmptyDir
-		# 
-		self._btnAddEmptyDir.Location = System.Drawing.Point(441, 260)
-		self._btnAddEmptyDir.Name = "btnAddEmptyDir"
-		self._btnAddEmptyDir.Size = System.Drawing.Size(68, 23)
-		self._btnAddEmptyDir.TabIndex = 6
-		self._btnAddEmptyDir.Text = "Add"
-		self._btnAddEmptyDir.UseVisualStyleBackColor = True
-		self._btnAddEmptyDir.Click += self.BtnAddEmptyDirClick
-		# 
-		# btnRemoveEmptyDir
-		# 
-		self._btnRemoveEmptyDir.Location = System.Drawing.Point(441, 308)
-		self._btnRemoveEmptyDir.Name = "btnRemoveEmptyDir"
-		self._btnRemoveEmptyDir.Size = System.Drawing.Size(69, 23)
-		self._btnRemoveEmptyDir.TabIndex = 7
-		self._btnRemoveEmptyDir.Text = "Remove"
-		self._btnRemoveEmptyDir.UseVisualStyleBackColor = True
-		self._btnRemoveEmptyDir.Click += self.BtnRemoveEmptyDirClick
-		# 
-		# ckbFileless
-		# 
-		self._ckbFileless.Location = System.Drawing.Point(8, 355)
-		self._ckbFileless.Name = "ckbFileless"
-		self._ckbFileless.Size = System.Drawing.Size(502, 41)
-		self._ckbFileless.TabIndex = 8
-		self._ckbFileless.Text = "Copy fileless comic's custom thumbnail image to the calaculated path. (Does not affect the source image at all)"
-		self._ckbFileless.UseVisualStyleBackColor = True
-		self._ckbFileless.CheckedChanged += self.CkbFilelessCheckedChanged
-		# 
-		# cmbImageFormat
-		# 
-		self._cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self._cmbImageFormat.Enabled = False
-		self._cmbImageFormat.FormattingEnabled = True
-		self._cmbImageFormat.Items.AddRange(System.Array[System.Object](
-			[".bmp",
-			".jpg",
-			".png"]))
-		self._cmbImageFormat.Location = System.Drawing.Point(179, 390)
-		self._cmbImageFormat.Name = "cmbImageFormat"
-		self._cmbImageFormat.Size = System.Drawing.Size(54, 21)
-		self._cmbImageFormat.TabIndex = 9
-		# 
-		# label19
-		# 
-		self._label19.Location = System.Drawing.Point(86, 393)
-		self._label19.Name = "label19"
-		self._label19.Size = System.Drawing.Size(87, 21)
-		self._label19.Text = "Save image as:"
-		# 
 		# insertTabs
 		# 
 		self._insertTabs.Controls.Add(self._tpInsertBasic)
 		self._insertTabs.Controls.Add(self._tpInsertAdvanced)
 		self._insertTabs.Controls.Add(self._tpInsertAdvanced2)
-		self._insertTabs.Location = System.Drawing.Point(3, 45)
+		self._insertTabs.Location = System.Drawing.Point(3, 19)
 		self._insertTabs.Name = "insertTabs"
 		self._insertTabs.SelectedIndex = 0
-		self._insertTabs.Size = System.Drawing.Size(506, 254)
+		self._insertTabs.Size = System.Drawing.Size(506, 280)
 		self._insertTabs.TabIndex = 59
-		# 
-		# tpInsertBasic
-		# 
-		self._tpInsertBasic.Controls.Add(self.Publisher)
-		self._tpInsertBasic.Controls.Add(self.Imprint)
-		self._tpInsertBasic.Controls.Add(self.Series)
-		self._tpInsertBasic.Controls.Add(self.Title)
-		self._tpInsertBasic.Controls.Add(self.Format)
-		self._tpInsertBasic.Controls.Add(self.Volume)
-		self._tpInsertBasic.Controls.Add(self.AlternateSeries)
-		self._tpInsertBasic.Controls.Add(self.Number)
-		self._tpInsertBasic.Controls.Add(self.Count)		
-		self._tpInsertBasic.Controls.Add(self.MonthNumber)
-		self._tpInsertBasic.Controls.Add(self.Month)
-		self._tpInsertBasic.Controls.Add(self.Year)
-		self._tpInsertBasic.Controls.Add(self.AlternateCount)
-		self._tpInsertBasic.Controls.Add(self.AlternateNumber)		
-		self._tpInsertBasic.Controls.Add(self._label6)
-		self._tpInsertBasic.Controls.Add(self._label5)
-		self._tpInsertBasic.Controls.Add(self._label3)
-		self._tpInsertBasic.Controls.Add(self._label4)
-		self._tpInsertBasic.Controls.Add(self._label1)
-		self._tpInsertBasic.Controls.Add(self._label2)
-		self._tpInsertBasic.Location = System.Drawing.Point(4, 22)
-		self._tpInsertBasic.Name = "tabPage2"
-		self._tpInsertBasic.Padding = System.Windows.Forms.Padding(3)
-		self._tpInsertBasic.Size = System.Drawing.Size(500, 228)
-		self._tpInsertBasic.TabIndex = 0
-		self._tpInsertBasic.Text = "Basic"
-		self._tpInsertBasic.UseVisualStyleBackColor = True
-		#
-		# Publisher
-		#
-		self.Publisher.Location = Point(6, 25)
-		self.Publisher.SetTemplate("publisher", "Publisher")
-		# 
-		# Imprint
-		# 
-		self.Imprint.Location = Point(6, 53)
-		self.Imprint.SetTemplate("imprint", "Imprint")
-		# 
-		# Series
-		# 
-		self.Series.Location = Point(6, 82)
-		self.Series.SetTemplate("series", "Series")
-		# 
-		# Title
-		# 
-		self.Title.Location = Point(6, 110)
-		self.Title.SetTemplate("title", "Title")
-		# 
-		# Format
-		#
-		self.Format.Location = Point(6, 138)
-		self.Format.SetTemplate("format", "Format")
-		# 
-		# Volume
-		#
-		self.Volume.Location = Point(6, 166)
-		self.Volume.SetTemplate ("volume", "Volume")
-		# 
-		# AlternateSeries
-		# 
-		self.AlternateSeries.Location = Point(6, 194)
-		self.AlternateSeries.SetTemplate("altSeries", "Alt. Series")
-		# 
-		# AlternateNumber
-		# 
-		self.AlternateNumber.Location = Point(262, 194)
-		self.AlternateNumber.SetTemplate("altNumber", "Alt. Num.")
-		# 
-		# AlternateCount
-		# 
-		self.AlternateCount.Location = Point(262, 166)
-		self.AlternateCount.SetTemplate("altCount", "Alt. Count")
-		# 
-		# Year
-		# 
-		self.Year.Location = Point(262, 138)
-		self.Year.SetTemplate("year", "Year")
-		# 
-		# Month
-		# 
-		self.Month.Location = Point(262, 108)
-		self.Month.SetTemplate("month", "Month")
-		# 
-		# Month Number
-		# 
-		self.MonthNumber.Location = Point(262, 82)
-		self.MonthNumber.SetTemplate("month#", "Month #")
-		# 
-		# Count
-		# 
-		self.Count.Location = Point(262, 54)
-		self.Count.SetTemplate("count", "Count")
-		# 
-		# Number
-		# 
-		self.Number.Location = Point(262, 26)
-		self.Number.SetTemplate("number", "Number")
-		# 
-		# label1
-		# 
-		self._label1.AutoSize = True
-		self._label1.Location = System.Drawing.Point(21, 3)
-		self._label1.Name = "label1"
-		self._label1.Size = System.Drawing.Size(33, 13)
-		self._label1.Text = "Prefix"
-		# 
-		# label2
-		# 
-		self._label2.AutoSize = True
-		self._label2.Location = System.Drawing.Point(148, 3)
-		self._label2.Name = "label2"
-		self._label2.Size = System.Drawing.Size(38, 13)
-		self._label2.Text = "Postfix"
-		# 
-		# label3
-		# 
-		self._label3.AutoSize = True
-		self._label3.Location = System.Drawing.Point(404, 3)
-		self._label3.Name = "label3"
-		self._label3.Size = System.Drawing.Size(38, 13)
-		self._label3.Text = "Postfix"
-		# 
-		# label4
-		# 
-		self._label4.AutoSize = True
-		self._label4.Location = System.Drawing.Point(275, 3)
-		self._label4.Name = "label4"
-		self._label4.Size = System.Drawing.Size(33, 13)
-		self._label4.Text = "Prefix"
-		# 
-		# label5
-		# 
-		self._label5.AutoSize = True
-		self._label5.Location = System.Drawing.Point(210, 3)
-		self._label5.Name = "label5"
-		self._label5.Size = System.Drawing.Size(26, 13)
-		self._label5.Text = "Pad"
-		# 
-		# label6
-		# 
-		self._label6.AutoSize = True
-		self._label6.Location = System.Drawing.Point(466, 3)
-		self._label6.Name = "label6"
-		self._label6.Size = System.Drawing.Size(26, 13)
-		self._label6.Text = "Pad"
-		# 
-		# tpInsertAdvanced
-		# 
-		self._tpInsertAdvanced.Controls.Add(self.StartYear)
-		self._tpInsertAdvanced.Controls.Add(self.Manga)
-		self._tpInsertAdvanced.Controls.Add(self.SeriesComplete)
-		self._tpInsertAdvanced.Controls.Add(self._label21)
-		self._tpInsertAdvanced.Controls.Add(self._label16)
-		self._tpInsertAdvanced.Controls.Add(self._label15)
-		self._tpInsertAdvanced.Controls.Add(self._lblPost)
-		self._tpInsertAdvanced.Controls.Add(self._lblPre)
-		self._tpInsertAdvanced.Location = System.Drawing.Point(4, 22)
-		self._tpInsertAdvanced.Name = "tpInsertAdvanced"
-		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
-		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 228)
-		self._tpInsertAdvanced.TabIndex = 1
-		self._tpInsertAdvanced.Text = "Advanced"
-		self._tpInsertAdvanced.UseVisualStyleBackColor = True
-		# 
-		# Start Year
-		# 
-		self.StartYear.Location = Point(6, 25)
-		self.StartYear.SetTemplate("startyear", "Start Year")
-		# 
-		# label15
-		# 
-		self._label15.Location = System.Drawing.Point(220, 25)
-		self._label15.Name = "label15"
-		self._label15.Size = System.Drawing.Size(205, 30)
-		self._label15.Text = "Start year is calculated from the earliest year for the series in your library"
-		# 
-		# Manga
-		# 
-		self.Manga.Location = Point(6, 100)
-		self.Manga.SetTemplate("manga", "Manga")
-		# 
-		# SeriesComplete
-		# 
-		self.SeriesComplete.Location = Point(6, 145)
-		self.SeriesComplete.SetTemplate("seriesComplete", "Series Complete")
-		self.SeriesComplete.InsertButton.Width += 30
-		self.SeriesComplete.Width += 30
-		self.SeriesComplete.Postfix.Left += 30
-		self.SeriesComplete.TextBox.Left += 30
-		# 
-		# label16
-		# 
-		self._label16.AutoSize = True
-		self._label16.Location = System.Drawing.Point(225, 85)
-		self._label16.Name = "label16"
-		self._label16.Size = System.Drawing.Size(33, 13)
-		self._label16.Text = "Text"
-		# 
-		# label21
-		# 
-		self._label21.Location = System.Drawing.Point(270, 100)
-		self._label21.Name = "label21"
-		self._label21.Size = System.Drawing.Size(230, 60)
-		self._label21.Text = "Fill in the \"Text\" box for the text to be inserted when the item is marked as Yes."
-		#
-		# Label Pre
-		self._lblPre.Size = System.Drawing.Size(33, 13)
-		self._lblPre.Location = System.Drawing.Point(20, 3)
-		self._lblPre.Text = "Prefix"
-		#
-		# Label Post
-		#
-		self._lblPost.Size = System.Drawing.Size(38, 13)
-		self._lblPost.Location = System.Drawing.Point(150, 3)
-		self._lblPost.Text = "Postfix"
-		#
-		# tpInsertAdvanced2
-		#
-		self._tpInsertAdvanced2.Controls.Add(self.Characters)
-		self._tpInsertAdvanced2.Controls.Add(self.Genre)
-		self._tpInsertAdvanced2.Controls.Add(self.Tags)
-		self._tpInsertAdvanced2.Controls.Add(self.Teams)
-		self._tpInsertAdvanced2.Controls.Add(self.Writer)
-		self._tpInsertAdvanced2.Controls.Add(self._label22)
-		self._tpInsertAdvanced2.Controls.Add(self._lblSep)
-		self._tpInsertAdvanced2.Controls.Add(self._lblSep2)
-		self._tpInsertAdvanced2.Controls.Add(self._lblPre2)
-		self._tpInsertAdvanced2.Controls.Add(self._lblPre3)
-		self._tpInsertAdvanced2.Controls.Add(self._lblPost2)
-		self._tpInsertAdvanced2.Controls.Add(self._lblPost3)
-		self._tpInsertAdvanced2.Location = System.Drawing.Point(4, 22)
-		self._tpInsertAdvanced2.Name = "tpInsertAdvanced2"
-		self._tpInsertAdvanced2.Padding = System.Windows.Forms.Padding(3)
-		self._tpInsertAdvanced2.Size = System.Drawing.Size(500, 228)
-		self._tpInsertAdvanced2.TabIndex = 2
-		self._tpInsertAdvanced2.Text = "Advanced 2"
-		self._tpInsertAdvanced2.UseVisualStyleBackColor = True
-		# 
-		# Characters
-		# 
-		self.Characters.Location = Point(6, 20)
-		self.Characters.SetTemplate("characters", "Character")
-		# 
-		# Genre
-		# 
-		self.Genre.Location = Point(250, 20)
-		self.Genre.SetTemplate("genre", "Genre")
-		# 
-		# Writer
-		# 
-		self.Writer.Location = Point(6, 110)
-		self.Writer.SetTemplate("writer", "Writer")
-		# 
-		# Tags
-		# 
-		self.Tags.Location = Point(6, 65)
-		self.Tags.SetTemplate("tags", "Tags")
-		#
-		# Team
-		#
-		self.Teams.SetTemplate("teams", "Team")
-		self.Teams.Location = Point(250, 65)
-		#
-		# Label Seperator
-		#
-		self._lblSep.Location = System.Drawing.Point(190, 48)
-		self._lblSep.Size = System.Drawing.Size(58, 13)
-		self._lblSep.Text = "Seperator"
-		#
-		# Label Seperator 2
-		#
-		self._lblSep2.Size = System.Drawing.Size(58, 13)
-		self._lblSep2.Location = System.Drawing.Point(430, 48)
-		self._lblSep2.Text = "Seperator"
-		# 
-		# label22
-		# 
-		self._label22.Location = System.Drawing.Point(4, 155)
-		self._label22.Name = "label22"
-		self._label22.Size = System.Drawing.Size(494, 48)
-		self._label22.Text = "For these fields that can have multiple entries the script will ask which ones you would like to use. If you want to select for all the issues in the series at once, check the checkbox beside the field before inserting. In the selction box is an option to have each entry as its own folder"
-		#
-		# Label Pre
-		self._lblPre3.Size = System.Drawing.Size(33, 13)
-		self._lblPre3.Location = System.Drawing.Point(20, 3)
-		self._lblPre3.Text = "Prefix"
-		#
-		# Label Pre2
-		#
-		self._lblPre2.Size = System.Drawing.Size(33, 13)
-		self._lblPre2.Location = System.Drawing.Point(260, 3)
-		self._lblPre2.Text = "Prefix"
-		#
-		# Label Post
-		#
-		self._lblPost3.Size = System.Drawing.Size(38, 13)
-		self._lblPost3.Location = System.Drawing.Point(150, 3)
-		self._lblPost3.Text = "Postfix"
-		#
-		# Label Post
-		#
-		self._lblPost2.Size = System.Drawing.Size(38, 13)
-		self._lblPost2.Location = System.Drawing.Point(395, 3)
-		self._lblPost2.Text = "Postfix"
+
 		# 
 		# button1
 		# 
@@ -1223,10 +442,6 @@ class ConfigForm(Form):
 		self._gbInsertButtons.ResumeLayout(False)
 		self._gbInsertButtons.PerformLayout()
 		self._tpExcludes.ResumeLayout(False)
-		self._ExPanel.ResumeLayout(False)
-		self._ExPanel.PerformLayout()
-		self._groupBox2.ResumeLayout(False)
-		self._groupBox2.PerformLayout()
 		self._tpOptions.ResumeLayout(False)
 		self._tpOptions.PerformLayout()
 		self._gbMode.ResumeLayout(False)
@@ -1237,6 +452,785 @@ class ConfigForm(Form):
 		self._tpInsertAdvanced.ResumeLayout(False)
 		self._tpInsertAdvanced.PerformLayout()
 		self.ResumeLayout(False)
+
+	def CreateOptionsPage(self):
+		# 
+		# rdbModeMove
+		# 
+		self._rdbModeMove = RadioButton()
+		self._rdbModeMove.AutoSize = True
+		self._rdbModeMove.Location = System.Drawing.Point(11, 19)
+		self._rdbModeMove.Size = System.Drawing.Size(52, 17)
+		self._rdbModeMove.TabIndex = 0
+		self._rdbModeMove.TabStop = True
+		self._rdbModeMove.Tag = "Move"
+		self._rdbModeMove.Text = "Move"
+		self._rdbModeMove.CheckedChanged += self.ModeChange
+		# 
+		# rdbModeCopy
+		# 
+		self._rdbModeCopy = RadioButton()
+		self._rdbModeCopy.AutoSize = True
+		self._rdbModeCopy.Location = System.Drawing.Point(158, 19)
+		self._rdbModeCopy.Size = System.Drawing.Size(49, 17)
+		self._rdbModeCopy.TabIndex = 1
+		self._rdbModeCopy.TabStop = True
+		self._rdbModeCopy.Tag = "Copy"
+		self._rdbModeCopy.Text = "Copy"
+		self._rdbModeCopy.CheckedChanged += self.ModeChange
+		# 
+		# rdbModeTest
+		# 
+		self._rdbModeTest = RadioButton()
+		self._rdbModeTest.AutoSize = True
+		self._rdbModeTest.Location = System.Drawing.Point(354, 19)
+		self._rdbModeTest.TabIndex = 2
+		self._rdbModeTest.TabStop = True
+		self._rdbModeTest.Tag = "Test"
+		self._rdbModeTest.Text = "Simulate"
+		self._rdbModeTest.CheckedChanged += self.ModeChange
+		#
+		#
+		#
+		labelSimulate = Label()
+		labelSimulate.Location = Point(282, 47)
+		labelSimulate.AutoSize = True
+		labelSimulate.Text = "(no files touched, complete log file created)"
+		#
+		# ckbCopyMode
+		#
+		self._ckbCopyMode = CheckBox()
+		self._ckbCopyMode.Location = System.Drawing.Point(104, 41)
+		self._ckbCopyMode.Size = System.Drawing.Size(172, 24)
+		self._ckbCopyMode.Text = "Add copied book to Library"
+		# 
+		# gbMode
+		# 
+		self._gbMode = GroupBox()
+		self._gbMode.Controls.Add(self._rdbModeTest)
+		self._gbMode.Controls.Add(self._rdbModeCopy)
+		self._gbMode.Controls.Add(self._ckbCopyMode)
+		self._gbMode.Controls.Add(self._rdbModeMove)
+		self._gbMode.Controls.Add(labelSimulate)
+		self._gbMode.Location = System.Drawing.Point(8, 6)
+		self._gbMode.Size = System.Drawing.Size(497, 71)
+		self._gbMode.TabIndex = 0
+		self._gbMode.TabStop = False
+		self._gbMode.Text = "Mode"
+		# 
+		# label
+		# 
+		label8 = Label()
+		label8.AutoSize = True
+		label8.Location = System.Drawing.Point(3, 32)
+		label8.Size = System.Drawing.Size(204, 13)
+		label8.Text = "(Leave empty to remove empty directories)"
+		# 
+		# label7
+		# 
+		label7 = Label()
+		label7.AutoSize = True
+		label7.Location = System.Drawing.Point(11, 19)
+		label7.Size = System.Drawing.Size(181, 13)
+		label7.Text = "Replace empty directory names with: "
+		# 
+		# txbEmptyDir
+		# 
+		self._txbEmptyDir = TextBox()
+		self._txbEmptyDir.Location = System.Drawing.Point(207, 19)
+		self._txbEmptyDir.Size = System.Drawing.Size(284, 20)
+		self._txbEmptyDir.TabIndex = 1
+		# 
+		# label9
+		# 
+		label9 = Label()
+		label9.AutoSize = True
+		label9.Location = System.Drawing.Point(6, 57)
+		label9.Size = System.Drawing.Size(441, 13)
+		label9.Text = "When a field is empty, substitute the entered value:"
+		# 
+		# label10
+		# 
+		label10 = Label()
+		label10.AutoSize = True
+		label10.Location = System.Drawing.Point(6, 80)
+		label10.Size = System.Drawing.Size(32, 13)
+		label10.Text = "Field:"
+		# 
+		# cmbEmptyData
+		# 
+		self._cmbEmptyData = ComboBox()
+		self._cmbEmptyData.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbEmptyData.Items.AddRange(System.Array[System.Object](
+			["Age Rating",
+			"Alternate Count",
+			"Alternate Number",
+			"Alternate Series",
+			"Characters",
+			"Count",
+			"Format",
+			"Genre",
+			"Imprint",
+			"Manga",
+			"Month",
+			"Number",
+			"Publisher",
+			"Scan Information"
+			"Series",
+			"Series Complete", 
+			"Start Year",
+			"Tags",
+			"Title",
+			"Volume",
+			"Writer",
+			"Year"]))
+		self._cmbEmptyData.Location = System.Drawing.Point(44, 76)
+		self._cmbEmptyData.Size = System.Drawing.Size(121, 21)
+		self._cmbEmptyData.Sorted = True
+		self._cmbEmptyData.TabIndex = 2
+		self._cmbEmptyData.SelectedIndexChanged += self.CmbEmptyDataSelectedIndexChanged
+		# 
+		# label11
+		# 
+		label11 = Label()
+		label11.AutoSize = True
+		label11.Location = System.Drawing.Point(171, 80)
+		label11.Size = System.Drawing.Size(32, 13)
+		label11.Text = "Substitution:"
+		# 
+		# txbEmptyData
+		# 
+		self._txbEmptyData = TextBox()
+		self._txbEmptyData.Location = System.Drawing.Point(242, 76)
+		self._txbEmptyData.Size = System.Drawing.Size(249, 20)
+		self._txbEmptyData.TabIndex = 3
+		self._txbEmptyData.Leave += self.TxbEmptyDataLeave
+		#
+		#
+		#
+		gbEmpty = GroupBox()
+		gbEmpty.Controls.Add(label7)
+		gbEmpty.Controls.Add(label8)
+		gbEmpty.Controls.Add(self._txbEmptyDir)
+		gbEmpty.Controls.Add(label9)
+		gbEmpty.Controls.Add(label10)
+		gbEmpty.Controls.Add(self._cmbEmptyData)
+		gbEmpty.Controls.Add(label11)
+		gbEmpty.Controls.Add(self._txbEmptyData)
+		gbEmpty.Location = Point(8, 84)
+		gbEmpty.Size = Size(497, 116)
+		gbEmpty.Text = "Empty substitutions"
+		# 
+		# ckbRemoveEmptyDir
+		# 
+		self._ckbRemoveEmptyDir = CheckBox()
+		self._ckbRemoveEmptyDir.Checked = True
+		self._ckbRemoveEmptyDir.Location = System.Drawing.Point(8, 206)
+		self._ckbRemoveEmptyDir.Size = System.Drawing.Size(261, 24)
+		self._ckbRemoveEmptyDir.TabIndex = 4
+		self._ckbRemoveEmptyDir.Text = "Remove empty directories"
+		self._ckbRemoveEmptyDir.CheckedChanged += self.CkbRemoveEmptyDirCheckedChanged
+		# 
+		# label18
+		# 
+		label18 = Label()
+		label18.Location = System.Drawing.Point(39, 229)
+		label18.Size = System.Drawing.Size(230, 18)
+		label18.Text = "...but never remove the following directories:"
+		# 
+		# lbRemoveEmptyDir
+		# 
+		self._lbRemoveEmptyDir = ListBox()
+		self._lbRemoveEmptyDir.Location = System.Drawing.Point(52, 250)
+		self._lbRemoveEmptyDir.Size = System.Drawing.Size(383, 69)
+		self._lbRemoveEmptyDir.TabIndex = 5
+		# 
+		# btnAddEmptyDir
+		# 
+		self._btnAddEmptyDir = Button()
+		self._btnAddEmptyDir.Location = System.Drawing.Point(444, 250)
+		self._btnAddEmptyDir.Size = System.Drawing.Size(68, 23)
+		self._btnAddEmptyDir.TabIndex = 6
+		self._btnAddEmptyDir.Text = "Add"
+		self._btnAddEmptyDir.Click += self.BtnAddEmptyDirClick
+		# 
+		# btnRemoveEmptyDir
+		# 
+		self._btnRemoveEmptyDir = Button()
+		self._btnRemoveEmptyDir.Location = System.Drawing.Point(441, 296)
+		self._btnRemoveEmptyDir.Size = System.Drawing.Size(69, 23)
+		self._btnRemoveEmptyDir.TabIndex = 7
+		self._btnRemoveEmptyDir.Text = "Remove"
+		self._btnRemoveEmptyDir.Click += self.BtnRemoveEmptyDirClick
+		#
+		# ckbMultiOneDontAsk
+		#
+		self._ckbDontAskWhenMultiOne = CheckBox()
+		self._ckbDontAskWhenMultiOne.Location = Point(8, 328)
+		self._ckbDontAskWhenMultiOne.AutoSize = True
+		self._ckbDontAskWhenMultiOne.Text = "If there is only one character, genre, tag, team, scanner or writer, then insert it without asking."
+		# 
+		# ckbFileless
+		# 
+		self._ckbFileless = CheckBox()
+		self._ckbFileless.Location = System.Drawing.Point(8, 358)
+		self._ckbFileless.Size = System.Drawing.Size(502, 41)
+		self._ckbFileless.TabIndex = 8
+		self._ckbFileless.Text = "Copy fileless comic's custom thumbnail image to the calaculated path. (Does not affect the source image at all)"
+		self._ckbFileless.CheckedChanged += self.CkbFilelessCheckedChanged
+		# 
+		# cmbImageFormat
+		# 
+		self._cmbImageFormat = ComboBox()
+		self._cmbImageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbImageFormat.Enabled = False
+		self._cmbImageFormat.Items.AddRange(System.Array[System.Object](
+			[".bmp",
+			".jpg",
+			".png"]))
+		self._cmbImageFormat.Location = System.Drawing.Point(190, 388)
+		self._cmbImageFormat.Size = System.Drawing.Size(54, 21)
+		self._cmbImageFormat.TabIndex = 9
+		# 
+		# label19
+		# 
+		label19 = Label()
+		label19.Location = System.Drawing.Point(97, 391)
+		label19.Size = System.Drawing.Size(87, 21)
+		label19.Text = "Save image as:"
+		# 
+		# options tag page
+		# 
+		self._tpOptions.Controls.Add(self._gbMode)
+		self._tpOptions.Controls.Add(gbEmpty)
+		self._tpOptions.Controls.Add(self._ckbRemoveEmptyDir)
+		self._tpOptions.Controls.Add(self._lbRemoveEmptyDir)
+		self._tpOptions.Controls.Add(self._btnAddEmptyDir)
+		self._tpOptions.Controls.Add(self._btnRemoveEmptyDir)
+		self._tpOptions.Controls.Add(self._ckbDontAskWhenMultiOne)
+		self._tpOptions.Controls.Add(self._cmbImageFormat)
+		self._tpOptions.Controls.Add(label18)
+		self._tpOptions.Controls.Add(label19)
+		self._tpOptions.Controls.Add(self._ckbFileless)
+		self._tpOptions.Location = System.Drawing.Point(4, 22)
+		self._tpOptions.Padding = System.Windows.Forms.Padding(3)
+		self._tpOptions.Size = System.Drawing.Size(518, 426)
+		self._tpOptions.UseVisualStyleBackColor = True
+		self._tpOptions.TabIndex = 4
+		self._tpOptions.Text = "Options"
+
+	def CreateRulesPage(self):
+		# 
+		# lbExFolder
+		# 
+		self._lbExFolder = ListBox()
+		self._lbExFolder.FormattingEnabled = True
+		self._lbExFolder.HorizontalScrollbar = True
+		self._lbExFolder.Location = System.Drawing.Point(16, 42)
+		self._lbExFolder.Size = System.Drawing.Size(391, 82)
+		self._lbExFolder.Sorted = True
+		self._lbExFolder.TabIndex = 1
+		# 
+		# btnAddExFolder
+		# 
+		self._btnAddExFolder = Button()
+		self._btnAddExFolder.Location = System.Drawing.Point(413, 42)
+		self._btnAddExFolder.Size = System.Drawing.Size(75, 23)
+		self._btnAddExFolder.TabIndex = 2
+		self._btnAddExFolder.Text = "Add"
+		self._btnAddExFolder.Click += self.BtnAddExFolderClick
+		# 
+		# btnRemoveExFolder
+		# 
+		self._btnRemoveExFolder = Button()
+		self._btnRemoveExFolder.Location = System.Drawing.Point(413, 101)
+		self._btnRemoveExFolder.Name = "btnRemoveExFolder"
+		self._btnRemoveExFolder.Size = System.Drawing.Size(75, 23)
+		self._btnRemoveExFolder.TabIndex = 3
+		self._btnRemoveExFolder.Text = "Remove"
+		self._btnRemoveExFolder.Click += self.BtnRemoveExFolderClick
+		# 
+		# label13
+		# 
+		label13 = Label()
+		label13.Location = System.Drawing.Point(6, 16)
+		label13.Name = "label13"
+		label13.Size = System.Drawing.Size(454, 23)
+		label13.TabIndex = 0
+		label13.Text = "Do not move eComics if they are located in any of these folders:"
+		#
+		# groupbox folder rules
+		#
+		gbfolderrules = GroupBox()
+		gbfolderrules.Size = Size(498, 144)
+		gbfolderrules.Location = Point(8, 6)
+		gbfolderrules.Controls.Add(label13)
+		gbfolderrules.Controls.Add(self._lbExFolder)
+		gbfolderrules.Controls.Add(self._btnAddExFolder)
+		gbfolderrules.Controls.Add(self._btnRemoveExFolder)
+		gbfolderrules.Text = "Folder Rules"
+		# 
+		# cmbExcludeMode
+		# 
+		self._cmbExcludeMode = ComboBox()
+		self._cmbExcludeMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbExcludeMode.FormattingEnabled = True
+		self._cmbExcludeMode.Items.AddRange(System.Array[System.Object](
+			["Do not",
+			"Only"]))
+		self._cmbExcludeMode.Location = System.Drawing.Point(6, 19)
+		self._cmbExcludeMode.Name = "cmbExcludeMode"
+		self._cmbExcludeMode.Size = System.Drawing.Size(57, 21)
+		self._cmbExcludeMode.TabIndex = 0
+		self._cmbExcludeMode.SelectedIndexChanged += self.ExcludeModeChange
+		# 
+		# label20
+		# 
+		label20 = Label()
+		label20.AutoSize = True
+		label20.Location = System.Drawing.Point(69, 22)
+		label20.Size = System.Drawing.Size(129, 13)
+		label20.Text = "move eComics that match"
+		# 
+		# cmbExcludeOperator
+		# 
+		self._cmbExcludeOperator = ComboBox()
+		self._cmbExcludeOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+		self._cmbExcludeOperator.FormattingEnabled = True
+		self._cmbExcludeOperator.Items.AddRange(System.Array[System.Object](
+			["Any",
+			"All"]))
+		self._cmbExcludeOperator.Location = System.Drawing.Point(204, 19)
+		self._cmbExcludeOperator.Name = "cmbExcludeOperator"
+		self._cmbExcludeOperator.Size = System.Drawing.Size(43, 21)
+		self._cmbExcludeOperator.TabIndex = 1
+		self._cmbExcludeOperator.SelectedIndexChanged += self.ExcludeOperatorChange
+		# 
+		# label17
+		# 
+		label17 = Label()
+		label17.AutoSize = True
+		label17.Location = System.Drawing.Point(250, 22)
+		label17.Size = System.Drawing.Size(106, 13)
+		label17.Text = "of the following rules."
+		# 
+		# btnAddGroup
+		# 
+		self._btnAddGroup = Button()
+		self._btnAddGroup.Location = System.Drawing.Point(362, 17)
+		self._btnAddGroup.Size = System.Drawing.Size(71, 23)
+		self._btnAddGroup.TabIndex = 2
+		self._btnAddGroup.Text = "Add Group"
+		self._btnAddGroup.Click += self.CreateRuleGroup
+		# 
+		# btnExMetaAdd
+		# 
+		self._btnExMetaAdd = Button()
+		self._btnExMetaAdd.Location = System.Drawing.Point(439, 17)
+		self._btnExMetaAdd.Size = System.Drawing.Size(59, 23)
+		self._btnExMetaAdd.TabIndex = 3
+		self._btnExMetaAdd.Text = "Add rule"
+		self._btnExMetaAdd.Click += self.CreateRuleSet
+		# 
+		# flpExcludes
+		# 
+		self._flpExcludes = FlowLayoutPanel()
+		self._flpExcludes.AutoSize = True
+		self._flpExcludes.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+		self._flpExcludes.Location = System.Drawing.Point(3, 3)
+		self._flpExcludes.Size = System.Drawing.Size(482, 40)
+		self._flpExcludes.TabIndex = 4
+		# 
+		# ExPanel
+		# 
+		self._ExPanel = Panel()
+		self._ExPanel.AutoScroll = True
+		self._ExPanel.Controls.Add(self._flpExcludes)
+		self._ExPanel.Location = System.Drawing.Point(3, 46)
+		self._ExPanel.Name = "ExPanel"
+		self._ExPanel.Size = System.Drawing.Size(495, 207)
+		self._ExPanel.TabIndex = 4
+		# 
+		# groupBox2
+		# 
+		gbRules = GroupBox()
+		gbRules.Controls.Add(self._cmbExcludeMode)
+		gbRules.Controls.Add(label20)
+		gbRules.Controls.Add(self._btnAddGroup)
+		gbRules.Controls.Add(self._btnExMetaAdd)
+		gbRules.Controls.Add(self._ExPanel)
+		gbRules.Controls.Add(label17)
+		gbRules.Controls.Add(self._cmbExcludeOperator)
+		gbRules.Location = System.Drawing.Point(8, 156)
+		gbRules.Size = System.Drawing.Size(504, 264)
+		gbRules.TabIndex = 6
+		gbRules.TabStop = False
+		gbRules.Text = "Metadata Rules"
+		# 
+		# tpExcludes
+		# 
+		self._tpExcludes.Controls.Add(gbfolderrules)
+		self._tpExcludes.Controls.Add(gbRules)
+		self._tpExcludes.Name = "tpExcludes"
+		self._tpExcludes.Padding = System.Windows.Forms.Padding(3)
+		self._tpExcludes.Size = System.Drawing.Size(518, 426)
+		self._tpExcludes.TabIndex = 3
+		self._tpExcludes.Text = "Rules"
+		self._tpExcludes.UseVisualStyleBackColor = True
+
+	def CreateBasicInsertControls(self):
+		#
+		# Publisher
+		#
+		self.Publisher = InsertControl()
+		self.Publisher.Location = Point(6, 25)
+		self.Publisher.SetTemplate("publisher", "Publisher")
+		# 
+		# Imprint
+		# 
+		self.Imprint = InsertControl()
+		self.Imprint.Location = Point(6, 53)
+		self.Imprint.SetTemplate("imprint", "Imprint")
+		# 
+		# Series
+		# 
+		self.Series = InsertControl()
+		self.Series.Location = Point(6, 82)
+		self.Series.SetTemplate("series", "Series")
+		# 
+		# Title
+		# 
+		self.Title = InsertControl()
+		self.Title.Location = Point(6, 110)
+		self.Title.SetTemplate("title", "Title")
+		# 
+		# Format
+		#
+		self.Format = InsertControl()
+		self.Format.Location = Point(6, 138)
+		self.Format.SetTemplate("format", "Format")
+		# 
+		# Volume
+		#
+		self.Volume = InsertControlPadding()
+		self.Volume.Location = Point(6, 166)
+		self.Volume.SetTemplate ("volume", "Volume")
+		#
+		# Age Rating
+		self.AgeRating = InsertControl()
+		self.AgeRating.SetTemplate("ageRating", "Age Rate.")
+		self.AgeRating.Location = Point(6, 222)
+		#
+		# 
+		# AlternateSeries
+		# 
+		self.AlternateSeries = InsertControl()
+		self.AlternateSeries.Location = Point(6, 194)
+		self.AlternateSeries.SetTemplate("altSeries", "Alt. Series")
+		# 
+		# AlternateNumber
+		# 
+		self.AlternateNumber = InsertControlPadding()
+		self.AlternateNumber.Location = Point(262, 194)
+		self.AlternateNumber.SetTemplate("altNumber", "Alt. Num.")
+		# 
+		# AlternateCount
+		# 
+		self.AlternateCount = InsertControlPadding()
+		self.AlternateCount.Location = Point(262, 166)
+		self.AlternateCount.SetTemplate("altCount", "Alt. Count")
+		# 
+		# Year
+		# 
+		self.Year = InsertControl()
+		self.Year.Location = Point(262, 138)
+		self.Year.SetTemplate("year", "Year")
+		# 
+		# Month
+		# 
+		self.Month = InsertControl()
+		self.Month.Location = Point(262, 108)
+		self.Month.SetTemplate("month", "Month")
+		# 
+		# Month Number
+		# 
+		self.MonthNumber = InsertControlPadding()
+		self.MonthNumber.Location = Point(262, 82)
+		self.MonthNumber.SetTemplate("month#", "Month #")
+		# 
+		# Count
+		# 
+		self.Count = InsertControl()
+		self.Count.Location = Point(262, 54)
+		self.Count.SetTemplate("count", "Count")
+		# 
+		# Number
+		# 
+		self.Number = InsertControlPadding()
+		self.Number.Location = Point(262, 26)
+		self.Number.SetTemplate("number", "Number")
+		# 
+		# label1
+		# 
+		label1 = Label()
+		label1.AutoSize = True
+		label1.Location = System.Drawing.Point(21, 3)
+		label1.Size = System.Drawing.Size(33, 13)
+		label1.Text = "Prefix"
+		# 
+		# label2
+		# 
+		label2 = Label()
+		label2.AutoSize = True
+		label2.Location = System.Drawing.Point(148, 3)
+		label2.Size = System.Drawing.Size(38, 13)
+		label2.Text = "Postfix"
+		# 
+		# label3
+		# 
+		label3 = Label()
+		label3.AutoSize = True
+		label3.Location = System.Drawing.Point(404, 3)
+		label3.Size = System.Drawing.Size(38, 13)
+		label3.Text = "Postfix"
+		# 
+		# label4
+		# 
+		label4 = Label()
+		label4.AutoSize = True
+		label4.Location = System.Drawing.Point(275, 3)
+		label4.Size = System.Drawing.Size(33, 13)
+		label4.Text = "Prefix"
+		# 
+		# label5
+		# 
+		label5 = Label()
+		label5.AutoSize = True
+		label5.Location = System.Drawing.Point(210, 3)
+		label5.Size = System.Drawing.Size(26, 13)
+		label5.Text = "Pad"
+		# 
+		# label6
+		# 
+		label6 = Label()
+		label6.AutoSize = True
+		label6.Location = System.Drawing.Point(466, 3)
+		label6.Size = System.Drawing.Size(26, 13)
+		label6.Text = "Pad"
+
+		# 
+		# tpInsertBasic
+		# 
+		self._tpInsertBasic.Controls.Add(self.Publisher)
+		self._tpInsertBasic.Controls.Add(self.Imprint)
+		self._tpInsertBasic.Controls.Add(self.Series)
+		self._tpInsertBasic.Controls.Add(self.Title)
+		self._tpInsertBasic.Controls.Add(self.Format)
+		self._tpInsertBasic.Controls.Add(self.Volume)
+		self._tpInsertBasic.Controls.Add(self.AgeRating)
+		self._tpInsertBasic.Controls.Add(self.AlternateSeries)
+		self._tpInsertBasic.Controls.Add(self.Number)
+		self._tpInsertBasic.Controls.Add(self.Count)		
+		self._tpInsertBasic.Controls.Add(self.MonthNumber)
+		self._tpInsertBasic.Controls.Add(self.Month)
+		self._tpInsertBasic.Controls.Add(self.Year)
+		self._tpInsertBasic.Controls.Add(self.AlternateCount)
+		self._tpInsertBasic.Controls.Add(self.AlternateNumber)		
+		self._tpInsertBasic.Controls.Add(label6)
+		self._tpInsertBasic.Controls.Add(label5)
+		self._tpInsertBasic.Controls.Add(label3)
+		self._tpInsertBasic.Controls.Add(label4)
+		self._tpInsertBasic.Controls.Add(label1)
+		self._tpInsertBasic.Controls.Add(label2)
+		self._tpInsertBasic.Padding = System.Windows.Forms.Padding(3)
+		self._tpInsertBasic.Size = System.Drawing.Size(500, 254)
+		self._tpInsertBasic.TabIndex = 0
+		self._tpInsertBasic.Text = "Basic"
+		self._tpInsertBasic.UseVisualStyleBackColor = True
+
+	def CreateAdvancedInsertControls(self):
+		# 
+		# Start Year
+		# 
+		self.StartYear = InsertControl()
+		self.StartYear.Location = Point(6, 25)
+		self.StartYear.SetTemplate("startyear", "Start Year")
+		# 
+		# label15
+		# 
+		label15 = Label()
+		label15.Location = System.Drawing.Point(220, 25)
+		label15.Size = System.Drawing.Size(205, 30)
+		label15.Text = "Start year is calculated from the earliest year for the series in your library"
+		# 
+		# Manga
+		# 
+		self.Manga = InsertControlTextBox()
+		self.Manga.Location = Point(6, 100)
+		self.Manga.SetTemplate("manga", "Manga")
+		# 
+		# SeriesComplete
+		# 
+		self.SeriesComplete = InsertControlTextBox()
+		self.SeriesComplete.Location = Point(6, 145)
+		self.SeriesComplete.SetTemplate("seriesComplete", "Series Complete")
+		self.SeriesComplete.InsertButton.Width += 30
+		self.SeriesComplete.Width += 30
+		self.SeriesComplete.Postfix.Left += 30
+		self.SeriesComplete.TextBox.Left += 30
+		# 
+		# label16
+		# 
+		label16 = Label()
+		label16.AutoSize = True
+		label16.Location = System.Drawing.Point(225, 85)
+		label16.Size = System.Drawing.Size(33, 13)
+		label16.Text = "Text"
+		# 
+		# label21
+		# 
+		label21 = Label()
+		label21.Location = System.Drawing.Point(270, 100)
+		label21.Size = System.Drawing.Size(230, 60)
+		label21.Text = "Fill in the \"Text\" box for the text to be inserted when the item is marked as Yes."
+		#
+		# Label Pre
+		lblPre = Label()
+		lblPre.Size = System.Drawing.Size(33, 13)
+		lblPre.Location = System.Drawing.Point(20, 3)
+		lblPre.Text = "Prefix"
+		#
+		# Label Post
+		#
+		lblPost = Label()
+		lblPost.Size = System.Drawing.Size(38, 13)
+		lblPost.Location = System.Drawing.Point(150, 3)
+		lblPost.Text = "Postfix"
+
+		# 
+		# tpInsertAdvanced
+		# 
+		self._tpInsertAdvanced.Controls.Add(self.StartYear)
+		self._tpInsertAdvanced.Controls.Add(self.Manga)
+		self._tpInsertAdvanced.Controls.Add(self.SeriesComplete)
+		self._tpInsertAdvanced.Controls.Add(label21)
+		self._tpInsertAdvanced.Controls.Add(label16)
+		self._tpInsertAdvanced.Controls.Add(label15)
+		self._tpInsertAdvanced.Controls.Add(lblPost)
+		self._tpInsertAdvanced.Controls.Add(lblPre)
+		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
+		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 254)
+		self._tpInsertAdvanced.TabIndex = 1
+		self._tpInsertAdvanced.Text = "Advanced"
+		self._tpInsertAdvanced.UseVisualStyleBackColor = True
+
+	def CreateAdvanced2InsertControls(self):
+		# 
+		# Characters
+		# 
+		self.Characters = InsertControlCheckBox()
+		self.Characters.Location = Point(6, 20)
+		self.Characters.SetTemplate("characters", "Character")
+		# 
+		# Genre
+		# 
+		self.Genre = InsertControlCheckBox()
+		self.Genre.Location = Point(250, 20)
+		self.Genre.SetTemplate("genre", "Genre")
+		# 
+		# Writer
+		# 
+		self.Writer = InsertControlCheckBox()
+		self.Writer.Location = Point(250, 110)
+		self.Writer.SetTemplate("writer", "Writer")
+		# 
+		# Tags
+		# 
+		self.Tags = InsertControlCheckBox()
+		self.Tags.Location = Point(250, 65)
+		self.Tags.SetTemplate("tags", "Tags")
+		#
+		# Team
+		#
+		self.Teams = InsertControlCheckBox()
+		self.Teams.SetTemplate("teams", "Team")
+		self.Teams.Location = Point(6, 110)
+		#
+		# Scan Information
+		#
+		self.ScanInformation = InsertControlCheckBox()
+		self.ScanInformation.SetTemplate("scaninfo", "Scan Info.")
+		self.ScanInformation.Location = Point(6, 65)
+		#
+		# Label Seperator
+		#
+		lblSep = Label()
+		lblSep.Location = System.Drawing.Point(190, 48)
+		lblSep.Size = System.Drawing.Size(58, 13)
+		lblSep.Text = "Seperator"
+		#
+		# Label Seperator 2
+		#
+		lblSep2 = Label()
+		lblSep2.Size = System.Drawing.Size(58, 13)
+		lblSep2.Location = System.Drawing.Point(430, 48)
+		lblSep2.Text = "Seperator"
+		# 
+		# label22
+		# 
+		label22 = Label()
+		label22.Location = System.Drawing.Point(4, 155)
+		label22.Size = System.Drawing.Size(494, 48)
+		label22.Text = "For these fields that can have multiple entries the script will ask which ones you would like to use. If you want to select for all the issues in the series at once, check the checkbox beside the field before inserting. In the selction box is an option to have each entry as its own folder"
+		#
+		# Label Pre
+		lblPre3 = Label()
+		lblPre3.Size = System.Drawing.Size(33, 13)
+		lblPre3.Location = System.Drawing.Point(20, 3)
+		lblPre3.Text = "Prefix"
+		#
+		# Label Pre2
+		#
+		lblPre2 = Label()
+		lblPre2.Size = System.Drawing.Size(33, 13)
+		lblPre2.Location = System.Drawing.Point(260, 3)
+		lblPre2.Text = "Prefix"
+		#
+		# Label Post
+		#
+		lblPost3 = Label()
+		lblPost3.Size = System.Drawing.Size(38, 13)
+		lblPost3.Location = System.Drawing.Point(150, 3)
+		lblPost3.Text = "Postfix"
+		#
+		# Label Post
+		#
+		lblPost2 = Label()
+		lblPost2.Size = System.Drawing.Size(38, 13)
+		lblPost2.Location = System.Drawing.Point(395, 3)
+		lblPost2.Text = "Postfix"
+
+		#
+		# tpInsertAdvanced2
+		#
+		self._tpInsertAdvanced2.Controls.Add(self.Characters)
+		self._tpInsertAdvanced2.Controls.Add(self.Genre)
+		self._tpInsertAdvanced2.Controls.Add(self.Tags)
+		self._tpInsertAdvanced2.Controls.Add(self.ScanInformation)
+		self._tpInsertAdvanced2.Controls.Add(self.Teams)
+		self._tpInsertAdvanced2.Controls.Add(self.Writer)
+		self._tpInsertAdvanced2.Controls.Add(label22)
+		self._tpInsertAdvanced2.Controls.Add(lblSep)
+		self._tpInsertAdvanced2.Controls.Add(lblSep2)
+		self._tpInsertAdvanced2.Controls.Add(lblPre2)
+		self._tpInsertAdvanced2.Controls.Add(lblPre3)
+		self._tpInsertAdvanced2.Controls.Add(lblPost2)
+		self._tpInsertAdvanced2.Controls.Add(lblPost3)
+		self._tpInsertAdvanced2.Padding = System.Windows.Forms.Padding(3)
+		self._tpInsertAdvanced2.Size = System.Drawing.Size(500, 254)
+		self._tpInsertAdvanced2.TabIndex = 2
+		self._tpInsertAdvanced2.Text = "Advanced 2"
+		self._tpInsertAdvanced2.UseVisualStyleBackColor = True
 
 
 	def BtnSepClick(self, sender, e):
@@ -1303,14 +1297,14 @@ class ConfigForm(Form):
 		#Directory Preview
 		if self._tabs.SelectedIndex == 0:
 			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbDirectory.Checked:
-				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseDir.Text, self._txbEmptyDir.Text, self.settings.EmptyData)
+				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseDir.Text, self._txbEmptyDir.Text, self.settings.EmptyData, self._ckbDontAskWhenMultiOne.Checked)
 			else:
 				self._sampleTextDir.Text = self.samplebook.FileDirectory
 				
 		#Filename preview
 		elif self._tabs.SelectedIndex == 1:
 			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFileNaming.Checked:
-				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem)
+				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem, self._ckbDontAskWhenMultiOne.Checked)
 			else:
 				self._sampleTextFile.Text = self.samplebook.FileNameWithExtension
 
@@ -1342,6 +1336,7 @@ class ConfigForm(Form):
 		
 		self._ckbDirectory.Checked = self.settings.UseDirectory
 		self._ckbFileNaming.Checked = self.settings.UseFileName
+		self._ckbDontAskWhenMultiOne.Checked = self.settings.DontAskWhenMultiOne
 		
 		#Move mode
 		if self.settings.Mode == Mode.Move:
@@ -1425,6 +1420,7 @@ class ConfigForm(Form):
 		self.settings.DirTemplate = self._txbDirStruct.Text
 		self.settings.FileTemplate = self._txbFileStruct.Text
 		self.settings.EmptyDir = self._txbEmptyDir.Text
+		self.settings.DontAskWhenMultiOne = self._ckbDontAskWhenMultiOne.Checked
 		
 		self.settings.CopyMode = self._ckbCopyMode.Checked
 
@@ -1460,7 +1456,8 @@ class ConfigForm(Form):
 		for i in self.settings.ExcludeRules:
 			if not i == None:
 				i.Remove.Click -= self.RemoveRuleSet
-		
+
+		self.settings.ExcludeFolders = list(self._lbExFolder.Items)
 
 	def OkClick(self, sender, e):
 		if not self.CheckFields():
@@ -1595,6 +1592,7 @@ class ConfigForm(Form):
 			self.settings = self.allsettings[sender.SelectedItem]
 			sender.Tag = sender.SelectedIndex
 			self.LoadSettings()
+			self.UpdateSampleText()
 		else:
 			sender.SelectedIndex = sender.Tag
 			return

@@ -1,23 +1,19 @@
-﻿New Features:
-Rule Groups
-Rule operators less than and greater than
-Add option for rules matches to be excluded or the only ones to be moved
-Characters, Tags, Writer, Genre, Teams, Series Complete and Manga fields.
-Test mode. When in test mode the script will act as though the operation is working but no files or directories will be created/deleted
-Copy mode. Option to add copied comic to the library
-Library Organizer- Undo last move script. Undoes the last, and only the last, move operation.
+﻿Bug fix:
+Unicode characters in comic file will no longer error
+Folder rules are now saved
+Progress bar will now correctly update
 
+Change:
+Cancel button in Progress bar and tag selection forms
+Text should now reflect what mode you are using
+All text will now reflect when mode you are using
 
-Changes:
-Improved rule calculating and how they are added to the UI
-Improved template text insertion
-Changed when overwriting a file to move it to the recycle bin instead of deleting permenantly
+New Features:
+Path to long exception is now caught and gives you the option to shorten it
+Better duplicate form
 
+Add age rating, file name fileformat, filepath and scan information to exclude rules options
+Added Age Rating and scan information tags
 
-Bug fixes:
-Fixed possible error when calculating exclude rules when a rule had been deleted and match type was all
-Fixed error when a rule was set to Tags
-Misc. other bug fixes and tweaks
-
-
-
+Option to automaticly insert any of Characters, Genre, Scan Information, Tags, Teams or Writers without asking when there is only one value
+Option to automaticly use the selected tags, characters etc when an issue in the operation has them

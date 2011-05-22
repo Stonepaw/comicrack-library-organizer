@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Settings LastUsed="Default">
   <Setting Name="Default">
-    <DirTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;volume&gt;}{ &lt;format&gt;)}</DirTemplate>
+    <DirTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\&lt;series&gt;}{ (&lt;startyear&gt; {&lt;format&gt;)}}</DirTemplate>
     <BaseDir></BaseDir>
-    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count&gt;)}{ (&lt;month&gt;, }{&lt;year&gt;)}</FileTemplate>
+    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (&lt;month&gt;, }{&lt;year&gt;)}</FileTemplate>
     <EmptyDir />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>
+    <DontAskWhenMultiOne>false</DontAskWhenMultiOne>
     <UseDirectory>true</UseDirectory>
-    <CopyMode>true</CopyMode>
+    <CopyMode>false</CopyMode>
     <Postfix>
       <Item Name="Number" Value="" />
-      <Item Name="Format" Value="" />
+      <Item Name="Format" Value=")" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
       <Item Name="StartYear" Value="" />
@@ -19,6 +20,7 @@
       <Item Name="AlternateNumber" Value="" />
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
+      <Item Name="AgeRating" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -26,6 +28,7 @@
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value=", " />
       <Item Name="Genre" Value="" />
+      <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value=")" />
       <Item Name="Volume" Value="" />
@@ -38,11 +41,12 @@
       <Item Name="Format" Value="" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
-      <Item Name="StartYear" Value="" />
+      <Item Name="StartYear" Value="(" />
       <Item Name="Series" Value="" />
       <Item Name="AlternateNumber" Value="" />
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
+      <Item Name="AgeRating" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -50,6 +54,7 @@
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value="(" />
       <Item Name="Genre" Value="" />
+      <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value="" />
       <Item Name="Volume" Value="Vol." />
@@ -61,6 +66,7 @@
       <Item Name="Tags" Value=", " />
       <Item Name="Characters" Value=", " />
       <Item Name="Genre" Value=", " />
+      <Item Name="ScanInformation" Value="" />
       <Item Name="Teams" Value=", " />
       <Item Name="Writer" Value=", " />
     </Seperator>
@@ -70,7 +76,7 @@
     </TextBox>
     <EmptyData>
       <Item Name="Number" Value="" />
-      <Item Name="Format" Value="Series" />
+      <Item Name="Format" Value="" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
       <Item Name="StartYear" Value="" />
@@ -78,12 +84,14 @@
       <Item Name="AlternateNumber" Value="" />
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
+      <Item Name="AgeRating" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
       <Item Name="Count" Value="" />
       <Item Name="Publisher" Value="" />
-      <Item Name="Genre" Value="No Genre" />
+      <Item Name="Genre" Value="" />
+      <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value="" />
       <Item Name="Volume" Value="" />
@@ -92,7 +100,7 @@
       <Item Name="AlternateSeries" Value="" />
     </EmptyData>
     <ExcludeFolders />
-    <ExcludeRules Operator="All" ExcludeMode="Only" />
+    <ExcludeRules Operator="Any" ExcludeMode="Only" />
     <MoveFileless>true</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
     <RemoveEmptyDir>true</RemoveEmptyDir>
