@@ -2,20 +2,21 @@
 This file contains various dialogs and forms required by the Library Orgainizer
 
 
-Version 1.4
-	-Moved various dialogs into here
-	-Added SelectionFrom
+Version 1.6
+	-Added toolongpathform
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
 
 import clr
 
+import re
+
 import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox
+from System.Windows.Forms import ScrollBars, ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox, ErrorProvider
 
 clr.AddReference("System.Drawing")
 
@@ -44,7 +45,7 @@ class SelectionForm(Form):
 
 		self.UseRegardless.Visible = args.Series
 
-		self.UseRegardless.Text = "Use every " + field + " in the selection list, even if the issue does not have that " + field
+		self.UseRegardless.Text = "Use every " + field + " in the selection list for this series, even if the issue does not have that " + field
 
 		if args.Series:
 			self.Label.Text = "Select which " + fieldplural + " you would like to use for each issue in the series " + args.BookText
@@ -54,8 +55,10 @@ class SelectionForm(Form):
 		self.SLabel.Text = "Selected " + fieldplural
 		self.ILabel.Text = fieldplural
 		self.UseAsFolder.Text = "Use each " + field + " as a folder"
+		self.AlwaysUse.Text = "Use every " + field + " in the selection list for every issue in this operation that has that " + field + "."
 
 		self.Items.Items.AddRange(System.Array[System.String](args.Items))
+		self.Selection.Items.AddRange(System.Array[System.String](args.SelectedItems))
 
 	def InitializeComponent(self):
 		self.Label = Label()
@@ -129,30 +132,43 @@ class SelectionForm(Form):
 		# 
 		self.UseRegardless.Location = Point(12, 190)
 		self.UseRegardless.Name = "UseRegardless"
-		self.UseRegardless.Size = Size(400, 40)
+		self.UseRegardless.Size = Size(421, 34)
 		self.UseRegardless.TabIndex = 7
 		self.UseRegardless.UseVisualStyleBackColor = True
 		self.UseRegardless.Enabled = True
+		#
+		# Always use
+		#
+		self.AlwaysUse = CheckBox()
+		self.AlwaysUse.Location = Point(12, 230)
+		self.AlwaysUse.Size = Size(413, 35)
 		# 
 		# UseAsFolder
 		# 
-		self.UseAsFolder.Location = Point(12, 230)
+		self.UseAsFolder.Location = Point(12, 271)
 		self.UseAsFolder.Name = "UseAsFolder"
-		self.UseAsFolder.Size = Size(200, 24)
+		self.UseAsFolder.Size = Size(252, 24)
 		self.UseAsFolder.TabIndex = 8
 		self.UseAsFolder.Text = "Seperate each item with a folder"
 		self.UseAsFolder.UseVisualStyleBackColor = True
 		# 
 		# Okay
 		# 
-		self.Okay.Location = Point(350, 230)
+		self.Okay.Location = Point(267, 272)
 		self.Okay.Name = "Okay"
 		self.Okay.Size = Size(75, 23)
 		self.Okay.TabIndex = 9
 		self.Okay.Text = "Okay"
 		self.Okay.UseVisualStyleBackColor = True
 		self.Okay.DialogResult = DialogResult.OK
-		self.Okay.BringToFront()
+		#
+		# Cancel
+		#
+		self.Cancel = Button()
+		self.Cancel.Location = Point(350, 271)
+		self.Cancel.Size = Size(75, 23)
+		self.Cancel.Text = "Cancel"
+		self.Cancel.DialogResult = DialogResult.Cancel
 		# 
 		# Add
 		# 
@@ -176,8 +192,7 @@ class SelectionForm(Form):
 		# 
 		# SelectionForm
 		# 
-		self.ClientSize = Size(437, 265)
-		self.ControlBox = False
+		self.ClientSize = Size(437, 307)
 		self.Controls.Add(self.Label)
 		self.Controls.Add(self.UseAsFolder)
 		self.Controls.Add(self.UseRegardless)
@@ -187,13 +202,17 @@ class SelectionForm(Form):
 		self.Controls.Add(self.Up)
 		self.Controls.Add(self.Okay)
 		self.Controls.Add(self.Selection)
+		self.Controls.Add(self.AlwaysUse)
+		self.Controls.Add(self.Cancel)
 		self.Controls.Add(self.Items)
 		self.Controls.Add(self.SLabel)
 		self.Controls.Add(self.ILabel)
-		self.FormBorderStyle = FormBorderStyle.FixedToolWindow
+		self.FormBorderStyle = FormBorderStyle.FixedDialog
 		self.ShowIcon = True
 		self.AcceptButton = self.Okay
-
+		self.MaximizeBox = False
+		self.MinimizeBox = False
+		self.Icon = System.Drawing.Icon(ICON)
 		self.StartPosition = FormStartPosition.CenterParent
 
 
@@ -242,22 +261,27 @@ class SelectionForm(Form):
 		self.UseRegardless.Enabled = self.UseEveryIssue.Checked
 
 	def GetResults(self):
-		return SelectionFormResult(list(self.Selection.Items), self.UseRegardless.Checked, self.UseAsFolder.Checked)
+		if self.DialogResult == DialogResult.OK:
+			return SelectionFormResult(list(self.Selection.Items), self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked)
+		else:
+			return SelectionFormResult([], self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked)
 
 class SelectionFormResult(object):
 	
-	def __init__(self, selection, every = False, folder = False):
+	def __init__(self, selection, every = False, folder = False, alwaysuse = False):
 		self.Selection = selection
 		self.EveryIssue = every
 		self.Folder = folder
+		self.AlwaysUse = alwaysuse
 
 class SelectionFormArgs(object):
 
-	def __init__(self, items, fieldtext, booktext, series):
+	def __init__(self, items, selecteditems, fieldtext, booktext, series):
 		self.Items = items
 		self.FieldText = fieldtext
 		self.BookText = booktext
 		self.Series = series
+		self.SelectedItems = selecteditems
 
 class InputBox(Form):
 	def __init__(self):
@@ -305,3 +329,104 @@ class InputBox(Form):
 		if self.TextBox.Text.strip() in self.Owner.allsettings:
 			MessageBox.Show("The entered name is already in use. Please enter another")
 			self.DialogResult = DialogResult.None
+
+
+class PathTooLongForm(Form):
+	def __init__(self, path):
+		self.InitializeComponent()
+		self._Path.Text = path
+		self.CheckPathLength(None, None)
+
+	def InitializeComponent(self):
+		self._components = System.ComponentModel.Container()
+		self._label = System.Windows.Forms.Label()
+		self._Okay = System.Windows.Forms.Button()
+		self._Cancel = System.Windows.Forms.Button()
+		self._Path = System.Windows.Forms.TextBox()
+		self._errorProvider = System.Windows.Forms.ErrorProvider(self._components)
+		self._errorProvider.BeginInit()
+		self.SuspendLayout()
+		# 
+		# label
+		# 
+		self._label.Location = System.Drawing.Point(12, 9)
+		self._label.Name = "label"
+		self._label.Size = System.Drawing.Size(254, 23)
+		self._label.Text = "The path created was too long. Please shorten it."
+		# 
+		# Okay
+		# 
+		self._Okay.DialogResult = System.Windows.Forms.DialogResult.OK
+		self._Okay.Location = System.Drawing.Point(382, 120)
+		self._Okay.Name = "Okay"
+		self._Okay.Size = System.Drawing.Size(75, 23)
+		self._Okay.TabIndex = 1
+		self._Okay.Text = "Okay"
+		self._Okay.UseVisualStyleBackColor = True
+		# 
+		# Cancel
+		# 
+		self._Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+		self._Cancel.Location = System.Drawing.Point(463, 120)
+		self._Cancel.Name = "Cancel"
+		self._Cancel.Size = System.Drawing.Size(75, 23)
+		self._Cancel.TabIndex = 2
+		self._Cancel.Text = "Cancel"
+		self._Cancel.UseVisualStyleBackColor = True
+		# 
+		# Path
+		# 
+		self._Path.Location = System.Drawing.Point(12, 35)
+		self._Path.Name = "Path"
+		self._Path.Size = System.Drawing.Size(500, 75)
+		self._Path.TabIndex = 0
+		self._Path.Multiline = True
+		self._Path.TextChanged += self.CheckPathLength
+		# 
+		# errorProvider
+		# 
+		self._errorProvider.ContainerControl = self
+		# 
+		# Form1
+		# 
+		self.AcceptButton = self._Okay
+		self.CancelButton = self._Cancel
+		self.ClientSize = System.Drawing.Size(550, 150)
+		self.Controls.Add(self._Path)
+		self.Controls.Add(self._Cancel)
+		self.Controls.Add(self._Okay)
+		self.Controls.Add(self._label)
+		self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+		self.MaximizeBox = False
+		self.MinimizeBox = False
+		self.Name = "Form1"
+		self.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+		self.Text = "The path created is too long"
+		self._errorProvider.EndInit()
+		self.ResumeLayout(False)
+		self.PerformLayout()
+		self.Icon = System.Drawing.Icon(ICON)
+
+	def CheckPathLength(self, sender, e):
+		if self._Path.Text.Length >= 260:
+			self._errorProvider.SetError(self._Path, "The path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length))
+			self.DialogResult = DialogResult.None
+			return
+
+		#Check for illegal characters. Note that there may be a : at the beginning. eg C:\
+		path = self._Path.Text
+
+		if len(path) > 1:
+			if path[1] == ":":
+				path = path [2:]
+		r = re.search("[<>:|\*\?\"]", path)
+		if r != None:
+			self._errorProvider.SetError(self._Path, "The path cannot contain any of < > : | * ? \" ")
+			self.DialogResult = DialogResult.None
+			return
+		self._errorProvider.SetError(self._Path, "")
+		return
+
+	def OkayClick(self, sender, e):
+		
+		self.CheckPathLength(self, sender, e)

@@ -5,7 +5,7 @@ Contains a class for settings
 
 Author: Stonepaw
 
-Version 1.4
+Version 1.6
 
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
@@ -49,21 +49,21 @@ class settings:
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : ""}
+				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
 		
 		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : ""}
+				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : ""}
+				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
 
-		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : ""}
+		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
 
 		self.TextBox = {"Manga" : "", "SeriesComplete" : ""}
 				
@@ -73,6 +73,7 @@ class settings:
 		
 		self.ExcludeFolders = []
 	
+		self.DontAskWhenMultiOne = False
 		
 		self.ExcludeRules = []
 	
@@ -142,6 +143,10 @@ class settings:
 		xwriter.WriteStartElement("UseFileName")
 		xwriter.WriteValue(self.UseFileName)
 		xwriter.WriteEndElement()
+
+		xwriter.WriteStartElement("DontAskWhenMultiOne")
+		xwriter.WriteValue(self.DontAskWhenMultiOne)
+		xwriter.WriteEndElement()
 		
 		xwriter.WriteStartElement("UseDirectory")
 		xwriter.WriteValue(self.UseDirectory)
@@ -195,7 +200,7 @@ class settings:
 		for i in self.ExcludeFolders:
 			xwriter.WriteElementString("Item", i)
 		xwriter.WriteEndElement()
-		print self.ExcludeRules.Count
+
 		xwriter.WriteStartElement("ExcludeRules")
 		xwriter.WriteAttributeString("Operator", self.ExcludeOperator)
 		xwriter.WriteAttributeString("ExcludeMode", self.ExcludeMode)
@@ -259,6 +264,11 @@ class settings:
 			self.CopyMode = Convert.ToBoolean(Xml.SelectSingleNode("CopyMode").InnerText)
 		except:
 			self.CopyMode = True
+
+		try:
+			self.DontAskWhenMultiOne = Convert.ToBoolean(Xml.SelectSingleNode("DontAskWhenMultiOne").InnerText)
+		except:
+			self.DontAskWhenMultiOne = False
 		
 		self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
 		self.RemoveEmptyDir = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)

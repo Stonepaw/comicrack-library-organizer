@@ -3,7 +3,7 @@ lobookmover.py
 
 This contains all the book moving fuction the script uses. Also the path generator
 
-Version 1.4
+Version 1.6
 
 Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
 """
@@ -15,7 +15,7 @@ import re
 
 import System
 
-from System import Func
+from System import Func, Action
 
 from System.Text import StringBuilder
 
@@ -23,14 +23,19 @@ from System.IO import Path, File, FileInfo, DirectoryInfo, Directory
 
 import loforms
 
-from loforms import SelectionFormArgs, SelectionFormResult, SelectionForm
+from loforms import PathTooLongForm, SelectionFormArgs, SelectionFormResult, SelectionForm
 
 import locommon
 
 from locommon import Mode
 
+from loduplicate import DuplicateResult, DuplicateForm
+
 clr.AddReference("System.Drawing")
 from System.Drawing.Imaging import ImageFormat
+
+clr.AddReference("System.Windows.Forms")
+from System.Windows.Forms import DialogResult
 
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
@@ -62,8 +67,12 @@ class BookMover(object):
 		self.report = StringBuilder()
 		self.pathmaker = PathMaker(form)
 		
+		#Hold books that are duplicates so they can be all asked at the end.
+
+		self.HeldDuplicateBooks = []
 		
 		#This is for when the script is in Test mode. It hold created paths so it won't be writing that it created the path for every comic
+
 		self.CreatedPaths = []
 		self.MovedBooks = []
 
@@ -75,6 +84,22 @@ class BookMover(object):
 		self.Action = None
 		
 		self.report.Append("Library Organizer Report:")
+
+		if self.settings.Mode == Mode.Copy:
+			self.modetext = "copy"
+			self.modetextplural = "copying"
+			self.modetextpast = "copied"
+
+		if self.settings.Mode == Mode.Move:
+			self.modetext = "move"
+			self.modetextplural = "moving"
+			self.modetextpast = "moved"
+
+		if self.settings.Mode == Mode.Test:
+			self.modetext = "move (simulated)"
+			self.modetextplural = "moving (simulated)"
+			self.modetextpast = "moved (simulated)"
+
 		
 	def MoveBooks(self):
 		
@@ -97,19 +122,25 @@ class BookMover(object):
 				self.report.Append("\n\nOperation cancelled by user.")
 				break
 			
+
+#-------------- Check if the file exists first ------------------------------------------------------------------------------#
+
+			if not File.Exists(book.FilePath):
+				self.report.Append("\n\nFailed to %s\n%s\nbecause the file does not exist." % (self.modetext, book.FilePath))
+				failed += 1
+				self.worker.ReportProgress(count)
+				continue
 			
-			#Check the exclude paths first.
+#------------ Check the exclude paths first -----------------------------------------------------------------------------------#
 			if ExcludePath(book, self.settings.ExcludeFolders):
 				skipped += 1
-				self.report.Append("\n\nSkipped moving\n%s\nbecause it is located in an excluded path." % (book.FilePath))
+				self.report.Append("\n\nSkipped %s\n%s\nbecause it is located in an excluded path." % (self.modetextplural, book.FilePath))
 				self.worker.ReportProgress(count)
 				continue
 			
 			
 			
-			#
-			#   Metadata Exclude Rules
-			#
+#----------------- Metadata Exclude Rules ------------------------------------------------------------------------------------#
 			"""
 			Possible results are True or False
 				True is when the book should not be moved
@@ -119,22 +150,23 @@ class BookMover(object):
 			"""
 			if ExcludeMeta(book, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode):
 				skipped += 1
-				self.report.Append("\n\nSkipped moving\n%s \nbecause it qualified under the exclude rules." % (book.FilePath))
+				self.report.Append("\n\nSkipped %s\n%s \nbecause it qualified under the exclude rules." % (self.modetextplural, book.FilePath))
 				self.worker.ReportProgress(count)
 				continue
 
 
 			
-			# Fileless and not creating fileless images
+#------------ Fileless and not creating fileless images ---------------------------------------------------#
+
 			if book.FilePath == "" and not self.settings.MoveFileless:
 				#Fileless comic
 				skipped += 1
-				self.report.Append("\n\nSkipped moving book\n%s %s\nbecause it is a fileless book." % (book.ShadowSeries, book.ShadowNumber))
+				self.report.Append("\n\nSkipped %s book\n%s %s\nbecause it is a fileless book." % (self.modetextplural, book.ShadowSeries, book.ShadowNumber))
 				self.worker.ReportProgress(count)
 				continue
 			
 			
-			#Fileless and moving but no custom thumbnail
+#------------ Fileless and moving but no custom thumbnail -------------------------------------------------#
 			
 			if book.FilePath == "" and self.settings.MoveFileless and not book.CustomThumbnailKey:
 				#Fileless comic
@@ -143,22 +175,59 @@ class BookMover(object):
 				self.worker.ReportProgress(count)
 				continue
 			
-			#Create the path from pattern seperated as directory path and the file path
+#------------ Create the path from the template seperated as directory path and the file path ----------------------#
 			
 			dirpath, filepath = self.CreatePath(book)
-			
-			
-			#Empty file name
+
+			fullpath = Path.Combine(dirpath, filepath)
+
+		
+#-------------Empty file name -------------------------------------------------------------------------------------#
+
 			if filepath == "":
 				failed += 1
-				self.report.Append("\n\nFailed to move\n%s\nbecause the filename created was empty. The book was not moved" % (book.FilePath))
+				self.report.Append("\n\nFailed to %s\n%s\nbecause the filename created was empty. The book was not moved" % (self.modetext, book.FilePath))
 				self.worker.ReportProgress(count)
+				continue
+
+
+#-------------- Book is already located at that path -----------------------------------------------------------------#
+
+			if fullpath == book.FilePath:
+				self.report.Append("\n\nSkipped %s book\n%s\nbecause it is already located at the calculated path." % (self.modetextplural, book.FilePath))
+				skipped += 1
+				self.worker.ReportProgress(count)
+				continue
+
+#-------------- Check for too long path error --------------------------------------------------------------------------#
+
+			if len(fullpath) > 259:
+				result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([fullpath]))
+				if result == None:
+					skipped += 1
+					self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+					self.worker.ReportProgress(count)
+					continue
+
+				fullpath = result
+				f = FileInfo(fullpath)
+				dirpath = f.DirectoryName
+				filepath = f.Name
+
+
+
+#------------ Duplicate. Hold for later ---------------------------------------------------------------------------#
+
+			if File.Exists(fullpath) or fullpath in self.MovedBooks:
+				self.HeldDuplicateBooks.append(book)
+				count -= 1
 				continue
 			
 			#Create here because needed for cleaning directories later
 			oldpath = book.FileDirectory
 			
-			#Create the directory
+#--------------Create the directory --------------------------------------------------------------------------------#
+
 			if not Directory.Exists(dirpath):
 				try:
 					if not self.settings.Mode == Mode.Test:
@@ -170,14 +239,14 @@ class BookMover(object):
 
 				except Exception, ex:
 					failed += 1
-					self.report.Append("\n\nFailed to create path\n%s\nbecause an error occured. The error was: %s. Book was not moved." % (newpath, ex, book.FilePath))
+					self.report.Append("\n\nFailed to create path\n%s\nbecause an error occured. The error was: %s. Book was not %s." % (fullpath, ex, self.modetextpast))
 					self.worker.ReportProgress(count)
 					continue
 				
-			#If fileless. Since filess and not creating fileless was filtered out above. It is save to create.
+#---------------- If fileless. Since all fileless exceptions and rules were filtered out above. It is safe to create. -------------------------#
 					
 			if book.FilePath == "":
-				result = self.MoveFileless(book, Path.Combine(dirpath, filepath))
+				result = self.MoveFileless(book, fullpath)
 				
 				if result == MoveResult.Success:
 					success += 1
@@ -191,9 +260,77 @@ class BookMover(object):
 				continue
 				
 
+#-------------- Normal file ----------------------------------------------------------------------------------------------------------------#
+			
+			result = self.MoveBook(book, fullpath)
+			if result == MoveResult.Success:
+				success += 1
+			
+			elif result == MoveResult.Failed:
+				failed += 1
+			
+			elif result == MoveResult.Skipped:
+				skipped += 1
+				
+
+#------------- Cleanup old directories ---------------------------------------------------------------#
+			if self.settings.RemoveEmptyDir and self.settings.Mode == Mode.Move:
+				self.CleanDirectories(DirectoryInfo(oldpath))
+				self.CleanDirectories(DirectoryInfo(dirpath))
+			
+			self.worker.ReportProgress(count)
+			
+
+#----------- Now process the duplicate books --------------------------------------------------------------#
+
+		for book in self.HeldDuplicateBooks[:]:
+			count += 1
+
+
+			#Before making the paths check if the book needs to be moved at all
+			
+			if self.worker.CancellationPending:
+				#User pressed cancel
+				skipped = len(self.books) - success - failed
+				self.report.Append("\n\nOperation cancelled by user.")
+				break
+
+
+			#Since pretty much all the errors have already been dealt with the first time round. We can go straight to the move.
+
+			#Create the path from pattern seperated as directory path and the file path
+			
+			dirpath, filepath = self.CreatePath(book)
+
+			fullpath = Path.Combine(dirpath, filepath)
+
+			#Create here because needed for cleaning directories later
+
+			oldpath = book.FileDirectory
+			
+			#Note don't need to create the directry since the destination file already exists
+				
+			#If fileless. Since fileless and not creating fileless was filtered out above. It is safe to create.
+					
+			if book.FilePath == "":
+				result = self.MoveFileless(book, fullpath)
+				
+				if result == MoveResult.Success:
+					success += 1
+			
+				elif result == MoveResult.Failed:
+					failed += 1
+				
+				elif result == MoveResult.Skipped:
+					skipped += 1
+				self.worker.ReportProgress(count)
+				self.HeldDuplicateBooks.remove(book)
+				continue
+				
+
 			#Normal file
 			
-			result = self.MoveBook(book, Path.Combine(dirpath, filepath))
+			result = self.MoveBook(book, fullpath)
 			if result == MoveResult.Success:
 				success += 1
 			
@@ -207,15 +344,20 @@ class BookMover(object):
 			if self.settings.RemoveEmptyDir and self.settings.Mode == Mode.Move:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(dirpath))
-			
+
+			#Remove the book from the list so the duplicate dialog will show the correct number
+
+			self.HeldDuplicateBooks.remove(book)
+
 			self.worker.ReportProgress(count)
-			
+
 
 		#If we moved some comics write the undo file
 		if len(self.MovedBooksUndo) > 0:
 			locommon.SaveDict(self.MovedBooksUndo, locommon.UNDOFILE)
+
 		#Return the report to the worker thread
-		report = "Successfully moved: %s\nFailed to move: %s\nSkipped: %s" % (success, failed, skipped)
+		report = "Successfully %s: %s\nFailed to %s: %s\nSkipped: %s" % (self.modetextpast, success, self.modetext, failed, skipped)
 		return [failed + skipped, report, self.report.ToString()]
 	
 	def MoveFileless(self, book, path):
@@ -225,61 +367,61 @@ class BookMover(object):
 		Path is the absolute path (with extension) where the images should be created
 		"""
 		
-		
-		#TODO: required? Since this is a fileless comic oldpath will always be empty
-		#oldpath = book.FilePath
-		
-		#If something is already there
+		#If something is already there. Note this will only occur on the final pass with held duplicate books
 		if File.Exists(path) or path in self.MovedBooks:
 			
 			#Find the existing book in the library (if it exists)
 			oldbook = self.FindDuplicate(path)
 			
+			if oldbook == None:
+				oldbook = FileInfo(path)
+
+			#Get the rename file name here so it can be put into the form
+			renamepath = self.CreateRenamePath(path, book)
+			
+			renamefilename = FileInfo(renamepath).Name
+
 			if not self.AlwaysDoAction:
 				
 				#Ask user what they want to do:
 				
-				result = self.form.Invoke(Func[System.String, type(book), type(oldbook), list](self.form.AskOverwrite), System.Array[object]([path, book, oldbook]))
+				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
 				self.Action = result[0]
 				if result[1] == True:
 					#User checked always do this opperation
 					self.AlwaysDoAction = True
 			
-			if self.Action == OverwriteAction.Cancel:
+			if self.Action == DuplicateResult.Cancel:
 				self.report.Append("\n\nSkipped creating image\n%s\nbecause a file already exists there and the user declined to overwrite it." % (path))
 				return MoveResult.Skipped
 			
-			elif self.Action == OverwriteAction.Rename:
-				#This bit writen by pescuma. Thanks!
-				# Find an available name
-				extension = Path.GetExtension(path)
-				base = path[:-len(extension)]
-				
-				for i in range(100):
-					newpath = base + " (" + str(i+1) + ")" + extension
+			elif self.Action == DuplicateResult.Rename:
+				if len(renamepath) > 259:
+					result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([renamepath]))
+					if result == None:
+						self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+						return MoveResult.Skipped
 
-					#For test mode
-					if newpath in self.MovedBooks:
-						continue
+					return self.MoveFileless(book, result)
 
-					if not File.Exists(newpath):
-						return self.MoveFileless(book, newpath)
-				
-				self.report.Append("\n\nFailed to find an available name to rename image. Image %s was not created." % (path))
-				return MoveResult.Failed
+				return self.MoveFileless(book, renamepath)
 			
 			elif self.Action == OverwriteAction.Overwrite:
 				try:
 					if self.settings.Mode == Mode.Test:
+						#Because the script goes into a loop if in test mode here since no files are actually changed. return a success
 						self.report.Append("\n\nDeleting:\n%s" % (path))
 						self.report.Append("\n\nCreating image %s" % (path))
 						self.MoveBooks.append(path)
+						return MoveResult.Success
 					else:
 						FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
 						#File.Delete(path)
 				except Exception, ex:
 					self.report.Append("\n\nFailed to overwrite %s. The error was: %s. Image for fileless book\n%s %s\nwas not created" % (path, ex, book.ShadowSeries, book.ShadowNumber))
 					return MoveResult.Failed
+
+				#Since we are only working with images there is no need to remove a book from the library
 				
 				return self.MoveFileless(book, path)
 			
@@ -301,12 +443,15 @@ class BookMover(object):
 			else:
 				image.Save(path, format)
 			return MoveResult.Success
+
 		except Exception, ex:
 			self.report.Append("\n\nFailed to create image\n%s\nbecause an error occured. The error was: %s." % (path, ex))
 			return MoveResult.Failed
 	
 	def MoveBook(self, book, path):
 		"""
+		Moves a book to the path. Checks for overwrite and catches a few errors
+
 		Book is the book to be moved
 		
 		Path is the absolute destination with extension
@@ -316,59 +461,57 @@ class BookMover(object):
 		#Keep the current book path, just incase
 		oldpath = book.FilePath
 		
-		if not File.Exists(book.FilePath):
-			self.report.Append("\n\nFailed to move\n%s\nbecause the file does not exist." % (book.FilePath))
-			return MoveResult.Failed
-		
-		if path == book.FilePath:
-			self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated path." % (book.FilePath))
-			return MoveResult.Skipped
-		
+		#If something is already there. Note this will only occur on the final pass with held duplicate books
 		if File.Exists(path) or path in self.MovedBooks:
 			
 			#Find the existing book if it occurs in the library
 			oldbook = self.FindDuplicate(path)
+
+
+			if oldbook == None:
+				oldbook = FileInfo(path)
+
+			#Get the rename file name here so it can be put into the form
+			renamepath = self.CreateRenamePath(path, book)
 			
+			renamefilename = FileInfo(renamepath).Name
+
 			if not self.AlwaysDoAction:
-				
-				#Ask the user:
-				result = self.form.Invoke(Func[System.String, type(book), type(oldbook), list](self.form.AskOverwrite), System.Array[object]([path, book, oldbook]))
+
+				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
+
 				self.Action = result[0]
+
 				if result[1] == True:
 					#User checked always do this opperation
 					self.AlwaysDoAction = True
 			
-			if self.Action == OverwriteAction.Cancel:
-				self.report.Append("\n\nSkipped moving\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (book.FilePath, path))
+			if self.Action == DuplicateResult.Cancel:
+				self.report.Append("\n\nSkipped %s\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (self.modetextplural, book.FilePath, path))
 				return MoveResult.Skipped
 			
-			elif self.Action == OverwriteAction.Rename:
-				#This bit writen by pescuma. Thanks!
-				# Find an available name
-				extension = Path.GetExtension(path)
-				base = path[:-len(extension)]
-				
-				for i in range(100):
-					newpath = base + " (" + str(i+1) + ")" + extension
+			elif self.Action == DuplicateResult.Rename:
+					#user choose to use the new name. Now we have to check and make sure it isn't too long:
+					#-------------- Check for too long path error --------------------------------------------------------------------------#
 
-					#For test mode
-					if newpath in self.MovedBooks:
-						continue
+				if len(renamepath) > 259:
+					result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([renamepath]))
+					if result == None:
+						self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+						return MoveResult.Skipped
 
-					if not File.Exists(newpath) or newpath == book.FilePath:
-						return self.MoveBook(book, newpath)
-				
-				self.report.Append("\n\nFailed to find an available name to rename book. Book\n%s\nwas not moved." % (path))
-				return MoveResult.Failed
+					return self.MoveBook(book, result)
+
+				return self.MoveBook(book, renamepath)
 			
-			elif self.Action == OverwriteAction.Overwrite:
+			elif self.Action == DuplicateResult.Overwrite:
 				
 				if self.settings.Mode == Mode.Test:
 					self.report.Append("\n\nDeleting:\n%s" % (path))
 
 					#Because the script will get into an infitite loop if allowed to be called recursivly as down below since the book is not actualy deleted:
 					#Fake the copy and return a success.
-					self.report.Append("\n\nMoving book from\n%s\nto\n%s." % (book.FilePath, path))
+					self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
 					self.MovedBooks.append(path)
 					return MoveResult.Success
 				
@@ -378,11 +521,11 @@ class BookMover(object):
 						FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
 						#File.Delete(path)
 					except Exception, ex:
-						self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not moved." % (path, ex, book.FilePath))
+						self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not %s." % (path, ex, book.FilePath, self.modetextpast))
 						return MoveResult.Failed
 				
-					#if the book is in the library, delete it
-					if oldbook:
+					#if the book is in the library, delete it!
+					if type(oldbook) != FileInfo:
 						ComicRack.App.RemoveBook(oldbook)
 				
 				return self.MoveBook(book, path)
@@ -390,22 +533,27 @@ class BookMover(object):
 		
 		#Finally actually move the book
 		try:
+
 			if self.settings.Mode == Mode.Move:
 				File.Move(book.FilePath, path)
 				self.MovedBooksUndo[path] = book.FilePath
 				book.FilePath = path
+
 			elif self.settings.Mode == Mode.Test:
-				self.report.Append("\n\nMoving book from\n%s\nto\n%s." % (book.FilePath, path))
+				self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
 				self.MovedBooks.append(path)
+
 			elif self.settings.Mode == Mode.Copy:
 				File.Copy(book.FilePath, path)
 				if self.settings.CopyMode:
 					newbook = ComicRack.App.AddNewBook(False)
 					newbook.FilePath = path
 					CopyData(book, newbook)
+
 			return MoveResult.Success
+
 		except Exception, ex:
-			self.report.Append("\n\nFailed to move\n%s\nbecause an error occured. The error was: %s. The book was not moved." % (book.FilePath, ex))
+			self.report.Append("\n\nFailed to %s\n%s\nbecause an error occured. The error was: %s. The book was not %s." % (self.modetext, book.FilePath, ex, self.modetextpast))
 			return MoveResult.Failed
 	
 	def CreatePath(self, book):
@@ -420,7 +568,7 @@ class BookMover(object):
 		
 		#Create the directory
 		if self.settings.UseDirectory:
-			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.DirTemplate, self.settings.BaseDir, self.settings.EmptyDir, self.settings.EmptyData)
+			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.DirTemplate, self.settings.BaseDir, self.settings.EmptyDir, self.settings.EmptyData, self.settings.DontAskWhenMultiOne)
 		
 		#Or use the books current directory
 		else:
@@ -428,7 +576,7 @@ class BookMover(object):
 		
 		#Create filename
 		if self.settings.UseFileName:
-			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat)
+			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat, self.settings.DontAskWhenMultiOne)
 		
 		#Or use current filename
 		else:
@@ -444,6 +592,22 @@ class BookMover(object):
 			if b.FilePath == path:
 				return b
 		return None
+
+	def CreateRenamePath(self, path, book):
+
+		#By pescuma. modified slightly
+		extension = Path.GetExtension(path)
+		base = path[:-len(extension)]
+				
+		for i in range(100):
+			newpath = base + " (" + str(i+1) + ")" + extension
+
+			#For test mode
+			if newpath in self.MovedBooks:
+				continue
+
+			if not File.Exists(newpath) or newpath == book.FilePath:
+				return newpath
 	
 	def CleanDirectories(self, directory):
 		"""
@@ -461,6 +625,15 @@ class BookMover(object):
 			directory.Delete()
 			self.CleanDirectories(parent)
 
+	def GetSmallerPath(self, path):
+		p = PathTooLongForm(path)
+		r = p.ShowDialog()
+
+		if r == DialogResult.Cancel:
+			return None
+
+		return p._Path.Text
+
 class UndoMover(object):
 	
 	def __init__(self, worker, form, dict, settings):
@@ -471,6 +644,8 @@ class UndoMover(object):
 		self.AlwaysDoAction = False
 		self.settings = settings
 
+		self.HeldDuplicateBooks = []
+
 	def MoveBooks(self):
 
 		success = 0
@@ -480,11 +655,15 @@ class UndoMover(object):
 		#get a list of the books
 		books, notfound = self.GetBooks()
 
+
+
 		for book in books + notfound:
 			if type(book) == str:
 				path = self.BookDict[book]
+				oldfile = book
 			else:
 				path = self.BookDict[book.FilePath]
+				oldfile = book.FilePath
 			count += 1
 
 			if self.worker.CancellationPending:
@@ -493,8 +672,27 @@ class UndoMover(object):
 				self.report.Append("\n\nOperation cancelled by user.")
 				break
 
+			if not File.Exists(oldfile):
+				self.report.Append("\n\nFailed to move\n%s\nbecause the file does not exist." % (oldfile))
+				failed += 1
+				self.worker.ReportProgress(count)
+				continue
+
+		
+			if path == oldfile:
+				self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated path." % (oldfile))
+				skipped += 1
+				self.worker.ReportProgress(count)
+				continue
+
 			#Created the directory if need be
 			f = FileInfo(path)
+
+			if f.Exists:
+				self.HeldDuplicateBooks.append(book)
+				count -= 1
+				continue
+
 			d = f.Directory
 			if not d.Exists:
 				d.Create()
@@ -520,6 +718,55 @@ class UndoMover(object):
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(f.DirectoryName))
 			self.worker.ReportProgress(count)
+
+		#Deal with the duplicates
+		for book in self.HeldDuplicateBooks[:]:
+			if type(book) == str:
+				path = self.BookDict[book]
+				oldpath = book
+			else:
+				path = self.BookDict[book.FilePath]
+				oldpath = book.FilePath
+			count += 1
+
+			if self.worker.CancellationPending:
+				#User pressed cancel
+				skipped = len(books) + len(notfound) - success - failed
+				self.report.Append("\n\nOperation cancelled by user.")
+				break
+
+			#Created the directory if need be
+			f = FileInfo(path)
+
+			d = f.Directory
+			if not d.Exists:
+				d.Create()
+
+			if type(book) == str:
+				oldpath = FileInfo(book).DirectoryName
+			else:
+				oldpath = book.FileDirectory
+
+			result = self.MoveBook(book, path)
+			if result == MoveResult.Success:
+				success += 1
+			
+			elif result == MoveResult.Failed:
+				failed += 1
+			
+			elif result == MoveResult.Skipped:
+				skipped += 1
+
+			
+			#If cleaning directories
+			if self.settings.RemoveEmptyDir:
+				self.CleanDirectories(DirectoryInfo(oldpath))
+				self.CleanDirectories(DirectoryInfo(f.DirectoryName))
+
+			self.HeldDuplicateBooks.remove(book)
+
+			self.worker.ReportProgress(count)
+
 		#Return the report to the worker thread
 		report = "Successfully moved: %s\nFailed to move: %s\nSkipped: %s" % (success, failed, skipped)
 		return [failed + skipped, report, self.report.ToString()]
@@ -550,48 +797,41 @@ class UndoMover(object):
 		else:
 			oldpath = book.FilePath
 		
-		if not File.Exists(oldpath):
-			self.report.Append("\n\nFailed to move\n%s\nbecause the file does not exist." % (oldpath))
-			return MoveResult.Failed
-		
-		if path == oldpath:
-			self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated path." % (oldpath))
-			return MoveResult.Skipped
-		
+	
 		if File.Exists(path):
 			
 			#Find the existing book if it occurs in the library
 			oldbook = self.FindDuplicate(path)
+
+			if oldbook == None:
+				oldbook = FileInfo(path)
+
+			if type(book) == str:
+				dupbook = FileInfo(book)
+			else:
+				dupbook = book
 			
 			if not self.AlwaysDoAction:
 				
+				renamepath = self.CreateRenamePath(book, path)
+
+				renamefilename = FileInfo(renamepath).Name
+
 				#Ask the user:
-				result = self.form.Invoke(Func[System.String, type(book), type(oldbook), list](self.form.AskOverwrite), System.Array[object]([path, book, oldbook]))
+				result = self.form.Invoke(Func[type(dupbook), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([dupbook, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
 				self.Action = result[0]
 				if result[1] == True:
 					#User checked always do this opperation
 					self.AlwaysDoAction = True
 			
-			if self.Action == OverwriteAction.Cancel:
+			if self.Action == DuplicateResult.Cancel:
 				self.report.Append("\n\nSkipped moving\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (oldpath, path))
 				return MoveResult.Skipped
 			
-			elif self.Action == OverwriteAction.Rename:
-				#This bit writen by pescuma. Thanks!
-				# Find an available name
-				extension = Path.GetExtension(path)
-				base = path[:-len(extension)]
-				
-				for i in range(100):
-					newpath = base + " (" + str(i+1) + ")" + extension
-
-					if not File.Exists(newpath) or newpath == oldpath:
-						return self.MoveBook(book, newpath)
-				
-				self.report.Append("\n\nFailed to find an available name to rename book. Book\n%s\nwas not moved." % (path))
-				return MoveResult.Failed
+			elif self.Action == DuplicateResult.Rename:
+				return self.MoveBook(book, renamepath)
 			
-			elif self.Action == OverwriteAction.Overwrite:
+			elif self.Action == DuplicateForm.Overwrite:
 
 				try:
 					FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
@@ -613,6 +853,12 @@ class UndoMover(object):
 			if not type(book) == str:
 				book.FilePath = path
 			return MoveResult.Success
+		except PathTooLongException:
+			#Too long path. Add a way to ask what path you want to use instead
+			print "path was to long"
+			print oldpath
+			print path
+			return MoveResult.Failed
 		except Exception, ex:
 			self.report.Append("\n\nFailed to move\n%s\nbecause an error occured. The error was: %s. The book was not moved." % (book.FilePath, ex))
 			return MoveResult.Failed
@@ -625,6 +871,18 @@ class UndoMover(object):
 			if b.FilePath == path:
 				return b
 		return None
+
+	def CreateRenamePath(self, path, book):
+
+		#By pescuma. modified slightly
+		extension = Path.GetExtension(path)
+		base = path[:-len(extension)]
+				
+		for i in range(100):
+			newpath = base + " (" + str(i+1) + ")" + extension
+
+			if not File.Exists(newpath) or newpath == book.FilePath:
+				return newpath
 
 	def CleanDirectories(self, directory):
 		"""
@@ -744,17 +1002,20 @@ class PathMaker:
 		self.Genre = {}
 		self.Writer = {}
 		self.Teams = {}
+		self.ScanInformation = {}
 
 		#Need to store the parent form so it can use the muilt select form
 		self.form = parentform
 	
-	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace):
+	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne):
 	#To let the re.sub functions access the book object.
 		global book 
 		book = insertedbook
 		
 		global emptyreplacements
 		emptyreplacements = emptyreplace
+
+		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
 		path = ""
 		if not template.strip() == "":
@@ -777,13 +1038,15 @@ class PathMaker:
 		path = Path.Combine(basepath, path)
 		return path
 	
-	def CreateFileName(self, ibook, template, emptyreplace, filelessformat):
+	def CreateFileName(self, ibook, template, emptyreplace, filelessformat, DontAskWhenMultiOne):
 		global book
 		book = ibook
 		
 		
 		global emptyreplacements
 		emptyreplacements = emptyreplace	
+
+		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
 		r = self.ReplaceValues(template)
 		r = r.strip()
@@ -816,6 +1079,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>month)#(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>volume)(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>title)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>ageRating)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>format)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>startyear)\>(?P<post>[^}]*)(?P<end>})', self.insertStartYear, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>writer)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
@@ -823,6 +1087,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>genre)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>characters)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>teams)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>scaninfo)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
 		return templateText
@@ -884,6 +1149,10 @@ class PathMaker:
 		if property == "Altseries":
 			property = "AlternateSeries"
 		
+		#Small change for age rating. probably a better way to do this
+		if property == "Agerating":
+			property = "AgeRating"
+
 		if getattr(book, property) != "":
 			result = matchObj.group("pre") + getattr(book, property) + matchObj.group("post")
 		else:
@@ -1065,7 +1334,17 @@ class PathMaker:
 
 		field = matchObj.group("name").capitalize()
 
+		#Small catch
+		if field == "Scaninfo":
+			field = "ScanInformation"
+
 		list = getattr(self, field)
+
+		#alwaysuseditems
+		try:
+			alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
+		except KeyError:
+			alwaysuseditems = []
 
 		#Get a bool for if using series. Just simplifies the code a bit
 		if matchObj.group("series") == "series":
@@ -1094,9 +1373,9 @@ class PathMaker:
 		#Try and get an existing value
 		try:
 			if series:
-				return self.MakeMultiSelectionStringSeries(list[index], pre, post, sep, empty, field)
+				return self.MakeMultiSelectionStringSeries(list[index], pre, post, sep, empty, field, alwaysuseditems)
 			else:
-				return self.MakeMultiSelectionStringIssue(list[index], pre, post, sep, empty)
+				return self.MakeMultiSelectionStringIssue(field, list[index], pre, post, sep, empty, alwaysuseditems)
 
 		except KeyError:
 			#key not there so continue to find the writer to use
@@ -1107,7 +1386,7 @@ class PathMaker:
 			list[index] = SelectionFormResult([])
 			return empty
 		
-		#There is writers or going by series
+		#There is items or going by series
 		else:
 			items = []
 
@@ -1124,22 +1403,48 @@ class PathMaker:
 			else:
 				for i in getattr(book, field).split(","):
 					items.append(i.strip())
+
+				#Only one result, check if asking user
+				if len(items) == 1 and self.DontAskWhenMultiOne == True:
+					return pre + items[0] + post
+
+			#Find which we already need to use:
+			used = []
+			l = len(items)
+			for i in items[:]:
+				if i in alwaysuseditems:
+					used.append(i)
+					items.remove(i)
+
+			#All need to be used, no need to ask.
+			if len(used) == l:
+				return pre + sep.join(used) + post
+
+			#Since this can be shown from the configform:
 			if self.form.InvokeRequired:
-				result = self.form.Invoke(Func[SelectionFormArgs, SelectionFormResult](self.ShowSelectionForm), System.Array[object]([SelectionFormArgs(items, field, booktext, series)]))
+				result = self.form.Invoke(Func[SelectionFormArgs, SelectionFormResult](self.ShowSelectionForm), System.Array[object]([SelectionFormArgs(items, used, field, booktext, series)]))
 
 			else:
-				result = self.ShowSelectionForm(SelectionFormArgs(items, field, booktext, series))
+				result = self.ShowSelectionForm(SelectionFormArgs(items, used, field, booktext, series))
+
+			if result.AlwaysUse:
+				if list.has_key("LibraryOrgaizerAlwaysUse") == False:
+					list["LibraryOrgaizerAlwaysUse"] = []
+				for i in result.Selection:
+					if i not in list["LibraryOrgaizerAlwaysUse"]:
+						list["LibraryOrgaizerAlwaysUse"].append(i)
+				alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
 
 			if series:
 				list[index] = result
-				return self.MakeMultiSelectionStringSeries(result, pre, post, sep, empty, field)
+				return self.MakeMultiSelectionStringSeries(result, pre, post, sep, empty, field, alwaysuseditems)
 
 			else:
 				list[index] = result
-				return self.MakeMultiSelectionStringIssue(result, pre, post, sep, empty)
+				return self.MakeMultiSelectionStringIssue(field, result, pre, post, sep, empty, alwaysuseditems)
 
 
-	def MakeMultiSelectionStringIssue(self, results, pre, post, sep, empty):
+	def MakeMultiSelectionStringIssue(self, field, results, pre, post, sep, empty, alwaysuseditems):
 		"""
 		Makes the correctly formated inserted string based on the input values:
 
@@ -1153,6 +1458,15 @@ class PathMaker:
 			sep += "\\"
 
 		string = sep.join(results.Selection)
+
+		items = []
+		for i in getattr(book, field).split(","):
+			items.append(i.strip())
+
+		for i in alwaysuseditems:
+			if i in items and i not in results.Selection:
+				string = sep.join([string, i])
+
 		if string == "":
 			return empty
 
@@ -1166,7 +1480,7 @@ class PathMaker:
 		f.Dispose()
 		return result
 
-	def MakeMultiSelectionStringSeries(self, results, pre, post, sep, empty, field):
+	def MakeMultiSelectionStringSeries(self, results, pre, post, sep, empty, field, alwaysuseditems):
 		"""
 		Makes the correctly formated inserted string based on the input values:
 
@@ -1200,7 +1514,10 @@ class PathMaker:
 
 			string = sep.join(itemsToUse)
 
-			
+			for i in alwaysuseditems:
+				if i in items and not i in itemsToUse:
+					string = sep.join([string, i])
+
 			#Possible for the 
 
 			if string == "":
@@ -1227,4 +1544,4 @@ class PathMaker:
 					if not i == "":
 						results.add(i)
 
-		return results
+		return list(results)

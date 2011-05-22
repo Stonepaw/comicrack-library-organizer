@@ -3,7 +3,9 @@ loduplicate.py
 
 Author: Stonepaw
 
-Version 1.0
+Version 1.6
+		
+			Changed to a wpf form.
 
 Description: Contains a Form for displaying two comic images and various information
 
@@ -12,212 +14,184 @@ Copyright Stonepaw 2011. Anyone is free to use code from this file as long as cr
 
 """
 
-
-
+#Imports. Lots needed for the wpf
 import clr
-clr.AddReference("System.Drawing")
+clr.AddReference("PresentationFramework")
+clr.AddReference("PresentationCore")
+clr.AddReference("System.Xml")
+
 clr.AddReference("System.Windows.Forms")
-import System.Drawing
-import System.Windows.Forms
+from System.Windows.Forms import DialogResult
 
-from System.Drawing import *
-from System.Windows.Forms import *
+import System.IO
+from System.IO import Path, MemoryStream, FileInfo, FileStream, FileMode
+from System import Uri, UriKind
 
-from locommon import ICON
 
-class DuplicateForm(Form):
-	def __init__(self, existingbook, movingbook, ComicRack, existingpath):
-		self.InitializeComponent()
-		
-		self.Icon = System.Drawing.Icon(ICON)
-		
-		if existingbook:
-			self._existingcomicpath.Text = existingbook.FilePath
-			
-			self._existinginfo.Text = "Series: %s \n\nVolume: %s \n\nNumber: %s \n\nPublished Date: %s, %s\n\n# of pages: %s\n\nAdded to library: %s\n\nFile Size: %s" % \
-										(existingbook.ShadowSeries, existingbook.ShadowVolume, existingbook.ShadowNumber, existingbook.Month, existingbook.Year, \
-										existingbook.PageCount, existingbook.AddedTime, existingbook.FileSizeAsText)
-			self._existingcover.Image = ComicRack.App.GetComicThumbnail(existingbook, existingbook.PreferredFrontCover)
-		else:
-			self._existingcomicpath.Text = existingpath
-			self._existinginfo.Text = "Comic not in library"
+clr.AddReference("System.Drawing")
+from System.Drawing.Imaging import ImageFormat
 
-		self._movingcomicpath.Text = movingbook.FilePath
-		self._movinginfo.Text = "Series: %s \n\nVolume: %s \n\nNumber: %s \n\nPublished Date: %s, %s\n\n# of pages: %s\n\nAdded to library: %s\n\nFile Size: %s" % \
-									(movingbook.ShadowSeries, movingbook.ShadowVolume, movingbook.ShadowNumber, movingbook.Month, movingbook.Year, \
-									movingbook.PageCount, movingbook.AddedTime, movingbook.FileSizeAsText)
-									
-		
-		self._movingcover.Image = ComicRack.App.GetComicThumbnail(movingbook, movingbook.PreferredFrontCover)
+
+from System.Windows.Media.Imaging import BitmapImage
+
+from System.Windows import Visibility
+
+from System.Windows.Markup import XamlReader
+from System.Xml import XmlReader
+
+
+from lobookmover import Mode
+
+from locommon import SCRIPTDIRECTORY, ICON
+
+class DuplicateForm(object):
 	
-	def InitializeComponent(self):
-		self._label1 = System.Windows.Forms.Label()
-		self._always = System.Windows.Forms.CheckBox()
-		self._cancel = System.Windows.Forms.Button()
-		self._rename = System.Windows.Forms.Button()
-		self._replace = System.Windows.Forms.Button()
-		self._movingcover = System.Windows.Forms.PictureBox()
-		self._existingcover = System.Windows.Forms.PictureBox()
-		self._existinginfo = System.Windows.Forms.Label()
-		self._movinginfo = System.Windows.Forms.Label()
-		self._movingcomicpath = System.Windows.Forms.Label()
-		self._existingcomicpath = System.Windows.Forms.Label()
-		self._gbexisting = System.Windows.Forms.GroupBox()
-		self._groupBox1 = System.Windows.Forms.GroupBox()
-		self._movingcover.BeginInit()
-		self._existingcover.BeginInit()
-		self._gbexisting.SuspendLayout()
-		self._groupBox1.SuspendLayout()
-		self.SuspendLayout()
-		# 
-		# label1
-		# 
-		self._label1.Location = System.Drawing.Point(12, 9)
-		self._label1.Name = "label1"
-		self._label1.Size = System.Drawing.Size(516, 28)
-		self._label1.TabIndex = 0
-		self._label1.Text = "A comic with the same name already exists in the calculated location. What would you like to do?"
-		# 
-		# always
-		# 
-		self._always.Location = System.Drawing.Point(12, 316)
-		self._always.Name = "always"
-		self._always.Size = System.Drawing.Size(245, 34)
-		self._always.TabIndex = 2
-		self._always.Text = "Always do this action for the rest of this operation"
-		self._always.UseVisualStyleBackColor = True
-		# 
-		# cancel
-		# 
-		self._cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-		self._cancel.Location = System.Drawing.Point(374, 322)
-		self._cancel.Name = "cancel"
-		self._cancel.Size = System.Drawing.Size(75, 23)
-		self._cancel.TabIndex = 3
-		self._cancel.Text = "Don't Move"
-		self._cancel.UseVisualStyleBackColor = True
-		# 
-		# rename
-		# 
-		self._rename.DialogResult = System.Windows.Forms.DialogResult.Retry
-		self._rename.Location = System.Drawing.Point(455, 322)
-		self._rename.Name = "rename"
-		self._rename.Size = System.Drawing.Size(187, 23)
-		self._rename.TabIndex = 5
-		self._rename.Text = "Move but rename to filename (1)"
-		self._rename.UseVisualStyleBackColor = True
-		# 
-		# replace
-		# 
-		self._replace.DialogResult = System.Windows.Forms.DialogResult.Yes
-		self._replace.Location = System.Drawing.Point(263, 322)
-		self._replace.Name = "replace"
-		self._replace.Size = System.Drawing.Size(105, 23)
-		self._replace.TabIndex = 4
-		self._replace.Text = "Move and replace"
-		self._replace.UseVisualStyleBackColor = True
-		# 
-		# movingcover
-		# 
-		self._movingcover.Location = System.Drawing.Point(6, 19)
-		self._movingcover.Name = "movingcover"
-		self._movingcover.Size = System.Drawing.Size(156, 200)
-		self._movingcover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-		self._movingcover.TabIndex = 6
-		self._movingcover.TabStop = False
-		# 
-		# existingcover
-		# 
-		self._existingcover.Location = System.Drawing.Point(6, 19)
-		self._existingcover.Name = "existingcover"
-		self._existingcover.Size = System.Drawing.Size(154, 200)
-		self._existingcover.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-		self._existingcover.TabIndex = 1
-		self._existingcover.TabStop = False
-		# 
-		# existinginfo
-		# 
-		self._existinginfo.Location = System.Drawing.Point(166, 19)
-		self._existinginfo.Name = "existinginfo"
-		self._existinginfo.Size = System.Drawing.Size(139, 200)
-		self._existinginfo.TabIndex = 9
-		self._existinginfo.Text = "label4"
-		# 
-		# movinginfo
-		# 
-		self._movinginfo.Location = System.Drawing.Point(168, 19)
-		self._movinginfo.Name = "movinginfo"
-		self._movinginfo.Size = System.Drawing.Size(137, 200)
-		self._movinginfo.TabIndex = 10
-		self._movinginfo.Text = "label5"
-		# 
-		# movingcomicpath
-		# 
-		self._movingcomicpath.Location = System.Drawing.Point(6, 222)
-		self._movingcomicpath.Name = "movingcomicpath"
-		self._movingcomicpath.Size = System.Drawing.Size(286, 44)
-		self._movingcomicpath.TabIndex = 11
-		self._movingcomicpath.Text = "label6"
-		# 
-		# existingcomicpath
-		# 
-		self._existingcomicpath.Location = System.Drawing.Point(6, 222)
-		self._existingcomicpath.MaximumSize = System.Drawing.Size(299, 87)
-		self._existingcomicpath.Name = "existingcomicpath"
-		self._existingcomicpath.Size = System.Drawing.Size(299, 44)
-		self._existingcomicpath.TabIndex = 12
-		self._existingcomicpath.Text = "label7"
-		# 
-		# gbexisting
-		# 
-		self._gbexisting.AutoSize = True
-		self._gbexisting.Controls.Add(self._existingcover)
-		self._gbexisting.Controls.Add(self._existingcomicpath)
-		self._gbexisting.Controls.Add(self._existinginfo)
-		self._gbexisting.Location = System.Drawing.Point(12, 28)
-		self._gbexisting.MaximumSize = System.Drawing.Size(311, 319)
-		self._gbexisting.Name = "gbexisting"
-		self._gbexisting.Size = System.Drawing.Size(311, 282)
-		self._gbexisting.TabIndex = 13
-		self._gbexisting.TabStop = False
-		self._gbexisting.Text = "Existing Comic"
-		# 
-		# groupBox1
-		# 
-		self._groupBox1.BackColor = System.Drawing.SystemColors.Window
-		self._groupBox1.Controls.Add(self._movingcover)
-		self._groupBox1.Controls.Add(self._movinginfo)
-		self._groupBox1.Controls.Add(self._movingcomicpath)
-		self._groupBox1.Location = System.Drawing.Point(331, 28)
-		self._groupBox1.Name = "groupBox1"
-		self._groupBox1.Size = System.Drawing.Size(311, 282)
-		self._groupBox1.TabIndex = 14
-		self._groupBox1.TabStop = False
-		self._groupBox1.Text = "Comic being moved"
-		# 
-		# DuplicateForm
-		# 
-		self.AcceptButton = self._replace
-		self.BackColor = System.Drawing.SystemColors.Window
-		self.CancelButton = self._cancel
-		self.ClientSize = System.Drawing.Size(654, 352)
-		self.Controls.Add(self._groupBox1)
-		self.Controls.Add(self._gbexisting)
-		self.Controls.Add(self._rename)
-		self.Controls.Add(self._replace)
-		self.Controls.Add(self._cancel)
-		self.Controls.Add(self._always)
-		self.Controls.Add(self._label1)
-		self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
-		self.MaximizeBox = False
-		self.MinimizeBox = False
-		self.Name = "DuplicateForm"
-		self.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-		self.Text = "Duplicate found"
-		self._movingcover.EndInit()
-		self._existingcover.EndInit()
-		self._gbexisting.ResumeLayout(False)
-		self._groupBox1.ResumeLayout(False)
-		self.ResumeLayout(False)
-		self.PerformLayout()
+	def __init__(self, mode):
+		f = FileStream(Path.Combine(SCRIPTDIRECTORY, "DuplicateForm.xaml"),FileMode.Open)
+		self.win = XamlReader.Load(XmlReader.Create(f))
+		f.Close()
+		
+		self.DuplicateResult = None
 
+		self.RenameText = "The file you are moving will be renamed: "
+
+		#Load the images and icon
+		path = FileInfo(__file__).DirectoryName
+		arrow = BitmapImage()
+		arrow.BeginInit()
+
+		arrow.UriSource = Uri(Path.Combine(SCRIPTDIRECTORY, "arrow.png"), UriKind.Absolute)
+		arrow.EndInit()
+		self.win.FindName("Arrow1").Source = arrow
+		self.win.FindName("Arrow2").Source = arrow
+		self.win.FindName("Arrow3").Source = arrow
+
+		icon = BitmapImage()
+		icon.BeginInit()
+		icon.UriSource = Uri(ICON, UriKind.Absolute)
+		icon.EndInit()
+
+		self.win.Icon = icon
+
+		self.win.FindName("CancelButton").Click += self.CancelClick
+		self.win.FindName("Cancel").Click += self.CancelClick
+		self.win.FindName("ReplaceButton").Click += self.ReplaceClick
+		self.win.FindName("RenameButton").Click += self.RenameClick
+
+		self.win.Closing += self.FormClosing
+
+		#The the correct text based on what mode we are in
+		#Mode is set by default so only change if in Copy or Simulation mode
+		if mode == Mode.Copy:
+			self.win.FindName("MoveHeader").Content = "Copy and Replace"
+			self.win.FindName("MoveText").Content = "Replace the file in the destination folder with the file you are copying:"
+
+			self.win.FindName("DontMoveHeader").Content = "Don't Copy"
+			
+			self.win.FindName("RenameHeader").Content = "Copy, but keep both files"
+			self.RenameText = "The file you are copying will be renamed: "
+			self.win.FindName("RenameText").Text = "The file you are copying will be renamed: "
+
+		if mode == Mode.Test:
+			self.win.FindName("Subtitle").Content = "Click the file you want to keep (simulated, no files will be deleted or moved)"
+
+	def ReplaceClick(self, sender, e):
+		self.DuplicateResult = DuplicateResult.Overwrite
+		#Note: set to hide so that the dialog can be reopened.
+		self.win.Hide()
+
+	def CancelClick(self, sender, e):
+		self.DuplicateResult = DuplicateResult.Cancel
+		self.win.Hide()
+
+	def RenameClick(self, sender, e):
+		self.DuplicateResult = DuplicateResult.Rename
+		self.win.Hide()
+
+	def ShowForm(self, newbook, oldbook, renamefile, count):
+		self.DuplicateResult = DuplicateResult.Cancel
+		self.SetupFields(newbook, oldbook, renamefile, count)
+
+		self.win.ShowDialog()
+		return [self.DuplicateResult, self.win.FindName("DoAll").IsChecked]
+
+	def FormClosing(self, sender, e):
+		e.Cancel = True
+		self.DuplicateResult = DuplicateResult.Cancel
+		self.win.Hide()
+
+	def SetupFields(self, newbook, oldbook, renamefile, count):
+
+		self.win.FindName("RenameText").Text = self.RenameText + renamefile
+
+		if type(newbook) != FileInfo:
+			#oldbook can be either a ComicBook object or a FileInfo object
+			self.win.FindName("NewSeries").Content = newbook.ShadowSeries
+			self.win.FindName("NewVolume").Content = newbook.ShadowVolume
+			self.win.FindName("NewNumber").Content = newbook.ShadowNumber
+			self.win.FindName("NewPages").Content = newbook.PageCount
+			self.win.FindName("NewFileSize").Content = newbook.FileSizeAsText
+			self.win.FindName("NewPublishedDate").Content = newbook.MonthAsText + ", " + newbook.YearAsText
+			self.win.FindName("NewAddedDate").Content = newbook.AddedTime
+			self.win.FindName("NewPath").Text = newbook.FilePath
+
+			#Load the new book cover
+			ncs = MemoryStream();
+			ComicRack.App.GetComicThumbnail(newbook, newbook.PreferredFrontCover).Save(ncs, ImageFormat.Png);
+			ncs.Position = 0;
+			newcover = BitmapImage();
+			newcover.BeginInit();
+			newcover.StreamSource = ncs;
+			newcover.EndInit();
+			self.win.FindName("NewCover").Source = newcover
+		else:
+			self.win.FindName("NewSeries").Content = "Comic not in Library"
+			self.win.FindName("NewVolume").Content = ""
+			self.win.FindName("NewNumber").Content = ""
+			self.win.FindName("NewPages").Content = ""
+			self.win.FindName("NewFileSize").Content = '%.2f MB' %  (newbook.Length/1048576.0) #Calculate bytes to MB
+			self.win.FindName("NewPublishedDate").Content = ""
+			self.win.FindName("NewAddedDate").Content = ""
+			self.win.FindName("NewPath").Text = newbook.FullName
+
+		#old book, possible for it to be a FileInfo object
+		if type(oldbook) != FileInfo:
+			self.win.FindName("OldSeries").Content = oldbook.ShadowSeries
+			self.win.FindName("OldVolume").Content = oldbook.ShadowVolume
+			self.win.FindName("OldNumber").Content = oldbook.ShadowNumber
+			self.win.FindName("OldPages").Content = oldbook.PageCount
+			self.win.FindName("OldFileSize").Content = oldbook.FileSizeAsText
+			self.win.FindName("OldPublishedDate").Content = oldbook.MonthAsText + ", " + oldbook.YearAsText
+			self.win.FindName("OldAddedDate").Content = oldbook.AddedTime
+			self.win.FindName("OldPath").Text = oldbook.FilePath
+
+			#cover
+			ocs = MemoryStream();
+			ComicRack.App.GetComicThumbnail(oldbook, oldbook.PreferredFrontCover).Save(ocs, ImageFormat.Png);
+			ncs.Position = 0;
+			oldcover = BitmapImage();
+			oldcover.BeginInit();
+			oldcover.StreamSource = ocs;
+			oldcover.EndInit();
+			self.win.FindName("OldCover").Source = oldcover
+		
+		else:
+			self.win.FindName("OldSeries").Content = "Comic not in Library"
+			self.win.FindName("OldVolume").Content = ""
+			self.win.FindName("OldNumber").Content = ""
+			self.win.FindName("OldPages").Content = ""
+			self.win.FindName("OldFileSize").Content = '%.2f MB' %  (oldbook.Length/1048576.0) #Calculate bytes to MB
+			self.win.FindName("OldPublishedDate").Content = ""
+			self.win.FindName("OldAddedDate").Content = ""
+			self.win.FindName("OldPath").Text = oldbook.FullName
+
+		if count > 1:
+			self.win.FindName("DoAll").Visibility = Visibility.Visible
+			self.win.FindName("DoAll").Content = "Do this for all conficts (" + str(count) + ")"
+		else:
+			self.win.FindName("DoAll").Visibility = Visibility.Hidden
+
+class DuplicateResult:
+	Overwrite = 1
+	Cancel = 2
+	Rename = 3
