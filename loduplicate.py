@@ -3,9 +3,9 @@ loduplicate.py
 
 Author: Stonepaw
 
-Version 1.6
+Version 1.7
 		
-			Changed to a wpf form.
+			Added scan information
 
 Description: Contains a Form for displaying two comic images and various information
 
@@ -134,6 +134,7 @@ class DuplicateForm(object):
 			self.win.FindName("NewPublishedDate").Content = newbook.MonthAsText + ", " + newbook.YearAsText
 			self.win.FindName("NewAddedDate").Content = newbook.AddedTime
 			self.win.FindName("NewPath").Text = newbook.FilePath
+			self.win.FindName("NewScanInfo").Content = newbook.ScanInformation
 
 			#Load the new book cover
 			ncs = MemoryStream();
@@ -152,6 +153,7 @@ class DuplicateForm(object):
 			self.win.FindName("NewFileSize").Content = '%.2f MB' %  (newbook.Length/1048576.0) #Calculate bytes to MB
 			self.win.FindName("NewPublishedDate").Content = ""
 			self.win.FindName("NewAddedDate").Content = ""
+			self.win.FindName("NewScanInfo").Content = ""
 			self.win.FindName("NewPath").Text = newbook.FullName
 
 		#old book, possible for it to be a FileInfo object
@@ -163,6 +165,7 @@ class DuplicateForm(object):
 			self.win.FindName("OldFileSize").Content = oldbook.FileSizeAsText
 			self.win.FindName("OldPublishedDate").Content = oldbook.MonthAsText + ", " + oldbook.YearAsText
 			self.win.FindName("OldAddedDate").Content = oldbook.AddedTime
+			self.win.FindName("OldScanInfo").Content = oldbook.ScanInformation
 			self.win.FindName("OldPath").Text = oldbook.FilePath
 
 			#cover
@@ -183,6 +186,7 @@ class DuplicateForm(object):
 			self.win.FindName("OldFileSize").Content = '%.2f MB' %  (oldbook.Length/1048576.0) #Calculate bytes to MB
 			self.win.FindName("OldPublishedDate").Content = ""
 			self.win.FindName("OldAddedDate").Content = ""
+			self.win.FindName("OldScanInfo").Content = ""
 			self.win.FindName("OldPath").Text = oldbook.FullName
 
 		if count > 1:

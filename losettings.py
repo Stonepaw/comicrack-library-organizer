@@ -5,7 +5,7 @@ Contains a class for settings
 
 Author: Stonepaw
 
-Version 1.6
+Version 1.7
 
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
@@ -39,35 +39,40 @@ class settings:
 	"""
 	def __init__(self):
 		
-		self.DirTemplate = ""
-		self.BaseDir = ""
+		self.FolderTemplate = ""
+		self.BaseFolder = ""
 		self.FileTemplate = ""
 		self.Name = ""
-		self.EmptyDir = ""
+		self.EmptyFolder = ""
 
 		self.EmptyData = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
+				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
 		
 		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
+				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : ""}
+				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
 
 		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
 
+		self.IllegalCharacters = {"?" : "", "/" : "", "\\" : "", "*" : "", ":" : "-", "<" : "[", ">" : "]", "|" : "!", "\"" : "'"}
+
+		self.Months = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 :"August", 9 : "September", 10 : "October",
+						11 : "November", 12 : "December"}
+
 		self.TextBox = {"Manga" : "", "SeriesComplete" : ""}
 				
-		self.UseDirectory = True
+		self.UseFolder = True
 		
 		self.UseFileName = True
 		
@@ -79,8 +84,8 @@ class settings:
 	
 		self.ExcludeOperator = "Any"
 		
-		self.RemoveEmptyDir = True
-		self.ExcludedEmptyDir = []
+		self.RemoveEmptyFolder = True
+		self.ExcludedEmptyFolder = []
 		
 		self.MoveFileless = False		
 		self.FilelessFormat = ".jpg"
@@ -92,40 +97,7 @@ class settings:
 		self.CopyMode = True
 
 	def Update(self):
-		"""
-		This is to update old settings from version 1.3 of this script
-		"""
-		if "AltSeries" in self.Prefix.keys():
-			self.Prefix["AlternateSeries"] = self.Prefix["AltSeries"]
-			del(self.Prefix["AltSeries"])
-
-		if "AltSeries" in self.Postfix.keys():
-			self.Postfix["AlternateSeries"] = self.Postfix["AltSeries"]
-			del(self.Postfix["AltSeries"])
-
-		if "AltCount" in self.Prefix.keys():
-			self.Prefix["AlternateCount"] = self.Prefix["AltCount"]
-			del(self.Prefix["AltCount"])
-
-		if "AltCount" in self.Postfix.keys():
-			self.Postfix["AlternateCount"] = self.Postfix["AltCount"]
-			del(self.Postfix["AltCount"])
-
-		if "AltNumber" in self.Prefix.keys():
-			self.Prefix["AlternateNumber"] = self.Prefix["AltNumber"]
-			del(self.Prefix["AltNumber"])
-
-		if "AltNumber" in self.Postfix.keys():
-			self.Postfix["AlternateNumber"] = self.Postfix["AltNumber"]
-			del(self.Postfix["AltNumber"])
-
-		if "Month#" in self.Prefix.keys():
-			self.Prefix["MonthNumber"] = self.Prefix["Month#"]
-			del(self.Prefix["Month#"])
-
-		if "Month#" in self.Postfix.keys():
-			self.Postfix["MonthNumber"] = self.Postfix["Month#"]
-			del(self.Postfix["Month#"])
+		pass
 		
 	def Save(self, xwriter):
 		"""
@@ -134,10 +106,10 @@ class settings:
 		"""
 		xwriter.WriteStartElement("Setting")
 		xwriter.WriteAttributeString("Name", self.Name)
-		xwriter.WriteElementString("DirTemplate", self.DirTemplate)
-		xwriter.WriteElementString("BaseDir", self.BaseDir)
+		xwriter.WriteElementString("FolderTemplate", self.FolderTemplate)
+		xwriter.WriteElementString("BaseFolder", self.BaseFolder)
 		xwriter.WriteElementString("FileTemplate", self.FileTemplate)
-		xwriter.WriteElementString("EmptyDir", self.EmptyDir)
+		xwriter.WriteElementString("EmptyFolder", self.EmptyFolder)
 		xwriter.WriteElementString("Mode", self.Mode)
 		
 		xwriter.WriteStartElement("UseFileName")
@@ -148,8 +120,8 @@ class settings:
 		xwriter.WriteValue(self.DontAskWhenMultiOne)
 		xwriter.WriteEndElement()
 		
-		xwriter.WriteStartElement("UseDirectory")
-		xwriter.WriteValue(self.UseDirectory)
+		xwriter.WriteStartElement("UseFolder")
+		xwriter.WriteValue(self.UseFolder)
 		xwriter.WriteEndElement()
 
 		xwriter.WriteStartElement("CopyMode")
@@ -187,6 +159,22 @@ class settings:
 			xwriter.WriteAttributeString("Value", self.TextBox[i])
 			xwriter.WriteEndElement()
 		xwriter.WriteEndElement()
+
+		xwriter.WriteStartElement("Months")
+		for i in self.Months:
+			xwriter.WriteStartElement("Item")
+			xwriter.WriteAttributeString("Name", str(i))
+			xwriter.WriteAttributeString("Value", self.Months[i])
+			xwriter.WriteEndElement()
+		xwriter.WriteEndElement()
+
+		xwriter.WriteStartElement("IllegalCharacters")
+		for i in self.IllegalCharacters:
+			xwriter.WriteStartElement("Item")
+			xwriter.WriteAttributeString("Name", i)
+			xwriter.WriteAttributeString("Value", self.IllegalCharacters[i])
+			xwriter.WriteEndElement()
+		xwriter.WriteEndElement()
 		
 		xwriter.WriteStartElement("EmptyData")
 		for i in self.EmptyData:
@@ -215,12 +203,12 @@ class settings:
 		
 		xwriter.WriteElementString("FilelessFormat", self.FilelessFormat)
 		
-		xwriter.WriteStartElement("RemoveEmptyDir")
-		xwriter.WriteValue(self.RemoveEmptyDir)
+		xwriter.WriteStartElement("RemoveEmptyFolder")
+		xwriter.WriteValue(self.RemoveEmptyFolder)
 		xwriter.WriteEndElement()
 		
-		xwriter.WriteStartElement("ExcludedEmptyDir")
-		for i in self.ExcludedEmptyDir:
+		xwriter.WriteStartElement("ExcludedEmptyFolder")
+		for i in self.ExcludedEmptyFolder:
 			xwriter.WriteElementString("Item", i)
 		xwriter.WriteEndElement()
 
@@ -229,132 +217,146 @@ class settings:
 	def Load(self, Xml):
 		"""
 		Loads the settings instance from the Xml
-		Xml should be a XmlNode containing the all the nodes in the Setting node
+		Xml should be a XmlNode containing a setting node
 		"""
-		#Text vars
-		self.Name = Xml.Attributes["Name"].Value
-		self.DirTemplate = Xml.SelectSingleNode("DirTemplate").InnerText
-		self.BaseDir = Xml.SelectSingleNode("BaseDir").InnerText
-		self.FileTemplate = Xml.SelectSingleNode("FileTemplate").InnerText
-		self.EmptyDir = Xml.SelectSingleNode("EmptyDir").InnerText
-		
-		
 		try:
-			self.Mode = Xml.SelectSingleNode("Mode").InnerText
-		except AttributeError:
-			self.Mode = Mode.Move
+			#Text vars
+			self.Name = Xml.Attributes["Name"].Value
 		
-		
-		#Legacy, will not be needed in later versions
-		op = Xml.SelectSingleNode("ExcludeOperator")
-		if op:
-			self.ExcludeOperator = op.InnerText
-		
-		
-		
-		self.FilelessFormat = Xml.SelectSingleNode("FilelessFormat").InnerText
-		
-		#Bools
-		
-		self.UseFileName = Convert.ToBoolean(Xml.SelectSingleNode("UseFileName").InnerText)
-		self.UseDirectory = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
 
-		#If upgrading it will error
-		try:
+			#From changes from 1.6 to 1.7
+			try:
+				self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
+			except AttributeError:
+				self.FolderTemplate = Xml.SelectSingleNode("DirTemplate").InnerText
+
+			try:
+				self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
+			except AttributeError:
+				self.BaseFolder = Xml.SelectSingleNode("BaseDir").InnerText
+
+			try:
+				self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
+			except AttributeError:
+				self.EmptyFolder = Xml.SelectSingleNode("EmptyDir").InnerText
+			self.FileTemplate = Xml.SelectSingleNode("FileTemplate").InnerText
+		
+		
+		
+			try:
+				self.Mode = Xml.SelectSingleNode("Mode").InnerText
+			except AttributeError:
+				self.Mode = Mode.Move
+		
+
+			self.FilelessFormat = Xml.SelectSingleNode("FilelessFormat").InnerText
+		
+			#Bools
+		
+			self.UseFileName = Convert.ToBoolean(Xml.SelectSingleNode("UseFileName").InnerText)
+
+			#From 1.6 to 1.7 of the script
+			try:
+				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
+			except AttributeError:
+				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
+
+
 			self.CopyMode = Convert.ToBoolean(Xml.SelectSingleNode("CopyMode").InnerText)
-		except:
-			self.CopyMode = True
 
-		try:
+
 			self.DontAskWhenMultiOne = Convert.ToBoolean(Xml.SelectSingleNode("DontAskWhenMultiOne").InnerText)
-		except:
-			self.DontAskWhenMultiOne = False
 		
-		self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
-		self.RemoveEmptyDir = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)
-		
-		#Dicts
-		
-		
-		iter = Xml.SelectNodes("Prefix/Item")
+			self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
 
-		#Old loading
-		if iter.Count ==  0:
-			iter = Xml.SelectNodes("Pre/Item")
-		for i in iter:
-			self.Prefix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+			try:
+				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
+			except AttributeError:
+				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)
+		
+			#Dicts
+		
+		
+			iter = Xml.SelectNodes("Prefix/Item")
+
+			for i in iter:
+				self.Prefix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
 			
 
-		iter = Xml.SelectNodes("Postfix/Item")
-		if iter.Count == 0:
-			iter = Xml.SelectNodes("Post/Item")
-		for i in iter:
-			self.Postfix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value		
+			iter = Xml.SelectNodes("Postfix/Item")
+
+			for i in iter:
+				self.Postfix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value		
 
 
-		iter = Xml.SelectNodes("Seperator/Item")
-		for i in iter:
-			self.Seperator[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+			iter = Xml.SelectNodes("Seperator/Item")
+			for i in iter:
+				self.Seperator[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
 
-		iter = Xml.SelectNodes("TextBox/Item")
-		for i in iter:
-			self.TextBox[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+			iter = Xml.SelectNodes("TextBox/Item")
+			for i in iter:
+				self.TextBox[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
 			
-		iter = Xml.SelectNodes("EmptyData/Item")
-		for i in iter:
-			self.EmptyData[i.Attributes["Name"].Value] = i.Attributes["Value"].Value	
-
-		#Arrays
-		
-		iter = Xml.SelectNodes("ExcludeFolders/Item")
-		if iter.Count > 0:
+			iter = Xml.SelectNodes("EmptyData/Item")
 			for i in iter:
-				self.ExcludeFolders.append(i.InnerText)
-		else:
-			self.ExcludeFolders = []
+				self.EmptyData[i.Attributes["Name"].Value] = i.Attributes["Value"].Value	
+
+			#added in 1.7
+			iter = Xml.SelectNodes("Months/Item")
+			if iter.Count > 0:
+				for i in iter:
+					self.Months[int(i.Attributes["Name"].Value)] = i.Attributes["Value"].Value
+
+			iter = Xml.SelectNodes("IllegalCharacters/Item")
+			if iter.Count > 0:
+				for i in iter:
+					self.IllegalCharacters[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+
+			#Arrays
 		
-		#This is a legacy parser for the old Exclude rules setup. Will remove in later versions.
-		iter = Xml.SelectNodes("ExcludeMetaData/Data")
-		if iter.Count > 0:
-			for i in iter:
-				temp = []
-				iter2 = i.SelectNodes("Item")
-				for i2 in iter2:
-					temp.append(i2.InnerText)
-				
-				t = ExcludeRule()
-				t.SetFields(temp[0], temp[1], temp[2])
-				self.ExcludeRules.append(t)
-
+			iter = Xml.SelectNodes("ExcludeFolders/Item")
+			if iter.Count > 0:
+				for i in iter:
+					self.ExcludeFolders.append(i.InnerText)
+			else:
+				self.ExcludeFolders = []
 		
-		#Exclude Rules
-		node = Xml.SelectSingleNode("ExcludeRules")
-		if node:
-			self.ExcludeOperator = node.Attributes["Operator"].Value
-
-			self.ExcludeMode = node.Attributes["ExcludeMode"].Value
-
-			iter = node.ChildNodes
-			for i in iter:
-				if i.Name == "ExcludeRule":
-					r = ExcludeRule()
-					r.SetFields(i.Attributes["Field"].Value, i.Attributes["Operator"].Value, i.Attributes["Text"].Value)
-					self.ExcludeRules.append(r)
 	
-				if i.Name == "ExcludeGroup":
-					g = ExcludeGroup()
-					g.SetOperator(i.Attributes["Operator"].Value)
-					self.LoadExcludeRuleGroup(g, i)
-					self.ExcludeRules.append(g)
+			#Exclude Rules
+			node = Xml.SelectSingleNode("ExcludeRules")
+			if node:
+				self.ExcludeOperator = node.Attributes["Operator"].Value
+
+				self.ExcludeMode = node.Attributes["ExcludeMode"].Value
+
+				iter = node.ChildNodes
+				for i in iter:
+					if i.Name == "ExcludeRule":
+						r = ExcludeRule()
+						r.SetFields(i.Attributes["Field"].Value, i.Attributes["Operator"].Value, i.Attributes["Text"].Value)
+						self.ExcludeRules.append(r)
+	
+					if i.Name == "ExcludeGroup":
+						g = ExcludeGroup()
+						g.SetOperator(i.Attributes["Operator"].Value)
+						self.LoadExcludeRuleGroup(g, i)
+						self.ExcludeRules.append(g)
 
 
-		#Exclued empty dirs
-		iter = Xml.SelectNodes("ExcludedEmptyDir/Item")
-		if iter.Count > 0:
-			for i in iter:
-				self.ExcludedEmptyDir.append(i.InnerText)
+			#Exclued empty dirs
+			try:
+				iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
+			except AttributeError:
+				iter = Xml.SelectNodes("ExcludedEmptyDir/Item")
+			if iter.Count > 0:
+				for i in iter:
+					self.ExcludedEmptyFolder.append(i.InnerText)
 
-		self.Update()
+			self.Update()
+
+		except Exception, ex:
+			print ex
+			return False
 		
 				
 	def LoadExcludeRuleGroup(self, group, GroupNode):

@@ -3,9 +3,7 @@ libraryorganizer.py
 
 The main script file. Some code is this file is based off of wadegiles's Guided eComic file renaming script. Credit is very much due to him
 
-Version 1.6:
-				
-			Added configscript hook script
+Version 1.7
 
 Author: Stonepaw
 
@@ -57,14 +55,9 @@ def LibraryOrganizer(books):
 			print "Creating config form"
 			config = ConfigForm(books, settings, lastused)
 			result = config.ShowDialog()
-			if result == DialogResult.Cancel:
-				#Dont save settings and quit the script
-				return
-			else:
+			
+			if result != DialogResult.Cancel:
 				config.SaveSettings()
-				lastused = config._cmbProfiles.SelectedItem
-				#Now save the settings
-				SaveSettings(settings, lastused)
 				#Create a worker form
 				#Note that all the moving files code is in the background worker of the worker 
 				#form, It would be better it this could be done elsewhere but I don't have a 
@@ -73,6 +66,8 @@ def LibraryOrganizer(books):
 				workerForm = WorkerForm(books, settings[lastused])
 				workerForm.ShowDialog()
 				workerForm.Dispose()
+			lastused = config._cmbProfiles.SelectedItem
+			SaveSettings(settings, lastused)
 	
 		except Exception, ex:
 			print "The following error occured"
@@ -127,14 +122,11 @@ def ConfigureLibraryOrganizer(books):
 		settings, lastused = LoadSettings()
 		config = ConfigForm(books, settings, lastused)
 		result = config.ShowDialog()
-		if result == DialogResult.Cancel:
-			#Dont save settings and quit the script
-			return
-		else:
+		if result != DialogResult.Cancel:
 			config.SaveSettings()
-			lastused = config._cmbProfiles.SelectedItem
-			#Now save the settings
-			SaveSettings(settings, lastused)
+		lastused = config._cmbProfiles.SelectedItem
+		#Now save the settings
+		SaveSettings(settings, lastused)
 	except Exception, ex:
 		print "The Following error occured"
 		print Exception
@@ -169,15 +161,6 @@ def LibraryOrganizerUndo(books):
 def LoadSettings():
 	settings = {}
 	lastused = ""
-	#Clean up old settings
-	if File.Exists(OLDSETTINGSFILE):
-		f = open(OLDSETTINGSFILE, 'r')
-		settings["Default"] = cPickle.load(f)
-		f.close()
-		lastused = "Default"
-		settings["Default"].Update()
-		File.Delete(OLDSETTINGSFILE)
-		return settings, lastused
 
 	if File.Exists(SETTINGSFILE):
 		try:
@@ -189,7 +172,11 @@ def LoadSettings():
 				for i in nodes:
 					settings[i.Attributes["Name"].Value] = losettings.settings()
 					settings[i.Attributes["Name"].Value].Name = i.Attributes["Name"].Value
-					settings[i.Attributes["Name"].Value].Load(i)
+					r = settings[i.Attributes["Name"].Value].Load(i)
+					if r == False:
+						print "An error occured loading a profile. That profile has been deleted"
+						del(settings[i.Attributes["Name"].Value])
+
 			lu = xml.SelectSingleNode("Settings")
 			if lu.Attributes.Count > 0:
 				lastused = lu.Attributes["LastUsed"].Value
