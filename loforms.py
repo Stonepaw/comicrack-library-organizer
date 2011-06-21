@@ -2,8 +2,8 @@
 This file contains various dialogs and forms required by the Library Orgainizer
 
 
-Version 1.6
-	-Added toolongpathform
+Version 1.7
+	-Improved path too long cacluations
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
@@ -16,11 +16,13 @@ import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import ScrollBars, ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox, ErrorProvider
+from System.Windows.Forms import ScrollBars, ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox, ErrorProvider, MessageBox
 
 clr.AddReference("System.Drawing")
 
 from System.Drawing import Point, Size, ContentAlignment
+
+from System.IO import FileInfo
 
 import locommon
 from locommon import ICON
@@ -49,14 +51,19 @@ class SelectionForm(Form):
 
 		if args.Series:
 			self.Label.Text = "Select which " + fieldplural + " you would like to use for each issue in the series " + args.BookText
+			self.AlwaysUse.Visible = False
+			self.AlwaysUseDontAsk.Visible = False
 		else:
 			self.Label.Text = "Select which " + fieldplural + " you would like to use in the issue " + args.BookText
 
 		self.SLabel.Text = "Selected " + fieldplural
 		self.ILabel.Text = fieldplural
 		self.UseAsFolder.Text = "Use each " + field + " as a folder"
-		self.AlwaysUse.Text = "Use every " + field + " in the selection list for every issue in this operation that has that " + field + "."
-
+		self.AlwaysUse.Text = "Use the " + field + "(s) in the selection list for every issue in this operation that has that " + field + "."
+		self.AlwaysUseDontAsk.Text = "Do not ask if there are additional " + fieldplural + "."
+		
+		for i in args.SelectedItems:
+			args.Items.Remove(i)
 		self.Items.Items.AddRange(System.Array[System.String](args.Items))
 		self.Selection.Items.AddRange(System.Array[System.String](args.SelectedItems))
 
@@ -69,6 +76,7 @@ class SelectionForm(Form):
 		self.Down = Button()
 		self.UseRegardless = CheckBox()
 		self.UseAsFolder = CheckBox()
+		self.AlwaysUseDontAsk = CheckBox()
 		self.Add = Button()
 		self.Remove = Button()
 		self.SLabel = Label()
@@ -140,12 +148,21 @@ class SelectionForm(Form):
 		# Always use
 		#
 		self.AlwaysUse = CheckBox()
-		self.AlwaysUse.Location = Point(12, 230)
+		self.AlwaysUse.Location = Point(12, 190)
 		self.AlwaysUse.Size = Size(413, 35)
+		self.AlwaysUse.CheckedChanged += self.AlwaysUseCheckChanged
+		#
+		# Always use don't ask
+		#
+		self.AlwaysUseDontAsk.Location = Point(30, 230)
+		self.AlwaysUseDontAsk.AutoSize = True
+		self.AlwaysUseDontAsk.Checked = True
+		self.AlwaysUseDontAsk.Enabled = False
+
 		# 
 		# UseAsFolder
 		# 
-		self.UseAsFolder.Location = Point(12, 271)
+		self.UseAsFolder.Location = Point(12, 260)
 		self.UseAsFolder.Name = "UseAsFolder"
 		self.UseAsFolder.Size = Size(252, 24)
 		self.UseAsFolder.TabIndex = 8
@@ -154,7 +171,7 @@ class SelectionForm(Form):
 		# 
 		# Okay
 		# 
-		self.Okay.Location = Point(267, 272)
+		self.Okay.Location = Point(267, 260)
 		self.Okay.Name = "Okay"
 		self.Okay.Size = Size(75, 23)
 		self.Okay.TabIndex = 9
@@ -165,7 +182,7 @@ class SelectionForm(Form):
 		# Cancel
 		#
 		self.Cancel = Button()
-		self.Cancel.Location = Point(350, 271)
+		self.Cancel.Location = Point(350, 260)
 		self.Cancel.Size = Size(75, 23)
 		self.Cancel.Text = "Cancel"
 		self.Cancel.DialogResult = DialogResult.Cancel
@@ -192,7 +209,7 @@ class SelectionForm(Form):
 		# 
 		# SelectionForm
 		# 
-		self.ClientSize = Size(437, 307)
+		self.ClientSize = Size(437, 290)
 		self.Controls.Add(self.Label)
 		self.Controls.Add(self.UseAsFolder)
 		self.Controls.Add(self.UseRegardless)
@@ -203,6 +220,7 @@ class SelectionForm(Form):
 		self.Controls.Add(self.Okay)
 		self.Controls.Add(self.Selection)
 		self.Controls.Add(self.AlwaysUse)
+		self.Controls.Add(self.AlwaysUseDontAsk)
 		self.Controls.Add(self.Cancel)
 		self.Controls.Add(self.Items)
 		self.Controls.Add(self.SLabel)
@@ -215,6 +233,9 @@ class SelectionForm(Form):
 		self.Icon = System.Drawing.Icon(ICON)
 		self.StartPosition = FormStartPosition.CenterParent
 
+
+	def AlwaysUseCheckChanged(self, sender, e):
+		self.AlwaysUseDontAsk.Enabled = self.AlwaysUse.Checked
 
 
 	def AddItem(self, sender, e):
@@ -262,17 +283,23 @@ class SelectionForm(Form):
 
 	def GetResults(self):
 		if self.DialogResult == DialogResult.OK:
-			return SelectionFormResult(list(self.Selection.Items), self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked)
+			return SelectionFormResult(list(self.Selection.Items), self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked, self.GetDontAsk())
 		else:
-			return SelectionFormResult([], self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked)
+			return SelectionFormResult([], self.UseRegardless.Checked, self.UseAsFolder.Checked, self.AlwaysUse.Checked, self.GetDontAsk())
 
+	def GetDontAsk(self):
+		if self.AlwaysUseDontAsk.Enabled:
+			return self.AlwaysUseDontAsk.Checked
+		else:
+			return False
 class SelectionFormResult(object):
 	
-	def __init__(self, selection, every = False, folder = False, alwaysuse = False):
+	def __init__(self, selection, every = False, folder = False, alwaysuse = False, dontask = False):
 		self.Selection = selection
 		self.EveryIssue = every
 		self.Folder = folder
 		self.AlwaysUse = alwaysuse
+		self.AlwaysUseDontAsk = dontask
 
 class SelectionFormArgs(object):
 
@@ -409,9 +436,17 @@ class PathTooLongForm(Form):
 
 	def CheckPathLength(self, sender, e):
 		if self._Path.Text.Length >= 260:
-			self._errorProvider.SetError(self._Path, "The path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length))
+			self._errorProvider.SetError(self._Path, "The entire path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length))
 			self.DialogResult = DialogResult.None
 			return
+
+		else:
+			f = FileInfo(self._Path.Text)
+			if len(f.DirectoryName) >= 248:
+				self._errorProvider.SetError(self._Path, "The folder path has to be less then 248 characters. Current path size is: " + str(len(f.DirectoryName)))
+				del(f)
+				self.DialogResult = DialogResult.None
+				return
 
 		#Check for illegal characters. Note that there may be a : at the beginning. eg C:\
 		path = self._Path.Text

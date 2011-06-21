@@ -1,9 +1,9 @@
 """
 loconfigform.py
 
-Version: 1.6
+Version: 1.7
 
-			Misc. GUI tweaks
+			Misc. GUI tweaks, added import and export functions
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -23,6 +23,12 @@ import System.Windows.Forms
 
 from System.Drawing import *
 from System.Windows.Forms import *
+
+from System.IO import StreamWriter, StreamReader
+
+clr.AddReference("System.Xml")
+import System.Xml
+from System.Xml import XmlWriter, XmlWriterSettings, XmlDocument
 
 
 import losettings
@@ -79,10 +85,10 @@ class ConfigForm(Form):
 		self._tpFilename = System.Windows.Forms.TabPage()
 		self._txbDirStruct = System.Windows.Forms.TextBox()
 		self._lblDirStruct = System.Windows.Forms.Label()
-		self._txbBaseDir = System.Windows.Forms.TextBox()
-		self._lblBaseDir = System.Windows.Forms.Label()
+		self._txbBaseFolder = System.Windows.Forms.TextBox()
+		self._lblBaseFolder = System.Windows.Forms.Label()
 		self._btnBrowse = System.Windows.Forms.Button()
-		self._ckbDirectory = System.Windows.Forms.CheckBox()
+		self._ckbFolder = System.Windows.Forms.CheckBox()
 		self._gbInsertButtons = System.Windows.Forms.GroupBox()
 		self._btnSep = System.Windows.Forms.Button()
 		self._ckbFileNaming = System.Windows.Forms.CheckBox()
@@ -101,6 +107,8 @@ class ConfigForm(Form):
 		self._btnProNew = System.Windows.Forms.Button()
 		self._btnProSaveAs = System.Windows.Forms.Button()
 		self._btnProDelete = System.Windows.Forms.Button()
+		self._btnProExport = System.Windows.Forms.Button()
+		self._btnProImport = System.Windows.Forms.Button()
 		self._cmbProfiles = System.Windows.Forms.ComboBox()
 		self._vsbBookSelector = System.Windows.Forms.VScrollBar()
 		self._tpOptions = System.Windows.Forms.TabPage()
@@ -143,10 +151,10 @@ class ConfigForm(Form):
 		self._tpDirectory.Controls.Add(self._vsbBookSelector)
 		self._tpDirectory.Controls.Add(self._sampleTextDir)
 		self._tpDirectory.Controls.Add(self._label12)
-		self._tpDirectory.Controls.Add(self._ckbDirectory)
+		self._tpDirectory.Controls.Add(self._ckbFolder)
 		self._tpDirectory.Controls.Add(self._btnBrowse)
-		self._tpDirectory.Controls.Add(self._lblBaseDir)
-		self._tpDirectory.Controls.Add(self._txbBaseDir)
+		self._tpDirectory.Controls.Add(self._lblBaseFolder)
+		self._tpDirectory.Controls.Add(self._txbBaseFolder)
 		self._tpDirectory.Controls.Add(self._lblDirStruct)
 		self._tpDirectory.Controls.Add(self._txbDirStruct)
 		self._tpDirectory.Controls.Add(self._gbInsertButtons)
@@ -155,7 +163,7 @@ class ConfigForm(Form):
 		self._tpDirectory.Padding = System.Windows.Forms.Padding(3)
 		self._tpDirectory.Size = System.Drawing.Size(518, 426)
 		self._tpDirectory.TabIndex = 0
-		self._tpDirectory.Text = "Directories"
+		self._tpDirectory.Text = "Folders"
 		self._tpDirectory.UseVisualStyleBackColor = True
 		# 
 		# txbDirStruct
@@ -172,23 +180,23 @@ class ConfigForm(Form):
 		self._lblDirStruct.Name = "lblDirStruct"
 		self._lblDirStruct.Size = System.Drawing.Size(100, 14)
 		self._lblDirStruct.TabIndex = 4
-		self._lblDirStruct.Text = "Directory Structure:"
+		self._lblDirStruct.Text = "Folder Structure:"
 		# 
-		# txbBaseDir
+		# txbBaseFolder
 		# 
-		self._txbBaseDir.Location = System.Drawing.Point(113, 38)
-		self._txbBaseDir.Name = "txbBaseDir"
-		self._txbBaseDir.ReadOnly = True
-		self._txbBaseDir.Size = System.Drawing.Size(300, 20)
-		self._txbBaseDir.TabIndex = 2
+		self._txbBaseFolder.Location = System.Drawing.Point(113, 38)
+		self._txbBaseFolder.Name = "txbBaseFolder"
+		self._txbBaseFolder.ReadOnly = True
+		self._txbBaseFolder.Size = System.Drawing.Size(300, 20)
+		self._txbBaseFolder.TabIndex = 2
 		# 
-		# lblBaseDir
+		# lblBaseFolder
 		# 
-		self._lblBaseDir.Location = System.Drawing.Point(8, 41)
-		self._lblBaseDir.Name = "lblBaseDir"
-		self._lblBaseDir.Size = System.Drawing.Size(100, 17)
-		self._lblBaseDir.TabIndex = 1
-		self._lblBaseDir.Text = "Base Directory:"
+		self._lblBaseFolder.Location = System.Drawing.Point(8, 41)
+		self._lblBaseFolder.Name = "lblBaseFolder"
+		self._lblBaseFolder.Size = System.Drawing.Size(100, 17)
+		self._lblBaseFolder.TabIndex = 1
+		self._lblBaseFolder.Text = "Base Folder:"
 		# 
 		# btnBrowse
 		# 
@@ -206,15 +214,15 @@ class ConfigForm(Form):
 		# 
 		# ckbDirectory
 		# 
-		self._ckbDirectory.Checked = True
-		self._ckbDirectory.CheckState = System.Windows.Forms.CheckState.Checked
-		self._ckbDirectory.Location = System.Drawing.Point(8, 6)
-		self._ckbDirectory.Name = "ckbDirectory"
-		self._ckbDirectory.Size = System.Drawing.Size(287, 24)
-		self._ckbDirectory.TabIndex = 0
-		self._ckbDirectory.Text = "Use directory organization"
-		self._ckbDirectory.UseVisualStyleBackColor = True
-		self._ckbDirectory.CheckedChanged += self.CkbDirectoryCheckedChanged
+		self._ckbFolder.Checked = True
+		self._ckbFolder.CheckState = System.Windows.Forms.CheckState.Checked
+		self._ckbFolder.Location = System.Drawing.Point(8, 6)
+		self._ckbFolder.Name = "ckbDirectory"
+		self._ckbFolder.Size = System.Drawing.Size(287, 24)
+		self._ckbFolder.TabIndex = 0
+		self._ckbFolder.Text = "Use folder organization"
+		self._ckbFolder.UseVisualStyleBackColor = True
+		self._ckbFolder.CheckedChanged += self.CkbDirectoryCheckedChanged
 		# 
 		# label12
 		# 
@@ -250,7 +258,7 @@ class ConfigForm(Form):
 		self._btnSep.Name = "btnSep"
 		self._btnSep.Size = System.Drawing.Size(115, 23)
 		self._btnSep.TabIndex = 0
-		self._btnSep.Text = "Directory Seperator"
+		self._btnSep.Text = "Folder Seperator"
 		self._btnSep.UseVisualStyleBackColor = True
 		self._btnSep.Click += self.BtnSepClick
 		# 
@@ -276,7 +284,7 @@ class ConfigForm(Form):
 		self._tpFilename.Padding = System.Windows.Forms.Padding(3)
 		self._tpFilename.Size = System.Drawing.Size(518, 426)
 		self._tpFilename.TabIndex = 1
-		self._tpFilename.Text = "File Names"
+		self._tpFilename.Text = "Files"
 		self._tpFilename.UseVisualStyleBackColor = True
 		# 
 		# ckbFileNaming
@@ -363,6 +371,23 @@ class ConfigForm(Form):
 		self._btnProNew.Text = "New"
 		self._btnProNew.UseVisualStyleBackColor = True
 		self._btnProNew.Click += self.BtnProNewClick
+		#
+		# btnProImport
+		#
+		self._btnProImport.Location = System.Drawing.Point(253, 464)
+		self._btnProImport.Size = System.Drawing.Size(75, 23)
+		self._btnProImport.Text = "Import"
+		self._btnProImport.TabIndex = 6
+		self._btnProImport.Click += self.ImportSetting
+
+		#
+		# btnProExport
+		#
+		self._btnProExport.Location = System.Drawing.Point(253, 491)
+		self._btnProExport.Size = System.Drawing.Size(75, 23)
+		self._btnProExport.Text = "Export"
+		self._btnProExport.TabIndex = 7
+		self._btnProExport.Click += self.ExportSetting
 		# 
 		# btnProSaveAs
 		# 
@@ -401,7 +426,7 @@ class ConfigForm(Form):
 		self._ok.Location = System.Drawing.Point(380, 484)
 		self._ok.Name = "ok"
 		self._ok.Size = System.Drawing.Size(75, 23)
-		self._ok.TabIndex = 6
+		self._ok.TabIndex = 8
 		self._ok.Text = "OK"
 		self._ok.UseVisualStyleBackColor = True
 		self._ok.Click += self.OkClick
@@ -412,7 +437,7 @@ class ConfigForm(Form):
 		self._cancel.Location = System.Drawing.Point(461, 484)
 		self._cancel.Name = "cancel"
 		self._cancel.Size = System.Drawing.Size(75, 23)
-		self._cancel.TabIndex = 7
+		self._cancel.TabIndex = 9
 		self._cancel.Text = "Cancel"
 		self._cancel.UseVisualStyleBackColor = True
 		# 
@@ -426,6 +451,8 @@ class ConfigForm(Form):
 		self.Controls.Add(self._btnProDelete)
 		self.Controls.Add(self._cmbProfiles)
 		self.Controls.Add(self._btnProSaveAs)
+		self.Controls.Add(self._btnProExport)
+		self.Controls.Add(self._btnProImport)
 		self.Controls.Add(self._cancel)
 		self.Controls.Add(self._ok)
 		self.Controls.Add(self._button1)
@@ -493,14 +520,14 @@ class ConfigForm(Form):
 		#
 		#
 		labelSimulate = Label()
-		labelSimulate.Location = Point(282, 47)
+		labelSimulate.Location = Point(282, 39)
 		labelSimulate.AutoSize = True
 		labelSimulate.Text = "(no files touched, complete log file created)"
 		#
 		# ckbCopyMode
 		#
 		self._ckbCopyMode = CheckBox()
-		self._ckbCopyMode.Location = System.Drawing.Point(104, 41)
+		self._ckbCopyMode.Location = System.Drawing.Point(104, 34)
 		self._ckbCopyMode.Size = System.Drawing.Size(172, 24)
 		self._ckbCopyMode.Text = "Add copied book to Library"
 		# 
@@ -513,7 +540,7 @@ class ConfigForm(Form):
 		self._gbMode.Controls.Add(self._rdbModeMove)
 		self._gbMode.Controls.Add(labelSimulate)
 		self._gbMode.Location = System.Drawing.Point(8, 6)
-		self._gbMode.Size = System.Drawing.Size(497, 71)
+		self._gbMode.Size = System.Drawing.Size(497, 60)
 		self._gbMode.TabIndex = 0
 		self._gbMode.TabStop = False
 		self._gbMode.Text = "Mode"
@@ -524,7 +551,7 @@ class ConfigForm(Form):
 		label8.AutoSize = True
 		label8.Location = System.Drawing.Point(3, 32)
 		label8.Size = System.Drawing.Size(204, 13)
-		label8.Text = "(Leave empty to remove empty directories)"
+		label8.Text = "(Leave empty to remove empty folder)"
 		# 
 		# label7
 		# 
@@ -532,14 +559,14 @@ class ConfigForm(Form):
 		label7.AutoSize = True
 		label7.Location = System.Drawing.Point(11, 19)
 		label7.Size = System.Drawing.Size(181, 13)
-		label7.Text = "Replace empty directory names with: "
+		label7.Text = "Replace empty folder names with: "
 		# 
 		# txbEmptyDir
 		# 
-		self._txbEmptyDir = TextBox()
-		self._txbEmptyDir.Location = System.Drawing.Point(207, 19)
-		self._txbEmptyDir.Size = System.Drawing.Size(284, 20)
-		self._txbEmptyDir.TabIndex = 1
+		self._txbEmptyFolder = TextBox()
+		self._txbEmptyFolder.Location = System.Drawing.Point(207, 19)
+		self._txbEmptyFolder.Size = System.Drawing.Size(284, 20)
+		self._txbEmptyFolder.TabIndex = 1
 		# 
 		# label9
 		# 
@@ -571,6 +598,7 @@ class ConfigForm(Form):
 			"Format",
 			"Genre",
 			"Imprint",
+			"Language",
 			"Manga",
 			"Month",
 			"Number",
@@ -611,70 +639,70 @@ class ConfigForm(Form):
 		gbEmpty = GroupBox()
 		gbEmpty.Controls.Add(label7)
 		gbEmpty.Controls.Add(label8)
-		gbEmpty.Controls.Add(self._txbEmptyDir)
+		gbEmpty.Controls.Add(self._txbEmptyFolder)
 		gbEmpty.Controls.Add(label9)
 		gbEmpty.Controls.Add(label10)
 		gbEmpty.Controls.Add(self._cmbEmptyData)
 		gbEmpty.Controls.Add(label11)
 		gbEmpty.Controls.Add(self._txbEmptyData)
-		gbEmpty.Location = Point(8, 84)
+		gbEmpty.Location = Point(8, 72)
 		gbEmpty.Size = Size(497, 116)
 		gbEmpty.Text = "Empty substitutions"
 		# 
-		# ckbRemoveEmptyDir
+		# ckbRemoveEmptyFolder
 		# 
-		self._ckbRemoveEmptyDir = CheckBox()
-		self._ckbRemoveEmptyDir.Checked = True
-		self._ckbRemoveEmptyDir.Location = System.Drawing.Point(8, 206)
-		self._ckbRemoveEmptyDir.Size = System.Drawing.Size(261, 24)
-		self._ckbRemoveEmptyDir.TabIndex = 4
-		self._ckbRemoveEmptyDir.Text = "Remove empty directories"
-		self._ckbRemoveEmptyDir.CheckedChanged += self.CkbRemoveEmptyDirCheckedChanged
+		self._ckbRemoveEmptyFolder = CheckBox()
+		self._ckbRemoveEmptyFolder.Checked = True
+		self._ckbRemoveEmptyFolder.Location = System.Drawing.Point(8, 194)
+		self._ckbRemoveEmptyFolder.Size = System.Drawing.Size(261, 24)
+		self._ckbRemoveEmptyFolder.TabIndex = 4
+		self._ckbRemoveEmptyFolder.Text = "Remove empty folders"
+		self._ckbRemoveEmptyFolder.CheckedChanged += self.CkbRemoveEmptyFolderCheckedChanged
 		# 
 		# label18
 		# 
 		label18 = Label()
-		label18.Location = System.Drawing.Point(39, 229)
+		label18.Location = System.Drawing.Point(39, 221)
 		label18.Size = System.Drawing.Size(230, 18)
-		label18.Text = "...but never remove the following directories:"
+		label18.Text = "...but never remove the following folders:"
 		# 
-		# lbRemoveEmptyDir
+		# lbRemoveEmptyFolder
 		# 
-		self._lbRemoveEmptyDir = ListBox()
-		self._lbRemoveEmptyDir.Location = System.Drawing.Point(52, 250)
-		self._lbRemoveEmptyDir.Size = System.Drawing.Size(383, 69)
-		self._lbRemoveEmptyDir.TabIndex = 5
+		self._lbRemoveEmptyFolder = ListBox()
+		self._lbRemoveEmptyFolder.Location = System.Drawing.Point(52, 242)
+		self._lbRemoveEmptyFolder.Size = System.Drawing.Size(383, 69)
+		self._lbRemoveEmptyFolder.TabIndex = 5
 		# 
 		# btnAddEmptyDir
 		# 
 		self._btnAddEmptyDir = Button()
-		self._btnAddEmptyDir.Location = System.Drawing.Point(444, 250)
+		self._btnAddEmptyDir.Location = System.Drawing.Point(444, 242)
 		self._btnAddEmptyDir.Size = System.Drawing.Size(68, 23)
 		self._btnAddEmptyDir.TabIndex = 6
 		self._btnAddEmptyDir.Text = "Add"
 		self._btnAddEmptyDir.Click += self.BtnAddEmptyDirClick
 		# 
-		# btnRemoveEmptyDir
+		# btnRemoveEmptyFolder
 		# 
-		self._btnRemoveEmptyDir = Button()
-		self._btnRemoveEmptyDir.Location = System.Drawing.Point(441, 296)
-		self._btnRemoveEmptyDir.Size = System.Drawing.Size(69, 23)
-		self._btnRemoveEmptyDir.TabIndex = 7
-		self._btnRemoveEmptyDir.Text = "Remove"
-		self._btnRemoveEmptyDir.Click += self.BtnRemoveEmptyDirClick
+		self._btnRemoveEmptyFolder = Button()
+		self._btnRemoveEmptyFolder.Location = System.Drawing.Point(444, 288)
+		self._btnRemoveEmptyFolder.Size = System.Drawing.Size(69, 23)
+		self._btnRemoveEmptyFolder.TabIndex = 7
+		self._btnRemoveEmptyFolder.Text = "Remove"
+		self._btnRemoveEmptyFolder.Click += self.BtnRemoveEmptyFolderClick
 		#
 		# ckbMultiOneDontAsk
 		#
 		self._ckbDontAskWhenMultiOne = CheckBox()
-		self._ckbDontAskWhenMultiOne.Location = Point(8, 328)
+		self._ckbDontAskWhenMultiOne.Location = Point(6, 317)
 		self._ckbDontAskWhenMultiOne.AutoSize = True
 		self._ckbDontAskWhenMultiOne.Text = "If there is only one character, genre, tag, team, scanner or writer, then insert it without asking."
 		# 
 		# ckbFileless
 		# 
 		self._ckbFileless = CheckBox()
-		self._ckbFileless.Location = System.Drawing.Point(8, 358)
-		self._ckbFileless.Size = System.Drawing.Size(502, 41)
+		self._ckbFileless.Location = System.Drawing.Point(6, 338)
+		self._ckbFileless.Size = System.Drawing.Size(369, 41)
 		self._ckbFileless.TabIndex = 8
 		self._ckbFileless.Text = "Copy fileless comic's custom thumbnail image to the calaculated path. (Does not affect the source image at all)"
 		self._ckbFileless.CheckedChanged += self.CkbFilelessCheckedChanged
@@ -688,30 +716,101 @@ class ConfigForm(Form):
 			[".bmp",
 			".jpg",
 			".png"]))
-		self._cmbImageFormat.Location = System.Drawing.Point(190, 388)
-		self._cmbImageFormat.Size = System.Drawing.Size(54, 21)
+		self._cmbImageFormat.Location = System.Drawing.Point(447, 345)
+		self._cmbImageFormat.Size = System.Drawing.Size(52, 21)
 		self._cmbImageFormat.TabIndex = 9
 		# 
 		# label19
 		# 
 		label19 = Label()
-		label19.Location = System.Drawing.Point(97, 391)
-		label19.Size = System.Drawing.Size(87, 21)
-		label19.Text = "Save image as:"
+		label19.Location = System.Drawing.Point(362, 348)
+		label19.Size = System.Drawing.Size(79, 21)
+		label19.Text = "Image format:"
+		#
+		# lbl Illegal1
+		#
+		lblIllegal1 = Label()
+		lblIllegal1.Location = Point(6, 385)
+		lblIllegal1.Size = Size(128, 13)
+		lblIllegal1.Text = "Replace illegal character:"
+		#
+		# cmbIllegalCharacter
+		#
+		self._cmbIllegalCharacter = ComboBox()
+		self._cmbIllegalCharacter.Size = Size(32, 21)
+		self._cmbIllegalCharacter.Location = Point(135, 382)
+		self._cmbIllegalCharacter.Items.AddRange(System.Array[System.String](["?", "/", "\\", "*", ":", "<", ">", "|", '"']))
+		self._cmbIllegalCharacter.DropDownStyle = ComboBoxStyle.DropDownList
+		self._cmbIllegalCharacter.SelectedIndex = 0
+		self._cmbIllegalCharacter.SelectedIndexChanged += self.CmbIllegalCharactersSelectedIndexChanged
+		#
+		# lbl Illegal2
+		#
+		lblIllegal2 = Label()
+		lblIllegal2.Location = Point(173, 385)
+		lblIllegal2.Size = Size(29, 13)
+		lblIllegal2.Text = "with"
+		#
+		# txbIllegalCharacter
+		#
+		self._txbIllegalCharacter = TextBox()
+		self._txbIllegalCharacter.Location = Point(208, 382)
+		self._txbIllegalCharacter.Size = Size(50, 20)
+		self._txbIllegalCharacter.Leave += self.TxbIllegalCharacterLeave
+		self._txbIllegalCharacter.KeyPress += self.TxbIllegalCharacterKeyPress
+		#
+		# lblMonth
+		#
+		lblMonth = Label()
+		lblMonth.Location = Point(301, 385)
+		lblMonth.Size = Size(40, 13)
+		lblMonth.Text = "Month:"
+		#
+		# cmbMonth
+		#
+		self._cmbMonth = ComboBox()
+		self._cmbMonth.DropDownStyle = ComboBoxStyle.DropDownList
+		self._cmbMonth.Location = Point(347, 382)
+		self._cmbMonth.Size = Size(40, 21)
+		self._cmbMonth.Items.AddRange(System.Array[System.String](["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]))
+		self._cmbMonth.SelectedIndex = 0
+		self._cmbMonth.SelectedIndexChanged += self.CmbMonthSelectedIndexChanged
+		#
+		# lblMonth2
+		#
+		lblMonth2 = Label()
+		lblMonth2.Location = Point(393, 385)
+		lblMonth2.Size = Size(14, 13)
+		lblMonth2.Text = "is"
+		#
+		# month
+		#
 		# 
+		self._txbMonth = TextBox()
+		self._txbMonth.Location = Point(408, 382)
+		self._txbMonth.Size = Size(97, 20)
+		self._txbMonth.Leave += self.TxbMonthLeave
 		# options tag page
 		# 
 		self._tpOptions.Controls.Add(self._gbMode)
 		self._tpOptions.Controls.Add(gbEmpty)
-		self._tpOptions.Controls.Add(self._ckbRemoveEmptyDir)
-		self._tpOptions.Controls.Add(self._lbRemoveEmptyDir)
+		self._tpOptions.Controls.Add(self._ckbRemoveEmptyFolder)
+		self._tpOptions.Controls.Add(self._lbRemoveEmptyFolder)
 		self._tpOptions.Controls.Add(self._btnAddEmptyDir)
-		self._tpOptions.Controls.Add(self._btnRemoveEmptyDir)
+		self._tpOptions.Controls.Add(self._btnRemoveEmptyFolder)
 		self._tpOptions.Controls.Add(self._ckbDontAskWhenMultiOne)
 		self._tpOptions.Controls.Add(self._cmbImageFormat)
 		self._tpOptions.Controls.Add(label18)
 		self._tpOptions.Controls.Add(label19)
 		self._tpOptions.Controls.Add(self._ckbFileless)
+		self._tpOptions.Controls.Add(lblIllegal1)
+		self._tpOptions.Controls.Add(self._cmbIllegalCharacter)
+		self._tpOptions.Controls.Add(lblIllegal2)
+		self._tpOptions.Controls.Add(self._txbIllegalCharacter)
+		self._tpOptions.Controls.Add(lblMonth)
+		self._tpOptions.Controls.Add(self._cmbMonth)
+		self._tpOptions.Controls.Add(lblMonth2)
+		self._tpOptions.Controls.Add(self._txbMonth)
 		self._tpOptions.Location = System.Drawing.Point(4, 22)
 		self._tpOptions.Padding = System.Windows.Forms.Padding(3)
 		self._tpOptions.Size = System.Drawing.Size(518, 426)
@@ -920,6 +1019,12 @@ class ConfigForm(Form):
 		self.AgeRating = InsertControl()
 		self.AgeRating.SetTemplate("ageRating", "Age Rate.")
 		self.AgeRating.Location = Point(6, 222)
+		# 
+		# Language
+		# 
+		self.Language = InsertControl()
+		self.Language.Location = Point(262, 222)
+		self.Language.SetTemplate("language", "Language")
 		#
 		# 
 		# AlternateSeries
@@ -969,6 +1074,7 @@ class ConfigForm(Form):
 		self.Number = InsertControlPadding()
 		self.Number.Location = Point(262, 26)
 		self.Number.SetTemplate("number", "Number")
+
 		# 
 		# label1
 		# 
@@ -1036,6 +1142,7 @@ class ConfigForm(Form):
 		self._tpInsertBasic.Controls.Add(self.Year)
 		self._tpInsertBasic.Controls.Add(self.AlternateCount)
 		self._tpInsertBasic.Controls.Add(self.AlternateNumber)		
+		self._tpInsertBasic.Controls.Add(self.Language)
 		self._tpInsertBasic.Controls.Add(label6)
 		self._tpInsertBasic.Controls.Add(label5)
 		self._tpInsertBasic.Controls.Add(label3)
@@ -1262,11 +1369,11 @@ class ConfigForm(Form):
 		self.UpdateSampleText()
 
 	def CkbDirectoryCheckedChanged(self, sender, e):
-		self._txbDirStruct.Enabled = self._ckbDirectory.Checked
-		self._txbBaseDir.Enabled = self._ckbDirectory.Checked
-		self._lblBaseDir.Enabled = self._ckbDirectory.Checked
-		self._lblDirStruct.Enabled = self._ckbDirectory.Checked
-		self._btnBrowse.Enabled = self._ckbDirectory.Checked
+		self._txbDirStruct.Enabled = self._ckbFolder.Checked
+		self._txbBaseFolder.Enabled = self._ckbFolder.Checked
+		self._lblBaseFolder.Enabled = self._ckbFolder.Checked
+		self._lblDirStruct.Enabled = self._ckbFolder.Checked
+		self._btnBrowse.Enabled = self._ckbFolder.Checked
 		self.UpdateSampleText()
 
 	#The following three function insert text into the correct textboxes
@@ -1296,21 +1403,21 @@ class ConfigForm(Form):
 	def UpdateSampleText(self):
 		#Directory Preview
 		if self._tabs.SelectedIndex == 0:
-			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbDirectory.Checked:
-				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseDir.Text, self._txbEmptyDir.Text, self.settings.EmptyData, self._ckbDontAskWhenMultiOne.Checked)
+			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFolder.Checked:
+				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseFolder.Text, self._txbEmptyFolder.Text, self.settings.EmptyData, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months)
 			else:
 				self._sampleTextDir.Text = self.samplebook.FileDirectory
 				
 		#Filename preview
 		elif self._tabs.SelectedIndex == 1:
 			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFileNaming.Checked:
-				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem, self._ckbDontAskWhenMultiOne.Checked)
+				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months)
 			else:
 				self._sampleTextFile.Text = self.samplebook.FileNameWithExtension
 
 	def BtnBrowseClick(self, sender, e):
 		self._FolderBrowser.ShowDialog()
-		self._txbBaseDir.Text = self._FolderBrowser.SelectedPath
+		self._txbBaseFolder.Text = self._FolderBrowser.SelectedPath
 		self.UpdateSampleText()		
 		
 	def TxbStructTextChanged(self, sender, e):
@@ -1329,12 +1436,31 @@ class ConfigForm(Form):
 
 	def TxbEmptyDataLeave(self, sender, e):
 		self.settings.EmptyData[self._cmbEmptyData.SelectedItem.replace(" ", "")] = sender.Text
-		
+
+
+	def CmbIllegalCharactersSelectedIndexChanged(self, sender, e):
+		#For ease of adding additional values later replace the spaces in Additions values. That way they match up with the dictorary keys later
+		self._txbIllegalCharacter.Text = self.settings.IllegalCharacters[self._cmbIllegalCharacter.SelectedItem]
+
+	def TxbIllegalCharacterLeave(self, sender, e):
+		self.settings.IllegalCharacters[self._cmbIllegalCharacter.SelectedItem] = self._txbIllegalCharacter.Text
+
+	def TxbIllegalCharacterKeyPress(self, sender, e):
+		if e.KeyChar in ["\\", "/", "|", "*", "<", ">", "?", '"', ":"]:
+			e.Handled = True
+
+	def CmbMonthSelectedIndexChanged(self, sender, e):
+		#For ease of adding additional values later replace the spaces in Additions values. That way they match up with the dictorary keys later
+		self._txbMonth.Text = self.settings.Months[int(self._cmbMonth.SelectedItem)]
+
+	def TxbMonthLeave(self, sender, e):
+		self.settings.Months[int(self._cmbMonth.SelectedItem)] = self._txbMonth.Text
+
 	def LoadSettings(self):
 		
 		#Checkboxes
 		
-		self._ckbDirectory.Checked = self.settings.UseDirectory
+		self._ckbFolder.Checked = self.settings.UseFolder
 		self._ckbFileNaming.Checked = self.settings.UseFileName
 		self._ckbDontAskWhenMultiOne.Checked = self.settings.DontAskWhenMultiOne
 		
@@ -1351,6 +1477,8 @@ class ConfigForm(Form):
 		
 		#Reload the selected index of the emptydata cmb
 		self.CmbEmptyDataSelectedIndexChanged(self._cmbEmptyData, None)
+		self.CmbIllegalCharactersSelectedIndexChanged(self._cmbIllegalCharacter, None)
+		self.CmbMonthSelectedIndexChanged(self._cmbMonth, None)
 		
 		#Excludes
 		
@@ -1381,9 +1509,9 @@ class ConfigForm(Form):
 		self._cmbImageFormat.SelectedItem = self.settings.FilelessFormat
 
 		#Empty directories
-		self._ckbRemoveEmptyDir.Checked = self.settings.RemoveEmptyDir
-		self._lbRemoveEmptyDir.Items.Clear()
-		self._lbRemoveEmptyDir.Items.AddRange(System.Array[System.String](self.settings.ExcludedEmptyDir))
+		self._ckbRemoveEmptyFolder.Checked = self.settings.RemoveEmptyFolder
+		self._lbRemoveEmptyFolder.Items.Clear()
+		self._lbRemoveEmptyFolder.Items.AddRange(System.Array[System.String](self.settings.ExcludedEmptyFolder))
 
 
 		#Prefix
@@ -1406,23 +1534,27 @@ class ConfigForm(Form):
 
 		#Other stuff has to be loaded before text boxes, otherwise the sample text is updated before everyother setting is set
 		#Base Textboxes
-		self._txbBaseDir.Text = self.settings.BaseDir
-		self._txbDirStruct.Text = self.settings.DirTemplate
+		self._txbBaseFolder.Text = self.settings.BaseFolder
+		self._txbDirStruct.Text = self.settings.FolderTemplate
 		self._txbFileStruct.Text = self.settings.FileTemplate
-		self._txbEmptyDir.Text = self.settings.EmptyDir
+		self._txbEmptyFolder.Text = self.settings.EmptyFolder
 		
 		self._txbDirStruct.SelectionStart = len(self._txbDirStruct.Text)
 		self._txbFileStruct.SelectionStart = len(self._txbFileStruct.Text)
 
 	def SaveSettings(self):
 		#Base Textboxes
-		self.settings.BaseDir = self._txbBaseDir.Text
-		self.settings.DirTemplate = self._txbDirStruct.Text
+		self.settings.BaseFolder = self._txbBaseFolder.Text
+		self.settings.FolderTemplate = self._txbDirStruct.Text
 		self.settings.FileTemplate = self._txbFileStruct.Text
-		self.settings.EmptyDir = self._txbEmptyDir.Text
+		self.settings.EmptyFolder = self._txbEmptyFolder.Text
 		self.settings.DontAskWhenMultiOne = self._ckbDontAskWhenMultiOne.Checked
 		
 		self.settings.CopyMode = self._ckbCopyMode.Checked
+
+		self.TxbEmptyDataLeave(self._txbEmptyData, None)
+		self.TxbIllegalCharacterLeave(self._txbIllegalCharacter, None)
+		self.TxbMonthLeave(self._txbMonth, None)
 
 		#Postfix and Prefix
 		for i in self.settings.Prefix:
@@ -1442,14 +1574,14 @@ class ConfigForm(Form):
 
 		#Checkboxes
 		
-		self.settings.UseDirectory = self._ckbDirectory.Checked
+		self.settings.UseFolder = self._ckbFolder.Checked
 		self.settings.UseFileName = self._ckbFileNaming.Checked
 		
 		self.settings.MoveFileless = self._ckbFileless.Checked
 		self.settings.FilelessFormat = self._cmbImageFormat.SelectedItem
 
-		self.settings.RemoveEmptyDir = self._ckbRemoveEmptyDir.Checked
-		self.settings.ExcludedEmptyDir = list(self._lbRemoveEmptyDir.Items)
+		self.settings.RemoveEmptyFolder = self._ckbRemoveEmptyFolder.Checked
+		self.settings.ExcludedEmptyFolder = list(self._lbRemoveEmptyFolder.Items)
 
 		#Note for excludes. Have to remove the event handlers for the excluderules since they have to get added in the 
 		#LoadSettings method.
@@ -1468,14 +1600,14 @@ class ConfigForm(Form):
 		Make sure all the needed fields are filled in
 		"""
 		errors = ""
-		if self._txbBaseDir.Text == "" and self._ckbDirectory.Checked:
-			errors += "The base directory cannot be empty\n"
+		if self._txbBaseFolder.Text == "" and self._ckbFolder.Checked:
+			errors += "The base folder cannot be empty\n"
 		
 		if self._ckbFileNaming.Checked and self._txbFileStruct.Text.strip() == "":
 			errors += "The File Structure cannot be empty"
 		
-		if not self._ckbDirectory.Checked and not self._ckbFileNaming.Checked:
-			errors += "You must enable Directory or File naming functions for the script to actually do anything."
+		if not self._ckbFolder.Checked and not self._ckbFileNaming.Checked:
+			errors += "You must enable Folder or File naming functions for the script to actually do anything."
 
 		if errors:
 			errors = errors.Insert(0, "Please correct the following errors\n\n")
@@ -1509,10 +1641,10 @@ class ConfigForm(Form):
 		
 
 
-	def CkbRemoveEmptyDirCheckedChanged(self, sender, e):
-		self._lbRemoveEmptyDir.Enabled = sender.Checked
+	def CkbRemoveEmptyFolderCheckedChanged(self, sender, e):
+		self._lbRemoveEmptyFolder.Enabled = sender.Checked
 		self._btnAddEmptyDir.Enabled = sender.Checked
-		self._btnRemoveEmptyDir.Enabled = sender.Checked
+		self._btnRemoveEmptyFolder.Enabled = sender.Checked
 		
 	def CkbFilelessCheckedChanged(self, sender, e):
 		self._cmbImageFormat.Enabled = sender.Checked
@@ -1523,10 +1655,10 @@ class ConfigForm(Form):
 		
 	def BtnAddEmptyDirClick(self, sender, e):
 		self._FolderBrowser.ShowDialog()
-		self._lbRemoveEmptyDir.Items.Add(self._FolderBrowser.SelectedPath)
+		self._lbRemoveEmptyFolder.Items.Add(self._FolderBrowser.SelectedPath)
 	
-	def BtnRemoveEmptyDirClick(self, sender, e):
-		self._lbRemoveEmptyDir.Items.Remove(self._lbRemoveEmptyDir.SelectedItem)
+	def BtnRemoveEmptyFolderClick(self, sender, e):
+		self._lbRemoveEmptyFolder.Items.Remove(self._lbRemoveEmptyFolder.SelectedItem)
 
 	def BtnRemoveExFolderClick(self, sender, e):
 		self._lbExFolder.Items.Remove(self._lbExFolder.SelectedItem)
@@ -1619,6 +1751,53 @@ class ConfigForm(Form):
 		#This won't update the sample text since the textbox contents have already been loaded.
 		self.UpdateSampleText()	
 
+
+	def ExportSetting(self, sender, e):
+		f = System.Windows.Forms.SaveFileDialog()
+		f.Filter = "Library Organizer Profile (*.lop)|*.lop"
+		r = f.ShowDialog()
+		if r == DialogResult.OK:
+			try:
+				self.SaveSettings()
+				file = StreamWriter(f.FileName)
+				xSettings = XmlWriterSettings()
+				xSettings.Indent = True
+				xWriter = XmlWriter.Create(file, xSettings)
+				self.settings.Save(xWriter)
+			except Exception, ex:
+				MessageBox.Show("An error occured trying to write the profile file. The error was:\n\n" + str(ex), "Error creating profile file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+			finally:
+				xWriter.Close()
+				file.Close()
+
+		f.Dispose()
+
+	def ImportSetting(self, sender, e):
+		f = System.Windows.Forms.OpenFileDialog()
+		f.Filter = "Library Organizer Profile (*.lop)|*.lop"
+		r = f.ShowDialog()
+		if r == DialogResult.OK:
+			try:
+				s = StreamReader(f.FileName)
+				xml = XmlDocument()
+				xml.Load(s)
+				s.Close()
+
+				setting = losettings.settings()
+				result = setting.Load(xml.SelectSingleNode("Setting"))
+				if result != False:
+					name = setting.Name
+					if name in self.allsettings:
+						ib = InputBox()
+						ib.ShowDialog(self)
+						name = ib.FindName()
+
+					self.allsettings[name] = setting
+					self._cmbProfiles.Items.Add(name)
+				else:
+					MessageBox.Show("Unable to load file: " +  f.FileName + ".\n\nNot a valid Library Organizer Profile.")
+			except Exception, ex:
+				MessageBox.Show("An error occured trying to load the profile file. The error was:\n\n" + str(ex), "Error loading profile file", MessageBoxButtons.OK, MessageBoxIcon.Error)				
 
 
 class InsertControl(Panel):
@@ -1764,3 +1943,4 @@ class InsertControlTextBox(InsertControl):
 		if space:
 			s = " "
 		return "{" + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")>" + self.Postfix.Text + s + "}"
+

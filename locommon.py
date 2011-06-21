@@ -3,7 +3,7 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.6
+Version: 1.7
 			
 
 Contains several classes and functions. All are used in several files
@@ -19,7 +19,6 @@ Copyright Stonepaw 2011. Anyone is free to use code from this file as long as cr
 import clr
 
 import System
-
 
 clr.AddReference("System.Drawing")
 from System.Drawing import Size, Point
@@ -222,6 +221,7 @@ class ExcludeRule(object):
 			"File Format",
 			"Format",
 			"Imprint",
+			"Language",
 			"Month",
 			"Number",
 			"Notes",
@@ -268,7 +268,14 @@ class ExcludeRule(object):
 		self.Panel.Controls.Add(self.Remove)
 		
 	def GetField(self):
-		return self.Field.SelectedItem
+		f = self.Field.SelectedItem.replace(" ", "")
+
+		if f in ["Series", "Count", "Format", "Number", "Title", "Volume", "Year"]:
+			return "Shadow" + f
+
+		if f == "Language":
+			return "LanguageAsText"
+		return f
 	
 	def GetText(self):
 		return self.TextBox.Text
@@ -297,23 +304,22 @@ class ExcludeRule(object):
 		
 		if operator == "is":
 			#Convert to string just in case
-			#Replace a space with nothing in the case of Alternate fields
-			if unicode(getattr(book, field.replace(" ", ""))) == text:
+			if unicode(getattr(book, field)) == text:
 				return 1
 			else:
 				return 0
 		elif operator == "does not contain":
-			if text not in unicode(getattr(book, field.replace(" ", ""))):
+			if text not in unicode(getattr(book, field)):
 				return 1
 			else:
 				return 0
 		elif operator == "contains":
-			if text in unicode(getattr(book, field.replace(" ", ""))):
+			if text in unicode(getattr(book, field)):
 				return 1
 			else:
 				return 0
 		elif operator == "is not":
-			if text != unicode(getattr(book, field.replace(" ", ""))):
+			if text != unicode(getattr(book, field)):
 				return 1
 			else:
 				return 0
@@ -321,24 +327,24 @@ class ExcludeRule(object):
 			#Try to use the int value to compare if possible
 			try:
 				number = int(text)
-				if number < int(getattr(book, field.replace(" ", ""))):
+				if number < int(getattr(book, field)):
 					return 1
 				else:
 					return 0
 			except ValueError:
-				if text < unicode(getattr(book, field.replace(" ", ""))):
+				if text < unicode(getattr(book, field)):
 					return 1
 				else:
 					return 0
 		elif operator == "less than":
 			try:
 				number = int(text)
-				if number > int(getattr(book, field.replace(" ", ""))):
+				if number > int(getattr(book, field)):
 					return 1
 				else:
 					return 0
 			except ValueError:
-				if text > unicode(getattr(book, field.replace(" ", ""))):
+				if text > unicode(getattr(book, field)):
 					return 1
 				else:
 					return 0
@@ -356,9 +362,10 @@ def SaveDict(dict, file):
 	Saves a dict of strings to a file
 	"""
 	try:
+
 		w = open(file, 'w')
 		for i in dict:
-			w.write(i + "|" + dict[i] + "\n")
+			w.write(i.encode("utf8") + "|" + dict[i].encode("utf8") + "\n")
 		w.close()
 	except IOError, err:
 		print "Somthing went wrong saving the undo list"
@@ -367,9 +374,10 @@ def SaveDict(dict, file):
 def LoadDict(file):
 	dict = {}
 	try:
-		r = open(file, "r")
+		r = open(file, 'r')
 		
-		for i in r.readlines():
+		for i in r:
+			i = i.decode('utf8')
 			parts = i.split("|")
 			dict[parts[0]] = parts[1].strip()
 		

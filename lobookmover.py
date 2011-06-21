@@ -3,7 +3,7 @@ lobookmover.py
 
 This contains all the book moving fuction the script uses. Also the path generator
 
-Version 1.6
+Version 1.7
 
 Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
 """
@@ -234,7 +234,7 @@ class BookMover(object):
 						Directory.CreateDirectory(dirpath)
 					else:
 						if not dirpath in self.CreatedPaths:
-							self.report.Append("\n\nCreating directory:\n%s" % (dirpath))
+							self.report.Append("\n\nCreating Folder:\n%s" % (dirpath))
 							self.CreatedPaths.append(dirpath)
 
 				except Exception, ex:
@@ -274,7 +274,7 @@ class BookMover(object):
 				
 
 #------------- Cleanup old directories ---------------------------------------------------------------#
-			if self.settings.RemoveEmptyDir and self.settings.Mode == Mode.Move:
+			if self.settings.RemoveEmptyFolder and self.settings.Mode == Mode.Move:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(dirpath))
 			
@@ -341,7 +341,7 @@ class BookMover(object):
 				skipped += 1
 				
 			#Cleanup old directories
-			if self.settings.RemoveEmptyDir and self.settings.Mode == Mode.Move:
+			if self.settings.RemoveEmptyFolder and self.settings.Mode == Mode.Move:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(dirpath))
 
@@ -567,8 +567,8 @@ class BookMover(object):
 		filepath = ""
 		
 		#Create the directory
-		if self.settings.UseDirectory:
-			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.DirTemplate, self.settings.BaseDir, self.settings.EmptyDir, self.settings.EmptyData, self.settings.DontAskWhenMultiOne)
+		if self.settings.UseFolder:
+			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.FolderTemplate, self.settings.BaseFolder, self.settings.EmptyFolder, self.settings.EmptyData, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months)
 		
 		#Or use the books current directory
 		else:
@@ -576,7 +576,7 @@ class BookMover(object):
 		
 		#Create filename
 		if self.settings.UseFileName:
-			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat, self.settings.DontAskWhenMultiOne)
+			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months)
 		
 		#Or use current filename
 		else:
@@ -620,7 +620,7 @@ class BookMover(object):
 			return
 		
 		#Only delete if no file or folder and not in folder never to delete
-		if len(directory.GetFiles()) == 0 and len(directory.GetDirectories()) == 0 and not directory.FullName in self.settings.ExcludedEmptyDir:
+		if len(directory.GetFiles()) == 0 and len(directory.GetDirectories()) == 0 and not directory.FullName in self.settings.ExcludedEmptyFolder:
 			parent = directory.Parent
 			directory.Delete()
 			self.CleanDirectories(parent)
@@ -629,7 +629,7 @@ class BookMover(object):
 		p = PathTooLongForm(path)
 		r = p.ShowDialog()
 
-		if r == DialogResult.Cancel:
+		if r != DialogResult.OK:
 			return None
 
 		return p._Path.Text
@@ -714,7 +714,7 @@ class UndoMover(object):
 
 			
 			#If cleaning directories
-			if self.settings.RemoveEmptyDir:
+			if self.settings.RemoveEmptyFolder:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(f.DirectoryName))
 			self.worker.ReportProgress(count)
@@ -759,7 +759,7 @@ class UndoMover(object):
 
 			
 			#If cleaning directories
-			if self.settings.RemoveEmptyDir:
+			if self.settings.RemoveEmptyFolder:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(f.DirectoryName))
 
@@ -895,7 +895,7 @@ class UndoMover(object):
 			return
 		
 		#Only delete if no file or folder and not in folder never to delete
-		if len(directory.GetFiles()) == 0 and len(directory.GetDirectories()) == 0 and not directory.FullName in self.settings.ExcludedEmptyDir:
+		if len(directory.GetFiles()) == 0 and len(directory.GetDirectories()) == 0 and not directory.FullName in self.settings.ExcludedEmptyFolder:
 			parent = directory.Parent
 			directory.Delete()
 			self.CleanDirectories(parent)
@@ -904,7 +904,7 @@ def CopyData(book, newbook):
 	"""This helper function copies all revevent metadata from a book to another book"""
 	list = ["Series", "Number", "Count", "Month", "Year", "Format", "Title", "Publisher", "AlternateSeries", "AlternateNumber", "AlternateCount",
 			"Imprint", "Writer", "Penciller", "Inker", "Colorist", "Letterer", "CoverArtist", "Editor", "AgeRating", "Manga", "LanguageISO", "BlackAndWhite",
-			"Genre", "Tags", "SeriesComplete", "Summary", "Characters", "Teams", "Locations", "Notes", "Web"]
+			"Genre", "Tags", "SeriesComplete", "Summary", "Characters", "Teams", "Locations", "Notes", "Web", "ScanInformation"]
 
 	for i in list:
 		setattr(newbook, i, getattr(book, i))
@@ -1007,7 +1007,7 @@ class PathMaker:
 		#Need to store the parent form so it can use the muilt select form
 		self.form = parentform
 	
-	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne):
+	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne, illegals, months):
 	#To let the re.sub functions access the book object.
 		global book 
 		book = insertedbook
@@ -1015,6 +1015,8 @@ class PathMaker:
 		global emptyreplacements
 		emptyreplacements = emptyreplace
 
+		self.Illegals = illegals
+		self.Months = months
 		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
 		path = ""
@@ -1032,13 +1034,13 @@ class PathMaker:
 			for line in lines:
 				if line.strip() == "":
 					line = emptypath
-				line = self.replaceIllegal(line)
+				line = self.replaceIllegal(line, illegals)
 				path = Path.Combine(path, line.strip())
 	
 		path = Path.Combine(basepath, path)
 		return path
 	
-	def CreateFileName(self, ibook, template, emptyreplace, filelessformat, DontAskWhenMultiOne):
+	def CreateFileName(self, ibook, template, emptyreplace, filelessformat, DontAskWhenMultiOne, illegals, months):
 		global book
 		book = ibook
 		
@@ -1046,11 +1048,13 @@ class PathMaker:
 		global emptyreplacements
 		emptyreplacements = emptyreplace	
 
+		self.Illegals = illegals
+		self.Months = months
 		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
 		r = self.ReplaceValues(template)
 		r = r.strip()
-		r = self.replaceIllegal(r)
+		r = self.replaceIllegal(r, illegals)
 
 		if not r:
                 #template was empty
@@ -1066,7 +1070,7 @@ class PathMaker:
 	
 	def ReplaceValues(self, templateText):
 		#Much of this modified from wadegiles's guided rename script.
-		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<series\>(?P<post>[^}]*)(?P<end>})', self.insertSeries, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>series)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>number)(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>count)(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<year\>(?P<post>[^}]*)(?P<end>})', self.insertYear, templateText)
@@ -1078,9 +1082,10 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<month\>(?P<post>[^}]*)(?P<end>})', self.insertMonth, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>month)#(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>volume)(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowPadded, templateText)
-		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>title)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>title)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>ageRating)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
-		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>format)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>language)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>format)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>startyear)\>(?P<post>[^}]*)(?P<end>})', self.insertStartYear, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>writer)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>tags)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
@@ -1092,7 +1097,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
 		return templateText
 	
-	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been modified by Stonepaw
+	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified by Stonepaw
 	def pad(self, value, padding):
 		if value >= 0:
 			paddedValue = str(value)
@@ -1102,31 +1107,10 @@ class PathMaker:
 			paddedValue = paddedValue.PadLeft(padding, '0')
 			return '-' + paddedValue
 	
-	def replaceIllegal(self, text):
-		text = text.replace('?', '')
-		text = text.replace('/', '')
-		text = text.replace('\\', '')
-		text = text.replace('*', '')
-		text = text.replace(':', ' -')
-		text = text.replace('<', '[')
-		text = text.replace('>', ']')
-		text = text.replace('|', '!')
-		text = text.replace('"', '\'')
+	def replaceIllegal(self, text, illegals):
+		for i in illegals:
+			text = text.replace(i, illegals[i])
 		return text
-	
-	def insertSeries(self, matchObj):
-		result = None
-		series = book.ShadowSeries
-		if series != "":
-				result = matchObj.group("pre") + series + matchObj.group("post")
-		else:
-			if emptyreplacements["Series"] != "":
-				result = matchObj.group("pre") + emptyreplacements["Series"] + matchObj.group("post")
-			else:
-				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
-		return result
 	
 	def insertYear(self, matchObj):
 		result = None
@@ -1140,7 +1124,25 @@ class PathMaker:
 		result = result.replace('/', ' ')
 		result = result.replace('\\', ' ')
 		return result
-	
+
+	def insertShadowText(self, matchObj):
+		result = None
+		property =  matchObj.group("name").capitalize()
+		
+		sproperty = "Shadow" + property
+
+		if getattr(book, sproperty) != "":
+			result = matchObj.group("pre") + getattr(book, sproperty) + matchObj.group("post")
+		else:
+			if emptyreplacements[property] != "":
+				result = matchObj.group("pre") + emptyreplacements[property] + matchObj.group("post")
+			else:
+				result = ""
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
+		return result
+
+
 	def insertText(self, matchObj):
 		result = None
 		property =  matchObj.group("name").capitalize()
@@ -1153,6 +1155,9 @@ class PathMaker:
 		if property == "Agerating":
 			property = "AgeRating"
 
+		if property == "Language":
+			property = "LanguageAsText"
+
 		if getattr(book, property) != "":
 			result = matchObj.group("pre") + getattr(book, property) + matchObj.group("post")
 		else:
@@ -1160,8 +1165,8 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements[property] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
 		return result
 
 	def insertShadowPadded(self, matchObj):
@@ -1190,8 +1195,8 @@ class PathMaker:
 				result = matchObj.group("pre") + result + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
 		return result
 
 	def insertPadded(self, matchObj):
@@ -1223,38 +1228,16 @@ class PathMaker:
 				result = matchObj.group("pre") + result + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
 		return result
 		
 	
 	def insertMonth(self, matchObj):
 		result = None
-		if book.Month > 0:
-			if book.Month == 1:
-				result = "January"
-			elif book.Month == 2:
-				result = "February"
-			elif book.Month == 3:
-				result = "March"
-			elif book.Month == 4:
-				result = "April"
-			elif book.Month == 5:
-				result = "May"
-			elif book.Month == 6:
-				result = "June"
-			elif book.Month == 7:
-				result = "July"
-			elif book.Month == 8:
-				result = "August"
-			elif book.Month == 9:
-				result = "September"
-			elif book.Month == 10:
-				result = "October"
-			elif book.Month == 11:
-				result = "November"
-			elif book.Month == 12:
-				result = "December"
+		if book.Month != -1:
+			if book.Month in self.Months:
+				result = self.Months[book.Month]
 			else:
 				#Something else, no set string for it so return it as nothing
 				return ""
@@ -1265,16 +1248,17 @@ class PathMaker:
 			else:
 				result = ""
 	
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
 		return result
 	
 	def insertStartYear(self, matchObj):
 		#Find the start year by going through the whole list of comics in the library find the earliest year field of the same series and volume
 		
+		index = book.ShadowSeries+str(book.ShadowVolume)
 		
-		if self.startyear.has_key(book.ShadowSeries+str(book.ShadowYear)):
-			startyear = self.startyear[book.ShadowSeries+str(book.ShadowYear)]
+		if self.startyear.has_key(index):
+			startyear = self.startyear[index]
 		else:
 			startyear = book.ShadowYear
 			
@@ -1290,7 +1274,7 @@ class PathMaker:
 						startyear = b.ShadowYear
 			
 			#Store this final result in the dict so no calculation require for others of the series.
-			self.startyear[book.ShadowSeries+str(book.ShadowYear)] = startyear
+			self.startyear[index] = startyear
 			
 		if	startyear != -1:
 			result = matchObj.group("pre") + str(startyear) + matchObj.group("post")
@@ -1299,8 +1283,8 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements["StartYear"] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
+		result = result.replace('/', self.Illegals["/"])
+		result = result.replace('\\', self.Illegals["\\"])
 		return result
 
 	def insertManga(self, matchObj):
@@ -1331,6 +1315,16 @@ class PathMaker:
 		return empty
 
 	def insertMulti(self, matchObj):
+		#Get a bool for if using series. Just simplifies the code a bit
+		if matchObj.group("series") == "series":
+			return self.InsertMultiSeries(matchObj)
+		else:
+			return self.InsertMultiIssue(matchObj)
+
+
+	def InsertMultiIssue(self, matchObj):
+
+		#Initial setup
 
 		field = matchObj.group("name").capitalize()
 
@@ -1338,23 +1332,130 @@ class PathMaker:
 		if field == "Scaninfo":
 			field = "ScanInformation"
 
+
+		#Get the correct list storage based on the field
 		list = getattr(self, field)
 
-		#alwaysuseditems
-		try:
-			alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
-		except KeyError:
-			alwaysuseditems = []
+		#Easier access in the code
+		post = matchObj.group("post")
+		pre = matchObj.group("pre")
+		sep = matchObj.group("sep")
 
-		#Get a bool for if using series. Just simplifies the code a bit
-		if matchObj.group("series") == "series":
-			series = True
-			index = book.ShadowSeries + str(book.ShadowVolume)
-			booktext = book.ShadowSeries + " vol. " + str(book.ShadowVolume) 
+
+		#What to return if empty. Simplifies the later code.
+
+		if emptyreplacements[field].strip() != "":
+			empty = pre + emptyreplacements[field] + post
 		else:
-			series = False
-			index = book.ShadowSeries + str(book.ShadowVolume) + book.ShadowNumber
-			booktext = book.ShadowSeries + " vol. " + str(book.ShadowVolume) + " #" + book.ShadowNumber
+			empty = ""
+
+		index = book.ShadowSeries + str(book.ShadowVolume) + book.ShadowNumber
+		booktext = book.ShadowSeries + " vol. " + str(book.ShadowVolume) + " #" + book.ShadowNumber
+
+		#No items
+		if getattr(book, field).strip() == "":
+			list[index] = SelectionFormResult([])
+			return empty
+
+		alwaysuseditems = []
+		if "LibraryOrgaizerAlwaysUse" in list:
+			alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
+
+		#Already done this one so retry it. This won't occur in normal moving operation but is needed for the gui preview.
+		if index in list:
+			r = self.MakeMultiSelectionString(list[index], sep, field)
+
+			if r == "":
+				return empty
+
+			return pre + r + post
+
+		items = []
+		for i in getattr(book, field).split(","):
+			items.append(i.strip())
+
+		#Only one result, check if asking user
+		if len(items) == 1 and self.DontAskWhenMultiOne == True:
+			return pre + items[0] + post
+
+
+		#Find which we already need to use:
+		used = []
+		#Go through each set of alwaysuseditems
+		for set in alwaysuseditems:
+			count = 0
+			#Go through each item in the set. First two items are bools for the two options
+			for item in set[2:]:
+				if item in items:
+					count +=1
+			#All items are in the field
+			if count == len(set) -2 :
+
+				#Not asking if there are additional items
+				if set[0] == True:
+					if set[1] == True:
+						#Using folder speration
+						return pre + "\\".join(set[2:]) + post
+					else:
+						#Not using folder speration
+						return pre + sep.join(set[2:]) + post
+
+				#Same number of items but asking if there are additonal items
+				else:
+					used = set[2:]
+					break
+
+		#Since this can be shown from the configform:
+		if self.form.InvokeRequired:
+			result = self.form.Invoke(Func[SelectionFormArgs, SelectionFormResult](self.ShowSelectionForm), System.Array[object]([SelectionFormArgs(items, used, field, booktext, False)]))
+
+		else:
+			result = self.ShowSelectionForm(SelectionFormArgs(items, used, field, booktext, False))
+
+
+		if result.AlwaysUse and len(result.Selection) > 0:
+			if len(alwaysuseditems) == 0:
+				list["LibraryOrgaizerAlwaysUse"] = []
+
+			rlist = []
+			rlist.append(result.AlwaysUseDontAsk)
+			rlist.append(result.Folder)
+			rlist.extend(result.Selection)
+
+
+			#Check if the same list already exists. This shouldn't be encountered but it doesn't hurt to check
+			if not rlist in list["LibraryOrgaizerAlwaysUse"]:
+				list["LibraryOrgaizerAlwaysUse"].append(rlist)
+
+				alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
+
+		list[index] = result
+		r = self.MakeMultiSelectionString(result, sep, field)
+
+		if r == "":
+			return empty
+
+		return pre + r + post
+
+	def InsertMultiSeries(self, matchObj):
+
+		"""
+		A series based calculation will find all of the filed it can find in the series then ask the user which ones to use.
+
+		The user has the option to select to use all these characters for every item in the series, even if the item doesn't have that
+		"""
+
+		#Initial setup
+
+		field = matchObj.group("name").capitalize()
+
+		#Small catch
+		if field == "Scaninfo":
+			field = "ScanInformation"
+
+
+		#Get the correct list storage based on the field
+		list = getattr(self, field)
 
 		#Easier access in the code
 		post = matchObj.group("post")
@@ -1370,108 +1471,56 @@ class PathMaker:
 		else:
 			empty = ""
 
-		#Try and get an existing value
-		try:
-			if series:
-				return self.MakeMultiSelectionStringSeries(list[index], pre, post, sep, empty, field, alwaysuseditems)
-			else:
-				return self.MakeMultiSelectionStringIssue(field, list[index], pre, post, sep, empty, alwaysuseditems)
 
-		except KeyError:
-			#key not there so continue to find the writer to use
-			pass
-		
-		#No writers and going by issue
-		if getattr(book, field).strip() == "" and series == False :
+
+		#Note to make it simpler, a series based caclulation will never access the always use option
+
+
+		index = book.ShadowSeries + str(book.ShadowVolume)
+		booktext = book.ShadowSeries + " vol. " + str(book.ShadowVolume) 
+
+		#First see if anything is saved
+
+		if index in list:
+			#This series was encountered before so calculate based off of that
+			r = self.MakeMultiSelectionString(list[index], sep, field)
+
+			if r == "":
+				return empty
+			
+			return pre + r + post
+
+		#New series so calculate from scratch:
+
+
+		#Find all the items in the entire series
+
+		items = self.GetAllFromSeriesField(field, book.ShadowSeries, book.ShadowVolume)
+
+		#No items at all in the entire series
+		if len(items) == 0:
 			list[index] = SelectionFormResult([])
 			return empty
-		
-		#There is items or going by series
+
+
+		#Ask the user which ones to use
+
+		#Since this can be shown from the configform...
+		if self.form.InvokeRequired:
+			result = self.form.Invoke(Func[SelectionFormArgs, SelectionFormResult](self.ShowSelectionForm), System.Array[object]([SelectionFormArgs(items, [], field, booktext, True)]))
+
 		else:
-			items = []
+			result = self.ShowSelectionForm(SelectionFormArgs(items, [], field, booktext, True))
 
-			#Finding for whole series
-			if series:
-				items = self.GetAllFromSeriesField(field, book.ShadowSeries, book.ShadowVolume)
+		list[index] = result
 
-				#No items at all in the entire series
-				if len(items) == 0:
-					list[index] = SelectionFormResult([])
-					return empty
-
-			#finding just for the issue
-			else:
-				for i in getattr(book, field).split(","):
-					items.append(i.strip())
-
-				#Only one result, check if asking user
-				if len(items) == 1 and self.DontAskWhenMultiOne == True:
-					return pre + items[0] + post
-
-			#Find which we already need to use:
-			used = []
-			l = len(items)
-			for i in items[:]:
-				if i in alwaysuseditems:
-					used.append(i)
-					items.remove(i)
-
-			#All need to be used, no need to ask.
-			if len(used) == l:
-				return pre + sep.join(used) + post
-
-			#Since this can be shown from the configform:
-			if self.form.InvokeRequired:
-				result = self.form.Invoke(Func[SelectionFormArgs, SelectionFormResult](self.ShowSelectionForm), System.Array[object]([SelectionFormArgs(items, used, field, booktext, series)]))
-
-			else:
-				result = self.ShowSelectionForm(SelectionFormArgs(items, used, field, booktext, series))
-
-			if result.AlwaysUse:
-				if list.has_key("LibraryOrgaizerAlwaysUse") == False:
-					list["LibraryOrgaizerAlwaysUse"] = []
-				for i in result.Selection:
-					if i not in list["LibraryOrgaizerAlwaysUse"]:
-						list["LibraryOrgaizerAlwaysUse"].append(i)
-				alwaysuseditems = list["LibraryOrgaizerAlwaysUse"]
-
-			if series:
-				list[index] = result
-				return self.MakeMultiSelectionStringSeries(result, pre, post, sep, empty, field, alwaysuseditems)
-
-			else:
-				list[index] = result
-				return self.MakeMultiSelectionStringIssue(field, result, pre, post, sep, empty, alwaysuseditems)
-
-
-	def MakeMultiSelectionStringIssue(self, field, results, pre, post, sep, empty, alwaysuseditems):
-		"""
-		Makes the correctly formated inserted string based on the input values:
-
-		results is a SelectionFormResult class
-		pre is the string prefix
-		post is the string postfix
-		sep is the string seperator
-		empty is the string to return when the calculated string is empty
-		"""
-		if results.Folder:
-			sep += "\\"
-
-		string = sep.join(results.Selection)
-
-		items = []
-		for i in getattr(book, field).split(","):
-			items.append(i.strip())
-
-		for i in alwaysuseditems:
-			if i in items and i not in results.Selection:
-				string = sep.join([string, i])
-
-		if string == "":
+		r = self.MakeMultiSelectionString(result, sep, field)
+		
+		if r == "":
 			return empty
 
-		else:
-			return pre + string + post
+		return pre + r + post
+
 
 	def ShowSelectionForm(self, args):
 		f = SelectionForm(args)
@@ -1480,51 +1529,39 @@ class PathMaker:
 		f.Dispose()
 		return result
 
-	def MakeMultiSelectionStringSeries(self, results, pre, post, sep, empty, field, alwaysuseditems):
+	def MakeMultiSelectionString(self, results, sep, field):
 		"""
 		Makes the correctly formated inserted string based on the input values:
 
-		results is a SelectionFormResult class
-		pre is the string prefix
-		post is the string postfix
+		results is a SelectionFormResult object
 		sep is the string seperator
-		empty is the string to return when the calculated string is empty
 		field is the correct name of the field to find from the book
 		"""
+
+		itemsToUse = ""
+
+		#First check to see if using a folder. If so no need to use the user entered sperator
 		if results.Folder:
 			sep += "\\"
 
-		if results.EveryIssue:
-			string = sep.join(results.Selection)
-			if string == "":
-				return empty
-			else:
-				return pre + string + post
+		#Get a list of all the items in the book
+		items = []
+		for i in getattr(book, field).split(","):
+			items.append(i.strip())
 
+		#Using every issue
+		if results.EveryIssue:
+			return sep.join(result.Selection)
+
+		#Not using every issue so just use the ones it has
 		else:
-			string = ""
-			items = []
-			for i in getattr(book, field).split(","):
-				items.append(i.strip())
-			
-			itemsToUse = []
+			itemsToUse = []		
 			for i in results.Selection:
 				if i in items:
 					itemsToUse.append(i)
+			return sep.join(itemsToUse)
 
-			string = sep.join(itemsToUse)
-
-			for i in alwaysuseditems:
-				if i in items and not i in itemsToUse:
-					string = sep.join([string, i])
-
-			#Possible for the 
-
-			if string == "":
-				return empty
-			else:
-				return pre + string + post
-			
+		
 
 	def GetAllFromSeriesField(self, field, series, volume):
 		"""

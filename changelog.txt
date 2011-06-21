@@ -1,19 +1,15 @@
-﻿Bug fix:
-Unicode characters in comic file will no longer error
-Folder rules are now saved
-Progress bar will now correctly update
+﻿Changes:
+Scan Information in duplicate display
+Changed how mulitvalue fields are calculated and asked for. It should work better now.
+Renamed Directory to Folder through out the UI
 
-Change:
-Cancel button in Progress bar and tag selection forms
-Text should now reflect what mode you are using
-All text will now reflect when mode you are using
+Bugfix:
+Fix for unicode characters in move mode (saving undo.dat file)
+Fixed path too long checking
+Fixed startyear calculation (I think)
 
-New Features:
-Path to long exception is now caught and gives you the option to shorten it
-Better duplicate form
-
-Add age rating, file name fileformat, filepath and scan information to exclude rules options
-Added Age Rating and scan information tags
-
-Option to automaticly insert any of Characters, Genre, Scan Information, Tags, Teams or Writers without asking when there is only one value
-Option to automaticly use the selected tags, characters etc when an issue in the operation has them
+New:
+Illegal Character replacements are now user defineable
+Month text is now user definable
+Added language field
+Added import and export for profiles

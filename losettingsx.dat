@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Settings LastUsed="Default">
   <Setting Name="Default">
-    <DirTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\&lt;series&gt;}{ (&lt;startyear&gt; {&lt;format&gt;)}}</DirTemplate>
-    <BaseDir></BaseDir>
-    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (&lt;month&gt;, }{&lt;year&gt;)}</FileTemplate>
-    <EmptyDir />
+    <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
+    <BaseFolder></BaseFolder>
+    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
+    <EmptyFolder />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>
     <DontAskWhenMultiOne>false</DontAskWhenMultiOne>
-    <UseDirectory>true</UseDirectory>
+    <UseFolder>true</UseFolder>
     <CopyMode>false</CopyMode>
     <Postfix>
       <Item Name="Number" Value="" />
@@ -21,6 +21,7 @@
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
       <Item Name="AgeRating" Value="" />
+      <Item Name="Language" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -47,6 +48,7 @@
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
       <Item Name="AgeRating" Value="" />
+      <Item Name="Language" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -74,6 +76,31 @@
       <Item Name="Manga" Value="Manga" />
       <Item Name="SeriesComplete" Value="Complete" />
     </TextBox>
+    <Months>
+      <Item Name="1" Value="January" />
+      <Item Name="2" Value="February" />
+      <Item Name="3" Value="March" />
+      <Item Name="4" Value="April" />
+      <Item Name="5" Value="May" />
+      <Item Name="6" Value="June" />
+      <Item Name="7" Value="July" />
+      <Item Name="8" Value="August" />
+      <Item Name="9" Value="September" />
+      <Item Name="10" Value="October" />
+      <Item Name="11" Value="November" />
+      <Item Name="12" Value="December" />
+    </Months>
+    <IllegalCharacters>
+      <Item Name="&quot;" Value="'" />
+      <Item Name="/" Value="" />
+      <Item Name="*" Value="" />
+      <Item Name="&lt;" Value="[" />
+      <Item Name="?" Value="" />
+      <Item Name="&gt;" Value="]" />
+      <Item Name="|" Value="!" />
+      <Item Name=":" Value="-" />
+      <Item Name="\" Value="" />
+    </IllegalCharacters>
     <EmptyData>
       <Item Name="Number" Value="" />
       <Item Name="Format" Value="" />
@@ -85,6 +112,7 @@
       <Item Name="Tags" Value="" />
       <Item Name="Manga" Value="" />
       <Item Name="AgeRating" Value="" />
+      <Item Name="Language" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -103,7 +131,7 @@
     <ExcludeRules Operator="Any" ExcludeMode="Only" />
     <MoveFileless>true</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
-    <RemoveEmptyDir>true</RemoveEmptyDir>
-    <ExcludedEmptyDir />
+    <RemoveEmptyFolder>true</RemoveEmptyFolder>
+    <ExcludedEmptyFolder />
   </Setting>
 </Settings>
