@@ -55,7 +55,7 @@ def LibraryOrganizer(books):
 			print "Creating config form"
 			config = ConfigForm(books, settings, lastused)
 			result = config.ShowDialog()
-			
+			lastused = config._cmbProfiles.SelectedItem
 			if result != DialogResult.Cancel:
 				config.SaveSettings()
 				#Create a worker form
@@ -63,10 +63,10 @@ def LibraryOrganizer(books):
 				#form, It would be better it this could be done elsewhere but I don't have a 
 				#very good understanding of threads so this was the easiest way for me to get 
 				#this to work
+
 				workerForm = WorkerForm(books, settings[lastused])
 				workerForm.ShowDialog()
 				workerForm.Dispose()
-			lastused = config._cmbProfiles.SelectedItem
 			SaveSettings(settings, lastused)
 	
 		except Exception, ex:
