@@ -2,8 +2,8 @@
 This file contains various dialogs and forms required by the Library Orgainizer
 
 
-Version 1.7
-	-Improved path too long cacluations
+Version 1.7.2
+
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
