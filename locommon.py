@@ -3,8 +3,8 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.7.2
-			-Added more options to the rules
+Version: 1.7.3
+			-Fixed error with rules introduced in 1.7.2
 
 Contains several classes and functions. All are used in several files
 
@@ -246,12 +246,11 @@ class ExcludeRule(object):
 			"Year"]))
 			
 		self.Field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self.Field.SelectedIndex = 0
 		self.Field.Size = Size(121, 21)
 		self.Field.MaxDropDownItems = 15
 		self.Field.IntegralHeight = False
 		self.Field.Sorted = True
-		self.Field.SelectedIndexChanged += self.FieldSelectionIndexChanged
+		self.Field.SelectedIndex= 0
 		
 		#Operator selector
 		self.Operator = ComboBox()
@@ -281,6 +280,8 @@ class ExcludeRule(object):
 		self.Selection.Enabled = False
 		self.Selection.Visible = False
 		self.Selection.DropDownStyle = ComboBoxStyle.DropDownList
+
+		self.Field.SelectedIndexChanged += self.FieldSelectionIndexChanged
 		
 		#Add controls
 		self.Panel.Controls.Add(self.Field)
