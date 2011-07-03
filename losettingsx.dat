@@ -98,7 +98,7 @@
       <Item Name="?" Value="" />
       <Item Name="&gt;" Value="]" />
       <Item Name="|" Value="!" />
-      <Item Name=":" Value="-" />
+      <Item Name=":" Value=" - " />
       <Item Name="\" Value="" />
     </IllegalCharacters>
     <EmptyData>

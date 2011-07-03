@@ -1,15 +1,10 @@
-﻿Changes:
-Scan Information in duplicate display
-Changed how mulitvalue fields are calculated and asked for. It should work better now.
-Renamed Directory to Folder through out the UI
+﻿New:
+Added a way to rename profiles.
+
+Changes:
+Added more field to the rules
+Changed the auto spacing to insert the space before the field instead of after
+Changed the default replacement for : to space dash space
 
 Bugfix:
-Fix for unicode characters in move mode (saving undo.dat file)
-Fixed path too long checking
-Fixed startyear calculation (I think)
-
-New:
-Illegal Character replacements are now user defineable
-Month text is now user definable
-Added language field
-Added import and export for profiles
+Fixed a bug with incorrectly loading rules with spaces such as Scan Information

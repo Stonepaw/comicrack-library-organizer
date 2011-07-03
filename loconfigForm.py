@@ -1,9 +1,10 @@
 """
 loconfigform.py
 
-Version: 1.7
+Version: 1.7.2
 
-			Misc. GUI tweaks, added import and export functions
+			Added rename button
+			Changed auto spacing to inset the space before the field instead of after
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -103,7 +104,7 @@ class ConfigForm(Form):
 		self._ok = System.Windows.Forms.Button()
 		self._cancel = System.Windows.Forms.Button()
 		self._tpExcludes = System.Windows.Forms.TabPage()
-		self._button1 = System.Windows.Forms.Button()
+		self._btnProRename = System.Windows.Forms.Button()
 		self._btnProNew = System.Windows.Forms.Button()
 		self._btnProSaveAs = System.Windows.Forms.Button()
 		self._btnProDelete = System.Windows.Forms.Button()
@@ -355,12 +356,13 @@ class ConfigForm(Form):
 		# 
 		# button1
 		# 
-		self._button1.Location = System.Drawing.Point(10, 491)
-		self._button1.Name = "button1"
-		self._button1.Size = System.Drawing.Size(75, 23)
-		self._button1.TabIndex = 3
-		self._button1.Text = "Save"
-		self._button1.UseVisualStyleBackColor = True
+		self._btnProRename.Location = System.Drawing.Point(10, 491)
+		self._btnProRename.Name = "button1"
+		self._btnProRename.Size = System.Drawing.Size(75, 23)
+		self._btnProRename.TabIndex = 3
+		self._btnProRename.Text = "Rename"
+		self._btnProRename.UseVisualStyleBackColor = True
+		self._btnProRename.Click += self.BtnProRenameClick
 		# 
 		# btnProNew
 		# 
@@ -455,7 +457,7 @@ class ConfigForm(Form):
 		self.Controls.Add(self._btnProImport)
 		self.Controls.Add(self._cancel)
 		self.Controls.Add(self._ok)
-		self.Controls.Add(self._button1)
+		self.Controls.Add(self._btnProRename)
 		self.Controls.Add(self._tabs)
 		self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
 		self.Name = "ConfigForm"
@@ -1671,8 +1673,18 @@ class ConfigForm(Form):
 			self.CreateNewSetting()
 			self.SaveSettings()
 
-	def BtnSaveClick(self, sender, e):
-		self.SaveSettings()
+	def BtnProRenameClick(self, sender, e):
+		ib = InputBox()
+		ib.ShowDialog(self)
+		oldname = self._cmbProfiles.SelectedItem
+		i = ib.FindName()
+		if i.strip() != "" and ib.DialogResult == DialogResult.OK:
+			self.settings.Name = i
+			index = self._cmbProfiles.Items.IndexOf(self._cmbProfiles.SelectedItem)
+			self._cmbProfiles.Items[index] = i
+
+			self.allsettings[i] = self.allsettings[oldname]
+			del(self.allsettings[oldname])
 
 	def BtnProNewClick(self, sender, e):
 		if self.CheckFields():
@@ -1684,7 +1696,7 @@ class ConfigForm(Form):
 		ib = InputBox()
 		ib.ShowDialog(self)
 		i = ib.FindName()
-		if i and ib.DialogResult == DialogResult.OK:
+		if i.strip() != "" and ib.DialogResult == DialogResult.OK:
 			self.allsettings[i] = losettings.settings()
 			self.allsettings[i].Name = i
 			self._cmbProfiles.Items.Add(i)
@@ -1799,7 +1811,6 @@ class ConfigForm(Form):
 			except Exception, ex:
 				MessageBox.Show("An error occured trying to load the profile file. The error was:\n\n" + str(ex), "Error loading profile file", MessageBoxButtons.OK, MessageBoxIcon.Error)				
 
-
 class InsertControl(Panel):
 	"""
 	Custom class to simplfy inserting template items
@@ -1861,7 +1872,7 @@ class InsertControl(Panel):
 		s = ""
 		if space:
 			s = " "
-		return "{" + self.Prefix.Text + "<" + self.Template + ">" + self.Postfix.Text + s + "}"
+		return "{" + s + self.Prefix.Text + "<" + self.Template + ">" + self.Postfix.Text + "}"
 
 class InsertControlPadding(InsertControl):
 	
@@ -1880,7 +1891,7 @@ class InsertControlPadding(InsertControl):
 		s = ""
 		if space:
 			s = " "
-		return "{" + self.Prefix.Text + "<" + self.Template + str(self.Pad.Value) + ">" + self.Postfix.Text + s + "}"
+		return "{" + s + self.Prefix.Text + "<" + self.Template + str(self.Pad.Value) + ">" + self.Postfix.Text + "}"
 
 class InsertControlCheckBox(InsertControl):
 	
@@ -1918,7 +1929,7 @@ class InsertControlCheckBox(InsertControl):
 		if space:
 			s = " "
 			sep = sep.rstrip() + s
-		return "{" + self.Prefix.Text + "<" + self.Template + "(" + sep + ")" + checktext + ">" + self.Postfix.Text + s + "}"
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + sep + ")" + checktext + ">" + self.Postfix.Text + "}"
 
 class InsertControlTextBox(InsertControl):
 	
@@ -1942,5 +1953,5 @@ class InsertControlTextBox(InsertControl):
 		s = ""
 		if space:
 			s = " "
-		return "{" + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")>" + self.Postfix.Text + s + "}"
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")>" + self.Postfix.Text + "}"
 

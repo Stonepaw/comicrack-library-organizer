@@ -3,8 +3,8 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.7
-			
+Version: 1.7.2
+			-Added more options to the rules
 
 Contains several classes and functions. All are used in several files
 
@@ -38,6 +38,9 @@ OLDSETTINGSFILE = Path.Combine(SCRIPTDIRECTORY, "losettings.dat")
 ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
+
+clr.AddReferenceByPartialName('ComicRack.Engine')
+from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
 class Mode:
 	Move = "Move"
@@ -215,28 +218,40 @@ class ExcludeRule(object):
 			"Alternate Count",
 			"Alternate Number",
 			"Alternate Series",
+			"Black And White",
+			"Characters",
 			"Count",
 			"File Name",
 			"File Path",
 			"File Format",
 			"Format",
+			"Genre",	
 			"Imprint",
 			"Language",
+			"Locations",
+			"Manga",
 			"Month",
 			"Number",
 			"Notes",
 			"Publisher",
 			"Rating",
+			"Series Complete",
 			"Tags",
+			"Teams",
 			"Title",
 			"Scan Information",
 			"Series",
-			"Volume",			
+			"Volume",
+			"Web",		
 			"Year"]))
 			
 		self.Field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
 		self.Field.SelectedIndex = 0
 		self.Field.Size = Size(121, 21)
+		self.Field.MaxDropDownItems = 15
+		self.Field.IntegralHeight = False
+		self.Field.Sorted = True
+		self.Field.SelectedIndexChanged += self.FieldSelectionIndexChanged
 		
 		#Operator selector
 		self.Operator = ComboBox()
@@ -260,15 +275,22 @@ class ExcludeRule(object):
 		self.Remove.Size = Size(18, 23)
 		self.Remove.Text = "-"
 		self.Remove.Tag = self
+
+		self.Selection = ComboBox()
+		self.Selection.Size = Size(175, 21)
+		self.Selection.Enabled = False
+		self.Selection.Visible = False
+		self.Selection.DropDownStyle = ComboBoxStyle.DropDownList
 		
 		#Add controls
 		self.Panel.Controls.Add(self.Field)
 		self.Panel.Controls.Add(self.Operator)
 		self.Panel.Controls.Add(self.TextBox)
+		self.Panel.Controls.Add(self.Selection)
 		self.Panel.Controls.Add(self.Remove)
 		
 	def GetField(self):
-		f = self.Field.SelectedItem.replace(" ", "")
+		f = self.Field.SelectedItem
 
 		if f in ["Series", "Count", "Format", "Number", "Title", "Volume", "Year"]:
 			return "Shadow" + f
@@ -279,6 +301,15 @@ class ExcludeRule(object):
 	
 	def GetText(self):
 		return self.TextBox.Text
+
+	def GetYesNo(self):
+		if self.Field.SelectedItem == "Manga":
+			if self.Selection.SelectedItem == "Yes (Right to Left)":
+				return MangaYesNo.YesAndRightToLeft
+			else:
+				return getattr(MangaYesNo, self.Selection.SelectedItem)
+
+		return getattr(YesNo, self.Selection.SelectedItem)
 	
 	def GetOperator(self):
 		return self.Operator.SelectedItem
@@ -286,22 +317,63 @@ class ExcludeRule(object):
 	def SetFields(self, Field, Operator, Text):
 		self.Field.SelectedItem = Field
 		self.Operator.SelectedItem = Operator
-		self.TextBox.Text = Text
+		if Field in ["Manga", "Series Complete", "Black And White"]:
+			self.Selection.SelectedItem = Text
+		else:
+			self.TextBox.Text = Text
 		
 	def SetField(self, Field):
 		self.Field.SelectedItem = Field
 		
 	def SetOperator(self, Operator):
 		self.Operator.SelectedItem = Operator
-		
+
+	def FieldSelectionIndexChanged(self, sender, e):
+
+		def ShowSelection():
+			self.Operator.Items.Clear()
+			self.Operator.Items.AddRange(System.Array[System.String](["is", "is not"]))
+			self.Operator.SelectedIndex = 0
+			self.TextBox.Enabled = False
+			self.TextBox.Visible = False
+			self.Selection.Enabled = True
+			self.Selection.Visible = True
+
+		if sender.SelectedItem in ["Series Complete", "Black And White"]:
+			self.Selection.Items.Clear()
+			self.Selection.Items.AddRange(System.Array[System.String](["Yes", "No", "Unknown"]))
+			self.Selection.SelectedIndex = 0
+			ShowSelection()
+
+		elif sender.SelectedItem == "Manga":
+			self.Selection.Items.Clear()
+			self.Selection.Items.AddRange(System.Array[System.String](["Yes", "Yes (Right to Left)", "No", "Unknown"]))
+			self.Selection.SelectedIndex = 0
+			ShowSelection()
+
+		else:
+			if self.TextBox.Enabled == False:
+				if self.Operator.Items.Count != 6:
+					self.Operator.Items.Clear()
+					self.Operator.Items.AddRange(System.Array[System.String](["contains", "does not contain", "greater than", "less than", "is", "is not"]))
+					self.Operator.SelectedIndex = 0
+				self.TextBox.Enabled = True
+				self.TextBox.Visible = True
+				self.Selection.Enabled = False
+				self.Selection.Visible = False
+	
 	def SetText(self, Text):
 		self.TextBox.Text = Text
 		
 	def Calculate(self, book):
+		if self.Selection.Enabled:
+			return self.CalculateYesNo(book)
+
 		operator = self.GetOperator()
 		text = self.GetText()
 		field = self.GetField()
-		
+		field = field.replace(" ", "")
+
 		if operator == "is":
 			#Convert to string just in case
 			if unicode(getattr(book, field)) == text:
@@ -349,12 +421,31 @@ class ExcludeRule(object):
 				else:
 					return 0
 		
+	def CalculateYesNo(self, book):
+		operator = self.GetOperator()
+		yesno = self.GetYesNo()
+		field = self.GetField()
+		field = field.replace(" ", "")
+		
+		if operator == "is":
+			if (getattr(book, field)) == yesno:
+				return 1
+			else:
+				return 0
+		elif operator == "is not":
+			if yesno != (getattr(book, field)):
+				return 1
+			else:
+				return 0
 
 	def SaveXml(self, xmlwriter):
 		xmlwriter.WriteStartElement("ExcludeRule")
-		xmlwriter.WriteAttributeString("Field", self.GetField())
+		xmlwriter.WriteAttributeString("Field", self.Field.SelectedItem)
 		xmlwriter.WriteAttributeString("Operator", self.GetOperator())
-		xmlwriter.WriteAttributeString("Text", self.GetText())
+		if self.TextBox.Enabled == True:
+			xmlwriter.WriteAttributeString("Text", self.GetText())
+		else:
+			xmlwriter.WriteAttributeString("Text", self.Selection.SelectedItem)
 		xmlwriter.WriteEndElement()
 
 def SaveDict(dict, file):
