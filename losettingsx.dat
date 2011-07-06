@@ -2,11 +2,12 @@
 <Settings LastUsed="Default">
   <Setting Name="Default">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
-    <BaseFolder></BaseFolder>
+    <BaseFolder />
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>
+    <AutoSpaceFields>true</AutoSpaceFields>
     <DontAskWhenMultiOne>false</DontAskWhenMultiOne>
     <UseFolder>true</UseFolder>
     <CopyMode>false</CopyMode>

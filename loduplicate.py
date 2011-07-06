@@ -3,9 +3,9 @@ loduplicate.py
 
 Author: Stonepaw
 
-Version 1.7
+Version 1.7.4
 		
-			Added scan information
+			Wasn't removing covers when it needed to
 
 Description: Contains a Form for displaying two comic images and various information
 
@@ -155,6 +155,7 @@ class DuplicateForm(object):
 			self.win.FindName("NewAddedDate").Content = ""
 			self.win.FindName("NewScanInfo").Content = ""
 			self.win.FindName("NewPath").Text = newbook.FullName
+			self.win.FindName("NewCover").Source = None
 
 		#old book, possible for it to be a FileInfo object
 		if type(oldbook) != FileInfo:
@@ -188,6 +189,7 @@ class DuplicateForm(object):
 			self.win.FindName("OldAddedDate").Content = ""
 			self.win.FindName("OldScanInfo").Content = ""
 			self.win.FindName("OldPath").Text = oldbook.FullName
+			self.win.FindName("OldCover").Source = None
 
 		if count > 1:
 			self.win.FindName("DoAll").Visibility = Visibility.Visible

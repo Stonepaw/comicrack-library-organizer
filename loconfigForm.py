@@ -1,10 +1,10 @@
 """
 loconfigform.py
 
-Version: 1.7.2
+Version: 1.7.4
 
-			Added rename button
-			Changed auto spacing to inset the space before the field instead of after
+			Changed autospacing to be saved.
+			Fixed error when renaming
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -239,6 +239,7 @@ class ConfigForm(Form):
 		self._sampleTextDir.Name = "sampleTextDir"
 		self._sampleTextDir.Size = System.Drawing.Size(424, 26)
 		self._sampleTextDir.TabIndex = 7
+		self._sampleTextDir.UseMnemonic = False
 		# 
 		# groupbox insert buttons
 		# 
@@ -323,6 +324,7 @@ class ConfigForm(Form):
 		self._sampleTextFile.Name = "sampleTextFile"
 		self._sampleTextFile.Size = System.Drawing.Size(421, 35)
 		self._sampleTextFile.TabIndex = 10
+		self._sampleTextFile.UseMnemonic = False
 		# 
 		# label14
 		# 
@@ -1465,6 +1467,8 @@ class ConfigForm(Form):
 		self._ckbFolder.Checked = self.settings.UseFolder
 		self._ckbFileNaming.Checked = self.settings.UseFileName
 		self._ckbDontAskWhenMultiOne.Checked = self.settings.DontAskWhenMultiOne
+
+		self._ckbSpace.Checked = self.settings.AutoSpaceFields
 		
 		#Move mode
 		if self.settings.Mode == Mode.Move:
@@ -1585,6 +1589,8 @@ class ConfigForm(Form):
 		self.settings.RemoveEmptyFolder = self._ckbRemoveEmptyFolder.Checked
 		self.settings.ExcludedEmptyFolder = list(self._lbRemoveEmptyFolder.Items)
 
+		self.settings.AutoSpaceFields = self._ckbSpace.Checked
+
 		#Note for excludes. Have to remove the event handlers for the excluderules since they have to get added in the 
 		#LoadSettings method.
 		for i in self.settings.ExcludeRules:
@@ -1678,13 +1684,14 @@ class ConfigForm(Form):
 		ib.ShowDialog(self)
 		oldname = self._cmbProfiles.SelectedItem
 		i = ib.FindName()
-		if i.strip() != "" and ib.DialogResult == DialogResult.OK:
-			self.settings.Name = i
-			index = self._cmbProfiles.Items.IndexOf(self._cmbProfiles.SelectedItem)
-			self._cmbProfiles.Items[index] = i
+		if ib.DialogResult == DialogResult.OK:
+			if i.strip() != "":
+				self.settings.Name = i
+				index = self._cmbProfiles.Items.IndexOf(self._cmbProfiles.SelectedItem)
+				self._cmbProfiles.Items[index] = i
 
-			self.allsettings[i] = self.allsettings[oldname]
-			del(self.allsettings[oldname])
+				self.allsettings[i] = self.allsettings[oldname]
+				del(self.allsettings[oldname])
 
 	def BtnProNewClick(self, sender, e):
 		if self.CheckFields():
