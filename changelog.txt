@@ -1,10 +1,6 @@
-﻿New:
-Added a way to rename profiles.
+﻿Bugfix:
 
-Changes:
-Added more field to the rules
-Changed the auto spacing to insert the space before the field instead of after
-Changed the default replacement for : to space dash space
-
-Bugfix:
-Fixed a bug with incorrectly loading rules with spaces such as Scan Information
+Fixed displaying the incorrect cover in the duplicate dialog
+Fixed sample labels not displaying '&' characters
+Fixed error when renaming profiles
+Fixed default file name template

@@ -96,6 +96,8 @@ class settings:
 
 		self.CopyMode = True
 
+		self.AutoSpaceFields = True
+
 	def Update(self):
 		pass
 		
@@ -114,6 +116,10 @@ class settings:
 		
 		xwriter.WriteStartElement("UseFileName")
 		xwriter.WriteValue(self.UseFileName)
+		xwriter.WriteEndElement()
+
+		xwriter.WriteStartElement("AutoSpaceFields")
+		xwriter.WriteValue(self.AutoSpaceFields)
 		xwriter.WriteEndElement()
 
 		xwriter.WriteStartElement("DontAskWhenMultiOne")
@@ -260,6 +266,12 @@ class settings:
 				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
 			except AttributeError:
 				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
+
+			#New in 1.7.4
+			try:
+				self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
+			except AttributeError:
+				self.AutoSpaceFields = True
 
 
 			self.CopyMode = Convert.ToBoolean(Xml.SelectSingleNode("CopyMode").InnerText)
