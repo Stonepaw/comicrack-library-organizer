@@ -2,12 +2,13 @@
 <Settings LastUsed="Default">
   <Setting Name="Default">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
-    <BaseFolder />
+    <BaseFolder></BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>
     <AutoSpaceFields>true</AutoSpaceFields>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <DontAskWhenMultiOne>false</DontAskWhenMultiOne>
     <UseFolder>true</UseFolder>
     <CopyMode>false</CopyMode>
@@ -23,6 +24,7 @@
       <Item Name="Manga" Value="" />
       <Item Name="AgeRating" Value="" />
       <Item Name="Language" Value="" />
+      <Item Name="Read" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -50,6 +52,7 @@
       <Item Name="Manga" Value="" />
       <Item Name="AgeRating" Value="" />
       <Item Name="Language" Value="" />
+      <Item Name="Read" Value="" />
       <Item Name="Imprint" Value="" />
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
@@ -74,6 +77,7 @@
       <Item Name="Writer" Value=", " />
     </Seperator>
     <TextBox>
+      <Item Name="Read" Value="Read" />
       <Item Name="Manga" Value="Manga" />
       <Item Name="SeriesComplete" Value="Complete" />
     </TextBox>
@@ -104,6 +108,7 @@
     </IllegalCharacters>
     <EmptyData>
       <Item Name="Number" Value="" />
+      <Item Name="ReadPercentage" Value="" />
       <Item Name="Format" Value="" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />

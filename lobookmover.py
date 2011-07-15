@@ -3,7 +3,11 @@ lobookmover.py
 
 This contains all the book moving fuction the script uses. Also the path generator
 
-Version 1.7.4
+Version 1.7.5
+	
+	Added read percentage
+	Changed illegals to allow custom
+	Added replacing multiple spaces
 
 Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
 """
@@ -568,7 +572,7 @@ class BookMover(object):
 		
 		#Create the directory
 		if self.settings.UseFolder:
-			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.FolderTemplate, self.settings.BaseFolder, self.settings.EmptyFolder, self.settings.EmptyData, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months)
+			dirpath = self.pathmaker.CreateDirectoryPath(book, self.settings.FolderTemplate, self.settings.BaseFolder, self.settings.EmptyFolder, self.settings.EmptyData, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months, self.settings.ReplaceMultipleSpaces)
 		
 		#Or use the books current directory
 		else:
@@ -576,7 +580,7 @@ class BookMover(object):
 		
 		#Create filename
 		if self.settings.UseFileName:
-			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months)
+			filepath = self.pathmaker.CreateFileName(book, self.settings.FileTemplate, self.settings.EmptyData, self.settings.FilelessFormat, self.settings.DontAskWhenMultiOne, self.settings.IllegalCharacters, self.settings.Months, self.settings.ReplaceMultipleSpaces)
 		
 		#Or use current filename
 		else:
@@ -1007,7 +1011,7 @@ class PathMaker:
 		#Need to store the parent form so it can use the muilt select form
 		self.form = parentform
 	
-	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne, illegals, months):
+	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne, illegals, months, replacespaces):
 	#To let the re.sub functions access the book object.
 		global book 
 		book = insertedbook
@@ -1016,6 +1020,9 @@ class PathMaker:
 		emptyreplacements = emptyreplace
 
 		self.Illegals = illegals
+		#Sort by len so the script tries to replace the largest character first. ie. space?space is matched before ?
+		self.IllegalsIterator = sorted(self.Illegals.keys(), key=len, reverse=True)
+
 		self.Months = months
 		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
@@ -1034,27 +1041,34 @@ class PathMaker:
 			for line in lines:
 				if line.strip() == "":
 					line = emptypath
-				line = self.replaceIllegal(line, illegals)
+				line = self.replaceIllegal(line)
 				path = Path.Combine(path, line.strip())
-	
+		
+		
 		path = Path.Combine(basepath, path)
+
+		#replace occurences of multiple spaces with a single space.
+		if replacespaces:
+			path = re.sub("\s\s+", " ", path)
+
 		return path
 	
-	def CreateFileName(self, ibook, template, emptyreplace, filelessformat, DontAskWhenMultiOne, illegals, months):
+	def CreateFileName(self, ibook, template, emptyreplace, filelessformat, DontAskWhenMultiOne, illegals, months, replacespaces):
 		global book
 		book = ibook
 		
 		
 		global emptyreplacements
 		emptyreplacements = emptyreplace	
-
+		#Sort by len so the script tries to replace the largest character first. ie. space?space is matched before ?
 		self.Illegals = illegals
+		self.IllegalsIterator = sorted(self.Illegals.keys(), key=len, reverse=True)
 		self.Months = months
 		self.DontAskWhenMultiOne = DontAskWhenMultiOne
 		
 		r = self.ReplaceValues(template)
 		r = r.strip()
-		r = self.replaceIllegal(r, illegals)
+		r = self.replaceIllegal(r)
 
 		if not r:
                 #template was empty
@@ -1065,6 +1079,10 @@ class PathMaker:
 		extension = filelessformat
 		if book.FilePath:
 			extension = FileInfo(book.FilePath).Extension
+
+		#replace occurences of multiple spaces with a single space.
+		if replacespaces:
+			r = re.sub("\s\s+", " ", r)
 
 		return r+extension
 	
@@ -1095,6 +1113,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>scaninfo)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>read)\((?P<text>[^\)]*?)\)\((?P<operator>[^\)]*?)\)\((?P<percent>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertReadPercentage, templateText)
 		return templateText
 	
 	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified by Stonepaw
@@ -1107,13 +1126,13 @@ class PathMaker:
 			paddedValue = paddedValue.PadLeft(padding, '0')
 			return '-' + paddedValue
 	
-	def replaceIllegal(self, text, illegals):
-		for i in illegals:
-			text = text.replace(i, illegals[i])
+	def replaceIllegal(self, text):
+		for i in self.IllegalsIterator:
+			text = text.replace(i, self.Illegals[i])
 		return text
 	
 	def insertYear(self, matchObj):
-		result = None
+		result = ""
 		if book.ShadowYear > 0	:
 			result = matchObj.group("pre") + str(book.ShadowYear) + matchObj.group("post")
 		else:
@@ -1121,9 +1140,8 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements["Year"] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', ' ')
-		result = result.replace('\\', ' ')
-		return result
+		
+		return self.replaceIllegal(result)
 
 	def insertShadowText(self, matchObj):
 		result = None
@@ -1138,10 +1156,8 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements[property] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
 
+		return self.replaceIllegal(result)
 
 	def insertText(self, matchObj):
 		result = None
@@ -1165,9 +1181,8 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements[property] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
+
+		return self.replaceIllegal(result)
 
 	def insertShadowPadded(self, matchObj):
 		property = matchObj.group("name").capitalize()
@@ -1179,9 +1194,9 @@ class PathMaker:
 				try:
 					result = self.pad(int(getattr(book, sproperty)), int(matchObj.group("pad")))
 				except ValueError:
-					result = str(getattr(book, sproperty))
+					result = unicode(getattr(book, sproperty))
 			else:
-				result = str(getattr(book, sproperty))
+				result = unicode(getattr(book, sproperty))
 			result = matchObj.group("pre") + result + matchObj.group("post")
 		else:
 			if emptyreplacements[property] != "":
@@ -1195,9 +1210,8 @@ class PathMaker:
 				result = matchObj.group("pre") + result + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
+
+		return self.replaceIllegal(result)
 
 	def insertPadded(self, matchObj):
 		property = matchObj.group("name").capitalize()
@@ -1212,9 +1226,9 @@ class PathMaker:
 				try:
 					result = self.pad(int(getattr(book, property)), int(matchObj.group("pad")))
 				except ValueError:
-					result = str(getattr(book, property))
+					result = unicode(getattr(book, property))
 			else:
-				result = str(getattr(book,property))
+				result = unicode(getattr(book,property))
 			result = matchObj.group("pre") + result + matchObj.group("post")
 		else:
 			if emptyreplacements[property] != "":
@@ -1228,9 +1242,8 @@ class PathMaker:
 				result = matchObj.group("pre") + result + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
+
+		return self.replaceIllegal(result)
 		
 	
 	def insertMonth(self, matchObj):
@@ -1248,9 +1261,7 @@ class PathMaker:
 			else:
 				result = ""
 	
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
+		return self.replaceIllegal(result)
 	
 	def insertStartYear(self, matchObj):
 		#Find the start year by going through the whole list of comics in the library find the earliest year field of the same series and volume
@@ -1283,11 +1294,11 @@ class PathMaker:
 				result = matchObj.group("pre") + emptyreplacements["StartYear"] + matchObj.group("post")
 			else:
 				result = ""
-		result = result.replace('/', self.Illegals["/"])
-		result = result.replace('\\', self.Illegals["\\"])
-		return result
+
+		return self.replaceIllegal(result)
 
 	def insertManga(self, matchObj):
+
 		if emptyreplacements["Manga"].strip() != "":
 			empty = matchObj.group("pre") + emptyreplacements["Manga"] + matchObj.group("post")
 		else:
@@ -1296,9 +1307,9 @@ class PathMaker:
 		if book.Manga == MangaYesNo.Yes or book.Manga == MangaYesNo.YesAndRightToLeft:
 			r = matchObj.group("text")
 			if r.strip() != "":
-				return matchObj.group("pre") + r + matchObj.group("post")
+				return self.replaceIllegal(matchObj.group("pre") + r + matchObj.group("post"))
 
-		return empty
+		return self.replaceIllegal(empty)
 
 
 	def insertSeriesComplete(self, matchObj):
@@ -1310,9 +1321,37 @@ class PathMaker:
 		if book.SeriesComplete == YesNo.Yes:
 			r = matchObj.group("text")
 			if r.strip() != "":
-				return matchObj.group("pre") + r + matchObj.group("post")
+				return self.replaceIllegal(matchObj.group("pre") + r + matchObj.group("post"))
 
-		return empty
+		return self.replaceIllegal(empty)
+
+	def insertReadPercentage(self, matchObj):
+		text = matchObj.group("text")
+		percent = matchObj.group("percent")
+		operator = matchObj.group("operator")
+		post = matchObj.group("post")
+		pre = matchObj.group("pre")
+
+
+		result = ""
+
+		if operator == "=":
+			if book.ReadPercentage == int(percent):
+				result = pre + text + post
+		elif operator == ">":
+			if book.ReadPercentage > int(percent):
+				result = pre + text + post
+		elif operator == "<":
+			if book.ReadPercentage < int(percent):
+				result = pre + text + post
+
+		if result == "":
+			if emptyreplacements["ReadPercentage"].strip() != "":
+				result = pre + emptyreplacements["ReadPercentage"] + post
+			else:
+				return ""
+
+		return self.replaceIllegal(result)
 
 	def insertMulti(self, matchObj):
 		#Get a bool for if using series. Just simplifies the code a bit
@@ -1540,6 +1579,8 @@ class PathMaker:
 
 		itemsToUse = ""
 
+		result = ""
+
 		#First check to see if using a folder. If so no need to use the user entered sperator
 		if results.Folder:
 			sep += "\\"
@@ -1551,7 +1592,7 @@ class PathMaker:
 
 		#Using every issue
 		if results.EveryIssue:
-			return sep.join(result.Selection)
+			result = sep.join(result.Selection)
 
 		#Not using every issue so just use the ones it has
 		else:
@@ -1559,8 +1600,12 @@ class PathMaker:
 			for i in results.Selection:
 				if i in items:
 					itemsToUse.append(i)
-			return sep.join(itemsToUse)
+			result = sep.join(itemsToUse)
+		
+		if results.Folder == False:
+			return self.replaceIllegal(result)
 
+		return result
 		
 
 	def GetAllFromSeriesField(self, field, series, volume):

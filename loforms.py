@@ -2,8 +2,9 @@
 This file contains various dialogs and forms required by the Library Orgainizer
 
 
-Version 1.7.2
+Version 1.7.5
 
+		Added Custom Chracter form
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
@@ -356,6 +357,51 @@ class InputBox(Form):
 		if self.TextBox.Text.strip() in self.Owner.allsettings:
 			MessageBox.Show("The entered name is already in use. Please enter another")
 			self.DialogResult = DialogResult.None
+
+class IllegalCharacterInputBox(Form):
+	def __init__(self, chracters):
+		self.existingchracters = chracters
+		self.TextBox = TextBox()
+		self.TextBox.Size = Size(250, 20)
+		self.TextBox.Location = Point(15, 12)
+		self.TextBox.TabIndex = 1
+		
+		self.OK = Button()
+		self.OK.Text = "OK"
+		self.OK.Size = Size(75, 23)
+		self.OK.Location = Point(109, 38)
+		self.OK.DialogResult = DialogResult.OK
+		self.OK.Click += self.CheckTextBox
+		
+		self.Cancel = Button()
+		self.Cancel.Size = Size(75, 23)
+		self.Cancel.Text = "Cancel"
+		self.Cancel.Location = Point(190, 38)
+		self.Cancel.DialogResult = DialogResult.Cancel
+		
+		self.Size = Size(300, 100)
+		self.Text = "Please enter the character(s)"
+		self.Controls.Add(self.OK)
+		self.Controls.Add(self.Cancel)
+		self.Controls.Add(self.TextBox)
+		self.AcceptButton = self.OK
+		self.CancelButton = self.Cancel
+		self.FormBorderStyle = FormBorderStyle.FixedDialog
+		self.StartPosition = FormStartPosition.CenterParent
+		self.Icon = System.Drawing.Icon(ICON)
+		self.ActiveControl = self.TextBox
+
+	def CheckTextBox(self, sender, e):
+		if len(self.TextBox.Text) == 0:
+			MessageBox.Show("Please enter a character into the textbox")
+			self.DialogResult = DialogResult.None
+		
+		if self.TextBox.Text in self.existingchracters:
+			MessageBox.Show("The entered character is already in use. Please enter another")
+			self.DialogResult = DialogResult.None
+
+	def GetCharacter(self):
+		return self.TextBox.Text
 
 
 class PathTooLongForm(Form):

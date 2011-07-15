@@ -1,6 +1,6 @@
-﻿Bugfix:
+﻿New features:
+Added a way add and remove custom illegal characters. (User is only able to remove custom characters)
+Added Read Percentage
 
-Fixed displaying the incorrect cover in the duplicate dialog
-Fixed sample labels not displaying '&' characters
-Fixed error when renaming profiles
-Fixed default file name template
+Bugfix:
+Fixed for unicode characters in any numerical field

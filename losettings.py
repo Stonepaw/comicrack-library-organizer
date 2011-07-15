@@ -5,25 +5,19 @@ Contains a class for settings
 
 Author: Stonepaw
 
-Version 1.7
+Version 1.7.5
 
+	Added Read percentage and multiplespaces
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
 
 """
-Changes in 1.1:
-	empty data changes:
-		alternate Number is now : AlternateNumber
-		alternate series is now : AlternateSeries
-		alternate count is now:  AlternateCount
-	added Exclude arrays and variables
-	directory cleaning option (was automatic before)
-	directories to exclude from cleaning
-	fileless export, fileless export format
+Changes in 1.7.5:
 	
-	
-	changed from saving with cPickle to Xml, Sava and load functions created.
+	Added ReplaceMultipleSpaces
+	Added Readpercentage
+		
 """
 import System
 from System import Convert
@@ -49,19 +43,19 @@ class settings:
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
+				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "ReadPercentage" : ""}
 		
 		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
+				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : ""}
+				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : ""}
 
 		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
 
@@ -70,7 +64,7 @@ class settings:
 		self.Months = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 :"August", 9 : "September", 10 : "October",
 						11 : "November", 12 : "December"}
 
-		self.TextBox = {"Manga" : "", "SeriesComplete" : ""}
+		self.TextBox = {"Manga" : "Manga", "SeriesComplete" : "Complete", "Read" : "Read"}
 				
 		self.UseFolder = True
 		
@@ -98,6 +92,8 @@ class settings:
 
 		self.AutoSpaceFields = True
 
+		self.ReplaceMultipleSpaces = True
+
 	def Update(self):
 		pass
 		
@@ -120,6 +116,10 @@ class settings:
 
 		xwriter.WriteStartElement("AutoSpaceFields")
 		xwriter.WriteValue(self.AutoSpaceFields)
+		xwriter.WriteEndElement()
+
+		xwriter.WriteStartElement("ReplaceMultipleSpaces")
+		xwriter.WriteValue(self.ReplaceMultipleSpaces)
 		xwriter.WriteEndElement()
 
 		xwriter.WriteStartElement("DontAskWhenMultiOne")
@@ -229,31 +229,15 @@ class settings:
 			#Text vars
 			self.Name = Xml.Attributes["Name"].Value
 		
+			self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
 
-			#From changes from 1.6 to 1.7
-			try:
-				self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
-			except AttributeError:
-				self.FolderTemplate = Xml.SelectSingleNode("DirTemplate").InnerText
+			self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
 
-			try:
-				self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
-			except AttributeError:
-				self.BaseFolder = Xml.SelectSingleNode("BaseDir").InnerText
+			self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
 
-			try:
-				self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
-			except AttributeError:
-				self.EmptyFolder = Xml.SelectSingleNode("EmptyDir").InnerText
 			self.FileTemplate = Xml.SelectSingleNode("FileTemplate").InnerText
 		
-		
-		
-			try:
-				self.Mode = Xml.SelectSingleNode("Mode").InnerText
-			except AttributeError:
-				self.Mode = Mode.Move
-		
+			self.Mode = Xml.SelectSingleNode("Mode").InnerText
 
 			self.FilelessFormat = Xml.SelectSingleNode("FilelessFormat").InnerText
 		
@@ -261,30 +245,24 @@ class settings:
 		
 			self.UseFileName = Convert.ToBoolean(Xml.SelectSingleNode("UseFileName").InnerText)
 
-			#From 1.6 to 1.7 of the script
-			try:
-				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
-			except AttributeError:
-				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
+			self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
 
-			#New in 1.7.4
+			self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
+
+			#New in 1.7.5
 			try:
-				self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
+				self.ReplaceMultipleSpaces = Convert.ToBoolean(Xml.SelectSingleNode("ReplaceMultipleSpaces").InnerText)
 			except AttributeError:
-				self.AutoSpaceFields = True
+				self.ReplaceMultipleSpaces = True
 
 
 			self.CopyMode = Convert.ToBoolean(Xml.SelectSingleNode("CopyMode").InnerText)
-
 
 			self.DontAskWhenMultiOne = Convert.ToBoolean(Xml.SelectSingleNode("DontAskWhenMultiOne").InnerText)
 		
 			self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
 
-			try:
-				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
-			except AttributeError:
-				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)
+			self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
 		
 			#Dicts
 		
@@ -356,10 +334,7 @@ class settings:
 
 
 			#Exclued empty dirs
-			try:
-				iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
-			except AttributeError:
-				iter = Xml.SelectNodes("ExcludedEmptyDir/Item")
+			iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
 			if iter.Count > 0:
 				for i in iter:
 					self.ExcludedEmptyFolder.append(i.InnerText)

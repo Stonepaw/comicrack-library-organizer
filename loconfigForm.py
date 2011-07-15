@@ -1,10 +1,10 @@
 """
 loconfigform.py
 
-Version: 1.7.4
-
-			Changed autospacing to be saved.
-			Fixed error when renaming
+Version: 1.7.5
+		Added ReplaceMultipleSpace
+		Changed InsertControls to use a FlowLayoutPanel instead of panel
+		Added Readpercentage
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -42,7 +42,7 @@ from lobookmover import PathMaker, ExcludePath, ExcludeMeta
 import pyevent
 
 import loforms
-from loforms import InputBox, SelectionForm
+from loforms import InputBox, SelectionForm, IllegalCharacterInputBox
 
 class ConfigForm(Form):
 	def __init__(self, books, allsettings, lastused):
@@ -78,7 +78,6 @@ class ConfigForm(Form):
 		
 		#For saving the previous index.
 		self._cmbProfiles.Tag = self._cmbProfiles.SelectedIndex
-	
 		
 	def InitializeComponent(self):
 		self._tabs = System.Windows.Forms.TabControl()
@@ -607,6 +606,7 @@ class ConfigForm(Form):
 			"Month",
 			"Number",
 			"Publisher",
+			"Read Percentage",
 			"Scan Information"
 			"Series",
 			"Series Complete", 
@@ -660,7 +660,8 @@ class ConfigForm(Form):
 		self._ckbRemoveEmptyFolder.Location = System.Drawing.Point(8, 194)
 		self._ckbRemoveEmptyFolder.Size = System.Drawing.Size(261, 24)
 		self._ckbRemoveEmptyFolder.TabIndex = 4
-		self._ckbRemoveEmptyFolder.Text = "Remove empty folders"
+		self._ckbRemoveEmptyFolder.Text = "Remove empty folders....but never remove the following folders:"
+		self._ckbRemoveEmptyFolder.AutoSize = True
 		self._ckbRemoveEmptyFolder.CheckedChanged += self.CkbRemoveEmptyFolderCheckedChanged
 		# 
 		# label18
@@ -668,19 +669,19 @@ class ConfigForm(Form):
 		label18 = Label()
 		label18.Location = System.Drawing.Point(39, 221)
 		label18.Size = System.Drawing.Size(230, 18)
-		label18.Text = "...but never remove the following folders:"
+		label18.Text = ""
 		# 
 		# lbRemoveEmptyFolder
 		# 
 		self._lbRemoveEmptyFolder = ListBox()
-		self._lbRemoveEmptyFolder.Location = System.Drawing.Point(52, 242)
+		self._lbRemoveEmptyFolder.Location = System.Drawing.Point(52, 221)
 		self._lbRemoveEmptyFolder.Size = System.Drawing.Size(383, 69)
 		self._lbRemoveEmptyFolder.TabIndex = 5
 		# 
 		# btnAddEmptyDir
 		# 
 		self._btnAddEmptyDir = Button()
-		self._btnAddEmptyDir.Location = System.Drawing.Point(444, 242)
+		self._btnAddEmptyDir.Location = System.Drawing.Point(444, 221)
 		self._btnAddEmptyDir.Size = System.Drawing.Size(68, 23)
 		self._btnAddEmptyDir.TabIndex = 6
 		self._btnAddEmptyDir.Text = "Add"
@@ -689,25 +690,34 @@ class ConfigForm(Form):
 		# btnRemoveEmptyFolder
 		# 
 		self._btnRemoveEmptyFolder = Button()
-		self._btnRemoveEmptyFolder.Location = System.Drawing.Point(444, 288)
+		self._btnRemoveEmptyFolder.Location = System.Drawing.Point(444, 267)
 		self._btnRemoveEmptyFolder.Size = System.Drawing.Size(69, 23)
 		self._btnRemoveEmptyFolder.TabIndex = 7
 		self._btnRemoveEmptyFolder.Text = "Remove"
 		self._btnRemoveEmptyFolder.Click += self.BtnRemoveEmptyFolderClick
 		#
+		# ckbReplaceMultipleSpaces
+		#
+		self._ckbReplaceMultipleSpaces = CheckBox()
+		self._ckbReplaceMultipleSpaces.AutoSize = True
+		self._ckbReplaceMultipleSpaces.Text = "Replace multiple spaces with a single space"
+		self._ckbReplaceMultipleSpaces.Location = Point(6, 295)
+		self._ckbReplaceMultipleSpaces.TabIndex = 8
+		#
 		# ckbMultiOneDontAsk
 		#
 		self._ckbDontAskWhenMultiOne = CheckBox()
-		self._ckbDontAskWhenMultiOne.Location = Point(6, 317)
+		self._ckbDontAskWhenMultiOne.Location = Point(6, 319)
 		self._ckbDontAskWhenMultiOne.AutoSize = True
 		self._ckbDontAskWhenMultiOne.Text = "If there is only one character, genre, tag, team, scanner or writer, then insert it without asking."
+		self._ckbDontAskWhenMultiOne.TabIndex = 9
 		# 
 		# ckbFileless
 		# 
 		self._ckbFileless = CheckBox()
 		self._ckbFileless.Location = System.Drawing.Point(6, 338)
 		self._ckbFileless.Size = System.Drawing.Size(369, 41)
-		self._ckbFileless.TabIndex = 8
+		self._ckbFileless.TabIndex = 10
 		self._ckbFileless.Text = "Copy fileless comic's custom thumbnail image to the calaculated path. (Does not affect the source image at all)"
 		self._ckbFileless.CheckedChanged += self.CkbFilelessCheckedChanged
 		# 
@@ -722,7 +732,7 @@ class ConfigForm(Form):
 			".png"]))
 		self._cmbImageFormat.Location = System.Drawing.Point(447, 345)
 		self._cmbImageFormat.Size = System.Drawing.Size(52, 21)
-		self._cmbImageFormat.TabIndex = 9
+		self._cmbImageFormat.TabIndex = 11
 		# 
 		# label19
 		# 
@@ -743,10 +753,9 @@ class ConfigForm(Form):
 		self._cmbIllegalCharacter = ComboBox()
 		self._cmbIllegalCharacter.Size = Size(32, 21)
 		self._cmbIllegalCharacter.Location = Point(135, 382)
-		self._cmbIllegalCharacter.Items.AddRange(System.Array[System.String](["?", "/", "\\", "*", ":", "<", ">", "|", '"']))
 		self._cmbIllegalCharacter.DropDownStyle = ComboBoxStyle.DropDownList
-		self._cmbIllegalCharacter.SelectedIndex = 0
 		self._cmbIllegalCharacter.SelectedIndexChanged += self.CmbIllegalCharactersSelectedIndexChanged
+		self._cmbIllegalCharacter.TabIndex = 12
 		#
 		# lbl Illegal2
 		#
@@ -762,11 +771,30 @@ class ConfigForm(Form):
 		self._txbIllegalCharacter.Size = Size(50, 20)
 		self._txbIllegalCharacter.Leave += self.TxbIllegalCharacterLeave
 		self._txbIllegalCharacter.KeyPress += self.TxbIllegalCharacterKeyPress
+		self._txbIllegalCharacter.TabIndex = 13
+		#
+		# btnAddIllegalCharacter
+		#
+		self._btnAddIllegalCharacter = Button()
+		self._btnAddIllegalCharacter.Text = "Add"
+		self._btnAddIllegalCharacter.Size = Size(68, 20)
+		self._btnAddIllegalCharacter.Location = Point(20, 404)
+		self._btnAddIllegalCharacter.Click += self.AddIllegalCharacter
+		self._btnAddIllegalCharacter.TabIndex = 14
+		#
+		# btnRemoveIllegalCharacter
+		#
+		self._btnRemoveIllegalCharacter = Button()
+		self._btnRemoveIllegalCharacter.Text = "Remove"
+		self._btnRemoveIllegalCharacter.Size = Size(69, 20)
+		self._btnRemoveIllegalCharacter.Location = Point(90, 404)
+		self._btnRemoveIllegalCharacter.Click += self.RemoveIllegalCharacter
+		self._btnRemoveIllegalCharacter.TabIndex = 15
 		#
 		# lblMonth
 		#
 		lblMonth = Label()
-		lblMonth.Location = Point(301, 385)
+		lblMonth.Location = Point(318, 385)
 		lblMonth.Size = Size(40, 13)
 		lblMonth.Text = "Month:"
 		#
@@ -774,16 +802,17 @@ class ConfigForm(Form):
 		#
 		self._cmbMonth = ComboBox()
 		self._cmbMonth.DropDownStyle = ComboBoxStyle.DropDownList
-		self._cmbMonth.Location = Point(347, 382)
+		self._cmbMonth.Location = Point(364, 382)
 		self._cmbMonth.Size = Size(40, 21)
 		self._cmbMonth.Items.AddRange(System.Array[System.String](["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]))
 		self._cmbMonth.SelectedIndex = 0
 		self._cmbMonth.SelectedIndexChanged += self.CmbMonthSelectedIndexChanged
+		self._cmbMonth.TabIndex = 16
 		#
 		# lblMonth2
 		#
 		lblMonth2 = Label()
-		lblMonth2.Location = Point(393, 385)
+		lblMonth2.Location = Point(327, 385)
 		lblMonth2.Size = Size(14, 13)
 		lblMonth2.Text = "is"
 		#
@@ -791,9 +820,10 @@ class ConfigForm(Form):
 		#
 		# 
 		self._txbMonth = TextBox()
-		self._txbMonth.Location = Point(408, 382)
-		self._txbMonth.Size = Size(97, 20)
+		self._txbMonth.Location = Point(425, 382)
+		self._txbMonth.Size = Size(80, 20)
 		self._txbMonth.Leave += self.TxbMonthLeave
+		self._txbMonth.TabIndex = 17
 		# options tag page
 		# 
 		self._tpOptions.Controls.Add(self._gbMode)
@@ -802,6 +832,7 @@ class ConfigForm(Form):
 		self._tpOptions.Controls.Add(self._lbRemoveEmptyFolder)
 		self._tpOptions.Controls.Add(self._btnAddEmptyDir)
 		self._tpOptions.Controls.Add(self._btnRemoveEmptyFolder)
+		self._tpOptions.Controls.Add(self._ckbReplaceMultipleSpaces)
 		self._tpOptions.Controls.Add(self._ckbDontAskWhenMultiOne)
 		self._tpOptions.Controls.Add(self._cmbImageFormat)
 		self._tpOptions.Controls.Add(label18)
@@ -811,6 +842,8 @@ class ConfigForm(Form):
 		self._tpOptions.Controls.Add(self._cmbIllegalCharacter)
 		self._tpOptions.Controls.Add(lblIllegal2)
 		self._tpOptions.Controls.Add(self._txbIllegalCharacter)
+		self._tpOptions.Controls.Add(self._btnAddIllegalCharacter)
+		self._tpOptions.Controls.Add(self._btnRemoveIllegalCharacter)
 		self._tpOptions.Controls.Add(lblMonth)
 		self._tpOptions.Controls.Add(self._cmbMonth)
 		self._tpOptions.Controls.Add(lblMonth2)
@@ -1027,7 +1060,7 @@ class ConfigForm(Form):
 		# Language
 		# 
 		self.Language = InsertControl()
-		self.Language.Location = Point(262, 222)
+		self.Language.Location = Point(260, 222)
 		self.Language.SetTemplate("language", "Language")
 		#
 		# 
@@ -1040,43 +1073,43 @@ class ConfigForm(Form):
 		# AlternateNumber
 		# 
 		self.AlternateNumber = InsertControlPadding()
-		self.AlternateNumber.Location = Point(262, 194)
+		self.AlternateNumber.Location = Point(260, 194)
 		self.AlternateNumber.SetTemplate("altNumber", "Alt. Num.")
 		# 
 		# AlternateCount
 		# 
 		self.AlternateCount = InsertControlPadding()
-		self.AlternateCount.Location = Point(262, 166)
+		self.AlternateCount.Location = Point(260, 166)
 		self.AlternateCount.SetTemplate("altCount", "Alt. Count")
 		# 
 		# Year
 		# 
 		self.Year = InsertControl()
-		self.Year.Location = Point(262, 138)
+		self.Year.Location = Point(260, 138)
 		self.Year.SetTemplate("year", "Year")
 		# 
 		# Month
 		# 
 		self.Month = InsertControl()
-		self.Month.Location = Point(262, 108)
+		self.Month.Location = Point(260, 108)
 		self.Month.SetTemplate("month", "Month")
 		# 
 		# Month Number
 		# 
 		self.MonthNumber = InsertControlPadding()
-		self.MonthNumber.Location = Point(262, 82)
+		self.MonthNumber.Location = Point(260, 82)
 		self.MonthNumber.SetTemplate("month#", "Month #")
 		# 
 		# Count
 		# 
 		self.Count = InsertControl()
-		self.Count.Location = Point(262, 54)
+		self.Count.Location = Point(260, 54)
 		self.Count.SetTemplate("count", "Count")
 		# 
 		# Number
 		# 
 		self.Number = InsertControlPadding()
-		self.Number.Location = Point(262, 26)
+		self.Number.Location = Point(260, 26)
 		self.Number.SetTemplate("number", "Number")
 
 		# 
@@ -1186,9 +1219,6 @@ class ConfigForm(Form):
 		self.SeriesComplete.Location = Point(6, 145)
 		self.SeriesComplete.SetTemplate("seriesComplete", "Series Complete")
 		self.SeriesComplete.InsertButton.Width += 30
-		self.SeriesComplete.Width += 30
-		self.SeriesComplete.Postfix.Left += 30
-		self.SeriesComplete.TextBox.Left += 30
 		# 
 		# label16
 		# 
@@ -1217,13 +1247,19 @@ class ConfigForm(Form):
 		lblPost.Size = System.Drawing.Size(38, 13)
 		lblPost.Location = System.Drawing.Point(150, 3)
 		lblPost.Text = "Postfix"
-
+		#
+		# Read Percentage
+		#
+		self.Read = InsertControlReadPercentage()
+		self.Read.SetTemplate("read", "Read %")
+		self.Read.Location = Point(6, 190)
 		# 
 		# tpInsertAdvanced
 		# 
 		self._tpInsertAdvanced.Controls.Add(self.StartYear)
 		self._tpInsertAdvanced.Controls.Add(self.Manga)
 		self._tpInsertAdvanced.Controls.Add(self.SeriesComplete)
+		self._tpInsertAdvanced.Controls.Add(self.Read)
 		self._tpInsertAdvanced.Controls.Add(label21)
 		self._tpInsertAdvanced.Controls.Add(label16)
 		self._tpInsertAdvanced.Controls.Add(label15)
@@ -1276,7 +1312,7 @@ class ConfigForm(Form):
 		# Label Seperator
 		#
 		lblSep = Label()
-		lblSep.Location = System.Drawing.Point(190, 48)
+		lblSep.Location = System.Drawing.Point(190, 52)
 		lblSep.Size = System.Drawing.Size(58, 13)
 		lblSep.Text = "Seperator"
 		#
@@ -1284,7 +1320,7 @@ class ConfigForm(Form):
 		#
 		lblSep2 = Label()
 		lblSep2.Size = System.Drawing.Size(58, 13)
-		lblSep2.Location = System.Drawing.Point(430, 48)
+		lblSep2.Location = System.Drawing.Point(430, 52)
 		lblSep2.Text = "Seperator"
 		# 
 		# label22
@@ -1408,14 +1444,14 @@ class ConfigForm(Form):
 		#Directory Preview
 		if self._tabs.SelectedIndex == 0:
 			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFolder.Checked:
-				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseFolder.Text, self._txbEmptyFolder.Text, self.settings.EmptyData, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months)
+				self._sampleTextDir.Text = self.PathCreator.CreateDirectoryPath(self.samplebook, self._txbDirStruct.Text, self._txbBaseFolder.Text, self._txbEmptyFolder.Text, self.settings.EmptyData, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months, self._ckbReplaceMultipleSpaces.Checked)
 			else:
 				self._sampleTextDir.Text = self.samplebook.FileDirectory
 				
 		#Filename preview
 		elif self._tabs.SelectedIndex == 1:
 			if not ExcludePath(self.samplebook, list(self._lbExFolder.Items)) and not ExcludeMeta(self.samplebook, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode) and self._ckbFileNaming.Checked:
-				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months)
+				self._sampleTextFile.Text = self.PathCreator.CreateFileName(self.samplebook, self._txbFileStruct.Text, self.settings.EmptyData, self._cmbImageFormat.SelectedItem, self._ckbDontAskWhenMultiOne.Checked, self.settings.IllegalCharacters, self.settings.Months, self._ckbReplaceMultipleSpaces.Checked)
 			else:
 				self._sampleTextFile.Text = self.samplebook.FileNameWithExtension
 
@@ -1441,7 +1477,6 @@ class ConfigForm(Form):
 	def TxbEmptyDataLeave(self, sender, e):
 		self.settings.EmptyData[self._cmbEmptyData.SelectedItem.replace(" ", "")] = sender.Text
 
-
 	def CmbIllegalCharactersSelectedIndexChanged(self, sender, e):
 		#For ease of adding additional values later replace the spaces in Additions values. That way they match up with the dictorary keys later
 		self._txbIllegalCharacter.Text = self.settings.IllegalCharacters[self._cmbIllegalCharacter.SelectedItem]
@@ -1452,6 +1487,34 @@ class ConfigForm(Form):
 	def TxbIllegalCharacterKeyPress(self, sender, e):
 		if e.KeyChar in ["\\", "/", "|", "*", "<", ">", "?", '"', ":"]:
 			e.Handled = True
+
+	def AddIllegalCharacter(self, sender, e):
+		form = IllegalCharacterInputBox(self.settings.IllegalCharacters.keys())
+
+		result = form.ShowDialog()
+
+		if result == DialogResult.OK:
+			character = form.GetCharacter()
+			self.settings.IllegalCharacters[character] = ""
+			self._cmbIllegalCharacter.Items.Add(character)
+			self._cmbIllegalCharacter.SelectedItem = character
+
+		form.Dispose()
+		del(form)
+
+	def RemoveIllegalCharacter(self, sender, e):
+		character = self._cmbIllegalCharacter.SelectedItem
+
+		#Do not remove any of the essential chracters. Otherwise there is a large chance of errors
+		if character not in ["?", "/", "\\", "*", ":", "<", ">", "|", "\""]:
+			index = self._cmbIllegalCharacter.SelectedIndex
+			self._cmbIllegalCharacter.Items.Remove(character)
+			del(self.settings.IllegalCharacters[character])
+			l = len(self._cmbIllegalCharacter.Items)
+			if index < len(self._cmbIllegalCharacter.Items) -1:
+				self._cmbIllegalCharacter.SelectedIndex = index
+			else:
+				self._cmbIllegalCharacter.SelectedIndex = index - 1
 
 	def CmbMonthSelectedIndexChanged(self, sender, e):
 		#For ease of adding additional values later replace the spaces in Additions values. That way they match up with the dictorary keys later
@@ -1467,6 +1530,7 @@ class ConfigForm(Form):
 		self._ckbFolder.Checked = self.settings.UseFolder
 		self._ckbFileNaming.Checked = self.settings.UseFileName
 		self._ckbDontAskWhenMultiOne.Checked = self.settings.DontAskWhenMultiOne
+		self._ckbReplaceMultipleSpaces.Checked = self.settings.ReplaceMultipleSpaces
 
 		self._ckbSpace.Checked = self.settings.AutoSpaceFields
 		
@@ -1478,12 +1542,15 @@ class ConfigForm(Form):
 		elif self.settings.Mode == Mode.Test:
 			self._rdbModeTest.Checked = True
 
-		#
+		
 		self._ckbCopyMode.Checked = self.settings.CopyMode
+
+		self._cmbIllegalCharacter.Items.Clear()
+		self._cmbIllegalCharacter.Items.AddRange(System.Array[System.String](self.settings.IllegalCharacters.keys()))
+		self._cmbIllegalCharacter.SelectedIndex = 0
 		
 		#Reload the selected index of the emptydata cmb
 		self.CmbEmptyDataSelectedIndexChanged(self._cmbEmptyData, None)
-		self.CmbIllegalCharactersSelectedIndexChanged(self._cmbIllegalCharacter, None)
 		self.CmbMonthSelectedIndexChanged(self._cmbMonth, None)
 		
 		#Excludes
@@ -1555,6 +1622,7 @@ class ConfigForm(Form):
 		self.settings.FileTemplate = self._txbFileStruct.Text
 		self.settings.EmptyFolder = self._txbEmptyFolder.Text
 		self.settings.DontAskWhenMultiOne = self._ckbDontAskWhenMultiOne.Checked
+		self.settings.ReplaceMultipleSpaces = self._ckbReplaceMultipleSpaces.Checked
 		
 		self.settings.CopyMode = self._ckbCopyMode.Checked
 
@@ -1818,7 +1886,7 @@ class ConfigForm(Form):
 			except Exception, ex:
 				MessageBox.Show("An error occured trying to load the profile file. The error was:\n\n" + str(ex), "Error loading profile file", MessageBoxButtons.OK, MessageBoxIcon.Error)				
 
-class InsertControl(Panel):
+class InsertControl(FlowLayoutPanel):
 	"""
 	Custom class to simplfy inserting template items
 	"""	
@@ -1828,29 +1896,36 @@ class InsertControl(Panel):
 
 		self.Template = ""
 
+		self.WrapContents = False
+
 		self.Prefix = TextBox()
 		self.InsertButton = Button()
 		self.Postfix = TextBox()
 		
 
 		self.Prefix.Size = Size(58, 22)
-		self.Prefix.Location = Point(0, 2)
+		#self.Prefix.Location = Point(0, 2)
 		self.Prefix.TabIndex = 0
+		#self.Prefix.Margin = Padding(3, 3, 3, 3)
 
 		self.InsertButton.Size = Size(66, 23)
-		self.InsertButton.Location = Point(64, 0)
+		#self.InsertButton.Location = Point(64, 0)
 		self.InsertButton.Click += self.ButtonClick
 		self.InsertButton.TabIndex = 1
+		#self.InsertButton.Margin = Padding(3, 0, 3, 3)
 
 		self.Postfix.Size = Size(58, 22)
-		self.Postfix.Location = Point(136, 2)
+		#self.Postfix.Location = Point(136, 2)
 		self.Postfix.TabIndex = 2
+		#self.Postfix.Margin = Padding(3, 3, 3, 3)
 
-		self.Size = Size(194, 23)
+		#self.Size = Size(194, 23)
 
 		self.Controls.Add(self.Prefix)
-		self.Controls.Add(self.Postfix)
 		self.Controls.Add(self.InsertButton)
+		self.Controls.Add(self.Postfix)
+		self.AutoSize = True
+		self.AutoSizeMode = AutoSizeMode.GrowAndShrink
 
 	def SetPrefixText(self, text):
 		self.Prefix.Text = text
@@ -1887,10 +1962,8 @@ class InsertControlPadding(InsertControl):
 		super(InsertControlPadding,self).__init__()
 		self.Pad = NumericUpDown()
 		self.Pad.Size = Size(34, 22)
-		self.Pad.Location = Point(200, 2)
 		self.Pad.TabIndex = 3
 
-		self.Width = 234
 		self.Controls.Add(self.Pad)
 		
 
@@ -1906,17 +1979,13 @@ class InsertControlCheckBox(InsertControl):
 		super(InsertControlCheckBox,self).__init__()
 		self.Seperator = TextBox()
 		self.Seperator.Size = Size(20, 22)
-		self.Seperator.Location = Point(200, 2)
 		self.Seperator.TabIndex = 3
 
 		self.Check = CheckBox()
 		self.Check.Size = Size(15, 14)
-		self.Check.Location = Point(226, 4)
 		self.Check.TabIndex = 4
+		self.Check.Margin.Top = 5
 
-
-
-		self.Width = 241
 		self.Controls.Add(self.Seperator)
 		self.Controls.Add(self.Check)
 
@@ -1944,10 +2013,7 @@ class InsertControlTextBox(InsertControl):
 		super(InsertControlTextBox,self).__init__()
 		self.TextBox = TextBox()
 		self.TextBox.Size = Size(58, 22)
-		self.TextBox.Location = Point(200, 2)
 		self.TextBox.TabIndex = 3
-
-		self.Width = 258
 		self.Controls.Add(self.TextBox)
 		
 	def SetTextBoxText(self, text):
@@ -1962,3 +2028,39 @@ class InsertControlTextBox(InsertControl):
 			s = " "
 		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")>" + self.Postfix.Text + "}"
 
+class InsertControlReadPercentage(InsertControlTextBox):
+	def __init__(self):
+		super(InsertControlReadPercentage,self).__init__()
+
+		self.Operator = ComboBox()
+		self.Operator.Items.AddRange(System.Array[System.String](["equal to", "greater than", "less than"]))
+		self.Operator.DropDownStyle = ComboBoxStyle.DropDownList
+		self.Operator.SelectedItem = "greater than"
+		self.Operator.Width = 80
+
+		self.Percentage = NumericUpDown()
+		self.Percentage.Maximum = 100
+		self.Percentage.Value = 90
+		self.Percentage.AutoSize = True
+		
+		self.label = Label()
+		self.label.Text = "%"
+		self.label.TextAlign = ContentAlignment.MiddleLeft
+
+		self.Controls.Add(self.Operator)
+		self.Controls.Add(self.Percentage)
+		self.Controls.Add(self.label)
+
+	def GetOperator(self):
+		if self.Operator.SelectedItem == "equal to":
+			return "="
+		elif self.Operator.SelectedItem == "greater than":
+			return ">"
+		elif self.Operator.SelectedItem == "less than":
+			return "<"
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")(" + self.GetOperator() + ")(" + self.Percentage.Value.ToString() + ")>" + self.Postfix.Text + "}"
