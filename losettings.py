@@ -229,25 +229,47 @@ class settings:
 			#Text vars
 			self.Name = Xml.Attributes["Name"].Value
 		
-			self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
+			#From changes from 1.6 to 1.7
+			try:
+				self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
+			except AttributeError:
+				self.FolderTemplate = Xml.SelectSingleNode("DirTemplate").InnerText
 
-			self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
+			try:
+				self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
+			except AttributeError:
+				self.BaseFolder = Xml.SelectSingleNode("BaseDir").InnerText
 
-			self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
-
+			try:
+				self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
+			except AttributeError:
+				self.EmptyFolder = Xml.SelectSingleNode("EmptyDir").InnerText
 			self.FileTemplate = Xml.SelectSingleNode("FileTemplate").InnerText
 		
-			self.Mode = Xml.SelectSingleNode("Mode").InnerText
-
+		
+		
+			try:
+				self.Mode = Xml.SelectSingleNode("Mode").InnerText
+			except AttributeError:
+				self.Mode = Mode.Move
+		
 			self.FilelessFormat = Xml.SelectSingleNode("FilelessFormat").InnerText
 		
 			#Bools
 		
 			self.UseFileName = Convert.ToBoolean(Xml.SelectSingleNode("UseFileName").InnerText)
 
-			self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
+			#From 1.6 to 1.7 of the script
+			try:
+				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
+			except AttributeError:
+				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
 
-			self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
+			#New in 1.7.4
+			try:
+				self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
+			except AttributeError:
+				self.AutoSpaceFields = True
 
 			#New in 1.7.5
 			try:
@@ -262,7 +284,10 @@ class settings:
 		
 			self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
 
-			self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
+			try:
+				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
+			except AttributeError:
+				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)
 		
 			#Dicts
 		
@@ -334,7 +359,10 @@ class settings:
 
 
 			#Exclued empty dirs
-			iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
+			try:
+				iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
+			except AttributeError:
+				iter = Xml.SelectNodes("ExcludedEmptyDir/Item")
 			if iter.Count > 0:
 				for i in iter:
 					self.ExcludedEmptyFolder.append(i.InnerText)
