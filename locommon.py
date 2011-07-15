@@ -3,8 +3,8 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.7.3
-			-Fixed error with rules introduced in 1.7.2
+Version: 1.7.5
+			-Added ReadPercentage to Rules
 
 Contains several classes and functions. All are used in several files
 
@@ -235,6 +235,7 @@ class ExcludeRule(object):
 			"Notes",
 			"Publisher",
 			"Rating",
+			"Read Percentage",
 			"Series Complete",
 			"Tags",
 			"Teams",
