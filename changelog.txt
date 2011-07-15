@@ -1,6 +1,2 @@
-﻿New features:
-Added a way add and remove custom illegal characters. (User is only able to remove custom characters)
-Added Read Percentage
-
-Bugfix:
-Fixed for unicode characters in any numerical field
+﻿Bug fix:
+Loading old profiles now works
