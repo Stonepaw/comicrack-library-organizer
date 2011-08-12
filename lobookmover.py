@@ -389,7 +389,7 @@ class BookMover(object):
 				
 				#Ask user what they want to do:
 				
-				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
+				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.ShowDuplicateForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
 				self.Action = result[0]
 				if result[1] == True:
 					#User checked always do this opperation
@@ -482,7 +482,7 @@ class BookMover(object):
 
 			if not self.AlwaysDoAction:
 
-				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
+				result = self.form.Invoke(Func[type(book), type(oldbook), str, int, list](self.form.ShowDuplicateForm), System.Array[object]([book, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
 
 				self.Action = result[0]
 
@@ -822,7 +822,7 @@ class UndoMover(object):
 				renamefilename = FileInfo(renamepath).Name
 
 				#Ask the user:
-				result = self.form.Invoke(Func[type(dupbook), type(oldbook), str, int, list](self.form.DuplicateForm.ShowForm), System.Array[object]([dupbook, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
+				result = self.form.Invoke(Func[type(dupbook), type(oldbook), str, int, list](self.form.ShowDuplicateForm), System.Array[object]([dupbook, oldbook, renamefilename, len(self.HeldDuplicateBooks)]))
 				self.Action = result[0]
 				if result[1] == True:
 					#User checked always do this opperation
@@ -835,7 +835,7 @@ class UndoMover(object):
 			elif self.Action == DuplicateResult.Rename:
 				return self.MoveBook(book, renamepath)
 			
-			elif self.Action == DuplicateForm.Overwrite:
+			elif self.Action == DuplicateResult.Overwrite:
 
 				try:
 					FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
@@ -1010,6 +1010,8 @@ class PathMaker:
 
 		#Need to store the parent form so it can use the muilt select form
 		self.form = parentform
+
+		self._illegalCharactersRegEx = re.compile("[" + "".join(Path.GetInvalidPathChars()) + "]")
 	
 	def CreateDirectoryPath(self, insertedbook, template, basepath, emptypath, emptyreplace, DontAskWhenMultiOne, illegals, months, replacespaces):
 	#To let the re.sub functions access the book object.
@@ -1129,6 +1131,9 @@ class PathMaker:
 	def replaceIllegal(self, text):
 		for i in self.IllegalsIterator:
 			text = text.replace(i, self.Illegals[i])
+
+		#Replace any other illegal chracters that slip through
+		text = self._illegalCharactersRegEx.sub("", text)
 		return text
 	
 	def insertYear(self, matchObj):

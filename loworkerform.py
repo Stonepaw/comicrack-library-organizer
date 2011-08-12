@@ -51,9 +51,7 @@ class WorkerForm(Form):
 		#The percentage to raise to progress bar of one book.
 		self.percentage = 1.0/len(b)*100
 		self.progress = 0.0
-		self.DuplicateForm = DuplicateForm(self.settings.Mode)
-		helper = WindowInteropHelper(self.DuplicateForm.win)
-		helper.Owner = self.Handle
+		self._DuplicateForm = None
 		#pass the ComicRack object
 		loduplicate.ComicRack = ComicRack
 		
@@ -163,6 +161,15 @@ class WorkerForm(Form):
 			if self._Worker.CancellationPending == False:
 				self._Worker.CancelAsync()
 			self.DialogResult = DialogResult.None
+
+	def ShowDuplicateForm(self, newbook, oldbook, renamefile, count):
+
+		if self._DuplicateForm == None:
+			self._DuplicateForm = DuplicateForm(self.settings.Mode)
+			helper = WindowInteropHelper(self._DuplicateForm.win)
+			helper.Owner = self.Handle
+
+		return self._DuplicateForm.ShowForm(newbook, oldbook, renamefile, count)
 
 
 class ProfileSelector(Form):
