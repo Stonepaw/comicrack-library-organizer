@@ -1,2 +1,3 @@
 ﻿Bug fix:
-Loading old profiles now works
+Speed up display of progress bar dialog
+Fixed illegal path character error

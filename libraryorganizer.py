@@ -10,7 +10,6 @@ Author: Stonepaw
 Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
 """
 
-import cPickle
 import clr
 import System
 
