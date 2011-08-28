@@ -1771,7 +1771,7 @@ class ConfigForm(Form):
 		ib = InputBox()
 		ib.ShowDialog(self)
 		i = ib.FindName()
-		if i.strip() != "" and ib.DialogResult == DialogResult.OK:
+		if i != None and ib.DialogResult == DialogResult.OK:
 			self.allsettings[i] = losettings.settings()
 			self.allsettings[i].Name = i
 			self._cmbProfiles.Items.Add(i)

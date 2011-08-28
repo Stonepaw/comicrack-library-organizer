@@ -1,3 +1,4 @@
 ﻿Bug fix:
-Speed up display of progress bar dialog
-Fixed illegal path character error
+Fixed error when canceling saving a new profile
+Fixed incorrect paths when renaming duplicates
+Fixed possible error in undo script when the destination file already exists
