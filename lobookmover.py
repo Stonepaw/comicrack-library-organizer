@@ -602,6 +602,8 @@ class BookMover(object):
 		#By pescuma. modified slightly
 		extension = Path.GetExtension(path)
 		base = path[:-len(extension)]
+
+		base = re.sub(" \([0-9]\)$", "", base)
 				
 		for i in range(100):
 			newpath = base + " (" + str(i+1) + ")" + extension
@@ -610,7 +612,10 @@ class BookMover(object):
 			if newpath in self.MovedBooks:
 				continue
 
-			if not File.Exists(newpath) or newpath == book.FilePath:
+			if File.Exists(newpath):
+				continue
+
+			else:
 				return newpath
 	
 	def CleanDirectories(self, directory):
@@ -817,7 +822,7 @@ class UndoMover(object):
 			
 			if not self.AlwaysDoAction:
 				
-				renamepath = self.CreateRenamePath(book, path)
+				renamepath = self.CreateRenamePath(path)
 
 				renamefilename = FileInfo(renamepath).Name
 
@@ -876,16 +881,20 @@ class UndoMover(object):
 				return b
 		return None
 
-	def CreateRenamePath(self, path, book):
+	def CreateRenamePath(self, path):
 
 		#By pescuma. modified slightly
 		extension = Path.GetExtension(path)
 		base = path[:-len(extension)]
+
+		base = re.sub(" \([0-9]\)$", "", base)
 				
 		for i in range(100):
 			newpath = base + " (" + str(i+1) + ")" + extension
 
-			if not File.Exists(newpath) or newpath == book.FilePath:
+			if File.Exists(newpath):
+				continue
+			else:
 				return newpath
 
 	def CleanDirectories(self, directory):
