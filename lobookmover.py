@@ -129,7 +129,7 @@ class BookMover(object):
 
 #-------------- Check if the file exists first ------------------------------------------------------------------------------#
 
-			if not File.Exists(book.FilePath):
+			if not File.Exists(book.FilePath) and book.FilePath != "":
 				self.report.Append("\n\nFailed to %s\n%s\nbecause the file does not exist." % (self.modetext, book.FilePath))
 				failed += 1
 				self.worker.ReportProgress(count)
