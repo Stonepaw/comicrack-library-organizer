@@ -43,26 +43,26 @@ class settings:
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "ReadPercentage" : ""}
+				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "ReadPercentage" : "", "Counter" : ""}
 		
 		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : ""}
+				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : ""}
+				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : ""}
 
 		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
 
 		self.IllegalCharacters = {"?" : "", "/" : "", "\\" : "", "*" : "", ":" : " - ", "<" : "[", ">" : "]", "|" : "!", "\"" : "'"}
 
 		self.Months = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 :"August", 9 : "September", 10 : "October",
-						11 : "November", 12 : "December"}
+						11 : "November", 12 : "December", 13 : "Spring", 14 : "Summer", 15 : "Fall", 16 : "Winter"}
 
 		self.TextBox = {"Manga" : "Manga", "SeriesComplete" : "Complete", "Read" : "Read"}
 				

@@ -29,6 +29,7 @@
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
       <Item Name="Count" Value=")" />
+      <Item Name="Counter" Value="" />
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value=", " />
       <Item Name="Genre" Value="" />
@@ -57,6 +58,7 @@
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
       <Item Name="Count" Value="(of " />
+      <Item Name="Counter" Value="" />
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value="(" />
       <Item Name="Genre" Value="" />
@@ -94,6 +96,10 @@
       <Item Name="10" Value="October" />
       <Item Name="11" Value="November" />
       <Item Name="12" Value="December" />
+      <Item Name="13" Value="Spring" />
+      <Item Name="14" Value="Summer" />
+      <Item Name="15" Value="Fall" />
+      <Item Name="16" Value="Winter" />
     </Months>
     <IllegalCharacters>
       <Item Name="&quot;" Value="'" />
@@ -109,7 +115,7 @@
     <EmptyData>
       <Item Name="Number" Value="" />
       <Item Name="ReadPercentage" Value="" />
-      <Item Name="Format" Value="" />
+      <Item Name="Format" Value="Series" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
       <Item Name="StartYear" Value="" />
@@ -123,6 +129,7 @@
       <Item Name="Teams" Value="" />
       <Item Name="Title" Value="" />
       <Item Name="Count" Value="" />
+      <Item Name="Counter" Value="" />
       <Item Name="Publisher" Value="" />
       <Item Name="Genre" Value="" />
       <Item Name="ScanInformation" Value="" />

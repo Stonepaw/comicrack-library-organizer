@@ -35,6 +35,9 @@ from locommon import Mode
 
 from loduplicate import DuplicateResult, DuplicateForm
 
+
+import lologger
+
 clr.AddReference("System.Drawing")
 from System.Drawing.Imaging import ImageFormat
 
@@ -68,27 +71,26 @@ class BookMover(object):
 		self.form = form
 		self.books = books
 		self.settings = settings
-		self.report = StringBuilder()
+		self.logger = lologger.logger()
 		self.pathmaker = PathMaker(form)
 		
 		#Hold books that are duplicates so they can be all asked at the end.
 
 		self.HeldDuplicateBooks = []
 		
-		#This is for when the script is in Test mode. It hold created paths so it won't be writing that it created the path for every comic
+		#These variables are for when the script is in test mode
 
 		self.CreatedPaths = []
+
 		self.MovedBooks = []
 
-		#This is for creating the undo script later
+		#This hold a list of the book moved and is saved in undo.txt for the undo script
 		#Dict with the key of the newpath and value of the old path
 		self.MovedBooksUndo = {}
 		
 		self.AlwaysDoAction = False
 		self.Action = None
 		
-		self.report.Append("Library Organizer Report:")
-
 		if self.settings.Mode == Mode.Copy:
 			self.modetext = "copy"
 			self.modetextplural = "copying"
@@ -114,6 +116,7 @@ class BookMover(object):
 		success = 0
 		
 		for book in self.books:
+
 			#Put the count to the current book being worked on ie book 1 for first loop
 			count += 1 
 			
@@ -123,28 +126,31 @@ class BookMover(object):
 			if self.worker.CancellationPending:
 				#User pressed cancel
 				skipped = len(self.books) - success - failed
-				self.report.Append("\n\nOperation cancelled by user.")
+				self.logger.Add("Canceled", str(skipped) + " files", "User cancelled the script")
 				break
 			
 
-#-------------- Check if the file exists first ------------------------------------------------------------------------------#
+			#Check if the file exists if it should exist
 
 			if not File.Exists(book.FilePath) and book.FilePath != "":
-				self.report.Append("\n\nFailed to %s\n%s\nbecause the file does not exist." % (self.modetext, book.FilePath))
+				self.logger.Add("Failed", book.FilePath, "The file does not exist")
+				#self.report.Append("\n\nFailed to %s\n%s\nbecause the file does not exist." % (self.modetext, book.FilePath))
 				failed += 1
 				self.worker.ReportProgress(count)
 				continue
 			
-#------------ Check the exclude paths first -----------------------------------------------------------------------------------#
+			#Check the exclude paths first
+
 			if ExcludePath(book, self.settings.ExcludeFolders):
 				skipped += 1
-				self.report.Append("\n\nSkipped %s\n%s\nbecause it is located in an excluded path." % (self.modetextplural, book.FilePath))
+				#self.report.Append("\n\nSkipped %s\n%s\nbecause it is located in an excluded path." % (self.modetextplural, book.FilePath))
+				self.logger.Add("Skipped", book.FilePath, "The book is located in an excluded path")
 				self.worker.ReportProgress(count)
 				continue
 			
 			
 			
-#----------------- Metadata Exclude Rules ------------------------------------------------------------------------------------#
+			# Metadata Exclude Rules
 			"""
 			Possible results are True or False
 				True is when the book should not be moved
@@ -154,62 +160,71 @@ class BookMover(object):
 			"""
 			if ExcludeMeta(book, self.settings.ExcludeRules, self.settings.ExcludeOperator, self.settings.ExcludeMode):
 				skipped += 1
-				self.report.Append("\n\nSkipped %s\n%s \nbecause it qualified under the exclude rules." % (self.modetextplural, book.FilePath))
+				self.logger.Add("Skipped", book.FilePath, "The book qualified under the exclude rules")
+				#self.report.Append("\n\nSkipped %s\n%s \nbecause it qualified under the exclude rules." % (self.modetextplural, book.FilePath))
 				self.worker.ReportProgress(count)
 				continue
 
 
 			
-#------------ Fileless and not creating fileless images ---------------------------------------------------#
+			# Fileless and not creating fileless images
 
-			if book.FilePath == "" and not self.settings.MoveFileless:
+			if book.FilePath == "" and self.settings.MoveFileless == False:
 				#Fileless comic
 				skipped += 1
-				self.report.Append("\n\nSkipped %s book\n%s %s\nbecause it is a fileless book." % (self.modetextplural, book.ShadowSeries, book.ShadowNumber))
+				self.logger.Add("Skipped", book.ShadowSeries + " " + str(book.ShadowNumber), "The book is fileless and fileless images are not being created")
+				#self.report.Append("\n\nSkipped %s book\n%s %s\nbecause it is a fileless book." % (self.modetextplural, book.ShadowSeries, book.ShadowNumber))
 				self.worker.ReportProgress(count)
 				continue
 			
 			
-#------------ Fileless and moving but no custom thumbnail -------------------------------------------------#
+			# Fileless and moving but no custom thumbnail
 			
 			if book.FilePath == "" and self.settings.MoveFileless and not book.CustomThumbnailKey:
 				#Fileless comic
 				skipped += 1
-				self.report.Append("\n\nSkipped creating image for filess book\n%s %s\nbecause it does not have a custom thumbnail." % (book.ShadowSeries, book.ShadowNumber))
+				self.logger.Add("Failed", book.ShadowSeries + " " + str(book.ShadowNumber), "The fileless book does not have a custom thumbnail")
+				#self.report.Append("\n\nSkipped creating image for filess book\n%s %s\nbecause it does not have a custom thumbnail." % (book.ShadowSeries, book.ShadowNumber))
 				self.worker.ReportProgress(count)
 				continue
 			
-#------------ Create the path from the template seperated as directory path and the file path ----------------------#
+			# Create the path from the template seperated as directory path and the file path
+			# The directory and the file path are kept seperate because they are needed individually for checks later.
 			
 			dirpath, filepath = self.CreatePath(book)
+
+			#Combine them
 
 			fullpath = Path.Combine(dirpath, filepath)
 
 		
-#-------------Empty file name -------------------------------------------------------------------------------------#
+			# Empty file name
 
 			if filepath == "":
 				failed += 1
-				self.report.Append("\n\nFailed to %s\n%s\nbecause the filename created was empty. The book was not moved" % (self.modetext, book.FilePath))
+				self.logger("Failed", book.FilePath, "The created filename was empty")
+				#self.report.Append("\n\nFailed to %s\n%s\nbecause the filename created was empty. The book was not moved" % (self.modetext, book.FilePath))
 				self.worker.ReportProgress(count)
 				continue
 
 
-#-------------- Book is already located at that path -----------------------------------------------------------------#
+			# Book is already located at that path
 
 			if fullpath == book.FilePath:
-				self.report.Append("\n\nSkipped %s book\n%s\nbecause it is already located at the calculated path." % (self.modetextplural, book.FilePath))
+				self.logger.Add("Skipped", book.FilePath, "The book is already located at the calculated path")
+				#self.report.Append("\n\nSkipped %s book\n%s\nbecause it is already located at the calculated path." % (self.modetextplural, book.FilePath))
 				skipped += 1
 				self.worker.ReportProgress(count)
 				continue
 
-#-------------- Check for too long path error --------------------------------------------------------------------------#
+			# Check for too long path error
 
 			if len(fullpath) > 259:
 				result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([fullpath]))
 				if result == None:
 					skipped += 1
-					self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+					self.logger.Add("Skipped", book.FilePath, "The calculated path was too long and the user skipped shortening it")
+					#self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
 					self.worker.ReportProgress(count)
 					continue
 
@@ -220,17 +235,20 @@ class BookMover(object):
 
 
 
-#------------ Duplicate. Hold for later ---------------------------------------------------------------------------#
+			# Duplicate. Hold for later
 
 			if File.Exists(fullpath) or fullpath in self.MovedBooks:
 				self.HeldDuplicateBooks.append(book)
 				count -= 1
 				continue
+
+
 			
 			#Create here because needed for cleaning directories later
 			oldpath = book.FileDirectory
 			
-#--------------Create the directory --------------------------------------------------------------------------------#
+			
+			# Create the directory
 
 			if not Directory.Exists(dirpath):
 				try:
@@ -238,16 +256,19 @@ class BookMover(object):
 						Directory.CreateDirectory(dirpath)
 					else:
 						if not dirpath in self.CreatedPaths:
-							self.report.Append("\n\nCreating Folder:\n%s" % (dirpath))
+							self.logger.Add("Created Folder", dirpath)
+							#self.report.Append("\n\nCreating Folder:\n%s" % (dirpath))
 							self.CreatedPaths.append(dirpath)
 
 				except Exception, ex:
 					failed += 1
-					self.report.Append("\n\nFailed to create path\n%s\nbecause an error occured. The error was: %s. Book was not %s." % (fullpath, ex, self.modetextpast))
+					self.logger.Add("Failed to create Folder", fullpath, "Book " + book.FilePath + " was not moved.\nThe error was: " + str(ex))
+					#self.report.Append("\n\nFailed to create path\n%s\nbecause an error occured. The error was: %s. Book was not %s." % (fullpath, ex, self.modetextpast))
 					self.worker.ReportProgress(count)
 					continue
-				
-#---------------- If fileless. Since all fileless exceptions and rules were filtered out above. It is safe to create. -------------------------#
+			
+
+			# If fileless. Since all fileless exceptions and rules were filtered out above. It is safe to create
 					
 			if book.FilePath == "":
 				result = self.MoveFileless(book, fullpath)
@@ -277,7 +298,7 @@ class BookMover(object):
 				skipped += 1
 				
 
-#------------- Cleanup old directories ---------------------------------------------------------------#
+			# Cleanup old directories
 			if self.settings.RemoveEmptyFolder and self.settings.Mode == Mode.Move:
 				self.CleanDirectories(DirectoryInfo(oldpath))
 				self.CleanDirectories(DirectoryInfo(dirpath))
@@ -287,6 +308,7 @@ class BookMover(object):
 
 #----------- Now process the duplicate books --------------------------------------------------------------#
 
+		#Making a copy of the array to iterate over since items are removed from the arry
 		for book in self.HeldDuplicateBooks[:]:
 			count += 1
 
@@ -296,7 +318,8 @@ class BookMover(object):
 			if self.worker.CancellationPending:
 				#User pressed cancel
 				skipped = len(self.books) - success - failed
-				self.report.Append("\n\nOperation cancelled by user.")
+				self.logger.Add("Skipped", str(skipped) + " files", "Operation cancelled by user")
+				#self.report.Append("\n\nOperation cancelled by user.")
 				break
 
 
@@ -362,7 +385,8 @@ class BookMover(object):
 
 		#Return the report to the worker thread
 		report = "Successfully %s: %s\nFailed to %s: %s\nSkipped: %s" % (self.modetextpast, success, self.modetext, failed, skipped)
-		return [failed + skipped, report, self.report.ToString()]
+		self.logger.SetCountVariables(failed, skipped, success)
+		return [failed + skipped, report, self.logger]
 	
 	def MoveFileless(self, book, path):
 		"""
@@ -396,14 +420,16 @@ class BookMover(object):
 					self.AlwaysDoAction = True
 			
 			if self.Action == DuplicateResult.Cancel:
-				self.report.Append("\n\nSkipped creating image\n%s\nbecause a file already exists there and the user declined to overwrite it." % (path))
+				self.logger.Add("Skipped", path, "The image already exists and the user declined to overwrite it")
+				#self.report.Append("\n\nSkipped creating image\n%s\nbecause a file already exists there and the user declined to overwrite it." % (path))
 				return MoveResult.Skipped
 			
 			elif self.Action == DuplicateResult.Rename:
 				if len(renamepath) > 259:
 					result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([renamepath]))
 					if result == None:
-						self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+						self.logger.Add("Skipped", path, "The path was too long and the user skipped shortening it")
+						#self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
 						return MoveResult.Skipped
 
 					return self.MoveFileless(book, result)
@@ -414,15 +440,18 @@ class BookMover(object):
 				try:
 					if self.settings.Mode == Mode.Test:
 						#Because the script goes into a loop if in test mode here since no files are actually changed. return a success
-						self.report.Append("\n\nDeleting:\n%s" % (path))
-						self.report.Append("\n\nCreating image %s" % (path))
+						self.logger.Add("Deleted", path)
+						#self.report.Append("\n\nDeleting:\n%s" % (path))
+						self.logger.Add("Created image", path)
+						#self.report.Append("\n\nCreating image %s" % (path))
 						self.MoveBooks.append(path)
 						return MoveResult.Success
 					else:
 						FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
 						#File.Delete(path)
 				except Exception, ex:
-					self.report.Append("\n\nFailed to overwrite %s. The error was: %s. Image for fileless book\n%s %s\nwas not created" % (path, ex, book.ShadowSeries, book.ShadowNumber))
+					self.logger.Add("Failed", path, "Failed to overwrite. The error was: " + str(ex))
+					#self.report.Append("\n\nFailed to overwrite %s. The error was: %s. Image for fileless book\n%s %s\nwas not created" % (path, ex, book.ShadowSeries, book.ShadowNumber))
 					return MoveResult.Failed
 
 				#Since we are only working with images there is no need to remove a book from the library
@@ -442,14 +471,16 @@ class BookMover(object):
 				format = ImageFormat.Bmp
 				
 			if self.settings.Mode == Mode.Test:
-				self.report.Append("\n\nCreating image %s" % (path))
+				self.logger.Add("Created image", path)
+				#self.report.Append("\n\nCreating image %s" % (path))
 				self.MoveBooks.append(path)
 			else:
 				image.Save(path, format)
 			return MoveResult.Success
 
 		except Exception, ex:
-			self.report.Append("\n\nFailed to create image\n%s\nbecause an error occured. The error was: %s." % (path, ex))
+			self.logger.Add("Failed", path, "Failed to create the image because an error occured. The error was: " + str(ex))
+			#self.report.Append("\n\nFailed to create image\n%s\nbecause an error occured. The error was: %s." % (path, ex))
 			return MoveResult.Failed
 	
 	def MoveBook(self, book, path):
@@ -491,7 +522,8 @@ class BookMover(object):
 					self.AlwaysDoAction = True
 			
 			if self.Action == DuplicateResult.Cancel:
-				self.report.Append("\n\nSkipped %s\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (self.modetextplural, book.FilePath, path))
+				self.logger.Add("Skipped", book.FilePath, "A file already exists at: " + path + " and the user declined to overwrite it")
+				#self.report.Append("\n\nSkipped %s\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (self.modetextplural, book.FilePath, path))
 				return MoveResult.Skipped
 			
 			elif self.Action == DuplicateResult.Rename:
@@ -501,7 +533,8 @@ class BookMover(object):
 				if len(renamepath) > 259:
 					result = self.form.Invoke(Func[str, object](self.GetSmallerPath), System.Array[System.Object]([renamepath]))
 					if result == None:
-						self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
+						self.logger.Add("Skipped", book.FilePath, "The path was too long and the user skipped shortening it")
+						#self.report.Append("\n\nSkipped %s book\n%s\nbecause the path was too long and the user skipped shortening it." % (self.modetextplural, book.FilePath))
 						return MoveResult.Skipped
 
 					return self.MoveBook(book, result)
@@ -511,11 +544,13 @@ class BookMover(object):
 			elif self.Action == DuplicateResult.Overwrite:
 				
 				if self.settings.Mode == Mode.Test:
-					self.report.Append("\n\nDeleting:\n%s" % (path))
+					self.logger.Add("Deleting (simulated)", path)
+					#self.report.Append("\n\nDeleting:\n%s" % (path))
 
 					#Because the script will get into an infitite loop if allowed to be called recursivly as down below since the book is not actualy deleted:
 					#Fake the copy and return a success.
-					self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
+					self.logger.Add(self.modetextplural.capitalize(), book.FilePath, "to: " + path)
+					#self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
 					self.MovedBooks.append(path)
 					return MoveResult.Success
 				
@@ -525,7 +560,8 @@ class BookMover(object):
 						FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
 						#File.Delete(path)
 					except Exception, ex:
-						self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not %s." % (path, ex, book.FilePath, self.modetextpast))
+						self.logger.Add("Failed", book.FilePath, "Because " + path + " was unable to be deleted. The error was: " + str(ex))
+						#self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not %s." % (path, ex, book.FilePath, self.modetextpast))
 						return MoveResult.Failed
 				
 					#if the book is in the library, delete it!
@@ -544,7 +580,8 @@ class BookMover(object):
 				book.FilePath = path
 
 			elif self.settings.Mode == Mode.Test:
-				self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
+				self.logger.Add(self.modetextplural.capitalize(), book.FilePath, "to: " + path)
+				#self.report.Append("\n\n%s book from\n%s\nto\n%s." % (self.modetextplural.capitalize(), book.FilePath, path))
 				self.MovedBooks.append(path)
 
 			elif self.settings.Mode == Mode.Copy:
@@ -557,7 +594,8 @@ class BookMover(object):
 			return MoveResult.Success
 
 		except Exception, ex:
-			self.report.Append("\n\nFailed to %s\n%s\nbecause an error occured. The error was: %s. The book was not %s." % (self.modetext, book.FilePath, ex, self.modetextpast))
+			logger.Add("Failed", book.FilePath, "because an error occured. The error was: " + str(ex))
+			#self.report.Append("\n\nFailed to %s\n%s\nbecause an error occured. The error was: %s. The book was not %s." % (self.modetext, book.FilePath, ex, self.modetextpast))
 			return MoveResult.Failed
 	
 	def CreatePath(self, book):

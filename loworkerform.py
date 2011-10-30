@@ -42,6 +42,8 @@ from locommon import ICON, Mode
 
 from lobookmover import BookMover, OverwriteAction, UndoMover
 
+import loforms
+
 class WorkerForm(Form):
 	def __init__(self, b, s):
 		#print "Intializing compents"
@@ -127,23 +129,29 @@ class WorkerForm(Form):
 		#print "Thread completed"
 		if not e.Error:
 			if self.settings.Mode == Mode.Test:
-				save = SaveFileDialog()
-				save.AddExtension = True
-				save.Filter = "Text files (*.txt)|*.txt"
-				if save.ShowDialog() == DialogResult.OK:
-					try:
-						sw = open(save.FileName, "w")
-						sw.write("Library Organizer Report:\n\n" + e.Result[1] + "\n\n")
-						sw.write(e.Result[2])
-						sw.close()
-					except:
-						MessageBox.Show("something went wrong saving the file")
+				report = loforms.ReportForm()
+				report.LoadData(e.Result[2].ToArray())
+				r = report.ShowDialog()
+				if r == DialogResult.Yes:
+					save = SaveFileDialog()
+					save.AddExtension = True
+					save.Filter = "Text files (*.txt)|*.txt"
+					if save.ShowDialog() == DialogResult.OK:
+						e.Result[2].SaveLog(save.FileName)
+				report.Dispose()
 			else:
 				if e.Result[0] > 0:
 					result = MessageBox.Show(e.Result[1] + "\n\nYou you like to see a detailed report of the failed or skipped files?", "View full report?", MessageBoxButtons.YesNo)
 					if result == DialogResult.Yes:
-						report = ReportForm(e.Result[2])
-						report.ShowDialog()
+						report = loforms.ReportForm()
+						report.LoadData(e.Result[2].ToArray())
+						r = report.ShowDialog()
+						if r == DialogResult.Yes:
+							save = SaveFileDialog()
+							save.AddExtension = True
+							save.Filter = "Text files (*.txt)|*.txt"
+							if save.ShowDialog() == DialogResult.OK:
+								e.Result[2].SaveLog(save.FileName)
 						report.Dispose()
 
 				else:
