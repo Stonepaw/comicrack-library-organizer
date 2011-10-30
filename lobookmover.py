@@ -1016,6 +1016,7 @@ class PathMaker:
 		self.Writer = {}
 		self.Teams = {}
 		self.ScanInformation = {}
+		self.Counter = None
 
 		#Need to store the parent form so it can use the muilt select form
 		self.form = parentform
@@ -1125,17 +1126,32 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>read)\((?P<text>[^\)]*?)\)\((?P<operator>[^\)]*?)\)\((?P<percent>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertReadPercentage, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>counter)\((?P<start>\d*)\)\((?P<increment>\d*)\)\>(?P<post>[^}]*)(?P<end>})', self.insertCounter, templateText)
 		return templateText
 	
 	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified by Stonepaw
 	def pad(self, value, padding):
-		if value >= 0:
-			paddedValue = str(value)
-			return paddedValue.PadLeft(padding, '0')
+		#value as string, padding as int
+		remainder = ""
+		try:
+			numberValue = float(value)
+		except ValueError:
+			return value
+
+		if numberValue >= 0:
+			#To make sure that the item is padded correctly when a decimal such as 7.1
+			if value.Contains("."):
+				value, remainder = value.split(".")
+				remainder = "." + remainder
+			return value.PadLeft(padding, '0') + remainder
 		else:
-			paddedValue = str(-value)
-			paddedValue = paddedValue.PadLeft(padding, '0')
-			return '-' + paddedValue
+			value = value[1:]
+			#To make sure that the item is padded correctly when a decimal such as 7.1
+			if value.Contains("."):
+				value, remainder = value.split(".")
+				remainder = "." + remainder
+			value = value.PadLeft(padding, '0')
+			return '-' + value + remainder
 	
 	def replaceIllegal(self, text):
 		for i in self.IllegalsIterator:
@@ -1206,7 +1222,7 @@ class PathMaker:
 		if getattr(book, sproperty) != "" and getattr(book, sproperty) > 0:
 			if matchObj.group("pad") != None:
 				try:
-					result = self.pad(int(getattr(book, sproperty)), int(matchObj.group("pad")))
+					result = self.pad(getattr(book, sproperty), int(matchObj.group("pad")))
 				except ValueError:
 					result = unicode(getattr(book, sproperty))
 			else:
@@ -1217,7 +1233,7 @@ class PathMaker:
 				try:
 					int(emptyreplacements[property])
 					if matchObj.group("pad") != None:
-						result = self.pad(int(emptyreplacements[property]), int(matchObj.group("pad")))
+						result = self.pad(emptyreplacements[property], int(matchObj.group("pad")))
 				except ValueError:
 					result = emptyreplacements[property]
 					
@@ -1238,7 +1254,7 @@ class PathMaker:
 		if getattr(book, property) != "" and getattr(book, property) > 0:
 			if matchObj.group("pad") != None:
 				try:
-					result = self.pad(int(getattr(book, property)), int(matchObj.group("pad")))
+					result = self.pad(getattr(book, property), int(matchObj.group("pad")))
 				except ValueError:
 					result = unicode(getattr(book, property))
 			else:
@@ -1249,7 +1265,7 @@ class PathMaker:
 				try:
 					int(emptyreplacements[property])
 					if matchObj.group("pad") != None:
-						result = self.pad(int(emptyreplacements[property]), int(matchObj.group("pad")))
+						result = self.pad(emptyreplacements[property], int(matchObj.group("pad")))
 				except ValueError:
 					result = emptyreplacements[property]
 					
@@ -1280,7 +1296,7 @@ class PathMaker:
 	def insertStartYear(self, matchObj):
 		#Find the start year by going through the whole list of comics in the library find the earliest year field of the same series and volume
 		
-		index = book.ShadowSeries+str(book.ShadowVolume)
+		index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
 		
 		if self.startyear.has_key(index):
 			startyear = self.startyear[index]
@@ -1288,7 +1304,7 @@ class PathMaker:
 			startyear = book.ShadowYear
 			
 			for b in ComicRack.App.GetLibraryBooks():
-				if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume:
+				if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
 					
 					#In case the initial values is bad
 					if startyear == -1 and b.ShadowYear != 1:
@@ -1641,3 +1657,24 @@ class PathMaker:
 						results.add(i)
 
 		return list(results)
+
+	def insertCounter(self, matchObj):
+		post = matchObj.group("post")
+		pre = matchObj.group("pre")
+		if self.Counter == None:
+			self.Counter = int(matchObj.group("start"))
+			result = str(self.Counter)
+
+		else:
+			self.Counter = self.Counter + int(matchObj.group("increment"))
+			result = str(self.Counter)
+
+		if result.strip() == "":
+			if emptyreplacements["Counter"].strip() != "":
+				return pre + emptyreplacements["Counter"] + post
+			else:
+				return ""
+
+		return pre + result + post
+
+
