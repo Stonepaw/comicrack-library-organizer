@@ -804,7 +804,7 @@ class ConfigForm(Form):
 		self._cmbMonth.DropDownStyle = ComboBoxStyle.DropDownList
 		self._cmbMonth.Location = Point(364, 382)
 		self._cmbMonth.Size = Size(40, 21)
-		self._cmbMonth.Items.AddRange(System.Array[System.String](["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]))
+		self._cmbMonth.Items.AddRange(System.Array[System.String](["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]))
 		self._cmbMonth.SelectedIndex = 0
 		self._cmbMonth.SelectedIndexChanged += self.CmbMonthSelectedIndexChanged
 		self._cmbMonth.TabIndex = 16
@@ -1210,13 +1210,13 @@ class ConfigForm(Form):
 		# Manga
 		# 
 		self.Manga = InsertControlTextBox()
-		self.Manga.Location = Point(6, 100)
+		self.Manga.Location = Point(6, 80)
 		self.Manga.SetTemplate("manga", "Manga")
 		# 
 		# SeriesComplete
 		# 
 		self.SeriesComplete = InsertControlTextBox()
-		self.SeriesComplete.Location = Point(6, 145)
+		self.SeriesComplete.Location = Point(6, 125)
 		self.SeriesComplete.SetTemplate("seriesComplete", "Series Complete")
 		self.SeriesComplete.InsertButton.Width += 30
 		# 
@@ -1224,14 +1224,14 @@ class ConfigForm(Form):
 		# 
 		label16 = Label()
 		label16.AutoSize = True
-		label16.Location = System.Drawing.Point(225, 85)
+		label16.Location = System.Drawing.Point(225, 65)
 		label16.Size = System.Drawing.Size(33, 13)
 		label16.Text = "Text"
 		# 
 		# label21
 		# 
 		label21 = Label()
-		label21.Location = System.Drawing.Point(270, 100)
+		label21.Location = System.Drawing.Point(270, 80)
 		label21.Size = System.Drawing.Size(230, 60)
 		label21.Text = "Fill in the \"Text\" box for the text to be inserted when the item is marked as Yes."
 		#
@@ -1252,7 +1252,27 @@ class ConfigForm(Form):
 		#
 		self.Read = InsertControlReadPercentage()
 		self.Read.SetTemplate("read", "Read %")
-		self.Read.Location = Point(6, 190)
+		self.Read.Location = Point(6, 170)
+		#
+		# Counter
+		#
+		self.Counter = InsertControlTwoNumericUpDown()
+		self.Counter.SetTemplate("counter", "Counter")
+		self.Counter.Location = Point(6, 220)
+		#
+		# lblStart
+		#
+		lblStart = Label()
+		lblStart.AutoSize = True
+		lblStart.Location = Point(212, 208)
+		lblStart.Text = "Start"
+		#
+		# lblIncrement
+		#
+		lblIncrement = Label()
+		lblIncrement.AutoSize = True
+		lblIncrement.Location = Point(240, 208)
+		lblIncrement.Text = "Increment"
 		# 
 		# tpInsertAdvanced
 		# 
@@ -1260,11 +1280,14 @@ class ConfigForm(Form):
 		self._tpInsertAdvanced.Controls.Add(self.Manga)
 		self._tpInsertAdvanced.Controls.Add(self.SeriesComplete)
 		self._tpInsertAdvanced.Controls.Add(self.Read)
+		self._tpInsertAdvanced.Controls.Add(self.Counter)
 		self._tpInsertAdvanced.Controls.Add(label21)
 		self._tpInsertAdvanced.Controls.Add(label16)
 		self._tpInsertAdvanced.Controls.Add(label15)
 		self._tpInsertAdvanced.Controls.Add(lblPost)
 		self._tpInsertAdvanced.Controls.Add(lblPre)
+		self._tpInsertAdvanced.Controls.Add(lblStart)
+		self._tpInsertAdvanced.Controls.Add(lblIncrement)
 		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
 		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 254)
 		self._tpInsertAdvanced.TabIndex = 1
@@ -2064,3 +2087,28 @@ class InsertControlReadPercentage(InsertControlTextBox):
 		if space:
 			s = " "
 		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")(" + self.GetOperator() + ")(" + self.Percentage.Value.ToString() + ")>" + self.Postfix.Text + "}"
+
+class InsertControlTwoNumericUpDown(InsertControl):
+
+	def __init__(self):
+		super(InsertControlTwoNumericUpDown,self).__init__()
+		self.Start = NumericUpDown()
+		self.Start.Size = Size(34, 22)
+		self.Start.TabIndex = 3
+		self.Start.Increment = 1
+		self.Start.Value = 1
+
+		self.Increment = NumericUpDown()
+		self.Increment.Size = Size(34, 22)
+		self.Increment.TabIndex = 4
+		self.Increment.Increment = 1
+		self.Increment.Value = 1
+
+		self.Controls.Add(self.Start)
+		self.Controls.Add(self.Increment)
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + str(self.Start.Value) + ")(" + str(self.Increment.Value) + ")>" + self.Postfix.Text + "}"

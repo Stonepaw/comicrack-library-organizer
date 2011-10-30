@@ -511,3 +511,83 @@ class PathTooLongForm(Form):
 	def OkayClick(self, sender, e):
 		
 		self.CheckPathLength(self, sender, e)
+
+
+class ReportForm(Form):
+
+	def __init__(self):
+		
+		self.Size = Size(780, 400)
+		self.StartPosition = FormStartPosition.CenterParent
+
+		NumberColumn = System.Windows.Forms.DataGridViewTextBoxColumn()
+		NumberColumn.HeaderText = "#"
+		NumberColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+		
+		ActionColumn = System.Windows.Forms.DataGridViewTextBoxColumn()
+		ActionColumn.HeaderText = "Action"
+		ActionColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+
+		PathColumn = System.Windows.Forms.DataGridViewTextBoxColumn()
+		PathColumn.HeaderText = "Path"
+		PathColumn.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True
+		PathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+
+		MessageColumn = System.Windows.Forms.DataGridViewTextBoxColumn()
+		MessageColumn.HeaderText = "Message"
+		MessageColumn.MinimumWidth = 200
+		MessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+		MessageColumn.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True
+
+		self.DataGrid = System.Windows.Forms.DataGridView()
+		self.DataGrid.Height = 320
+		self.DataGrid.Width = self.ClientSize.Width
+		self.DataGrid.Columns.Add(NumberColumn)
+		self.DataGrid.Columns.Add(ActionColumn)
+		self.DataGrid.Columns.Add(PathColumn)
+		self.DataGrid.Columns.Add(MessageColumn)
+		self.DataGrid.RowHeadersVisible = False
+		self.DataGrid.ReadOnly = True
+		self.DataGrid.AllowUserToResizeRows = False
+		self.DataGrid.AllowUserToResizeColumns = False
+		self.DataGrid.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+		self.DataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
+
+		
+		self.Controls.Add(self.DataGrid)
+
+		
+		self.Okay = Button()
+		self.Okay.Text = "OK"
+		self.Okay.Location = Point(680, 330)
+		self.Okay.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
+		self.Okay.DialogResult = DialogResult.OK
+
+		self.Save = Button()
+		self.Save.Text = "Save"
+		self.Save.Location = Point(600, 330)
+		self.Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right
+		self.Save.DialogResult = DialogResult.Yes
+
+		self.Controls.Add(self.Save)
+		self.Controls.Add(self.Okay)
+		self.Icon = System.Drawing.Icon(ICON)
+		self.Text = "Library Organizer Report"
+		self.AcceptButton = self.Okay
+		
+	def CheckDataGrid(self):
+		for row in self.DataGrid.Rows:
+			if row.Cells[1].Value == "Failed":
+				row.DefaultCellStyle.ForeColor = System.Drawing.Color.Red
+		
+
+	def LoadData(self, data):
+		"""
+		Data should be an array containing arrays of strings.
+		"""
+		count = 1
+		for row in data:
+			self.DataGrid.Rows.Add(System.Array[System.String]([str(count)] + row))
+			count += 1
+
+		self.CheckDataGrid()
