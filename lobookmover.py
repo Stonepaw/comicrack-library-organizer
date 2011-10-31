@@ -1171,10 +1171,14 @@ class PathMaker:
 	def pad(self, value, padding):
 		#value as string, padding as int
 		remainder = ""
+
 		try:
 			numberValue = float(value)
 		except ValueError:
 			return value
+
+		if type(value) == int:
+			value = str(value)
 
 		if numberValue >= 0:
 			#To make sure that the item is padded correctly when a decimal such as 7.1
