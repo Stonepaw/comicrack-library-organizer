@@ -1,10 +1,2 @@
 ﻿Bug fix:
-Now adds correct padding when values contain a decimal place
-
-Changes:
-Added months 13-16 as Spring, Summer, Fall and Winter
-Startyear new requires matching publishers as well as series
-Reports are now displayed in a datagrid for easier viewing
-
-New:
-Added Counter Field
+Fixed bug with padding introduced in 1.7.10
