@@ -1,6 +1,10 @@
 """
 lologger.py
 
+Contains a class for logging what the bookmover does.
+
+1.7.12: Fix for unicode characters
+
 Copyright Stonepaw
 """
 
@@ -20,7 +24,7 @@ class logger():
 		self._successcount = 0
 
 	def Add(self, action, path, message = ""):
-		self._log.append([str(action), str(path), str(message)])
+		self._log.append([unicode(action), unicode(path), unicode(message)])
 
 	def ToArray(self):
 		return self._log
