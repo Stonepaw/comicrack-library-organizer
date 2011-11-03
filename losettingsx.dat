@@ -3,7 +3,7 @@
   <Setting Name="Default">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
     <BaseFolder></BaseFolder>
-    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
+    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>

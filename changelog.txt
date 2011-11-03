@@ -1,2 +1,2 @@
 ﻿Bug fix:
-Fixed bug with padding introduced in 1.7.10
+Fixed bug with unicode character introduced in 1.7.10
