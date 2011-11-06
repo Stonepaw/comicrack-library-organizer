@@ -1164,7 +1164,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>read)\((?P<text>[^\)]*?)\)\((?P<operator>[^\)]*?)\)\((?P<percent>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertReadPercentage, templateText)
-		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>counter)\((?P<start>\d*)\)\((?P<increment>\d*)\)\>(?P<post>[^}]*)(?P<end>})', self.insertCounter, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>counter)\((?P<start>\d*)\)\((?P<increment>\d*)\)\((?P<pad>\d*)\)\>(?P<post>[^}]*)(?P<end>})', self.insertCounter, templateText)
 		return templateText
 	
 	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified by Stonepaw
@@ -1703,17 +1703,26 @@ class PathMaker:
 	def insertCounter(self, matchObj):
 		post = matchObj.group("post")
 		pre = matchObj.group("pre")
+
+		pad = matchObj.group("pad")
+
+		if pad == "":
+			pad = 0
+
+		else:
+			pad = int(pad)
+
 		if self.Counter == None:
 			self.Counter = int(matchObj.group("start"))
-			result = str(self.Counter)
+			result = self.pad(self.Counter, pad)
 
 		else:
 			self.Counter = self.Counter + int(matchObj.group("increment"))
-			result = str(self.Counter)
+			result = self.pad(self.Counter, pad)
 
 		if result.strip() == "":
 			if emptyreplacements["Counter"].strip() != "":
-				return pre + emptyreplacements["Counter"] + post
+				return pre + self.pad(emptyreplacements["Counter"], pad) + post
 			else:
 				return ""
 
