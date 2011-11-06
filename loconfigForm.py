@@ -1256,7 +1256,7 @@ class ConfigForm(Form):
 		#
 		# Counter
 		#
-		self.Counter = InsertControlTwoNumericUpDown()
+		self.Counter = InsertControlThreeNumericUpDown()
 		self.Counter.SetTemplate("counter", "Counter")
 		self.Counter.Location = Point(6, 220)
 		#
@@ -1273,6 +1273,13 @@ class ConfigForm(Form):
 		lblIncrement.AutoSize = True
 		lblIncrement.Location = Point(240, 208)
 		lblIncrement.Text = "Increment"
+		#
+		# lblPad
+		#
+		lblPad = Label()
+		lblPad.AutoSize = True
+		lblPad.Location = Point(290, 208)
+		lblPad.Text = "Pad"
 		# 
 		# tpInsertAdvanced
 		# 
@@ -1288,6 +1295,7 @@ class ConfigForm(Form):
 		self._tpInsertAdvanced.Controls.Add(lblPre)
 		self._tpInsertAdvanced.Controls.Add(lblStart)
 		self._tpInsertAdvanced.Controls.Add(lblIncrement)
+		self._tpInsertAdvanced.Controls.Add(lblPad)
 		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
 		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 254)
 		self._tpInsertAdvanced.TabIndex = 1
@@ -2088,10 +2096,10 @@ class InsertControlReadPercentage(InsertControlTextBox):
 			s = " "
 		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")(" + self.GetOperator() + ")(" + self.Percentage.Value.ToString() + ")>" + self.Postfix.Text + "}"
 
-class InsertControlTwoNumericUpDown(InsertControl):
+class InsertControlThreeNumericUpDown(InsertControl):
 
 	def __init__(self):
-		super(InsertControlTwoNumericUpDown,self).__init__()
+		super(InsertControlThreeNumericUpDown,self).__init__()
 		self.Start = NumericUpDown()
 		self.Start.Size = Size(34, 22)
 		self.Start.TabIndex = 3
@@ -2104,11 +2112,18 @@ class InsertControlTwoNumericUpDown(InsertControl):
 		self.Increment.Increment = 1
 		self.Increment.Value = 1
 
+		self.Pad = NumericUpDown()
+		self.Pad.Size = Size(34, 22)
+		self.Pad.TabIndex = 5
+		self.Pad.Increment = 1
+		self.Pad.Value = 0
+
 		self.Controls.Add(self.Start)
 		self.Controls.Add(self.Increment)
+		self.Controls.Add(self.Pad)
 
 	def GetTemplateText(self, space):
 		s = ""
 		if space:
 			s = " "
-		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + str(self.Start.Value) + ")(" + str(self.Increment.Value) + ")>" + self.Postfix.Text + "}"
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + str(self.Start.Value) + ")(" + str(self.Increment.Value) + ")(" + str(self.Pad.Value) + ")>" + self.Postfix.Text + "}"
