@@ -594,7 +594,7 @@ class BookMover(object):
 			return MoveResult.Success
 
 		except Exception, ex:
-			logger.Add("Failed", book.FilePath, "because an error occured. The error was: " + str(ex))
+			self.logger.Add("Failed", book.FilePath, "because an error occured. The error was: " + str(ex))
 			#self.report.Append("\n\nFailed to %s\n%s\nbecause an error occured. The error was: %s. The book was not %s." % (self.modetext, book.FilePath, ex, self.modetextpast))
 			return MoveResult.Failed
 	
