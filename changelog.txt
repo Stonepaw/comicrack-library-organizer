@@ -1,2 +1,2 @@
-﻿Changes:
-Added padding to counter field
+﻿Bugfix:
+Fixed issue when reporting an error in a copy/move operation
