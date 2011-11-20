@@ -43,19 +43,24 @@ class settings:
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "ReadPercentage" : "", "Counter" : ""}
+				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", 
+				"Language" : "", "ReadPercentage" : "", "Counter" : "", "FirstLetter" : "", "StartMonth" : ""}
 		
 		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : ""}
+				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", 
+				"ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : "", 
+				"StartMonth" : "", "FirstLetter" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
 				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : ""}
+				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", 
+				"SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", 
+				"Read" : "", "Counter" : "", "StartMonth" : "", "FirstLetter" : ""}
 
 		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
 

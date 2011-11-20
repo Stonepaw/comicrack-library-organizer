@@ -598,6 +598,7 @@ class ConfigForm(Form):
 			"Alternate Series",
 			"Characters",
 			"Count",
+			"First Letter",
 			"Format",
 			"Genre",
 			"Imprint",
@@ -609,7 +610,8 @@ class ConfigForm(Form):
 			"Read Percentage",
 			"Scan Information"
 			"Series",
-			"Series Complete", 
+			"Series Complete",
+			"Start Month",
 			"Start Year",
 			"Tags",
 			"Title",
@@ -1197,26 +1199,34 @@ class ConfigForm(Form):
 		# Start Year
 		# 
 		self.StartYear = InsertControl()
-		self.StartYear.Location = Point(6, 25)
+		self.StartYear.Location = Point(6, 15)
 		self.StartYear.SetTemplate("startyear", "Start Year")
+		#
+		# Start Month
+		#
+		self.StartMonth = InsertControlPaddingCheckBox()
+		self.StartMonth.Location = Point(6, 50)
+		self.StartMonth.SetTemplate("startmonth", "Start Month")
+		self.StartMonth.InsertButton.Width += 10
+		self.StartMonth.Check.Text = "Use month names"
 		# 
 		# label15
 		# 
 		label15 = Label()
-		label15.Location = System.Drawing.Point(220, 25)
-		label15.Size = System.Drawing.Size(205, 30)
-		label15.Text = "Start year is calculated from the earliest year for the series in your library"
+		label15.Location = System.Drawing.Point(220, 15)
+		label15.Size = System.Drawing.Size(205, 15)
+		label15.Text = "Start year and month are calculated from the earliest issue in the series in your library"
 		# 
 		# Manga
 		# 
 		self.Manga = InsertControlTextBox()
-		self.Manga.Location = Point(6, 80)
+		self.Manga.Location = Point(6, 85)
 		self.Manga.SetTemplate("manga", "Manga")
 		# 
 		# SeriesComplete
 		# 
 		self.SeriesComplete = InsertControlTextBox()
-		self.SeriesComplete.Location = Point(6, 125)
+		self.SeriesComplete.Location = Point(6, 120)
 		self.SeriesComplete.SetTemplate("seriesComplete", "Series Complete")
 		self.SeriesComplete.InsertButton.Width += 30
 		# 
@@ -1224,14 +1234,14 @@ class ConfigForm(Form):
 		# 
 		label16 = Label()
 		label16.AutoSize = True
-		label16.Location = System.Drawing.Point(225, 65)
+		label16.Location = System.Drawing.Point(225, 55)
 		label16.Size = System.Drawing.Size(33, 13)
 		label16.Text = "Text"
 		# 
 		# label21
 		# 
 		label21 = Label()
-		label21.Location = System.Drawing.Point(270, 80)
+		label21.Location = System.Drawing.Point(270, 85)
 		label21.Size = System.Drawing.Size(230, 60)
 		label21.Text = "Fill in the \"Text\" box for the text to be inserted when the item is marked as Yes."
 		#
@@ -1252,38 +1262,46 @@ class ConfigForm(Form):
 		#
 		self.Read = InsertControlReadPercentage()
 		self.Read.SetTemplate("read", "Read %")
-		self.Read.Location = Point(6, 170)
+		self.Read.Location = Point(6, 155)
 		#
 		# Counter
 		#
 		self.Counter = InsertControlThreeNumericUpDown()
 		self.Counter.SetTemplate("counter", "Counter")
-		self.Counter.Location = Point(6, 220)
+		self.Counter.Location = Point(6, 226)
 		#
 		# lblStart
 		#
 		lblStart = Label()
 		lblStart.AutoSize = True
-		lblStart.Location = Point(212, 208)
+		lblStart.Location = Point(212, 214)
 		lblStart.Text = "Start"
 		#
 		# lblIncrement
 		#
 		lblIncrement = Label()
 		lblIncrement.AutoSize = True
-		lblIncrement.Location = Point(240, 208)
+		lblIncrement.Location = Point(240, 214)
 		lblIncrement.Text = "Increment"
 		#
 		# lblPad
 		#
 		lblPad = Label()
 		lblPad.AutoSize = True
-		lblPad.Location = Point(290, 208)
+		lblPad.Location = Point(290, 214)
 		lblPad.Text = "Pad"
+		#
+		# First Letter
+		#
+		self.FirstLetter = InsertControlComboBox()
+		self.FirstLetter.SetTemplate("first", "FirstLetter")
+		self.FirstLetter.SetComboBoxItems(["Series", "Publisher", "Imprint", "AlternateSeries"])
+		self.FirstLetter.Location = Point(6, 190)
 		# 
 		# tpInsertAdvanced
 		# 
 		self._tpInsertAdvanced.Controls.Add(self.StartYear)
+		self._tpInsertAdvanced.Controls.Add(self.StartMonth)
 		self._tpInsertAdvanced.Controls.Add(self.Manga)
 		self._tpInsertAdvanced.Controls.Add(self.SeriesComplete)
 		self._tpInsertAdvanced.Controls.Add(self.Read)
@@ -1296,6 +1314,7 @@ class ConfigForm(Form):
 		self._tpInsertAdvanced.Controls.Add(lblStart)
 		self._tpInsertAdvanced.Controls.Add(lblIncrement)
 		self._tpInsertAdvanced.Controls.Add(lblPad)
+		self._tpInsertAdvanced.Controls.Add(self.FirstLetter)
 		self._tpInsertAdvanced.Padding = System.Windows.Forms.Padding(3)
 		self._tpInsertAdvanced.Size = System.Drawing.Size(500, 254)
 		self._tpInsertAdvanced.TabIndex = 1
@@ -2004,6 +2023,28 @@ class InsertControlPadding(InsertControl):
 			s = " "
 		return "{" + s + self.Prefix.Text + "<" + self.Template + str(self.Pad.Value) + ">" + self.Postfix.Text + "}"
 
+class InsertControlPaddingCheckBox(InsertControlPadding):
+	
+	def __init__(self):
+		super(InsertControlPaddingCheckBox,self).__init__()
+
+		self.Check = CheckBox()
+		self.Check.AutoSize = True
+		
+		self.Controls.Add(self.Check)
+
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+
+		insert = ""
+		if self.Check.Checked == False:
+			insert = "#" + str(self.Pad.Value)
+
+		return "{" + s + self.Prefix.Text + "<" + self.Template + insert + ">" + self.Postfix.Text + "}"
+
 class InsertControlCheckBox(InsertControl):
 	
 	def __init__(self):
@@ -2095,6 +2136,35 @@ class InsertControlReadPercentage(InsertControlTextBox):
 		if space:
 			s = " "
 		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.TextBox.Text + ")(" + self.GetOperator() + ")(" + self.Percentage.Value.ToString() + ")>" + self.Postfix.Text + "}"
+
+class InsertControlComboBox(InsertControl):
+	
+	def __init__(self):
+		super(InsertControlComboBox,self).__init__()
+
+		self.ComboBox = ComboBox()
+		self.ComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+		self.ComboBox.Width = 100
+		
+		self.Controls.Add(self.ComboBox)
+
+	def SetComboBoxItems(self, items=[]):
+		"""
+		Sets the ComboBox items.
+		items should be either an array or list or strings
+		"""
+
+		self.ComboBox.Items.Clear()
+		self.ComboBox.Items.AddRange(System.Array[System.String](items))
+		self.ComboBox.SelectedIndex = 0
+
+
+	def GetTemplateText(self, space):
+		s = ""
+		if space:
+			s = " "
+
+		return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.ComboBox.SelectedItem + ")>" + self.Postfix.Text + "}"
 
 class InsertControlThreeNumericUpDown(InsertControl):
 

@@ -217,6 +217,21 @@ class BookMover(object):
 				self.worker.ReportProgress(count)
 				continue
 
+			#In some cases the new path and the book path are the same but have different cases.
+			#This can cause inccorect behaviour when looking at duplicates
+			if fullpath.lower() == book.FilePath.lower():
+
+				#In that case, better rename it to the correct case
+				if self.settings.Mode == Mode.Test:
+					self.logger.Add("Renaming", book.FilePath, "to: " + fullpath)
+				else:
+					book.RenameFile(filepath)
+
+				success += 1
+				self.worker.ReportProgress(count)
+				continue
+
+
 			# Check for too long path error
 
 			if len(fullpath) > 259:
@@ -1044,7 +1059,7 @@ class PathMaker:
 	"""A class to create directory and file paths from the passed book"""
 	
 	#To speed up repeated calculations of start year. Note this is a class variable since years won't change between the gui and worker using this
-	startyear = {}
+	startbook = {}
 
 	def __init__(self, parentform):
 		#These are for keeping track of the mutiple select options the user selected
@@ -1152,7 +1167,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>volume)(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowPadded, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>title)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>ageRating)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
-		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>language)\>(?P<post>[^}]*)(?P<end>})', self.insertText, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>language)\>(?P<post>[^}]*)(?P<end>})', self.insertLanguage, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>format)\>(?P<post>[^}]*)(?P<end>})', self.insertShadowText, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>startyear)\>(?P<post>[^}]*)(?P<end>})', self.insertStartYear, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>writer)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
@@ -1163,8 +1178,11 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>scaninfo)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>seriesComplete)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertSeriesComplete, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>first)\((?P<property>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertFirstLetter, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>read)\((?P<text>[^\)]*?)\)\((?P<operator>[^\)]*?)\)\((?P<percent>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertReadPercentage, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>counter)\((?P<start>\d*)\)\((?P<increment>\d*)\)\((?P<pad>\d*)\)\>(?P<post>[^}]*)(?P<end>})', self.insertCounter, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<startmonth\>(?P<post>[^}]*)(?P<end>})', self.insertStartMonth, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<startmonth#(?P<pad>\d*)\>(?P<post>[^}]*)(?P<end>})', self.insertStartMonthNumber, templateText)
 		return templateText
 	
 	#Most of these functions are copied from wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified by Stonepaw
@@ -1243,14 +1261,24 @@ class PathMaker:
 		if property == "Agerating":
 			property = "AgeRating"
 
-		if property == "Language":
-			property = "LanguageAsText"
-
 		if getattr(book, property) != "":
 			result = matchObj.group("pre") + getattr(book, property) + matchObj.group("post")
 		else:
 			if emptyreplacements[property] != "":
 				result = matchObj.group("pre") + emptyreplacements[property] + matchObj.group("post")
+			else:
+				result = ""
+
+		return self.replaceIllegal(result)
+
+
+	def insertLanguage(self, matchObj):
+
+		if book.LanguageAsText != "":
+			result = matchObj.group("pre") + book.LanguageAsText + matchObj.group("post")
+		else:
+			if emptyreplacements["Language"] != "":
+				result = matchObj.group("pre") + emptyreplacements["Language"] + matchObj.group("post")
 			else:
 				result = ""
 
@@ -1338,27 +1366,29 @@ class PathMaker:
 	def insertStartYear(self, matchObj):
 		#Find the start year by going through the whole list of comics in the library find the earliest year field of the same series and volume
 		
-		index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
-		
-		if self.startyear.has_key(index):
-			startyear = self.startyear[index]
-		else:
-			startyear = book.ShadowYear
-			
-			for b in ComicRack.App.GetLibraryBooks():
-				if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
-					
-					#In case the initial values is bad
-					if startyear == -1 and b.ShadowYear != 1:
-						startyear = b.ShadowYear
-					
-	
-					if b.ShadowYear != -1 and b.ShadowYear < startyear:
-						startyear = b.ShadowYear
-			
-			#Store this final result in the dict so no calculation require for others of the series.
-			self.startyear[index] = startyear
-			
+		#index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
+		#
+		#if self.startyear.has_key(index):
+		#	startyear = self.startyear[index]
+		#else:
+		#	startyear = book.ShadowYear
+		#	
+		#	for b in ComicRack.App.GetLibraryBooks():
+		#		if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+		#			
+		#			#In case the initial values is bad
+		#			if startyear == -1 and b.ShadowYear != 1:
+		#				startyear = b.ShadowYear
+		#			
+	 #
+		#			if b.ShadowYear != -1 and b.ShadowYear < startyear:
+		#				startyear = b.ShadowYear
+		#	
+		#	#Store this final result in the dict so no calculation require for others of the series.
+		#	self.startyear[index] = startyear
+
+		startyear = self.GetEarliestBook().ShadowYear
+
 		if	startyear != -1:
 			result = matchObj.group("pre") + str(startyear) + matchObj.group("post")
 		else:
@@ -1368,6 +1398,99 @@ class PathMaker:
 				result = ""
 
 		return self.replaceIllegal(result)
+
+
+	def insertStartMonth(self, matchObj):
+		startmonth = self.GetEarliestBook().Month
+		result = None
+		if startmonth != -1:
+			if startmonth in self.Months:
+				result = self.Months[startmonth]
+			else:
+				#Something else, no set string for it so return it as nothing
+				return ""
+			result = matchObj.group("pre") + result + matchObj.group("post")
+		else:
+			if emptyreplacements["StartMonth"] != "":
+				result = matchObj.group("pre") + emptyreplacements["StartMonth"] + matchObj.group("post")
+			else:
+				result = ""
+	
+		return self.replaceIllegal(result)
+
+	def insertStartMonthNumber(self, matchObj):
+
+		startmonth = self.GetEarliestBook().Month
+		result = None
+		if startmonth > 0:
+			if matchObj.group("pad") != None:
+				try:
+					result = self.pad(startmonth, int(matchObj.group("pad")))
+				except ValueError:
+					result = unicode(startmonth)
+			else:
+				result = unicode(startmonth)
+			result = matchObj.group("pre") + result + matchObj.group("post")
+		else:
+			if emptyreplacements["StartMonth"] != "":
+				try:
+					int(emptyreplacements["StartMonth"])
+					if matchObj.group("pad") != None:
+						result = self.pad(emptyreplacements["StartMonth"], int(matchObj.group("pad")))
+				except ValueError:
+					result = emptyreplacements["StartMonth"]
+					
+				result = matchObj.group("pre") + result + matchObj.group("post")
+			else:
+				result = ""
+
+		return self.replaceIllegal(result)
+
+
+	def GetEarliestBook(self):
+		"""
+		Finds the first published issue of a series in the library
+		Returns a ComicBook object
+		"""
+		#Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
+		
+		index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
+		
+		if self.startbook.has_key(index):
+			startbook = self.startbook[index]
+		else:
+			startbook = book
+			
+			for b in ComicRack.App.GetLibraryBooks():
+				if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+					
+					#Notes:
+					#Year can be empty (-1)
+					#Month can be empty (-1)
+
+					#In case the initial value is bad
+					if startbook.ShadowYear == -1 and b.ShadowYear != 1:
+						startbook = b
+					
+					#Check if the current book's year 
+					if b.ShadowYear != -1 and b.ShadowYear < startbook.ShadowYear:
+						startbook = b
+
+					#Check if year the same and a valid month
+					if b.ShadowYear == startbook.ShadowYear and b.Month != -1:
+
+						#Current book has empty month
+						if startbook.Month == -1:
+							startbook = b
+						
+						#Month is earlier
+						elif b.Month < startbook.Month:
+							startbook = b
+			
+			#Store this final result in the dict so no calculation require for others of the series.
+			self.startbook[index] = startbook
+
+		return startbook
 
 	def insertManga(self, matchObj):
 
@@ -1729,3 +1852,29 @@ class PathMaker:
 		return pre + result + post
 
 
+	def insertFirstLetter(self, matchObj):
+
+		propertyname = matchObj.group("property").capitalize()
+
+		if propertyname in ["Series"]:
+			propertyname = "Shadow" + propertyname
+
+		try:
+			property = unicode(getattr(book, propertyname))
+		except System.MissingMemberException:
+			return ""
+
+
+
+		r = re.match(r"(?:(?:the|a|an|de|het|een|die|der|das|des|dem|der|ein|eines|einer|einen|la|le|l'|les|un|une|el|las|los|las|un|una|unos|unas|o|os|um|uma|uns|umas|en|et|il|lo|uno|gli)\s+)?(?P<letter>.).+", property, re.I)
+
+		if r:
+			result = r.group("letter").capitalize()
+
+		else:
+			if emptyreplacements["FirstLetter"].strip() != "":
+				result = emptyreplacements["FirstLetter"]
+			else:
+				return ""
+
+		return matchObj.group("pre") + result + matchObj.group("post")
