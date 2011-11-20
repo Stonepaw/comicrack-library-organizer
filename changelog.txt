@@ -1,2 +1,7 @@
 ﻿Bugfix:
-Fixed issue when reporting an error in a copy/move operation
+Fixed Language field
+Fixed incorrect detection of duplicate when the book is already in the correct location but the file name is in a different case.
+
+New:
+Added startmonth
+Added first letter
