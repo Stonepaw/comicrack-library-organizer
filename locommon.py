@@ -42,6 +42,8 @@ UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
+startbooks = {}
+
 class Mode:
 	Move = "Move"
 	Copy = "Copy"
@@ -242,6 +244,8 @@ class ExcludeRule(object):
 			"Title",
 			"Scan Information",
 			"Series",
+			"Start Month",
+			"Start Year",
 			"Volume",
 			"Web",		
 			"Year"]))
@@ -370,11 +374,15 @@ class ExcludeRule(object):
 	def Calculate(self, book):
 		if self.Selection.Enabled:
 			return self.CalculateYesNo(book)
-
-		operator = self.GetOperator()
-		text = self.GetText()
+			
 		field = self.GetField()
 		field = field.replace(" ", "")
+
+		if field in ["StartYear", "StartMonth"]:
+			return self.CalculateStart(book, field)
+
+		text = self.GetText()
+		operator = self.GetOperator()
 
 		if operator == "is":
 			#Convert to string just in case
@@ -440,6 +448,66 @@ class ExcludeRule(object):
 			else:
 				return 0
 
+	def CalculateStart(self, book, field):
+
+		text = self.GetText()
+		operator = self.GetOperator()
+
+		startbook = GetEarliestBook(book)
+		
+		if field == "StartMonth":
+			fieldtext = unicode(startbook.Month)
+
+		else:
+			fieldtext = unicode(startbook.ShadowYear)
+
+		if operator == "is":
+			#Convert to string just in case
+			if fieldtext == text:
+				return 1
+			else:
+				return 0
+		elif operator == "does not contain":
+			if text not in fieldtext:
+				return 1
+			else:
+				return 0
+		elif operator == "contains":
+			if text in fieldtext:
+				return 1
+			else:
+				return 0
+		elif operator == "is not":
+			if text != fieldtext:
+				return 1
+			else:
+				return 0
+		elif operator == "greater than":
+			#Try to use the int value to compare if possible
+			try:
+				number = int(text)
+				if number < int(fieldtext):
+					return 1
+				else:
+					return 0
+			except ValueError:
+				if text < fieldtext:
+					return 1
+				else:
+					return 0
+		elif operator == "less than":
+			try:
+				number = int(text)
+				if number > int(fieldtext):
+					return 1
+				else:
+					return 0
+			except ValueError:
+				if text > fieldtext:
+					return 1
+				else:
+					return 0
+
 	def SaveXml(self, xmlwriter):
 		xmlwriter.WriteStartElement("ExcludeRule")
 		xmlwriter.WriteAttributeString("Field", self.Field.SelectedItem)
@@ -481,3 +549,48 @@ def LoadDict(file):
 		print "Error loading dict from file " + file
 		print err
 	return dict
+
+def GetEarliestBook(book):
+	"""
+	Finds the first published issue of a series in the library
+	Returns a ComicBook object
+	"""
+	#Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
+		
+	index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
+		
+	if startbooks.has_key(index):
+		startbook = startbooks[index]
+	else:
+		startbook = book
+			
+		for b in ComicRack.App.GetLibraryBooks():
+			if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+					
+				#Notes:
+				#Year can be empty (-1)
+				#Month can be empty (-1)
+
+				#In case the initial value is bad
+				if startbook.ShadowYear == -1 and b.ShadowYear != 1:
+					startbook = b
+					
+				#Check if the current book's year 
+				if b.ShadowYear != -1 and b.ShadowYear < startbook.ShadowYear:
+					startbook = b
+
+				#Check if year the same and a valid month
+				if b.ShadowYear == startbook.ShadowYear and b.Month != -1:
+
+					#Current book has empty month
+					if startbook.Month == -1:
+						startbook = b
+						
+					#Month is earlier
+					elif b.Month < startbook.Month:
+						startbook = b
+			
+		#Store this final result in the dict so no calculation require for others of the series.
+		startbooks[index] = startbook
+
+	return startbook
