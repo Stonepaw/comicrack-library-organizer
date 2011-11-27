@@ -23,7 +23,7 @@ clr.AddReference("System.Drawing")
 
 from System.Drawing import Point, Size, ContentAlignment
 
-from System.IO import FileInfo
+from System.IO import FileInfo, PathTooLongException
 
 import locommon
 from locommon import ICON
@@ -416,6 +416,7 @@ class PathTooLongForm(Form):
 		self._Okay = System.Windows.Forms.Button()
 		self._Cancel = System.Windows.Forms.Button()
 		self._Path = System.Windows.Forms.TextBox()
+		self._ErrorLabel = System.Windows.Forms.Label()
 		self._errorProvider = System.Windows.Forms.ErrorProvider(self._components)
 		self._errorProvider.BeginInit()
 		self.SuspendLayout()
@@ -436,6 +437,7 @@ class PathTooLongForm(Form):
 		self._Okay.TabIndex = 1
 		self._Okay.Text = "Okay"
 		self._Okay.UseVisualStyleBackColor = True
+		self._Okay.Click += self.OkayClick
 		# 
 		# Cancel
 		# 
@@ -449,12 +451,18 @@ class PathTooLongForm(Form):
 		# 
 		# Path
 		# 
-		self._Path.Location = System.Drawing.Point(12, 35)
+		self._Path.Location = System.Drawing.Point(12, 28)
 		self._Path.Name = "Path"
 		self._Path.Size = System.Drawing.Size(500, 75)
 		self._Path.TabIndex = 0
 		self._Path.Multiline = True
 		self._Path.TextChanged += self.CheckPathLength
+		#
+		# ErrorLabel
+		#
+		self._ErrorLabel.Location = System.Drawing.Point(12, 108)
+		self._ErrorLabel.AutoSize = True
+		self._ErrorLabel.ForeColor = System.Drawing.Color.Red
 		# 
 		# errorProvider
 		# 
@@ -469,6 +477,7 @@ class PathTooLongForm(Form):
 		self.Controls.Add(self._Cancel)
 		self.Controls.Add(self._Okay)
 		self.Controls.Add(self._label)
+		self.Controls.Add(self._ErrorLabel)
 		self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
 		self.MaximizeBox = False
 		self.MinimizeBox = False
@@ -481,36 +490,46 @@ class PathTooLongForm(Form):
 		self.Icon = System.Drawing.Icon(ICON)
 
 	def CheckPathLength(self, sender, e):
-		if self._Path.Text.Length >= 260:
+
+		try:
+
+			f = FileInfo(self._Path.Text)
+
+		except PathTooLongException, ex:
+			
 			self._errorProvider.SetError(self._Path, "The entire path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length))
+			self._ErrorLabel.Text = "The entire path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length)
+			self.DialogResult = DialogResult.None
+			return
+
+		except System.ArgumentException, ex:
+
+			self._errorProvider.SetError(self._Path, "The path cannot contain any of < > | * ? \" ")
+			self._ErrorLabel.Text = "The path cannot contain any of < > | * ? \" "
+			self.DialogResult = DialogResult.None
+			return
+
+		except System.NotSupportedException, ex:
+			
+			self._errorProvider.SetError(self._Path, "The path cannot contain a : ")
+			self._ErrorLabel.Text = "The path cannot contain a : "
 			self.DialogResult = DialogResult.None
 			return
 
 		else:
-			f = FileInfo(self._Path.Text)
 			if len(f.DirectoryName) >= 248:
-				self._errorProvider.SetError(self._Path, "The folder path has to be less then 248 characters. Current path size is: " + str(len(f.DirectoryName)))
-				del(f)
+
+				self._errorProvider.SetError(self._Path, "The folder path has to be less then 248 characters. Current directory size is: " + str(len(f.DirectoryName)))
+				self._ErrorLabel.Text = "The folder path has to be less then 248 characters. Current directory size is: " + str(len(f.DirectoryName))
 				self.DialogResult = DialogResult.None
 				return
-
-		#Check for illegal characters. Note that there may be a : at the beginning. eg C:\
-		path = self._Path.Text
-
-		if len(path) > 1:
-			if path[1] == ":":
-				path = path [2:]
-		r = re.search("[<>:|\*\?\"]", path)
-		if r != None:
-			self._errorProvider.SetError(self._Path, "The path cannot contain any of < > : | * ? \" ")
-			self.DialogResult = DialogResult.None
-			return
-		self._errorProvider.SetError(self._Path, "")
-		return
+			else:
+				self._errorProvider.SetError(self._Path, "")
+				self._ErrorLabel.Text = ""
 
 	def OkayClick(self, sender, e):
 		
-		self.CheckPathLength(self, sender, e)
+		self.CheckPathLength(sender, e)
 
 
 class ReportForm(Form):

@@ -1,7 +1,5 @@
 ﻿Bugfix:
-Fixed Language field
-Fixed incorrect detection of duplicate when the book is already in the correct location but the file name is in a different case.
+PathToLongException is once again caught correctly. User has a choice to rename the file or skip it.
 
 New:
-Added startmonth
-Added first letter
+Added Start Month and Start Year to the exclude rules
