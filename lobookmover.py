@@ -458,7 +458,7 @@ class BookMover(object):
 						#self.report.Append("\n\nDeleting:\n%s" % (path))
 						self.logger.Add("Created image", path)
 						#self.report.Append("\n\nCreating image %s" % (path))
-						self.MoveBooks.append(path)
+						self.MovedBooks.append(path)
 						return MoveResult.Success
 					else:
 						FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
