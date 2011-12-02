@@ -1,5 +1,5 @@
 ﻿Bugfix:
-PathToLongException is once again caught correctly. User has a choice to rename the file or skip it.
+Fixed error with fileless images when in simulate mode
 
 New:
-Added Start Month and Start Year to the exclude rules
+Added Alternate Series as a multi value field

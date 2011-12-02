@@ -2,9 +2,7 @@
 This file contains various dialogs and forms required by the Library Orgainizer
 
 
-Version 1.7.5
-
-		Added Custom Chracter form
+Version 1.7.17
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
@@ -35,11 +33,15 @@ class SelectionForm(Form):
 		self.Icon = System.Drawing.Icon(ICON)
 
 		if args.FieldText.endswith("s"):
-			field = args.FieldText[:-1]
-			fieldplural = args.FieldText
+				field = args.FieldText[:-1]
+				fieldplural = args.FieldText
 		else:
 			field = args.FieldText
 			fieldplural = args.FieldText + "s"
+
+		if args.FieldText == "AlternateSeries":
+			field = args.FieldText
+			fieldplural = args.FieldText
 
 		self.Text = "Choose which " + fieldplural + " you would like to use"
 
