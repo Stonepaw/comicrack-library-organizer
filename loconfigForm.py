@@ -1,10 +1,9 @@
 """
 loconfigform.py
 
-Version: 1.7.5
-		Added ReplaceMultipleSpace
-		Changed InsertControls to use a FlowLayoutPanel instead of panel
-		Added Readpercentage
+Version: 1.7.17
+
+	Added Alternate series into Advanced2
 		
 Contains the config form. Most functions are related to makeing the GUI work. Several functions are related to settings.
 
@@ -1214,7 +1213,7 @@ class ConfigForm(Form):
 		# 
 		label15 = Label()
 		label15.Location = System.Drawing.Point(220, 15)
-		label15.Size = System.Drawing.Size(205, 15)
+		label15.Size = System.Drawing.Size(230, 40)
 		label15.Text = "Start year and month are calculated from the earliest issue in the series in your library"
 		# 
 		# Manga
@@ -1322,42 +1321,48 @@ class ConfigForm(Form):
 		self._tpInsertAdvanced.UseVisualStyleBackColor = True
 
 	def CreateAdvanced2InsertControls(self):
+		#
+		# AlternateSeriesMulti
+		#
+		self.AlternateSeriesMulti = InsertControlCheckBox()
+		self.AlternateSeriesMulti.Location = Point(6, 20)
+		self.AlternateSeriesMulti.SetTemplate("altSeries", "AltSeries")
 		# 
 		# Characters
 		# 
 		self.Characters = InsertControlCheckBox()
-		self.Characters.Location = Point(6, 20)
+		self.Characters.Location = Point(250, 20)
 		self.Characters.SetTemplate("characters", "Character")
 		# 
 		# Genre
 		# 
 		self.Genre = InsertControlCheckBox()
-		self.Genre.Location = Point(250, 20)
+		self.Genre.Location = Point(6, 65)
 		self.Genre.SetTemplate("genre", "Genre")
 		# 
 		# Writer
 		# 
 		self.Writer = InsertControlCheckBox()
-		self.Writer.Location = Point(250, 110)
+		self.Writer.Location = Point(6, 155)
 		self.Writer.SetTemplate("writer", "Writer")
 		# 
 		# Tags
 		# 
 		self.Tags = InsertControlCheckBox()
-		self.Tags.Location = Point(250, 65)
+		self.Tags.Location = Point(6, 110)
 		self.Tags.SetTemplate("tags", "Tags")
 		#
 		# Team
 		#
 		self.Teams = InsertControlCheckBox()
 		self.Teams.SetTemplate("teams", "Team")
-		self.Teams.Location = Point(6, 110)
+		self.Teams.Location = Point(250, 110)
 		#
 		# Scan Information
 		#
 		self.ScanInformation = InsertControlCheckBox()
 		self.ScanInformation.SetTemplate("scaninfo", "Scan Info.")
-		self.ScanInformation.Location = Point(6, 65)
+		self.ScanInformation.Location = Point(250, 65)
 		#
 		# Label Seperator
 		#
@@ -1376,7 +1381,7 @@ class ConfigForm(Form):
 		# label22
 		# 
 		label22 = Label()
-		label22.Location = System.Drawing.Point(4, 155)
+		label22.Location = System.Drawing.Point(4, 200)
 		label22.Size = System.Drawing.Size(494, 48)
 		label22.Text = "For these fields that can have multiple entries the script will ask which ones you would like to use. If you want to select for all the issues in the series at once, check the checkbox beside the field before inserting. In the selction box is an option to have each entry as its own folder"
 		#
@@ -1410,6 +1415,7 @@ class ConfigForm(Form):
 		#
 		# tpInsertAdvanced2
 		#
+		self._tpInsertAdvanced2.Controls.Add(self.AlternateSeriesMulti)
 		self._tpInsertAdvanced2.Controls.Add(self.Characters)
 		self._tpInsertAdvanced2.Controls.Add(self.Genre)
 		self._tpInsertAdvanced2.Controls.Add(self.Tags)

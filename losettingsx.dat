@@ -2,18 +2,19 @@
 <Settings LastUsed="Default">
   <Setting Name="Default">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
-    <BaseFolder></BaseFolder>
+    <BaseFolder />
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder />
     <Mode>Move</Mode>
     <UseFileName>true</UseFileName>
     <AutoSpaceFields>true</AutoSpaceFields>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <DontAskWhenMultiOne>false</DontAskWhenMultiOne>
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <UseFolder>true</UseFolder>
     <CopyMode>false</CopyMode>
     <Postfix>
       <Item Name="Number" Value="" />
+      <Item Name="AlternateSeriesMulti" Value="" />
       <Item Name="Format" Value=")" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
@@ -33,6 +34,8 @@
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value=", " />
       <Item Name="Genre" Value="" />
+      <Item Name="StartMonth" Value="" />
+      <Item Name="FirstLetter" Value="" />
       <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value=")" />
@@ -43,6 +46,7 @@
     </Postfix>
     <Prefix>
       <Item Name="Number" Value="#" />
+      <Item Name="AlternateSeriesMulti" Value="" />
       <Item Name="Format" Value="" />
       <Item Name="Characters" Value="" />
       <Item Name="AlternateCount" Value="" />
@@ -62,6 +66,8 @@
       <Item Name="Publisher" Value="" />
       <Item Name="MonthNumber" Value="(" />
       <Item Name="Genre" Value="" />
+      <Item Name="StartMonth" Value="" />
+      <Item Name="FirstLetter" Value="" />
       <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value="" />
@@ -74,8 +80,9 @@
       <Item Name="Tags" Value=", " />
       <Item Name="Characters" Value=", " />
       <Item Name="Genre" Value=", " />
-      <Item Name="ScanInformation" Value="" />
+      <Item Name="ScanInformation" Value="," />
       <Item Name="Teams" Value=", " />
+      <Item Name="AlternateSeriesMulti" Value="," />
       <Item Name="Writer" Value=", " />
     </Seperator>
     <TextBox>
@@ -132,6 +139,8 @@
       <Item Name="Counter" Value="" />
       <Item Name="Publisher" Value="" />
       <Item Name="Genre" Value="" />
+      <Item Name="StartMonth" Value="" />
+      <Item Name="FirstLetter" Value="" />
       <Item Name="ScanInformation" Value="" />
       <Item Name="Writer" Value="" />
       <Item Name="Year" Value="" />

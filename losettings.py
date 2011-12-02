@@ -52,7 +52,7 @@ class settings:
 				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
 				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", 
 				"ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : "", 
-				"StartMonth" : "", "FirstLetter" : ""}
+				"StartMonth" : "", "FirstLetter" : "", "AlternateSeriesMulti" : ""}
 
 		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
 				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
@@ -60,9 +60,9 @@ class settings:
 				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
 				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", 
 				"SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", 
-				"Read" : "", "Counter" : "", "StartMonth" : "", "FirstLetter" : ""}
+				"Read" : "", "Counter" : "", "StartMonth" : "", "FirstLetter" : "", "AlternateSeriesMulti" : ""}
 
-		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : ""}
+		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : "", "AlternateSeriesMulti" : ""}
 
 		self.IllegalCharacters = {"?" : "", "/" : "", "\\" : "", "*" : "", ":" : " - ", "<" : "[", ">" : "]", "|" : "!", "\"" : "'"}
 

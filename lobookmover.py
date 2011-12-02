@@ -3,11 +3,10 @@ lobookmover.py
 
 This contains all the book moving fuction the script uses. Also the path generator
 
-Version 1.7.5
+Version 1.7.17
 	
-	Added read percentage
-	Changed illegals to allow custom
-	Added replacing multiple spaces
+	Fixed error with fileless images
+	Added Alternate Series into the multi selection
 
 Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
 """
@@ -488,7 +487,7 @@ class BookMover(object):
 			if self.settings.Mode == Mode.Test:
 				self.logger.Add("Created image", path)
 				#self.report.Append("\n\nCreating image %s" % (path))
-				self.MoveBooks.append(path)
+				self.MovedBooks.append(path)
 			else:
 				image.Save(path, format)
 			return MoveResult.Success
@@ -1069,6 +1068,7 @@ class PathMaker:
 		self.Writer = {}
 		self.Teams = {}
 		self.ScanInformation = {}
+		self.AlternateSeries = {}
 		self.Counter = None
 
 		#Need to store the parent form so it can use the muilt select form
@@ -1174,6 +1174,7 @@ class PathMaker:
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>tags)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>genre)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>characters)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
+		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>altSeries)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>teams)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>scaninfo)\((?P<sep>[^\)]*?)\)\((?P<series>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertMulti, templateText)
 		templateText = re.sub(r'(?i)(?P<start>{)(?P<pre>[^{]*)\<(?P<name>manga)\((?P<text>[^\)]*?)\)\>(?P<post>[^}]*)(?P<end>})', self.insertManga, templateText)
@@ -1566,6 +1567,8 @@ class PathMaker:
 		if field == "Scaninfo":
 			field = "ScanInformation"
 
+		if field == "Altseries":
+			field = "AlternateSeries"
 
 		#Get the correct list storage based on the field
 		list = getattr(self, field)
