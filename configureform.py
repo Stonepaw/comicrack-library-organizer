@@ -198,18 +198,18 @@ class ConfigureForm(Form):
         #
         # Icons
         #
-        self._overview_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\home_32.png")
-        self._files_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\page_text_32.png")   
-        self._folders_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\folder_32.png")    
-        self._rules_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\chart_32.png")   
-        self._options_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\tools_32.png")
-        self._profile_action.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\tools_32.png")
-        self._profile_action_delete.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\close_16.png")
-        self._profile_action_new.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\add_16.png")
-        self._profile_action_rename.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\pencil_32.png")
-        self._profile_action_duplicate.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\save_32.png")
-        self._profile_action_import.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\arrow_down_16.png")
-        self._profile_action_export_menu.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\Icons\\blue_arrow_up_32.png")
+        self._overview_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\home_32.png")
+        self._files_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\page_text_32.png")   
+        self._folders_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\folder_32.png")    
+        self._rules_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\chart_32.png")   
+        self._options_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\tools_32.png")
+        self._profile_action.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\tools_32.png")
+        self._profile_action_delete.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\close_16.png")
+        self._profile_action_new.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\add_16.png")
+        self._profile_action_rename.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\pencil_32.png")
+        self._profile_action_duplicate.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\save_32.png")
+        self._profile_action_import.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\arrow_down_16.png")
+        self._profile_action_export_menu.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\blue_arrow_up_32.png")
         # 
         # MainForm
         # 
