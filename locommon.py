@@ -4,7 +4,7 @@ locommon.py
 Author: Stonepaw
 
 Version: 1.7.5
-			-Added ReadPercentage to Rules
+            -Added ReadPercentage to Rules
 
 Contains several classes and functions. All are used in several files
 
@@ -31,566 +31,479 @@ from System.IO import Path, FileInfo
 
 SCRIPTDIRECTORY = FileInfo(__file__).DirectoryName
 
-SETTINGSFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
-
-OLDSETTINGSFILE = Path.Combine(SCRIPTDIRECTORY, "losettings.dat")
+PROFILEFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
 
 ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
+
+VERSION = 1.8
 
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
 startbooks = {}
 
-class Mode:
-	Move = "Move"
-	Copy = "Copy"
-	Test = "Test"
+name_to_field = {"Age Rating" : "AgeRating", "Alternate Count" : "AlternateCount", "Alternate Number" : "AlternateNumber",
+                 "Alternate Series" : "AlternateSeries", "Black And White" : "BlackAndWhite", "Characters" : "Characters", "Colorist" : "Colorist",
+                 "Counter" : "Counter", "Count" : "ShadowCount", "Cover Artist" : "CoverArtist", "Editor" : "Editor", "File Format" : "FileFormat", "File Name" : "FileName", 
+                 "File Path" : "FilePath", "First Letter" : "FirstLetter",
+                 "Format" : "ShadowFormat", "Genre" : "Genre", "Imprint" : "Imprint", "Inker" : "Inker", "Language" : "LanguageISO", "Letterer" : "Letterer", "Locations" : "Locations",
+                 "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Number" : "ShadowNumber", "Penciller" : "Penciller", "Publisher" : "Publisher", 
+                 "Rating" : "Rating", "Read Percentage" : "ReadPercentage", "Scan Information" : "ScanInformation", "Series" : "ShadowSeries",
+                 "Series Complete" : "SeriesComplete",  "Start Month" : "StartMonth", "Start Year" : "StartYear", "Tags" : "Tags",
+                 "Teams" : "Teams", "Title" : "ShadowTitle", "Volume" : "ShadowVolume", "Web" : "Web", "Writer" : "Writer", "Year" : "ShadowYear"}
 
-class CopyMode:
-	AddToLibrary = True
-	DoNotAdd = False
-				
+field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count", "AlternateNumber" : "Alternate Number", 
+                 "AlternateSeries" : "Alternate Series", "BlackAndWhite" : "Black And White", "Characters" : "Characters", "Colorist" : "Colorist",
+                 "Counter" : "Counter", "CoverArtist" : "Cover Artist", "Editor" : "Editor", "FileFormat" : "File Format", "FileName" : "File Name", "FilePath" : "File Path", 
+                 "FirstLetter" : "First Letter", "Genre" : "Genre", "Imprint" : "Imprint", "Inker" : "Inker",
+                 "LanguageISO" : "Language", "Letterer" : "Letterer", "Locations" : "Locations", "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Penciller" : "Penciller",
+                 "Publisher" : "Publisher", "Rating" : "Rating", "ReadPercentage" : "Read Percentage", "Read" : "Read Percentage", "ScanInformation" : "Scan Information", 
+                 "SeriesComplete" : "Series Complete", "ShadowCount" : "Count", "ShadowFormat" : "Format", "ShadowNumber" : "Number", 
+                 "ShadowSeries" : "Series", "ShadowTitle" : "Title", "ShadowVolume" : "Volume", "ShadowYear" : "Year", "StartMonth" : "Start Month", 
+                 "StartYear" : "Start Year", "Tags" : "Tags", "Teams" : "Teams", "Web" : "Web", "Writer" : "Writer"}
+
+
+                                                               
+
+class Mode(object):
+    Move = "Move"
+    Copy = "Copy"
+    Simulate = "Simulate"
+
+
+
+class CopyMode(object):
+    AddToLibrary = True
+    DoNotAdd = False
+
+
+                
 class ExcludeGroup(object):
-	"""This class is the object that contains a rule group"
-	
-	"""
-	
-	def __init__(self):
-		#rules is the rules this rule group contains. it can contain either rules or more rule groups
-		self.rules = []
-		
-		self.Panel = Panel()
-		self.Panel.Size = Size(451, 70)
-		self.Panel.MinimumSize = Size(451, 70)
-		self.Panel.AutoSize = True
-		
-		self.Text1 = Label()
-		self.Text1.Text = "Match"
-		self.Text1.Size = Size(40, 23)
-		self.Text1.Location = Point(3, 2)
-		self.Text1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-		
-		self.Operator = ComboBox()
-		self.Operator.DropDownStyle = ComboBoxStyle.DropDownList
-		self.Operator.Location = Point(44, 2)
-		self.Operator.Items.AddRange(System.Array[System.Object](
-			["Any",
-			"All"]))
-		self.Operator.Size = Size(46, 23)
-		self.Operator.SelectedIndex = 0
-		
-		self.Text2 = Label()
-		self.Text2.Location = Point(96, 4)
-		self.Text2.Text = "of the following rules"
-		self.Text2.Size = Size(120, 20)
-		self.Text2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-		
-		
-		self.AddRule = Button()
-		self.AddRule.Size = Size(75, 23)
-		self.AddRule.Location = Point(346, 2)
-		self.AddRule.Text = "Add Rule"
-		self.AddRule.Click += self.CreateRule
+    """
+    Contains a list of rules or rule groups and can calculate if a book should be moved under it's rules.
+    """
+    
+    def __init__(self, operator, rules = []):
 
-		self.AddGroup = Button()
-		self.AddGroup.Location = Point(265, 2)
-		self.AddGroup.Size = Size(75, 23)
-		self.AddGroup.Text = "Add Group"
-		self.AddGroup.Click += self.CreateGroup
-		
-		self.Remove = Button()
-		self.Remove.Text = "-"
-		self.Remove.Location = Point(427, 2)
-		self.Remove.Size = Size(18, 23)
-		self.Remove.Tag = self
-	
-		self.RulesContainer = FlowLayoutPanel()
-		self.RulesContainer.Size = Size(458, 30)
-		self.RulesContainer.MinimumSize = Size(458, 30)
-		self.RulesContainer.AutoSize = True
-		self.RulesContainer.Location = Point(15, 32)
-		self.RulesContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-		
-		self.Panel.Controls.Add(self.Text1)
-		self.Panel.Controls.Add(self.Text2)
-		self.Panel.Controls.Add(self.Operator)
-		self.Panel.Controls.Add(self.AddGroup)
-		self.Panel.Controls.Add(self.AddRule)
-		self.Panel.Controls.Add(self.Remove)
-		self.Panel.Controls.Add(self.RulesContainer)
-		
-	def CreateRule(self, sender, e, Field = None, Operator = None, Text = None):
-		r = ExcludeRule()
-		self.rules.append(r)
-		self.RulesContainer.Controls.Add(r.Panel)
-		r.Remove.Click += self.RemoveRule
-		
-		if Field:
-			r.SetField(Field)
-		if Operator:
-			r.SetOperator(Operator)
-		if Text:
-			r.SetText(Text)
-			
-		return r
-		
-	def RemoveRule(self, sender, e):
-		
-		index = self.rules.index(sender.Tag)
-		
-		self.RulesContainer.Controls.Remove(self.rules[index].Panel)
-		del(self.rules[index])
+        self.rules = rules
+        
+        self.operator = operator
+        
+
+    def add_rule(self, rule):
+        """Adds a single rule to this group's list of rules."""
+        self.rules.append(rule)
 
 
-	def CreateGroup(self, sender, e, Operator = None):
-		g = ExcludeGroup()
-		self.rules.append(g)
-		g.Remove.Click += self.RemoveRule
-		self.RulesContainer.Controls.Add(g.Panel)
-		
-		if Operator:
-			g.SetOperator(Operator)
-		return g
-		
-	def SetOperator(self, operator):
-		if operator in ("Any", "All"):
-			self.Operator.SelectedItem = operator
-		
-	def Calculate(self, book):
-		
-		#Keeps track of the amout of rules the book fell under
-		count = 0
-		
-		#Keep track of the total amount of rules
-		total = 0
-		
-		for i in self.rules:
-			
-			#Empty rule. Do not count towards total
-			if i == None:
-				continue
-			
-			r = i.Calculate(book)
-			
-			#Something went wrong, possible empty group. Thus we don't count that rule
-			if r == None:
-				continue
-		
-			count += r
-			total += 1
+    def add_rules(self, rules):
+        """Adds a list of rules to this group's list of rules."""
+        self.rules.extend(rules)
 
-		if total == 0:
-			return None
-		
-		if self.Operator.SelectedItem == "Any":
-			if count > 0:
-				return 1
-			else:
-				return 0
-		else:
-			if count == total:
-				return 1
-			else:
-				return 0
+        
+    def book_should_be_moved(self, book):
+        """
+        Checks if the book should be moved under the rules in the rule group.
+        Returns 1 if the book should be moved.
+        Returns 0 if the book should not be moved.
+        """
+        
+        #Keeps track of the amount of rules the book fell under
+        count = 0
+        
+        #Keep track of the total amount of rules
+        total = 0
+        
+        for rule in self.rules:
+            
 
-	def SaveXml(self, xmlwriter):
-		xmlwriter.WriteStartElement("ExcludeGroup")
-		xmlwriter.WriteAttributeString("Operator", self.Operator.SelectedItem)
-		for i in self.rules:
-			if i:
-				i.SaveXml(xmlwriter)
-		xmlwriter.WriteEndElement()
-			
+            result = rule.book_should_be_moved(book)
+            
+            #Something went wrong, possible empty group. Thus we don't count that rule
+            if result is None:
+                continue
+        
+            count += result
+            total += 1
+
+        if total == 0:
+            return None
+        
+        if self.operator == "Any":
+            if count > 0:
+                return 1
+            else:
+                return 0
+        else:
+            if count == total:
+                return 1
+            else:
+                return 0
+
+
+    def save_xml(self, xmlwriter):
+        """Saves this rule group and its containing rules to an xml file using the specified xmlwriter."""
+        xmlwriter.WriteStartElement("ExcludeGroup")
+        xmlwriter.WriteAttributeString("Operator", self.operator)
+        for rule in self.rules:
+            rule.save_xml(xmlwriter)
+        xmlwriter.WriteEndElement()
+
+
+    def load_from_xml(self, xml_node):
+        """Loads the rules and groups from the xml_node."""
+        for node in xml_node.ChildNodes:
+            if node.Name == "ExcludeRule":
+                #Changes from 1.7.17 to 1.8
+                try:
+                    self.add_rule(ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Value"].Value))
+                except AttributeError:
+                    self.add_rule(ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Text"].Value))
+            
+            elif node.Name == "ExcludeGroup":
+                group = ExcludeGroup(node.Attributes["Operator"].Value)
+                group.load_from_xml(node)
+                self.add_rule(group)
+
+
+            
 class ExcludeRule(object):
-	"""This class is the object of a rule. It can either be in a rule group or by itself"""
-	
-	def __init__(self):
-		
-		#Flow Layout Panel
-		self.Panel = FlowLayoutPanel()
-		self.Panel.Size = Size(451, 30)
-		
-		#Field selector
-		self.Field = ComboBox()
-		self.Field.Items.AddRange(System.Array[System.String](
-			["Age Rating",
-			"Alternate Count",
-			"Alternate Number",
-			"Alternate Series",
-			"Black And White",
-			"Characters",
-			"Count",
-			"File Name",
-			"File Path",
-			"File Format",
-			"Format",
-			"Genre",	
-			"Imprint",
-			"Language",
-			"Locations",
-			"Manga",
-			"Month",
-			"Number",
-			"Notes",
-			"Publisher",
-			"Rating",
-			"Read Percentage",
-			"Series Complete",
-			"Tags",
-			"Teams",
-			"Title",
-			"Scan Information",
-			"Series",
-			"Start Month",
-			"Start Year",
-			"Volume",
-			"Web",		
-			"Year"]))
-			
-		self.Field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self.Field.Size = Size(121, 21)
-		self.Field.MaxDropDownItems = 15
-		self.Field.IntegralHeight = False
-		self.Field.Sorted = True
-		self.Field.SelectedIndex= 0
-		
-		#Operator selector
-		self.Operator = ComboBox()
-		self.Operator.Items.AddRange(System.Array[System.String](
-			["contains",
-			"does not contain",
-			"greater than",
-			"less than",
-			"is",
-			"is not"]))
-		self.Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-		self.Operator.Size = Size(110, 21)
-		self.Operator.SelectedIndex = 0
-		
-		#Textbox
-		self.TextBox = TextBox()
-		self.TextBox.Size = Size(175, 20)
-		
-		#Remove Button
-		self.Remove = Button()
-		self.Remove.Size = Size(18, 23)
-		self.Remove.Text = "-"
-		self.Remove.Tag = self
+    """Contains the data of an exlude rule. It can calculate if a book should be moved using it's rules."""
+    
+    def __init__(self, field, operator, value):
+        
+        self.field = field
+        
+        self.operator = operator
+        
+        self.value = value
+        
 
-		self.Selection = ComboBox()
-		self.Selection.Size = Size(175, 21)
-		self.Selection.Enabled = False
-		self.Selection.Visible = False
-		self.Selection.DropDownStyle = ComboBoxStyle.DropDownList
+    def get_yes_no_value(self):
+        """Returns the correct YesNo value."""
+        if self.field == "Manga":
+            if self.value == "Yes (Right to Left)":
+                return MangaYesNo.YesAndRightToLeft
+            else:
+                return getattr(MangaYesNo, self.value)
 
-		self.Field.SelectedIndexChanged += self.FieldSelectionIndexChanged
-		
-		#Add controls
-		self.Panel.Controls.Add(self.Field)
-		self.Panel.Controls.Add(self.Operator)
-		self.Panel.Controls.Add(self.TextBox)
-		self.Panel.Controls.Add(self.Selection)
-		self.Panel.Controls.Add(self.Remove)
-		
-	def GetField(self):
-		f = self.Field.SelectedItem
+        return getattr(YesNo, self.value)
 
-		if f in ["Series", "Count", "Format", "Number", "Title", "Volume", "Year"]:
-			return "Shadow" + f
+        
+    def book_should_be_moved(self, book):
+        """
+        Finds if the book should be moved using this rule.
+        Returns 1 if the book should be moved.
+        Returns 0 if the book should not be moved.
+        """
 
-		if f == "Language":
-			return "LanguageAsText"
-		return f
-	
-	def GetText(self):
-		return self.TextBox.Text
+        field = name_to_field[self.field]
 
-	def GetYesNo(self):
-		if self.Field.SelectedItem == "Manga":
-			if self.Selection.SelectedItem == "Yes (Right to Left)":
-				return MangaYesNo.YesAndRightToLeft
-			else:
-				return getattr(MangaYesNo, self.Selection.SelectedItem)
+        if field in ("Manga", "SeriesComplete", "BlackAndWhite"):
+            return self.calculate_book_should_be_moved(book, getattr(book, field), self.get_yes_no_value())
 
-		return getattr(YesNo, self.Selection.SelectedItem)
-	
-	def GetOperator(self):
-		return self.Operator.SelectedItem
-	
-	def SetFields(self, Field, Operator, Text):
-		self.Field.SelectedItem = Field
-		self.Operator.SelectedItem = Operator
-		if Field in ["Manga", "Series Complete", "Black And White"]:
-			self.Selection.SelectedItem = Text
-		else:
-			self.TextBox.Text = Text
-		
-	def SetField(self, Field):
-		self.Field.SelectedItem = Field
-		
-	def SetOperator(self, Operator):
-		self.Operator.SelectedItem = Operator
+        elif field in ("StartYear", "StartMonth"):
+            return self.calculate_book_should_be_moved(book, self.get_start_field_data(book, field), self.value)
 
-	def FieldSelectionIndexChanged(self, sender, e):
+        else:
+            return self.calculate_book_should_be_moved(book, getattr(book, field), self.value)
+    
 
-		def ShowSelection():
-			self.Operator.Items.Clear()
-			self.Operator.Items.AddRange(System.Array[System.String](["is", "is not"]))
-			self.Operator.SelectedIndex = 0
-			self.TextBox.Enabled = False
-			self.TextBox.Visible = False
-			self.Selection.Enabled = True
-			self.Selection.Visible = True
+    def calculate_book_should_be_moved(self, book, field_data, value):
+        """
+        Checks if the book should be moved based on this single rule.
+        field_data -> the contents of the field.
+        value -> the value to check the contents of the field against.
+        Returns 1 if the book should be moved.
+        Returns 0 if the book should not be moved.
+        """
 
-		if sender.SelectedItem in ["Series Complete", "Black And White"]:
-			self.Selection.Items.Clear()
-			self.Selection.Items.AddRange(System.Array[System.String](["Yes", "No", "Unknown"]))
-			self.Selection.SelectedIndex = 0
-			ShowSelection()
+        if self.operator == "is":
+        #Convert to string just in case
+            if field_data == value:
+                return 1
+            else:
+                return 0
+        elif self.operator == "does not contain":
+            if value not in field_data:
+                return 1
+            else:
+                return 0
+        elif self.operator == "contains":
+            if value in field_data:
+                return 1
+            else:
+                return 0
+        elif self.operator == "is not":
+            if value != field_data:
+                return 1
+            else:
+                return 0
+        elif self.operator == "greater than":
+            #Try to use the int value to compare if possible
+            try:
+                if int(value) < int(field_data):
+                    return 1
+                else:
+                    return 0
+            except ValueError:
+                if value < field_data:
+                    return 1
+                else:
+                    return 0
+        elif self.operator == "less than":
+            try:
+                if int(value) > int(field_data):
+                    return 1
+                else:
+                    return 0
+            except ValueError:
+                if value > field_data:
+                    return 1
+                else:
+                    return 0
+        
 
-		elif sender.SelectedItem == "Manga":
-			self.Selection.Items.Clear()
-			self.Selection.Items.AddRange(System.Array[System.String](["Yes", "Yes (Right to Left)", "No", "Unknown"]))
-			self.Selection.SelectedIndex = 0
-			ShowSelection()
+    def get_start_field_data(self, book, field):
+        """
+        Finds the field contents for the earlies book of the same series in the ComicRack library.
+        book -> the book of the series to search for.
+        field -> The string of the field to retrieve.
+        
+        returns -> Unicode string of the field.
+        """
 
-		else:
-			if self.TextBox.Enabled == False:
-				if self.Operator.Items.Count != 6:
-					self.Operator.Items.Clear()
-					self.Operator.Items.AddRange(System.Array[System.String](["contains", "does not contain", "greater than", "less than", "is", "is not"]))
-					self.Operator.SelectedIndex = 0
-				self.TextBox.Enabled = True
-				self.TextBox.Visible = True
-				self.Selection.Enabled = False
-				self.Selection.Visible = False
-	
-	def SetText(self, Text):
-		self.TextBox.Text = Text
-		
-	def Calculate(self, book):
-		if self.Selection.Enabled:
-			return self.CalculateYesNo(book)
-			
-		field = self.GetField()
-		field = field.replace(" ", "")
+        startbook = get_earliest_book(book)
+        
+        if field == "StartMonth":
+            return unicode(startbook.Month)
 
-		if field in ["StartYear", "StartMonth"]:
-			return self.CalculateStart(book, field)
+        else:
+            return unicode(startbook.ShadowYear)
 
-		text = self.GetText()
-		operator = self.GetOperator()
 
-		if operator == "is":
-			#Convert to string just in case
-			if unicode(getattr(book, field)) == text:
-				return 1
-			else:
-				return 0
-		elif operator == "does not contain":
-			if text not in unicode(getattr(book, field)):
-				return 1
-			else:
-				return 0
-		elif operator == "contains":
-			if text in unicode(getattr(book, field)):
-				return 1
-			else:
-				return 0
-		elif operator == "is not":
-			if text != unicode(getattr(book, field)):
-				return 1
-			else:
-				return 0
-		elif operator == "greater than":
-			#Try to use the int value to compare if possible
-			try:
-				number = int(text)
-				if number < int(getattr(book, field)):
-					return 1
-				else:
-					return 0
-			except ValueError:
-				if text < unicode(getattr(book, field)):
-					return 1
-				else:
-					return 0
-		elif operator == "less than":
-			try:
-				number = int(text)
-				if number > int(getattr(book, field)):
-					return 1
-				else:
-					return 0
-			except ValueError:
-				if text > unicode(getattr(book, field)):
-					return 1
-				else:
-					return 0
-		
-	def CalculateYesNo(self, book):
-		operator = self.GetOperator()
-		yesno = self.GetYesNo()
-		field = self.GetField()
-		field = field.replace(" ", "")
-		
-		if operator == "is":
-			if (getattr(book, field)) == yesno:
-				return 1
-			else:
-				return 0
-		elif operator == "is not":
-			if yesno != (getattr(book, field)):
-				return 1
-			else:
-				return 0
+    def save_xml(self, xmlwriter):
+        """Save this rule to an xml file using the specified xmlwriter."""
+        xmlwriter.WriteStartElement("ExcludeRule")
+        xmlwriter.WriteAttributeString("Field", self.field)
+        xmlwriter.WriteAttributeString("Operator", self.operator)
+        xmlwriter.WriteAttributeString("Value", self.value)
+        xmlwriter.WriteEndElement()
 
-	def CalculateStart(self, book, field):
 
-		text = self.GetText()
-		operator = self.GetOperator()
 
-		startbook = GetEarliestBook(book)
-		
-		if field == "StartMonth":
-			fieldtext = unicode(startbook.Month)
+class UndoCollection(object):
 
-		else:
-			fieldtext = unicode(startbook.ShadowYear)
+    def __init__(self):
+        self._undo_paths = []
+        self._current_paths = []
+        self._profiles = []
 
-		if operator == "is":
-			#Convert to string just in case
-			if fieldtext == text:
-				return 1
-			else:
-				return 0
-		elif operator == "does not contain":
-			if text not in fieldtext:
-				return 1
-			else:
-				return 0
-		elif operator == "contains":
-			if text in fieldtext:
-				return 1
-			else:
-				return 0
-		elif operator == "is not":
-			if text != fieldtext:
-				return 1
-			else:
-				return 0
-		elif operator == "greater than":
-			#Try to use the int value to compare if possible
-			try:
-				number = int(text)
-				if number < int(fieldtext):
-					return 1
-				else:
-					return 0
-			except ValueError:
-				if text < fieldtext:
-					return 1
-				else:
-					return 0
-		elif operator == "less than":
-			try:
-				number = int(text)
-				if number > int(fieldtext):
-					return 1
-				else:
-					return 0
-			except ValueError:
-				if text > fieldtext:
-					return 1
-				else:
-					return 0
 
-	def SaveXml(self, xmlwriter):
-		xmlwriter.WriteStartElement("ExcludeRule")
-		xmlwriter.WriteAttributeString("Field", self.Field.SelectedItem)
-		xmlwriter.WriteAttributeString("Operator", self.GetOperator())
-		if self.TextBox.Enabled == True:
-			xmlwriter.WriteAttributeString("Text", self.GetText())
-		else:
-			xmlwriter.WriteAttributeString("Text", self.Selection.SelectedItem)
-		xmlwriter.WriteEndElement()
+    def __len__(self):
+        return len(self._undo_paths)
+
+
+    def append(self, undo_path, new_path, profile_name):
+        #Book has been moved more than once. In this case keep only a record of the original location and it's current location.
+        if undo_path in self._current_paths:
+            self._current_paths[self._current_paths.index(undo_path)] = new_path
+        else:
+            self._undo_paths.append(undo_path)
+            self._current_paths.append(new_path)
+            self._profiles.append(profile_name)
+
+
+    def undo_path(self, path):
+        """Gets an undo path from a current path."""
+        return self._undo_paths[self._current_paths.index(path)]
+
+
+    def profile(self, path):
+        """Gets the name of the profile used to move a book.
+        path->The current path of the book.
+        Returns the string name of the profile.
+        """
+        return self._profiles[self._current_paths.index(path)]
+
+
+    def save(self, file_path):
+        """Saves the undo collection to a file.
+        file_path->The complete file path of the file to save to.
+        """
+        try:
+            with open(file_path, 'w') as f:
+                for index in range(0, len(self._current_paths)):
+                    f.write(self._profiles[index].encode("utf8") + "|" + self._current_paths[index].encode("utf8") + "|" + self._undo_paths[index].encode("utf8") + "\n")
+
+        except IOError, ex:
+            print "Somthing went wrong saving the undo list"
+            print ex
+
+
+    def load(self, file_path):
+        """Loads an undo collection from a file into the undo collection instance.
+        file_path->The complete file path of the file to load the undo collection from.
+        """
+        try:
+            with open(file_path, 'r') as f:
+                for line in f:
+                    i = line.decode('utf8')
+                    parts = i.strip().split("|")
+                    self.append(parts[2], parts[1], parts[0])
+
+            #Reverse them because otherwise if multiple profiles have been used a book could have been moved multiple times.
+            #This way it ends back in the original spot eventually.
+            self._current_paths.reverse()
+            self._profiles.reverse()
+            self._undo_paths.reverse()
+        except IOError, ex:
+            print "Error loading dict from file " + file_path
+            print ex
+
+
 
 def SaveDict(dict, file):
-	"""
-	Saves a dict of strings to a file
-	"""
-	try:
+    """
+    Saves a dict of strings to a file
+    """
+    try:
 
-		w = open(file, 'w')
-		for i in dict:
-			w.write(i.encode("utf8") + "|" + dict[i].encode("utf8") + "\n")
-		w.close()
-	except IOError, err:
-		print "Somthing went wrong saving the undo list"
-		print err
+        w = open(file, 'w')
+        for i in dict:
+            w.write(i.encode("utf8") + "|" + dict[i].encode("utf8") + "\n")
+        w.close()
+    except IOError, err:
+        print "Somthing went wrong saving the undo list"
+        print err
+
+
 
 def LoadDict(file):
-	dict = {}
-	try:
-		r = open(file, 'r')
-		
-		for i in r:
-			i = i.decode('utf8')
-			parts = i.split("|")
-			dict[parts[0]] = parts[1].strip()
-		
-		r.close()
+    dict = {}
+    try:
+        r = open(file, 'r')
+        
+        for i in r:
+            i = i.decode('utf8')
+            parts = i.split("|")
+            dict[parts[0]] = parts[1].strip()
+        
+        r.close()
 
-	except IOError, err:
-		dict = None
-		print "Error loading dict from file " + file
-		print err
-	return dict
+    except IOError, err:
+        dict = None
+        print "Error loading dict from file " + file
+        print err
+    return dict
 
-def GetEarliestBook(book):
-	"""
-	Finds the first published issue of a series in the library
-	Returns a ComicBook object
-	"""
-	#Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
-		
-	index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
-		
-	if startbooks.has_key(index):
-		startbook = startbooks[index]
-	else:
-		startbook = book
-			
-		for b in ComicRack.App.GetLibraryBooks():
-			if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
-					
-				#Notes:
-				#Year can be empty (-1)
-				#Month can be empty (-1)
 
-				#In case the initial value is bad
-				if startbook.ShadowYear == -1 and b.ShadowYear != 1:
-					startbook = b
-					
-				#Check if the current book's year 
-				if b.ShadowYear != -1 and b.ShadowYear < startbook.ShadowYear:
-					startbook = b
 
-				#Check if year the same and a valid month
-				if b.ShadowYear == startbook.ShadowYear and b.Month != -1:
+def get_earliest_book(book):
+    """
+    Finds the first published issue of a series in the library.
+    Returns a ComicBook object.
+    """
+    #Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
+        
+    index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
+        
+    if index in startbooks:
+        return startbooks[index]
 
-					#Current book has empty month
-					if startbook.Month == -1:
-						startbook = b
-						
-					#Month is earlier
-					elif b.Month < startbook.Month:
-						startbook = b
-			
-		#Store this final result in the dict so no calculation require for others of the series.
-		startbooks[index] = startbook
+    startbook = book
+            
+    for b in ComicRack.App.GetLibraryBooks():
+        if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+                    
+            #Notes:
+            #Year can be empty (-1)
+            #Month can be empty (-1)
 
-	return startbook
+            #In case the initial value is bad
+            if startbook.ShadowYear == -1 and b.ShadowYear != 1:
+                startbook = b
+                    
+            #Check if the current book's year is earlier
+            if b.ShadowYear != -1 and b.ShadowYear < startbook.ShadowYear:
+                startbook = b
+
+            #Check if year the same and a valid month
+            if b.ShadowYear == startbook.ShadowYear and b.Month != -1:
+
+                #Current book has empty month
+                if startbook.Month == -1:
+                    startbook = b
+                        
+                #Month is earlier
+                elif b.Month < startbook.Month:
+                    startbook = b
+            
+    #Store this final result in the dict so no calculation require for others of the series.
+    startbooks[index] = startbook
+
+    return startbook
+
+
+
+def check_metadata_rules(book, profile):
+    """Goes through the metadata rules and sees if the book should be moved or not.
+    
+    Returns True if the book should be moved, returns false if the book should not be moved.
+    
+    """
+    count = 0
+    total = 0
+    
+    qualifies = False
+    
+    for rule in profile.ExcludeRules:
+      
+        result = rule.book_should_be_moved(book)
+        
+        if result == None:
+            continue
+        
+        count += result
+        total += 1
+    
+    if total == 0:
+        #No rules so the book should be moved regardless
+        return True
+    
+    if profile.ExcludeOperator == "Any":
+        if count > 0:
+            qualifies = True
+    
+    elif profile.ExcludeOperator == "All":
+        if count == total:
+            qualifies = True
+
+    if profile.ExcludeMode == "Only":
+        #book falls under rules and should be moved if it does so return True to have it moved
+        if qualifies == True:
+            return True
+        
+        #book doesn't fall under rules and should not be moved. So return False to have it skipped
+        else:
+            return False
+    
+    elif profile.ExcludeMode == "Do not":
+        #book falls under rules and should not be moved so return False to have it skipped
+        if qualifies == True:
+            return False
+        #book does not fall under rules and should be moved, so return True to have it moved
+        else:
+            return True
+
+
+
+def check_excluded_folders(book_path, profile):
+    """Checks the excluded paths of a profile.
+    Returns False if the book is located in an excluded path. Returns True otherwise.
+    """
+    for path in profile.ExcludeFolders:
+        if path in book_path:
+            return False
+    return True

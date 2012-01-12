@@ -1,390 +1,503 @@
 ﻿"""
 losettings.py
 
-Contains a class for settings
+Contains a class for profiles and methods to save and load them from xml files.
 
 Author: Stonepaw
 
-Version 1.7.5
+Version 1.8
 
-	Added Read percentage and multiplespaces
+    Rewrote pretty much everything. Much more modular and requires no maintence when a new attribute is added.
+    No longer fully supports profiles from 1.6 and earlier.
 
 Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
 """
 
-"""
-Changes in 1.7.5:
-	
-	Added ReplaceMultipleSpaces
-	Added Readpercentage
-		
-"""
+import clr
 import System
+
+clr.AddReference("System.Xml")
+
 from System import Convert
+from System.IO import File, StreamReader, StreamWriter
+from System.Xml import XmlDocument, XmlWriter, XmlWriterSettings
 
-import locommon
-from locommon import ExcludeRule, ExcludeGroup, Mode
+from System.Windows.Forms import MessageBox, MessageBoxIcon, MessageBoxButtons
 
-class settings:
-	"""
-	This class contains all the variables for saving any settings. It should be saved with XML formaly cPickle
-	
-	Settings are loaded into the config form in the form class
-	"""
-	def __init__(self):
-		
-		self.FolderTemplate = ""
-		self.BaseFolder = ""
-		self.FileTemplate = ""
-		self.Name = ""
-		self.EmptyFolder = ""
-
-		self.EmptyData = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
-				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
-				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
-				"AlternateCount" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", "Tags" : "", 
-				"Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", 
-				"Language" : "", "ReadPercentage" : "", "Counter" : "", "FirstLetter" : "", "StartMonth" : ""}
-		
-		self.Postfix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
-				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
-				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", "AlternateCount" : "", 
-				"MonthNumber" : "", "StartYear" : "", "Manga" : "", "Characters" : "", "Genre" : "", 
-				"Tags" : "", "Teams" : "", "Writer" : "", "SeriesComplete" : "", "AgeRating" : "", 
-				"ScanInformation" : "", "Language" : "", "Read" : "", "Counter" : "", 
-				"StartMonth" : "", "FirstLetter" : "", "AlternateSeriesMulti" : ""}
-
-		self.Prefix = {"Publisher" : "", "Imprint" : "", "Series" : "", "Title" : "", 
-				"AlternateSeries" : "", "Format" : "", "Volume" : "", "Number" : "", 
-				"AlternateNumber" : "", "Count" : "", "Month" : "", "Year" : "", 
-				"AlternateCount" : "", "MonthNumber" : "", "StartYear" : "", "Manga" : "", 
-				"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", 
-				"SeriesComplete" : "", "AgeRating" : "", "ScanInformation" : "", "Language" : "", 
-				"Read" : "", "Counter" : "", "StartMonth" : "", "FirstLetter" : "", "AlternateSeriesMulti" : ""}
-
-		self.Seperator = {"Characters" : "", "Genre" : "", "Tags" : "", "Teams" : "", "Writer" : "", "ScanInformation" : "", "AlternateSeriesMulti" : ""}
-
-		self.IllegalCharacters = {"?" : "", "/" : "", "\\" : "", "*" : "", ":" : " - ", "<" : "[", ">" : "]", "|" : "!", "\"" : "'"}
-
-		self.Months = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 :"August", 9 : "September", 10 : "October",
-						11 : "November", 12 : "December", 13 : "Spring", 14 : "Summer", 15 : "Fall", 16 : "Winter"}
-
-		self.TextBox = {"Manga" : "Manga", "SeriesComplete" : "Complete", "Read" : "Read"}
-				
-		self.UseFolder = True
-		
-		self.UseFileName = True
-		
-		self.ExcludeFolders = []
-	
-		self.DontAskWhenMultiOne = False
-		
-		self.ExcludeRules = []
-	
-		self.ExcludeOperator = "Any"
-		
-		self.RemoveEmptyFolder = True
-		self.ExcludedEmptyFolder = []
-		
-		self.MoveFileless = False		
-		self.FilelessFormat = ".jpg"
-		
-		self.ExcludeMode = "Do not"
-		
-		self.Mode = Mode.Move
-
-		self.CopyMode = True
-
-		self.AutoSpaceFields = True
-
-		self.ReplaceMultipleSpaces = True
-
-	def Update(self):
-		pass
-		
-	def Save(self, xwriter):
-		"""
-		To save this single settings intance to the provided xml file.
-		xwriter should be a XmlWriter instance.
-		"""
-		xwriter.WriteStartElement("Setting")
-		xwriter.WriteAttributeString("Name", self.Name)
-		xwriter.WriteElementString("FolderTemplate", self.FolderTemplate)
-		xwriter.WriteElementString("BaseFolder", self.BaseFolder)
-		xwriter.WriteElementString("FileTemplate", self.FileTemplate)
-		xwriter.WriteElementString("EmptyFolder", self.EmptyFolder)
-		xwriter.WriteElementString("Mode", self.Mode)
-		
-		xwriter.WriteStartElement("UseFileName")
-		xwriter.WriteValue(self.UseFileName)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("AutoSpaceFields")
-		xwriter.WriteValue(self.AutoSpaceFields)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("ReplaceMultipleSpaces")
-		xwriter.WriteValue(self.ReplaceMultipleSpaces)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("DontAskWhenMultiOne")
-		xwriter.WriteValue(self.DontAskWhenMultiOne)
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("UseFolder")
-		xwriter.WriteValue(self.UseFolder)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("CopyMode")
-		xwriter.WriteValue(self.CopyMode)
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("Postfix")
-		for i in self.Postfix:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.Postfix[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("Prefix")
-		for i in self.Prefix:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.Prefix[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("Seperator")
-		for i in self.Seperator:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.Seperator[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("TextBox")
-		for i in self.TextBox:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.TextBox[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("Months")
-		for i in self.Months:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", str(i))
-			xwriter.WriteAttributeString("Value", self.Months[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("IllegalCharacters")
-		for i in self.IllegalCharacters:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.IllegalCharacters[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("EmptyData")
-		for i in self.EmptyData:
-			xwriter.WriteStartElement("Item")
-			xwriter.WriteAttributeString("Name", i)
-			xwriter.WriteAttributeString("Value", self.EmptyData[i])
-			xwriter.WriteEndElement()
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("ExcludeFolders")
-		for i in self.ExcludeFolders:
-			xwriter.WriteElementString("Item", i)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteStartElement("ExcludeRules")
-		xwriter.WriteAttributeString("Operator", self.ExcludeOperator)
-		xwriter.WriteAttributeString("ExcludeMode", self.ExcludeMode)
-		for i in self.ExcludeRules:
-			if i:
-				i.SaveXml(xwriter)
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("MoveFileless")
-		xwriter.WriteValue(self.MoveFileless)
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteElementString("FilelessFormat", self.FilelessFormat)
-		
-		xwriter.WriteStartElement("RemoveEmptyFolder")
-		xwriter.WriteValue(self.RemoveEmptyFolder)
-		xwriter.WriteEndElement()
-		
-		xwriter.WriteStartElement("ExcludedEmptyFolder")
-		for i in self.ExcludedEmptyFolder:
-			xwriter.WriteElementString("Item", i)
-		xwriter.WriteEndElement()
-
-		xwriter.WriteEndElement()
-	
-	def Load(self, Xml):
-		"""
-		Loads the settings instance from the Xml
-		Xml should be a XmlNode containing a setting node
-		"""
-		try:
-			#Text vars
-			self.Name = Xml.Attributes["Name"].Value
-		
-			#From changes from 1.6 to 1.7
-			try:
-				self.FolderTemplate = Xml.SelectSingleNode("FolderTemplate").InnerText			
-			except AttributeError:
-				self.FolderTemplate = Xml.SelectSingleNode("DirTemplate").InnerText
-
-			try:
-				self.BaseFolder = Xml.SelectSingleNode("BaseFolder").InnerText
-			except AttributeError:
-				self.BaseFolder = Xml.SelectSingleNode("BaseDir").InnerText
-
-			try:
-				self.EmptyFolder = Xml.SelectSingleNode("EmptyFolder").InnerText
-			except AttributeError:
-				self.EmptyFolder = Xml.SelectSingleNode("EmptyDir").InnerText
-			self.FileTemplate = Xml.SelectSingleNode("FileTemplate").InnerText
-		
-		
-		
-			try:
-				self.Mode = Xml.SelectSingleNode("Mode").InnerText
-			except AttributeError:
-				self.Mode = Mode.Move
-		
-			self.FilelessFormat = Xml.SelectSingleNode("FilelessFormat").InnerText
-		
-			#Bools
-		
-			self.UseFileName = Convert.ToBoolean(Xml.SelectSingleNode("UseFileName").InnerText)
-
-			#From 1.6 to 1.7 of the script
-			try:
-				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseFolder").InnerText)
-			except AttributeError:
-				self.UseFolder = Convert.ToBoolean(Xml.SelectSingleNode("UseDirectory").InnerText)
-
-			#New in 1.7.4
-			try:
-				self.AutoSpaceFields = Convert.ToBoolean(Xml.SelectSingleNode("AutoSpaceFields").InnerText)
-			except AttributeError:
-				self.AutoSpaceFields = True
-
-			#New in 1.7.5
-			try:
-				self.ReplaceMultipleSpaces = Convert.ToBoolean(Xml.SelectSingleNode("ReplaceMultipleSpaces").InnerText)
-			except AttributeError:
-				self.ReplaceMultipleSpaces = True
+from locommon import ExcludeRule, ExcludeGroup, Mode, PROFILEFILE, VERSION
 
 
-			self.CopyMode = Convert.ToBoolean(Xml.SelectSingleNode("CopyMode").InnerText)
 
-			self.DontAskWhenMultiOne = Convert.ToBoolean(Xml.SelectSingleNode("DontAskWhenMultiOne").InnerText)
-		
-			self.MoveFileless = Convert.ToBoolean(Xml.SelectSingleNode("MoveFileless").InnerText)
+class Profile:
+    """This class contains all the variables for a profile.
+    Use save_to_xml to save the profile to a xml file.
+    Use load_from_xml to load the profile from the file.
 
-			try:
-				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyFolder").InnerText)
-			except AttributeError:
-				self.RemoveEmptyFolder = Convert.ToBoolean(Xml.SelectSingleNode("RemoveEmptyDir").InnerText)
-		
-			#Dicts
-		
-		
-			iter = Xml.SelectNodes("Prefix/Item")
+    Anytime a new variable is added it will automatically be save and loaded.
+    """
+    def __init__(self):
+        
+        self.Version = 0
 
-			for i in iter:
-				self.Prefix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
-			
+        self.FolderTemplate = ""
+        self.BaseFolder = ""
+        self.FileTemplate = ""
+        self.Name = ""
+        self.EmptyFolder = ""
 
-			iter = Xml.SelectNodes("Postfix/Item")
+        self.EmptyData = {}
+        
+        self.Postfix = {}
 
-			for i in iter:
-				self.Postfix[i.Attributes["Name"].Value] = i.Attributes["Value"].Value		
+        self.Prefix = {}
 
+        self.Seperator = {}
 
-			iter = Xml.SelectNodes("Seperator/Item")
-			for i in iter:
-				self.Seperator[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+        self.IllegalCharacters = {"?" : "", "/" : "", "\\" : "", "*" : "", ":" : " - ", "<" : "[", ">" : "]", "|" : "!", "\"" : "'"}
 
-			iter = Xml.SelectNodes("TextBox/Item")
-			for i in iter:
-				self.TextBox[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
-			
-			iter = Xml.SelectNodes("EmptyData/Item")
-			for i in iter:
-				self.EmptyData[i.Attributes["Name"].Value] = i.Attributes["Value"].Value	
+        self.Months = {1 : "January", 2 : "February", 3 : "March", 4 : "April", 5 : "May", 6 : "June", 7 : "July", 8 :"August", 9 : "September", 10 : "October",
+                       11 : "November", 12 : "December", 13 : "Spring", 14 : "Summer", 15 : "Fall", 16 : "Winter"}
 
-			#added in 1.7
-			iter = Xml.SelectNodes("Months/Item")
-			if iter.Count > 0:
-				for i in iter:
-					self.Months[int(i.Attributes["Name"].Value)] = i.Attributes["Value"].Value
+        self.TextBox = {}
+                
+        self.UseFolder = True
+        
+        self.UseFileName = True
+        
+        self.ExcludeFolders = []
+    
+        self.DontAskWhenMultiOne = True
+        
+        self.ExcludeRules = []
+    
+        self.ExcludeOperator = "Any"
+        
+        self.RemoveEmptyFolder = True
+        self.ExcludedEmptyFolder = []
+        
+        self.MoveFileless = False       
+        self.FilelessFormat = ".jpg"
+        
+        self.ExcludeMode = "Do not"
+        
 
-			iter = Xml.SelectNodes("IllegalCharacters/Item")
-			if iter.Count > 0:
-				for i in iter:
-					self.IllegalCharacters[i.Attributes["Name"].Value] = i.Attributes["Value"].Value
+        self.FailEmptyValues = False
+        self.MoveFailed = False
+        self.FailedFolder = ""
+        self.FailedFields = []
 
-			#Arrays
-		
-			iter = Xml.SelectNodes("ExcludeFolders/Item")
-			if iter.Count > 0:
-				for i in iter:
-					self.ExcludeFolders.append(i.InnerText)
-			else:
-				self.ExcludeFolders = []
-		
-	
-			#Exclude Rules
-			node = Xml.SelectSingleNode("ExcludeRules")
-			if node:
-				self.ExcludeOperator = node.Attributes["Operator"].Value
+        self.Mode = Mode.Move
 
-				self.ExcludeMode = node.Attributes["ExcludeMode"].Value
+        self.CopyMode = True
 
-				iter = node.ChildNodes
-				for i in iter:
-					if i.Name == "ExcludeRule":
-						r = ExcludeRule()
-						r.SetFields(i.Attributes["Field"].Value, i.Attributes["Operator"].Value, i.Attributes["Text"].Value)
-						self.ExcludeRules.append(r)
-	
-					if i.Name == "ExcludeGroup":
-						g = ExcludeGroup()
-						g.SetOperator(i.Attributes["Operator"].Value)
-						self.LoadExcludeRuleGroup(g, i)
-						self.ExcludeRules.append(g)
+        self.AutoSpaceFields = True
+
+        self.ReplaceMultipleSpaces = True
+
+        self.CopyReadPercentage = True
 
 
-			#Exclued empty dirs
-			try:
-				iter = Xml.SelectNodes("ExcludedEmptyFolder/Item")
-			except AttributeError:
-				iter = Xml.SelectNodes("ExcludedEmptyDir/Item")
-			if iter.Count > 0:
-				for i in iter:
-					self.ExcludedEmptyFolder.append(i.InnerText)
+    def duplicate(self):
+        """Returns a duplicate of the profile instance."""
+        duplicate = Profile()
+        
+        for i in self.__dict__:
+            if type(getattr(self, i)) is dict:
+                setattr(duplicate, i, getattr(self, i).copy())
+            else:
+                setattr(duplicate, i, getattr(self, i))
 
-			self.Update()
+        return duplicate
 
-		except Exception, ex:
-			print ex
-			return False
-		
-				
-	def LoadExcludeRuleGroup(self, group, GroupNode):
-		for i in GroupNode.ChildNodes:
-			if i.Name == "ExcludeRule":
-				group.CreateRule(None, None, i.Attributes["Field"].Value, i.Attributes["Operator"].Value, i.Attributes["Text"].Value)
-			
-			if i.Name == "ExcludeGroup":
-				g = group.CreateGroup(None, None, i.Attributes["Operator"].Value)
-				self.LoadExcludeRuleGroup(g, i)				
-	
+
+    def update(self):
+        if self.Version < 1.8:
+            if self.Mode is "Test":
+                self.Mode = "Simulate"
+
+            replacements = {"Language" : "LanguageISO", "Format" : "ShadowFormat", "Count" : "ShadowCount", "Number" : "ShadowNumber", "Series" : "ShadowSeries",
+                            "Title" : "ShadowTitle", "Volume" : "ShadowVolume", "Year" : "ShadowYear"}
+
+            for key in self.EmptyData.keys():
+                if key in replacements:
+                    self.EmptyData[replacements[key]] = self.EmptyData[key]
+                    del(self.EmptyData[key])
+
+            insert_control_replacements = {"SeriesComplete" : "Series Complete", "Read" : "Read Percentage", "FirstLetter" : "First Letter", "AgeRating" : "Age Rating",
+                                    "AlternateSeriesMulti" : "Alternate Series Multi", "MonthNumber" : "Month Number", "AlternateNumber" : "Alternate Number",
+                                    "StartMonth" : "Start Month", "AlternateSeries" : "Alternate Series", "ScanInformation" : "Scan Information", "StartYear" : "Start Year",
+                                    "AlternateCount" : "Alternate Count"}
+            for key in insert_control_replacements :
+                if key in self.TextBox.keys():
+                    self.TextBox[insert_control_replacements[key]] = self.TextBox[key]
+                    del(self.TextBox[key])
+
+                if key in self.Prefix.keys():
+                    self.Prefix[insert_control_replacements[key]] = self.Prefix[key]
+                    del(self.Prefix[key])
+
+                if key in self.Postfix.keys():
+                    self.Postfix[insert_control_replacements[key]] = self.Postfix[key]
+                    del(self.Postfix[key])
+
+                if key in self.Seperator.keys():
+                    self.Seperator[insert_control_replacements[key]] = self.Seperator[key]
+                    del(self.Seperator[key])
+
+        self.Version = VERSION
+
+                
+    def save_to_xml(self, xwriter):
+        """
+        To save this profile intance to xml file using a XmlWriter.
+        xwriter->should be a XmlWriter instance.
+        """
+
+        xwriter.WriteStartElement("Profile")
+        xwriter.WriteAttributeString("Name", self.Name)
+        xwriter.WriteStartAttribute("Version")
+        xwriter.WriteValue(self.Version)
+        xwriter.WriteEndAttribute()
+
+        for var_name in self.__dict__:
+            var_type = type(getattr(self, var_name))
+
+            if var_type is str and var_name != "Name":
+                self.write_string_to_xml(var_name, xwriter)
+
+            elif var_type is bool:
+                self.write_bool_to_xml(var_name, xwriter)
+
+            elif var_type is dict:
+                self.write_dict_to_xml(var_name, xwriter)
+
+            elif var_type is list and var_name != "ExcludeRules":
+                self.write_list_to_xml(var_name, xwriter)
+
+        xwriter.WriteStartElement("ExcludeRules")
+        xwriter.WriteAttributeString("Operator", self.ExcludeOperator)
+        xwriter.WriteAttributeString("ExcludeMode", self.ExcludeMode)
+        for rule in self.ExcludeRules:
+            if rule:
+                rule.save_xml(xwriter)
+        xwriter.WriteEndElement()
+        
+        xwriter.WriteEndElement()
+
+    
+    def write_dict_to_xml(self, attribute_name, xmlwriter, write_empty=False):
+        """Writes a dictionary to an xml file in the form of
+        <attribute_name>
+            <Item Name="attribute_name key" Value="attribute_name value" />
+            <Item Name="attribute_name key" Value="attribute_name value" />
+            etc.
+        </attribute_name>
+
+        attribute_name->The name of the dictonary attribute to write.
+        xmlwriter->The xml writer to write with.
+        write_empty->A bool of whether to write empty values to the xml file. Default is don't write them.
+        """
+        dictionary = getattr(self, attribute_name)
+        xmlwriter.WriteStartElement(attribute_name)
+        for key in dictionary:
+            if dictionary[key] or write_empty:
+                xmlwriter.WriteStartElement("Item")
+                xmlwriter.WriteStartAttribute("Name")
+                xmlwriter.WriteValue(key)
+                xmlwriter.WriteEndAttribute()
+                xmlwriter.WriteStartAttribute("Value")
+                xmlwriter.WriteValue(dictionary[key])
+                xmlwriter.WriteEndAttribute()
+                xmlwriter.WriteEndElement()
+        xmlwriter.WriteEndElement()
+
+
+    def write_list_to_xml(self, attribute_name, xmlwriter, write_empty=False):
+        """Writes a list to an xml file in the form of
+        <attribute_name>
+            <Item>value</Item>
+            <Item>value</Item>
+            etc.
+        </attribute_name>
+
+        attribute_name->The name of the list attribute to write.
+        xmlwriter->The xml writer to write with.
+        write_empty->A bool of whether to write empty values to the xml file. Default is don't write them.
+        """
+        attribute_list = getattr(self, attribute_name)
+        xmlwriter.WriteStartElement(attribute_name)
+        for item in attribute_list:
+            if item or write_empty:
+                xmlwriter.WriteElementString("Item", item)
+        xmlwriter.WriteEndElement()
+
+
+    def write_string_to_xml(self, attribute_name, xmlwriter, write_empty=True):
+        """Writes a string to an xml file in the form of
+        <attribute_name>string</attribute_name>
+
+        attribute_name->The name of the string attribute to write.
+        xmlwriter->The xml writer to write with.
+        write_empty->A bool of whether to write empty strings to the xml file. Default is write empty strings.
+        """
+        string = getattr(self, attribute_name)
+        if string or write_empty:
+            xmlwriter.WriteElementString(attribute_name, string)
+
+
+    def write_bool_to_xml(self, attribute_name, xmlwriter):
+        """Writes a boolean to an xml file in the form of
+        <attribute_name>true/false</attribute_name>
+
+        attribute_name->The name of the attribute to write.
+        xmlwriter->The xml writer to write with.
+        """
+        xmlwriter.WriteStartElement(attribute_name)
+        xmlwriter.WriteValue(getattr(self, attribute_name))
+        xmlwriter.WriteEndElement()
+
+
+    def load_from_xml(self, Xml):
+        """Loads the profile instance from the Xml.
+        
+        Xml->should be a XmlNode/XmlDocument containing a profile node.
+        """
+        try:
+            #Text vars
+            self.Name = Xml.Attributes["Name"].Value
+
+            if "Version" in Xml.Attributes:
+                self.Version = float(Xml.Attributes["Version"].Value)
+
+            for var_name in self.__dict__:
+                if type(getattr(self,var_name)) is str:
+                    self.load_text_from_xml(Xml, var_name)
+
+
+                elif type(getattr(self,var_name)) is bool:
+                    self.load_bool_from_xml(Xml, var_name)
+
+
+                elif type(getattr(self, var_name)) is list and var_name != "ExcludeRules":
+                    self.load_list_from_xml(Xml, var_name)
+
+                elif type(getattr(self, var_name)) is dict:
+                    self.load_dict_from_xml(Xml, var_name)
+
+            #Exclude Rules
+            exclude_rules_node = Xml.SelectSingleNode("ExcludeRules")
+            if exclude_rules_node is not None:
+                self.ExcludeOperator = exclude_rules_node.Attributes["Operator"].Value
+
+                self.ExcludeMode = exclude_rules_node.Attributes["ExcludeMode"].Value
+
+                for node in exclude_rules_node.ChildNodes:
+                    if node.Name == "ExcludeRule":
+                        try:
+                            rule = ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Value"].Value)
+                        except AttributeError:
+                            rule = ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Text"].Value)
+
+                        self.ExcludeRules.append(rule)
+    
+                    elif node.Name == "ExcludeGroup":
+                        group = ExcludeGroup(node.Attributes["Operator"].Value)
+                        group.load_from_xml(node)
+                        self.ExcludeRules.append(group)
+
+            self.update()
+
+        except Exception, ex:
+            print ex
+            return False
+
+
+    def load_text_from_xml(self, xmldoc, name):
+        """Loads a string with a specified node name from an XmlDocument and saves it to the attribute. The string should be saved as:
+        <name>string</name>
+
+        xmldoc->The XmlDocment to load from.
+        name->The attribute to save to and the root node name to load the string from."""
+        if xmldoc.SelectSingleNode(name) is not None:
+            setattr(self, name, xmldoc.SelectSingleNode(name).InnerText)
+
+
+    def load_bool_from_xml(self, xmldoc, name):
+        """Loads a bool with a specified node name from an XmlDocument and saves it to the attribute. The bool should be saved as:
+        <name>true/false</name>
+
+        xmldoc->The XmlDocment to load from.
+        name->The attribute to save to and the root node name to load the bool from."""
+        if xmldoc.SelectSingleNode(name) is not None:
+            setattr(self, name, Convert.ToBoolean(xmldoc.SelectSingleNode(name).InnerText))
+
+
+    def load_list_from_xml(self, xmldoc, name):
+        """Loads a list with a specified node name from an XmlDocument and saves it to the attribute. The list should be saved as:
+        <name>
+            <Item>list value</Item>
+        </name>
+
+        xmldoc->The XmlDocment to load from.
+        name->The attribute to save to and the root node name to load the list from."""
+        nodes = xmldoc.SelectNodes(name + "/Item")
+        if nodes.Count > 0:
+            setattr(self, name, [item.InnerText for item in nodes])
+
+
+    def load_dict_from_xml(self, xmldoc, name):
+        """Loads a dict with a specified node name from an XmlDocument and saves it to the attribute. The dict should be saved as:
+        <name>
+            <Item Name="key" Value="value" />
+        </name>
+
+        xmldoc->The XmlDocment to load from.
+        name->The attribute to save to and the root node name to load the dict from."""
+        nodes = xmldoc.SelectNodes(name + "/Item")
+        if nodes.Count > 0:
+            dictionary = getattr(self, name)
+            for node in nodes:
+                if node.Attributes.Count == 2:
+                    if name == "Months":
+                        dictionary[int(node.Attributes["Name"].Value)] = node.Attributes["Value"].Value
+                    else:
+                        dictionary[node.Attributes["Name"].Value] = node.Attributes["Value"].Value
+
+
+
+def load_profiles(file_path):
+    """
+    Load profiles from a xml file. If no profiles are found it creates a blank profile.
+    file_path->The absolute path to the profile file
+
+    Returns a dict of the found profiles and a list of the lastused profile(s)
+    """
+    profiles, lastused = load_profiles_from_file(file_path)
+
+    if len(profiles) == 0:
+        #Just in case
+        profiles["Default"] = Profile()
+        profiles["Default"].Name = "Default"
+        
+    if not lastused:
+        lastused = [profiles.keys()[0]]
+       
+    return profiles, lastused     
+
+
+def load_profiles_from_file(file_path):
+    """
+    Loads profiles from a file.
+    
+    file_path->The absolute path the xml file
+
+    Returns a dict of the profiles
+    """
+    profiles = {}
+
+    lastused = ""
+
+    if File.Exists(file_path):
+        try:
+            with StreamReader(file_path) as xmlfile:
+                xmldoc = XmlDocument()
+                xmldoc.Load(xmlfile)
+
+            if xmldoc.DocumentElement.Name == "Profiles":
+                nodes = xmldoc.SelectNodes("Profiles/Profile")
+            #Individual exported profiles are saved with the document element as Profile
+            elif xmldoc.DocumentElement.Name == "Profile":
+                nodes = xmldoc.SelectNodes("Profile")
+
+            #Changed from 1.7 to 1.8 to use Profiles/Profile instead of Settings/Setting
+            elif xmldoc.DocumentElement.Name == "Settings":
+                nodes = xmldoc.SelectNodes("Settings/Setting")
+            elif xmldoc.DocumentElement.Name == "Setting":
+                nodes = xmldoc.SelectNodes("Setting")
+
+            #No valid root elements
+            else:
+                MessageBox.Show(file_path + " is not a valid Library Organizer profile file.", "Not a valid profile file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                return profiles, lastused
+
+            if nodes.Count > 0:
+                for node in nodes:                    
+                    profile = Profile()
+                    profile.Name = node.Attributes["Name"].Value
+                    result = profile.load_from_xml(node)
+
+                    #Error loading the profile
+                    if result == False:
+                        MessageBox.Show("An error occured loading the profile " + profile.Name + ". That profile has been skipped.")
+
+                    else:
+                        profiles[profile.Name] = profile
+
+
+            #Load the last used profile
+            rootnode = xmldoc.DocumentElement
+            if rootnode.HasAttribute("LastUsed"):
+                lastused = rootnode.Attributes["LastUsed"].Value.split(",")
+
+        except Exception, ex:
+            MessageBox.Show("Something seems to have gone wrong loading the xml file.\n\nThe error was:\n" + str(ex), "Error loading file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+    return profiles, lastused
+
+
+def import_profiles(file_path):
+    """
+    Load profiles from a xml file. If no profiles are found it returns an empty dict.
+    file_path->The absolute path to the profile file
+
+    Returns a dict of the found profiles.
+    """
+    profiles, lastused = load_profiles_from_file(file_path)
+
+    return profiles
+
+
+def save_profiles(file_path, profiles, lastused=""):
+    """
+    Saves the profiles to an xml file.
+
+    settings_file: The complete file path of the file to save to.
+    profiles: a dict of profile objects.
+    lastused: a string containing the last used profile.
+    """
+    try:
+        xSettings = XmlWriterSettings()
+        xSettings.Indent = True
+        with XmlWriter.Create(file_path, xSettings) as writer:
+            writer.WriteStartElement("Profiles")
+            if lastused:
+                writer.WriteAttributeString("LastUsed", ",".join(lastused))
+            for profile in profiles:
+                profiles[profile].save_to_xml(writer)
+            writer.WriteEndElement()
+    except Exception, ex:
+        MessageBox.Show("An error occured writing the settings file. The error was:\n\n" + ex.message, "Error saving settings file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+
+def save_profile(file_path, profile):
+    """
+    Saves a single profile to an xml file.
+
+    settings_file: The complete file path of the file to save to.
+    profile: a Profile object.
+    """
+    try:
+        xSettings = XmlWriterSettings()
+        xSettings.Indent = True
+        with XmlWriter.Create(file_path, xSettings) as writer:
+            profile.save_to_xml(writer)
+    except Exception, ex:
+        MessageBox.Show("An error occured writing the settings file. The error was:\n\n" + ex.message, "Error saving settings file", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+
+def save_last_used(file_path, lastused):
+    "Saves the lastused profiles to the xml file."""
+    x = XmlDocument()
+    x.Load(file_path)
+    x.DocumentElement.SetAttribute("LastUsed", ",".join(lastused))
+    x.Save(file_path)

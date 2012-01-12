@@ -1,5 +1,22 @@
 ﻿Bugfix:
-Fixed error with fileless images when in simulate mode
+Possible crash when settings file cannot be loaded.
+
 
 New:
-Added Alternate Series as a multi value field
+Configure form redesigned
+Added multivalue fields: Penciller, Inker, Colorist, Letterer, Cover Artist, Editor and Locations.
+Function to export all the profiles to a single file.
+Added a way to run several profiles in sequence.
+Option to mark operations with specific empty data as failed. Can also move these to a different failed folder.
+Option when overwriting a book to copy the read percentage of the old book to the new one.
+
+
+Changes:
+Much code has been rewriten with many little tweaks and fixes.
+Any field can be put in the prefix or suffix of any other field
+Fixed incorrect wording in report. 
+Multiple value fields can now be entered exactly as in the comic info. Just delete the extra variables from the template, leaving the name: for example {<tags()(issue)>} becomes {<tags>}
+
+
+Warnings:
+No longer supports profiles from 1.6 and earlier. If any are imported, some options will be reset to default.

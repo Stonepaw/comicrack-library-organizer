@@ -1,95 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Settings LastUsed="Default">
-  <Setting Name="Default">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Profiles LastUsed="Default">
+  <Profile Name="Default" Version="1.8">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
-    <BaseFolder />
+    <BaseFolder></BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder />
-    <Mode>Move</Mode>
-    <UseFileName>true</UseFileName>
-    <AutoSpaceFields>true</AutoSpaceFields>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
-    <UseFolder>true</UseFolder>
-    <CopyMode>false</CopyMode>
+    <EmptyData />
     <Postfix>
-      <Item Name="Number" Value="" />
-      <Item Name="AlternateSeriesMulti" Value="" />
+      <Item Name="Month Number" Value=", " />
       <Item Name="Format" Value=")" />
-      <Item Name="Characters" Value="" />
-      <Item Name="AlternateCount" Value="" />
-      <Item Name="StartYear" Value="" />
-      <Item Name="Series" Value="" />
-      <Item Name="AlternateNumber" Value="" />
-      <Item Name="Tags" Value="" />
-      <Item Name="Manga" Value="" />
-      <Item Name="AgeRating" Value="" />
-      <Item Name="Language" Value="" />
-      <Item Name="Read" Value="" />
-      <Item Name="Imprint" Value="" />
-      <Item Name="Teams" Value="" />
-      <Item Name="Title" Value="" />
       <Item Name="Count" Value=")" />
-      <Item Name="Counter" Value="" />
-      <Item Name="Publisher" Value="" />
-      <Item Name="MonthNumber" Value=", " />
-      <Item Name="Genre" Value="" />
-      <Item Name="StartMonth" Value="" />
-      <Item Name="FirstLetter" Value="" />
-      <Item Name="ScanInformation" Value="" />
-      <Item Name="Writer" Value="" />
       <Item Name="Year" Value=")" />
-      <Item Name="Volume" Value="" />
       <Item Name="Month" Value=", " />
-      <Item Name="SeriesComplete" Value="" />
-      <Item Name="AlternateSeries" Value="" />
     </Postfix>
     <Prefix>
       <Item Name="Number" Value="#" />
-      <Item Name="AlternateSeriesMulti" Value="" />
-      <Item Name="Format" Value="" />
-      <Item Name="Characters" Value="" />
-      <Item Name="AlternateCount" Value="" />
-      <Item Name="StartYear" Value="(" />
-      <Item Name="Series" Value="" />
-      <Item Name="AlternateNumber" Value="" />
-      <Item Name="Tags" Value="" />
-      <Item Name="Manga" Value="" />
-      <Item Name="AgeRating" Value="" />
-      <Item Name="Language" Value="" />
-      <Item Name="Read" Value="" />
-      <Item Name="Imprint" Value="" />
-      <Item Name="Teams" Value="" />
-      <Item Name="Title" Value="" />
+      <Item Name="Month Number" Value="(" />
+      <Item Name="Start Year" Value="(" />
       <Item Name="Count" Value="(of " />
-      <Item Name="Counter" Value="" />
-      <Item Name="Publisher" Value="" />
-      <Item Name="MonthNumber" Value="(" />
-      <Item Name="Genre" Value="" />
-      <Item Name="StartMonth" Value="" />
-      <Item Name="FirstLetter" Value="" />
-      <Item Name="ScanInformation" Value="" />
-      <Item Name="Writer" Value="" />
-      <Item Name="Year" Value="" />
       <Item Name="Volume" Value="Vol." />
       <Item Name="Month" Value="(" />
-      <Item Name="SeriesComplete" Value="" />
-      <Item Name="AlternateSeries" Value="" />
     </Prefix>
     <Seperator>
-      <Item Name="Tags" Value=", " />
+      <Item Name="Writer" Value=", " />
+      <Item Name="Scan Information" Value="," />
       <Item Name="Characters" Value=", " />
       <Item Name="Genre" Value=", " />
-      <Item Name="ScanInformation" Value="," />
+      <Item Name="Alternate Series Multi" Value="," />
       <Item Name="Teams" Value=", " />
-      <Item Name="AlternateSeriesMulti" Value="," />
-      <Item Name="Writer" Value=", " />
+      <Item Name="Tags" Value=", " />
     </Seperator>
-    <TextBox>
-      <Item Name="Read" Value="Read" />
-      <Item Name="Manga" Value="Manga" />
-      <Item Name="SeriesComplete" Value="Complete" />
-    </TextBox>
+    <IllegalCharacters>
+      <Item Name="&quot;" Value="'" />
+      <Item Name="&lt;" Value="[" />
+      <Item Name="&gt;" Value="]" />
+      <Item Name="|" Value="!" />
+      <Item Name=":" Value=" - " />
+    </IllegalCharacters>
     <Months>
       <Item Name="1" Value="January" />
       <Item Name="2" Value="February" />
@@ -108,52 +55,30 @@
       <Item Name="15" Value="Fall" />
       <Item Name="16" Value="Winter" />
     </Months>
-    <IllegalCharacters>
-      <Item Name="&quot;" Value="'" />
-      <Item Name="/" Value="" />
-      <Item Name="*" Value="" />
-      <Item Name="&lt;" Value="[" />
-      <Item Name="?" Value="" />
-      <Item Name="&gt;" Value="]" />
-      <Item Name="|" Value="!" />
-      <Item Name=":" Value=" - " />
-      <Item Name="\" Value="" />
-    </IllegalCharacters>
-    <EmptyData>
-      <Item Name="Number" Value="" />
-      <Item Name="ReadPercentage" Value="" />
-      <Item Name="Format" Value="Series" />
-      <Item Name="Characters" Value="" />
-      <Item Name="AlternateCount" Value="" />
-      <Item Name="StartYear" Value="" />
-      <Item Name="Series" Value="" />
-      <Item Name="AlternateNumber" Value="" />
-      <Item Name="Tags" Value="" />
-      <Item Name="Manga" Value="" />
-      <Item Name="AgeRating" Value="" />
-      <Item Name="Language" Value="" />
-      <Item Name="Imprint" Value="" />
-      <Item Name="Teams" Value="" />
-      <Item Name="Title" Value="" />
-      <Item Name="Count" Value="" />
-      <Item Name="Counter" Value="" />
-      <Item Name="Publisher" Value="" />
-      <Item Name="Genre" Value="" />
-      <Item Name="StartMonth" Value="" />
-      <Item Name="FirstLetter" Value="" />
-      <Item Name="ScanInformation" Value="" />
-      <Item Name="Writer" Value="" />
-      <Item Name="Year" Value="" />
-      <Item Name="Volume" Value="" />
-      <Item Name="Month" Value="" />
-      <Item Name="SeriesComplete" Value="" />
-      <Item Name="AlternateSeries" Value="" />
-    </EmptyData>
+    <TextBox>
+      <Item Name="Manga" Value="Manga" />
+      <Item Name="Read Percentage" Value="Read" />
+      <Item Name="Series Complete" Value="Complete" />
+    </TextBox>
+    <UseFolder>true</UseFolder>
+    <UseFileName>true</UseFileName>
     <ExcludeFolders />
-    <ExcludeRules Operator="Any" ExcludeMode="Only" />
-    <MoveFileless>true</MoveFileless>
-    <FilelessFormat>.jpg</FilelessFormat>
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ExcludeOperator>Any</ExcludeOperator>
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
     <ExcludedEmptyFolder />
-  </Setting>
-</Settings>
+    <MoveFileless>true</MoveFileless>
+    <FilelessFormat>.jpg</FilelessFormat>
+    <ExcludeMode>Only</ExcludeMode>
+    <FailEmptyValues>false</FailEmptyValues>
+    <MoveFailed>false</MoveFailed>
+    <FailedFolder />
+    <FailedFields />
+    <Mode>Move</Mode>
+    <CopyMode>false</CopyMode>
+    <AutoSpaceFields>true</AutoSpaceFields>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <CopyReadPercentage>true</CopyReadPercentage>
+    <ExcludeRules Operator="Any" ExcludeMode="Only" />
+  </Profile>
+</Profiles>

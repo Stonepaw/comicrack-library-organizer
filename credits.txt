@@ -7,3 +7,5 @@ The very nice icons are by David Vignoni and are released under the LGPL licence
 http://www.gnu.org/licenses/lgpl.html
 
 The icon itself was found at: http://www.iconfinder.com/icondetails/1228/128/bookcase_books_school_icon
+
+The icons in the configure dialog are from an icon set called WooFunction

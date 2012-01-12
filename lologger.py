@@ -13,39 +13,47 @@ import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import MessageBox
+from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult
 
-class logger():
-	
-	def __init__(self):
-		self._log = []
-		self._failedcount = 0
-		self._skippedcount = 0
-		self._successcount = 0
+class Logger():
+    
+    def __init__(self):
+        self._log = []
+        self._profile = ""
+        self.header = ""
 
-	def Add(self, action, path, message = ""):
-		self._log.append([unicode(action), unicode(path), unicode(message)])
+    def Add(self, action, path, message = "", profile=""):
+        if profile:
+            self._log.append([profile, unicode(action), unicode(path), unicode(message)])
+        else:
+            self._log.append([self._profile, unicode(action), unicode(path), unicode(message)])
 
-	def ToArray(self):
-		return self._log
 
-	def Clear(self):
-		del(self._log[:])
+    def SetProfile(self, profile):
+        self._profile = profile
 
-	def SaveLog(self, filepath):
-		try:
-			f = open(filepath,'w')
-			f.write("Library Organizer Report:\n\nSkipped: %s\nFailed: %s\nSuccess: %s" % (self._failedcount, self._skippedcount, self._successcount))
-			for array in self._log:
-				f.write("\n\n%s: %s" % (array[0], array[1]))
-				if array[2] != "":
-					f.write("\nMessage: " + array[2])
-			f.close()
 
-		except Exception, ex:
-			MessageBox.Show("something went wrong saving the file. The error is: " + str(ex))
+    def ToArray(self):
+        return self._log
 
-	def SetCountVariables(self, failed, skipped, success):
-		self._failedcount = failed
-		self._skippedcount = skipped
-		self._successcount = success
+    def Clear(self):
+        del(self._log[:])
+
+    def SaveLog(self):
+        try:
+            save = SaveFileDialog()
+            save.AddExtension = True
+            save.Filter = "Text files (*.txt)|*.txt"
+            if save.ShowDialog() == DialogResult.OK:
+                with open(save.FileName, 'w') as f:
+                    f.write("Library Organizer Report:\n\n" + self.header)
+                    for array in self._log:
+                        f.write("\n\n%s:\n%s: %s" % (array[0], array[1], array[2]))
+                        if array[3] != "":
+                            f.write("\nMessage: " + array[3])
+            save.Dispose()
+        except Exception, ex:
+            MessageBox.Show("something went wrong saving the file. The error was: " + str(ex))
+
+    def add_header(self, header_text):
+        self.header += header_text

@@ -51,7 +51,7 @@ class DuplicateForm(object):
 		self.win = XamlReader.Load(XmlReader.Create(f))
 		f.Close()
 		
-		self.DuplicateResult = None
+		self._action = None
 
 		self.RenameText = "The file you are moving will be renamed: "
 
@@ -92,33 +92,35 @@ class DuplicateForm(object):
 			self.RenameText = "The file you are copying will be renamed: "
 			self.win.FindName("RenameText").Text = "The file you are copying will be renamed: "
 
-		if mode == Mode.Test:
+		if mode == Mode.Simulate:
 			self.win.FindName("Subtitle").Content = "Click the file you want to keep (simulated, no files will be deleted or moved)"
 
 	def ReplaceClick(self, sender, e):
-		self.DuplicateResult = DuplicateResult.Overwrite
+		self._action = DuplicateAction.Overwrite
 		#Note: set to hide so that the dialog can be reopened.
 		self.win.Hide()
 
 	def CancelClick(self, sender, e):
-		self.DuplicateResult = DuplicateResult.Cancel
+		self._action = DuplicateAction.Cancel
 		self.win.Hide()
 
 	def RenameClick(self, sender, e):
-		self.DuplicateResult = DuplicateResult.Rename
+		self._action = DuplicateAction.Rename
 		self.win.Hide()
 
 	def ShowForm(self, newbook, oldbook, renamefile, count):
-		self.DuplicateResult = DuplicateResult.Cancel
+		self._action = DuplicateAction.Cancel
 		self.SetupFields(newbook, oldbook, renamefile, count)
 
 		self.win.ShowDialog()
-		return [self.DuplicateResult, self.win.FindName("DoAll").IsChecked]
+		return DuplicateResult(self._action, self.win.FindName("DoAll").IsChecked)
+
 
 	def FormClosing(self, sender, e):
 		e.Cancel = True
-		self.DuplicateResult = DuplicateResult.Cancel
+		self._action = DuplicateAction.Cancel
 		self.win.Hide()
+
 
 	def SetupFields(self, newbook, oldbook, renamefile, count):
 
@@ -197,7 +199,15 @@ class DuplicateForm(object):
 		else:
 			self.win.FindName("DoAll").Visibility = Visibility.Hidden
 
-class DuplicateResult:
+
+class DuplicateResult(object):
+
+    def __init__(self, action, always_do_action):
+        self.action = action
+        self.always_do_action = always_do_action
+
+
+class DuplicateAction(object):
 	Overwrite = 1
 	Cancel = 2
 	Rename = 3
