@@ -15,6 +15,7 @@ Changes:
 Much code has been rewriten with many little tweaks and fixes.
 Any field can be put in the prefix or suffix of any other field
 Fixed incorrect wording in report. 
+Yes/No fields can now have text inserted when the value is no OR yes
 Multiple value fields can now be entered exactly as in the comic info. Just delete the extra variables from the template, leaving the name: for example {<tags()(issue)>} becomes {<tags>}
 
 

@@ -1,66 +1,57 @@
-﻿import clr
+﻿"""
+This file loads some sample comics from a file and shows the config form.
+Simply for testing purposes.
+"""
+
+
+import clr
+import System
 clr.AddReference('System.Windows.Forms')
 clr.AddReference('System.Drawing')
-import System
-from System.Windows.Forms import Application, MessageBox, DialogResult
-import loconfigForm
-import System.IO
-from System.IO import FileStream, FileMode, File, Directory, Path, StreamWriter, StreamReader
-from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
-clr.AddReferenceToFile("ComicRack.Engine")
-clr.AddReferenceToFile("cYo.Common")
-import cYo.Common
-import cYo.Projects.ComicRack.Engine
-from cYo.Projects.ComicRack.Engine import *
-import libraryorganizer
-import cPickle
-import losettings
-import loworkerform
-import loduplicate
-import System.Text
-from System.Text import StringBuilder
 clr.AddReference("System.Xml")
-import System.Xml
-from System.Xml import XmlWriter, Formatting, XmlTextWriter, XmlWriterSettings, XmlDocument
-clr.AddReference("System.Core")
-from System import Func
-import loconfigForm
-import loforms
+clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ComicRack.Engine.dll")
+clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\cYo.Common.dll")
+
+from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
+
+from System.Xml import XmlDocument
+
+from System.IO import StreamReader, File, FileStream, FileMode
+
+from System.Windows.Forms import Application, DialogResult
+import configureform
+
+import losettings
+
+from loworkerform import ProfileSelector
+
+SETTINGSFILE = "losettingsx.dat"
+
 try:
-	#sfrom libraryorganizer import OverwriteAction
-#	i.ShowDialog()
-#	"""	print __file__[0:-len("Program.py")]
-	Application.EnableVisualStyles()
-	#s = libraryorganizer.LoadSettings()
-	f = FileStream("Sample.dat", FileMode.Open)
-	s = BinaryFormatter()
-	books = s.Deserialize(f)
-	#for book in bbooks:
-	    #print book.ShadowSeries
-	    #print book.Series
-	    #print book.Number
-	f.Close()
+    print "Loading test data"
+    f = FileStream("Sample.dat", FileMode.Open)
+    bf = BinaryFormatter()
+    books = bf.Deserialize(f)
+    print "Done loading sample data"
+    print "Starting to load profiles"
+    profiles, last_used_profiles = losettings.load_profiles(SETTINGSFILE)
+    print "Done loading profiles"
+    Application.EnableVisualStyles()
 
-	#a = loforms.SelectionFormArgs(["test", "test", "testt"], "Writer", "Green Lantern Vol. 2009 #12", False)
-	#fff = loforms.SelectionForm(a)
-	#fff.ShowDialog()
+    selector = ProfileSelector(profiles.keys(), last_used_profiles)
 
+    selector.ShowDialog()
 
-	settings, lastused = libraryorganizer.LoadSettings()
-	#Get a random book to use as an example
-	config = loconfigForm.ConfigForm(books, settings, lastused)
-	result = config.ShowDialog()
-	if result == DialogResult.OK:
-		config.SaveSettings()
-		lastused = config._cmbProfiles.SelectedItem
-		#Now save the settings
-		libraryorganizer.SaveSettings(settings, lastused)
+    print selector.get_profiles_to_use()
 
-	System.Console.ReadLine()
+    form = configureform.ConfigureForm(profiles, last_used_profiles[0], books)
+    r = form.ShowDialog()
 
+    if r != DialogResult.Cancel:
+        form.save_profile()
+        last_used_profile = form._profile_selector.SelectedItem
+        losettings.save_profiles(SETTINGSFILE, profiles, last_used_profile)
 except Exception, ex:
-	print "An error occured"
-	print Exception
-	print ex
-	print type(ex)
-	System.Console.ReadLine()
+    print ex
+    System.Console.ReadKey()
+

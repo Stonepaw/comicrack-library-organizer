@@ -3,13 +3,20 @@ locommon.py
 
 Author: Stonepaw
 
-Version: 1.7.5
-            -Added ReadPercentage to Rules
 
-Contains several classes and functions. All are used in several files
+Copyright 2010-2012 Stonepaw
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 """
 
@@ -37,7 +44,7 @@ ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
 
-VERSION = 1.8
+VERSION = 2.0
 
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
@@ -155,7 +162,7 @@ class ExcludeGroup(object):
         """Loads the rules and groups from the xml_node."""
         for node in xml_node.ChildNodes:
             if node.Name == "ExcludeRule":
-                #Changes from 1.7.17 to 1.8
+                #Changes from 1.7.17 to 2.0
                 try:
                     self.add_rule(ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Value"].Value))
                 except AttributeError:

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profiles LastUsed="Default">
-  <Profile Name="Default" Version="1.8">
+  <Profile Name="Default" Version="2.0">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
     <BaseFolder></BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>

@@ -5,12 +5,24 @@ Contains a class for profiles and methods to save and load them from xml files.
 
 Author: Stonepaw
 
-Version 1.8
+Version 2.0
 
     Rewrote pretty much everything. Much more modular and requires no maintence when a new attribute is added.
     No longer fully supports profiles from 1.6 and earlier.
 
-Copyright Stonepaw 2011. Anyone is free to use code from this file as long as credit is given.
+Copyright 2010-2012 Stonepaw
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 import clr
@@ -111,7 +123,7 @@ class Profile:
 
 
     def update(self):
-        if self.Version < 1.8:
+        if self.Version < 2.0:
             if self.Mode is "Test":
                 self.Mode = "Simulate"
 
@@ -409,7 +421,7 @@ def load_profiles_from_file(file_path):
             elif xmldoc.DocumentElement.Name == "Profile":
                 nodes = xmldoc.SelectNodes("Profile")
 
-            #Changed from 1.7 to 1.8 to use Profiles/Profile instead of Settings/Setting
+            #Changed from 1.7 to 2.0 to use Profiles/Profile instead of Settings/Setting
             elif xmldoc.DocumentElement.Name == "Settings":
                 nodes = xmldoc.SelectNodes("Settings/Setting")
             elif xmldoc.DocumentElement.Name == "Setting":
