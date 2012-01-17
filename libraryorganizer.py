@@ -1,13 +1,23 @@
 """
 libraryorganizer.py
 
-The main script file. Some code is this file is based off of wadegiles's Guided eComic file renaming script. Credit is very much due to him
+The entry area for ComicRack
 
-Version 1.8
+Version 2.0
 
-Author: Stonepaw
+Copyright 2010-2012 Stonepaw
 
-Copyright Stonepaw 2011. Some code copyright wadegiles Anyone is free to use code from this file as long as credit is given.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 import clr
