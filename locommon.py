@@ -44,7 +44,7 @@ ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
 
-VERSION = 2.0
+VERSION = 2.1
 
 clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
@@ -56,19 +56,19 @@ name_to_field = {"Age Rating" : "AgeRating", "Alternate Count" : "AlternateCount
                  "Counter" : "Counter", "Count" : "ShadowCount", "Cover Artist" : "CoverArtist", "Editor" : "Editor", "File Format" : "FileFormat", "File Name" : "FileName", 
                  "File Path" : "FilePath", "First Letter" : "FirstLetter",
                  "Format" : "ShadowFormat", "Genre" : "Genre", "Imprint" : "Imprint", "Inker" : "Inker", "Language" : "LanguageISO", "Letterer" : "Letterer", "Locations" : "Locations",
-                 "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Number" : "ShadowNumber", "Penciller" : "Penciller", "Publisher" : "Publisher", 
-                 "Rating" : "Rating", "Read Percentage" : "ReadPercentage", "Scan Information" : "ScanInformation", "Series" : "ShadowSeries",
-                 "Series Complete" : "SeriesComplete",  "Start Month" : "StartMonth", "Start Year" : "StartYear", "Tags" : "Tags",
+                 "Main Character Or Team": "MainCharacterOrTeam", "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Number" : "ShadowNumber", "Penciller" : "Penciller", "Publisher" : "Publisher", 
+                 "Rating" : "Rating", "Read Percentage" : "ReadPercentage", "Review" : "Review", "Scan Information" : "ScanInformation", "Series" : "ShadowSeries",
+                 "Series Complete" : "SeriesComplete", "Series Group" : "SeriesGroup", "Start Month" : "StartMonth", "Start Year" : "StartYear", "Story Arc": "StoryArc", "Tags" : "Tags",
                  "Teams" : "Teams", "Title" : "ShadowTitle", "Volume" : "ShadowVolume", "Web" : "Web", "Writer" : "Writer", "Year" : "ShadowYear"}
 
 field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count", "AlternateNumber" : "Alternate Number", 
                  "AlternateSeries" : "Alternate Series", "BlackAndWhite" : "Black And White", "Characters" : "Characters", "Colorist" : "Colorist",
                  "Counter" : "Counter", "CoverArtist" : "Cover Artist", "Editor" : "Editor", "FileFormat" : "File Format", "FileName" : "File Name", "FilePath" : "File Path", 
                  "FirstLetter" : "First Letter", "Genre" : "Genre", "Imprint" : "Imprint", "Inker" : "Inker",
-                 "LanguageISO" : "Language", "Letterer" : "Letterer", "Locations" : "Locations", "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Penciller" : "Penciller",
-                 "Publisher" : "Publisher", "Rating" : "Rating", "ReadPercentage" : "Read Percentage", "Read" : "Read Percentage", "ScanInformation" : "Scan Information", 
+                 "LanguageISO" : "Language", "Letterer" : "Letterer", "Locations" : "Locations", "MainCharacterOrTeam": "Main Character Or Team", "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Penciller" : "Penciller",
+                 "Publisher" : "Publisher", "Rating" : "Rating", "ReadPercentage" : "Read Percentage", "Read" : "Read Percentage", "Review" : "Review", "ScanInformation" : "Scan Information", 
                  "SeriesComplete" : "Series Complete", "ShadowCount" : "Count", "ShadowFormat" : "Format", "ShadowNumber" : "Number", 
-                 "ShadowSeries" : "Series", "ShadowTitle" : "Title", "ShadowVolume" : "Volume", "ShadowYear" : "Year", "StartMonth" : "Start Month", 
+                 "ShadowSeries" : "Series", "SeriesGroup" : "Series Group", "StoryArc": "Story Arc", "ShadowTitle" : "Title", "ShadowVolume" : "Volume", "ShadowYear" : "Year", "StartMonth" : "Start Month", 
                  "StartYear" : "Start Year", "Tags" : "Tags", "Teams" : "Teams", "Web" : "Web", "Writer" : "Writer"}
 
 

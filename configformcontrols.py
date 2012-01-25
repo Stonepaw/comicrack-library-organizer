@@ -66,6 +66,8 @@ class InsertControl(FlowLayoutPanel):
         self.Prefix.Margin = Padding(3, 0, 3, 0)
 
         self.InsertButton.Size = Size(66, 23)
+        self.InsertButton.MinimumSize = Size(66, 23)
+        self.InsertButton.AutoSize = True
         self.InsertButton.Click += self.ButtonClick
         self.InsertButton.TabIndex = 1
         self.InsertButton.Margin = Padding(3, 0, 3, 0)
@@ -749,9 +751,9 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         self._field = ComboBox()
         self._field.Items.AddRange(System.Array[System.String](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series",
                                                                "Black And White", "Characters", "Count", "File Name", "File Path", "File Format",
-                                                               "Format", "Genre", "Imprint", "Language", "Locations", "Manga", "Month", "Number",
-                                                               "Notes", "Publisher", "Rating", "Read Percentage", "Series Complete", "Tags", "Teams", 
-                                                               "Title", "Scan Information", "Series", "Start Month", "Start Year", "Volume", "Web", "Year"]))            
+                                                               "Format", "Genre", "Imprint", "Language", "Locations", "Main Character Or Team", "Manga", "Month", "Number",
+                                                               "Notes", "Publisher", "Rating", "Read Percentage", "Review", "Series Complete", "Tags", "Teams", 
+                                                               "Title", "Scan Information", "Series", "Series Group", "Start Month", "Start Year", "Story Arc", "Volume", "Web", "Year"]))            
         self._field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._field.Size = Size(121, 21)
         self._field.MaxDropDownItems = 15

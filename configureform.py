@@ -52,12 +52,12 @@ from losettings import Profile
 from lobookmover import PathMaker
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
-                "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
-                "Rating", "Read Percentage", "Scan Information", "Series", "Series Complete", "Start Month", "Start Year", "Tags", "Teams", "Title", "Volume", "Web", "Writer", "Year"])
+                "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
+                "Rating", "Read Percentage", "Review", "Scan Information", "Series", "Series Complete", "Series Group", "Start Month", "Start Year", "Story Arc", "Tags", "Teams", "Title", "Volume", "Web", "Writer", "Year"])
 
 empty_substitution_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
-                          "Editor", "Format", "First Letter", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Manga", "Month", "Number", "Penciller", "Publisher", 
-                          "Rating", "Read Percentage", "Scan Information", "Series", "Series Complete",  "Start Month", "Start Year", "Tags", "Teams", "Title", "Volume", "Writer", "Year"])
+                          "Editor", "Format", "First Letter", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Number", "Penciller", "Publisher", 
+                          "Rating", "Read Percentage", "Scan Information", "Series", "Series Complete", "Series Group", "Start Month", "Start Year", "Story Arc", "Tags", "Teams", "Title", "Volume", "Writer", "Year"])
 
 
 class ConfigureForm(Form):
@@ -1418,6 +1418,7 @@ class ConfigureForm(Form):
         self._text_insert_controls.TabIndex = 0
         self._text_insert_controls.Text = "Text Fields"
         self._text_insert_controls.UseVisualStyleBackColor = True
+        self._text_insert_controls.AutoScroll = True
         # 
         # yes_no_insert_controls
         # 
@@ -1529,37 +1530,61 @@ class ConfigureForm(Form):
         self.Language.Tag = self.Language.Location
         self.Language.TabIndex = 4
         self._text_insert_controls_list["language"] = self.Language
-        
+
+        self.MainCharacterOrTeam = InsertControl()
+        self.MainCharacterOrTeam.SetTemplate("maincharacter", "Main Character")
+        self.MainCharacterOrTeam.Name = "Main Character Or Team"
+        self.MainCharacterOrTeam.Location = Point(248, 100)
+        self.MainCharacterOrTeam.Tag = self.MainCharacterOrTeam.Location
+        self.MainCharacterOrTeam.TabIndex = 5
+        self._text_insert_controls_list["main character or team"] = self.MainCharacterOrTeam
+
         self.Month = InsertControl()
         self.Month.SetTemplate("month", "Month")
         self.Month.Name = "Month"
-        self.Month.Location = Point(248, 100)
+        self.Month.Location = Point(4, 145)
         self.Month.Tag = self.Month.Location
-        self.Month.TabIndex = 5
+        self.Month.TabIndex = 6
         self._text_insert_controls_list["month"] = self.Month
 
         self.Publisher = InsertControl()
         self.Publisher.SetTemplate("publisher", "Publisher")
         self.Publisher.Name = "Publisher"
-        self.Publisher.Location = Point(4, 145)
+        self.Publisher.Location = Point(248, 145)
         self.Publisher.Tag = self.Publisher.Location
-        self.Publisher.TabIndex = 6
+        self.Publisher.TabIndex = 7
         self._text_insert_controls_list["publisher"] = self.Publisher
         
         self.Series = InsertControl()
         self.Series.SetTemplate("series", "Series")
         self.Series.Name = "Series"
-        self.Series.Location = Point(248, 145)
+        self.Series.Location = Point(4, 190)
         self.Series.Tag = self.Series.Location
-        self.Series.TabIndex = 7
+        self.Series.TabIndex = 8
         self._text_insert_controls_list["series"] = self.Series
+
+        self.SeriesGroup = InsertControl()
+        self.SeriesGroup.SetTemplate("seriesgroup", "Series Group")
+        self.SeriesGroup.Name = "Series Group"
+        self.SeriesGroup.Location = Point(248, 190)
+        self.SeriesGroup.Tag = self.SeriesGroup.Location
+        self.SeriesGroup.TabIndex = 9
+        self._text_insert_controls_list["series group"] = self.SeriesGroup
+
+        self.StoryArc = InsertControl()
+        self.StoryArc.SetTemplate("storyarc", "Story Arc")
+        self.StoryArc.Name = "Story Arc"
+        self.StoryArc.Location = Point(4, 235)
+        self.StoryArc.Tag = self.StoryArc.Location
+        self.StoryArc.TabIndex = 10
+        self._text_insert_controls_list["story arc"] = self.StoryArc
         
         self.Title = InsertControl()
         self.Title.SetTemplate("title", "Title")
         self.Title.Name = "Title"
-        self.Title.Location = Point(4, 190)
+        self.Title.Location = Point(248, 235)
         self.Title.Tag = self.Title.Location
-        self.Title.TabIndex = 8
+        self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
         self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.Values))
