@@ -3,7 +3,7 @@ lobookmover.py
 
 This contains all the book moving fuction the script uses. Also the path generator
 
-Version 2.0:
+Version 2.1:
 
 
 Copyright 2010-2012 Stonepaw
@@ -1203,7 +1203,8 @@ class PathMaker(object):
                          "characters" : "Characters", "altSeries" : "AlternateSeries", "teams" : "Teams", "scaninfo" : "ScanInformation",
                          "manga" : "Manga", "seriesComplete" : "SeriesComplete", "first" : "FirstLetter", "read" : "ReadPercentage",
                          "counter" : "Counter", "startmonth" : "StartMonth", "startmonth#" : "StartMonth", "colorist" : "Colorist", "coverartist" : "CoverArtist",
-                         "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller"}
+                         "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
+                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam"}
 
     template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
 
