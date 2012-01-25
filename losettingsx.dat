@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profiles LastUsed="Default">
-  <Profile Name="Default" Version="2.0">
+  <Profile Name="Default" Version="2.1">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
     <BaseFolder></BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
@@ -22,12 +22,19 @@
       <Item Name="Month" Value="(" />
     </Prefix>
     <Seperator>
-      <Item Name="Writer" Value=", " />
       <Item Name="Scan Information" Value="," />
+      <Item Name="Penciller" Value="," />
       <Item Name="Characters" Value=", " />
+      <Item Name="Colorist" Value="," />
+      <Item Name="Writer" Value=", " />
+      <Item Name="Inker" Value="," />
+      <Item Name="Letterer" Value="," />
       <Item Name="Genre" Value=", " />
       <Item Name="Alternate Series Multi" Value="," />
+      <Item Name="Editor" Value="," />
       <Item Name="Teams" Value=", " />
+      <Item Name="Cover Artist" Value="," />
+      <Item Name="Locations" Value="," />
       <Item Name="Tags" Value=", " />
     </Seperator>
     <IllegalCharacters>
@@ -56,8 +63,8 @@
       <Item Name="16" Value="Winter" />
     </Months>
     <TextBox>
-      <Item Name="Manga" Value="Manga" />
       <Item Name="Read Percentage" Value="Read" />
+      <Item Name="Manga" Value="Manga" />
       <Item Name="Series Complete" Value="Complete" />
     </TextBox>
     <UseFolder>true</UseFolder>
