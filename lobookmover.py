@@ -1335,14 +1335,23 @@ class PathMaker(object):
         match_groups = match.groupdict()
         result = ""
 
+        name = match_groups["name"]
+        inversion = False
+        if name.startswith("!"):
+            inversion = True
+            name = name.lstrip("!")
 
-        if match_groups["name"] in self.template_to_field:
-            field = self.template_to_field[match_groups["name"]]
+
+        if name in self.template_to_field:
+            field = self.template_to_field[name]
         else:
             self.invalid += 1
             return match.group(0)
 
-        result = self.get_field_text(field, match_groups["name"], match_groups["args"])
+
+
+
+        result = self.get_field_text(field, name, match_groups["args"])
         
         if result is None:
             self.invalid += 1
@@ -1354,9 +1363,16 @@ class PathMaker(object):
                     self.failed_fields.append(field)
                 self.failed = True
 
+            if inversion:
+                return match_groups["prefix"] + match_groups["postfix"]
+
             if field in self.profile.EmptyData and self.profile.EmptyData[field]:
-                result = self.profile.EmptyData[field]
+                return self.profile.EmptyData[field]
             else:
+                return ""
+
+        else:
+            if inversion:
                 return ""
 
         return match_groups["prefix"] + result + match_groups["postfix"]

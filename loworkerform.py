@@ -162,7 +162,6 @@ class WorkerForm(Form):
             self._DuplicateForm = DuplicateForm(profile.Mode)
             helper = WindowInteropHelper(self._DuplicateForm.win)
             helper.Owner = self.Handle
-
         return self._DuplicateForm.ShowForm(newbook, oldbook, renamefile, count)
 
 
