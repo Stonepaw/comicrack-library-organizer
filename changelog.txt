@@ -1,3 +1,8 @@
-﻿New: Added fields Story Arc, Series Group and Main Character Or Team. 
+﻿New: Added inversion feature. Syntax is {<!fieldname>}. This will insert the prefix and suffix when the value of the field is empty.
 
-Notes: Requires ComicRack 0.9.151 or better to use the added fields
+Change: Empty replacements now don't insert the prefix and suffix of the field.
+
+Bugfix:
+Fix for index out of range: 0 when running the configure script on an empty library. (Previews will be disabled)
+Attempted fix for error when clicking insert buttons (never could reproduce this so I'm not sure if I fixed it or not)
+Previews now show & characters

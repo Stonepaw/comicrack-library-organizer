@@ -71,8 +71,6 @@ class ConfigureForm(Form):
         self._multiple_value_insert_controls_list = {}
         self._calculated_insert_controls_list = {}
 
-        
-
         self.initialize_component()
 
         print "Done the initialize function"
@@ -87,6 +85,21 @@ class ConfigureForm(Form):
 
         print "Done creating controls"
 
+        self._preview_books = books
+
+        if len(books) > 0:
+            self._preview_book = self._preview_books[0]
+
+            self._preview_book_selector.Maximum = len(books) -1
+        else:
+            self._preview_book_selector.Enabled = False
+            self._folder_preview.Enabled = False
+            self._file_preview.Enabled = False
+            self._folder_preview.Text = "Preview not available without at least one book added into the library"
+            self._file_preview.Text = "Preview not available without at least one book added into the library"
+            self._label_file_preview.Enabled = False
+            self._label_folder_preview.Enabled = False
+
         try:
             self.profile = profiles[last_used_profile]
         except KeyError:
@@ -100,11 +113,6 @@ class ConfigureForm(Form):
         self._profile_selector.SelectedItem = self.profile.Name
         
         self.path_maker = PathMaker(self, self.profile)
-
-        self._preview_books = books
-        self._preview_book = self._preview_books[0]
-
-        self._preview_book_selector.Maximum = len(books) -1
 
         self.adjust_combo_box_drop_down_width(self._profile_selector.ComboBox)
 
@@ -219,6 +227,8 @@ class ConfigureForm(Form):
         #
         self.create_toolbar()
         self.create_overview_page()
+        self.create_files_page()
+        self.create_folders_page()
         #
         # Icons
         #
@@ -721,6 +731,7 @@ class ConfigureForm(Form):
         self._file_preview.Name = "file_preview"
         self._file_preview.Size = System.Drawing.Size(410, 40)
         self._file_preview.TabIndex = 3
+        self._file_preview.UseMnemonic = False
 
         self._files_page.Controls.Add(self._preview_book_selector)
         self._files_page.Controls.Add(self._file_preview)
@@ -728,7 +739,7 @@ class ConfigureForm(Form):
         self._files_page.Controls.Add(self._label_file_structure)
         self._files_page.Controls.Add(self._file_structure)
 
-        self.load_files_page_settings()
+        #self.load_files_page_settings()
 
         self._files_page.ResumeLayout()
 
@@ -786,6 +797,7 @@ class ConfigureForm(Form):
         self._folder_preview.Name = "folder_preview"
         self._folder_preview.Size = System.Drawing.Size(410, 40)
         self._folder_preview.TabIndex = 3
+        self._folder_preview.UseMnemonic = False
         # 
         # insert_folder_seperator
         # 
@@ -797,7 +809,7 @@ class ConfigureForm(Form):
         self._insert_folder_seperator.UseVisualStyleBackColor = True
         self._insert_folder_seperator.Click += self.insert_folder_seperator_clicked
 
-        self.load_folders_page_settings()
+        #self.load_folders_page_settings()
 
         self._folders_page.ResumeLayout()
 
@@ -2262,6 +2274,11 @@ class ConfigureForm(Form):
 
 
     def update_template_text(self, sender=None, e=None):
+
+        #If no books then skip the preview
+        if not self._preview_books:
+            return
+
         if self._files_page.Visible:
             if check_excluded_folders(self._preview_book.FilePath, self.profile) and check_metadata_rules(self._preview_book, self.profile):
                 folder_path, file_name, failed = self.path_maker.make_path(self._preview_book, self.profile.FolderTemplate, self._file_structure.Text)
