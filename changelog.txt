@@ -1,8 +1,5 @@
-﻿New: Added inversion feature. Syntax is {<!fieldname>}. This will insert the prefix and suffix when the value of the field is empty.
-
-Change: Empty replacements now don't insert the prefix and suffix of the field.
+﻿New: Added conditional feature. Syntax is {<?fieldname(Match text)>}. This will insert the prefix and suffix when the value of the match text matches the field.
+Note you can use regular expresions with the match text by using (!regular expression).
 
 Bugfix:
-Fix for index out of range: 0 when running the configure script on an empty library. (Previews will be disabled)
-Attempted fix for error when clicking insert buttons (never could reproduce this so I'm not sure if I fixed it or not)
-Previews now show & characters
+Fixed a bug where exclude group rules where duplicated.

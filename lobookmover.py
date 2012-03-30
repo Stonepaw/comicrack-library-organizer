@@ -1334,14 +1334,35 @@ class PathMaker(object):
         """Replaces a regex match with the correct text. Returns the original match if something is not valid."""
         match_groups = match.groupdict()
         result = ""
+        conditional = False
+        inversion = False
 
         name = match_groups["name"]
+        args = match_groups["args"]
+
+        #Inversions
         inversion = False
         if name.startswith("!"):
             inversion = True
             name = name.lstrip("!")
 
+        #Conditionals
+        if name.startswith("?"):
+            conditional = True
+            name = name.lstrip("?")
+            if args:
+                #Get the last arg and removing from the other args
+                r = re.search("(\([^(]*\))$", args)
+                if r is None:
+                    self.invalid += 1
+                    return match.group(0)
+                args = args[:-len(r.group(0))]
+                conditionalregex = r.group(0)[1:-1]
+            else:
+                self.invalid += 1
+                return match.group(0)
 
+        #Checking template names
         if name in self.template_to_field:
             field = self.template_to_field[name]
         else:
@@ -1350,13 +1371,30 @@ class PathMaker(object):
 
 
 
-
-        result = self.get_field_text(field, name, match_groups["args"])
+        #Get the fields
+        result = self.get_field_text(field, name, args)
         
+        #Invalid field result (possibly wrong number of arguments)
         if result is None:
             self.invalid += 1
             return match.group(0)
 
+        #Conditionals
+        if conditional:
+            if conditionalregex.startswith("!"):
+                if conditionalregex[1:] == "":
+                    return ""
+                if re.match(conditionalregex[1:], result) is not None:
+                    return match_groups["prefix"] + match_groups["postfix"]
+                else:
+                    return ""
+            else:
+                if result == conditionalregex:
+                    return match_groups["prefix"] + match_groups["postfix"]
+                else:
+                    return ""
+
+        #Empty results
         if not result:
             if self.profile.FailEmptyValues and field in self.profile.FailedFields:
                 if field not in self.failed_fields:
@@ -1372,6 +1410,7 @@ class PathMaker(object):
                 return ""
 
         else:
+            #If not empty but is an inversion match then return nothing.
             if inversion:
                 return ""
 

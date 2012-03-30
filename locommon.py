@@ -92,9 +92,12 @@ class ExcludeGroup(object):
     Contains a list of rules or rule groups and can calculate if a book should be moved under it's rules.
     """
     
-    def __init__(self, operator, rules = []):
+    def __init__(self, operator, rules = None):
 
-        self.rules = rules
+        if rules is None:
+            self.rules = []
+        else:
+            self.rules = rules
         
         self.operator = operator
         
