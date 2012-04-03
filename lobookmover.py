@@ -1336,15 +1336,22 @@ class PathMaker(object):
         result = ""
         conditional = False
         inversion = False
+        inversion_args = ""
 
         name = match_groups["name"]
         args = match_groups["args"]
 
         #Inversions
-        inversion = False
         if name.startswith("!"):
             inversion = True
             name = name.lstrip("!")
+            #Inversions can optionally have args.
+            if args:
+                #Get the last arg and removing from the other args
+                r = re.search("(\([^(]*\))$", args)
+                if r is not None:
+                    args = args[:-len(r.group(0))]
+                    inversion_args = r.group(0)[1:-1]
 
         #Conditionals
         if name.startswith("?"):
@@ -1357,7 +1364,7 @@ class PathMaker(object):
                     self.invalid += 1
                     return match.group(0)
                 args = args[:-len(r.group(0))]
-                conditionalregex = r.group(0)[1:-1]
+                conditional_args = r.group(0)[1:-1]
             else:
                 self.invalid += 1
                 return match.group(0)
@@ -1381,18 +1388,45 @@ class PathMaker(object):
 
         #Conditionals
         if conditional:
-            if conditionalregex.startswith("!"):
-                if conditionalregex[1:] == "":
+            #Regex conditional
+            if conditional_args.startswith("!"):
+                if conditional_args[1:] == "":
                     return ""
-                if re.match(conditionalregex[1:], result) is not None:
+                #Insert prefix and suffix if there is a match.
+                if re.match(conditional_args[1:], result) is not None:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
             else:
-                if result == conditionalregex:
+                #Text argument. Insert if matching the result
+                if result == conditional_args:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
+
+        #Inversions
+        if inversion:
+            if not inversion_args:
+                #No args so only insert the prefix and suffix if the result is empty
+                if not result:
+                    return match_groups["prefix"] + match_groups["postfix"]
+                else:
+                    return ""
+
+            elif inversion_args.startswith("!"):
+                #Regex so only insert the prefix and suffix if there is no matches
+                if re.match(inversion_args[1:], result) is None:
+                    return match_groups["prefix"] + match_groups["postfix"]
+                else:
+                    return ""
+            else:
+                #Text to match to. Only insert if the result doesn't match the arg
+                if result != inversion_args:
+                    return match_groups["prefix"] + match_groups["postfix"]
+                else:
+                    return ""
+
+
 
         #Empty results
         if not result:
@@ -1401,18 +1435,11 @@ class PathMaker(object):
                     self.failed_fields.append(field)
                 self.failed = True
 
-            if inversion:
-                return match_groups["prefix"] + match_groups["postfix"]
-
             if field in self.profile.EmptyData and self.profile.EmptyData[field]:
                 return self.profile.EmptyData[field]
             else:
                 return ""
 
-        else:
-            #If not empty but is an inversion match then return nothing.
-            if inversion:
-                return ""
 
         return match_groups["prefix"] + result + match_groups["postfix"]
     
