@@ -123,6 +123,10 @@ class WorkerForm(Form):
 
         report.report_text = result.report_text
 
+        for profile in profiles:
+            if profile.Mode == Mode.Simulate:
+                report.show_report = True
+
         e.Result = report
 
 
