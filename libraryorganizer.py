@@ -27,7 +27,7 @@ import System.IO
 from System.IO import File, StreamReader, StreamWriter
 
 clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import DialogResult, MessageBox
+from System.Windows.Forms import DialogResult, MessageBox, MessageBoxButtons, MessageBoxIcon
 
 clr.AddReference("System.Xml")
 import System.Xml
@@ -107,6 +107,10 @@ def LibraryOrganizerQuick(books):
             locommon.ComicRack = ComicRack
             lobookmover.ComicRack = ComicRack
             profiles, lastused = load_profiles(PROFILEFILE)
+
+            if len(profiles) == 1 and profiles[profiles.keys()[0]].BaseFolder == "":
+                MessageBox.Show("Library Organizer will not work as expected when the BaseFolder is empty. Please run the normal Library Organizer script or the Configure Library Organizer script before running Library Organizer Quick", "BaseFolder empty", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                return
             
             show_worker_form(profiles, lastused, books)
 

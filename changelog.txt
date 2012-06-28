@@ -1,2 +1,4 @@
-﻿2.1.3
-Change: Expaned inversion feature. Syntax is {<!fieldname(Optional match text)>}. This will insert the prefix and suffix when the value of the match text doesn't the field. You can use regular expresions as the match text by using (!regular expression). The match text or regular expression must be the last argument when using a field that uses other arguments such as first letter.
+﻿2.1.4
+Bugfix: Periods at the end of folders paths are now removed.
+Bugfix: Fixed error when running Library Organizer - Undo Last Move
+Change: Library Organizer Quick will now give a warning and exit when Basefolder is empty. 

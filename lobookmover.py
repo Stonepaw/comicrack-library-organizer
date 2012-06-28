@@ -728,6 +728,7 @@ class UndoMover(BookMover):
         self.HeldDuplicateBooks = {}
         self.logger = logger
         self.profiles = profiles
+        self.failed_or_skipped = False
 
 
     def process_books(self):
@@ -745,7 +746,7 @@ class UndoMover(BookMover):
                 skipped = len(books) + len(notfound) - success - failed
                 self.logger.Add("Canceled", str(skipped) + " files", "User cancelled the script")
                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0  or skipped > 0)
-                self.logger.SetCountVariables(failed, skipped, success)
+                #self.logger.SetCountVariables(failed, skipped, success)
                 return report
 
             result = self.process_book(book)
@@ -776,7 +777,7 @@ class UndoMover(BookMover):
                 skipped = len(books) + len(notfound) - success - failed
                 self.logger.Add("Canceled", str(skipped) + " files", "User cancelled the script")
                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0  or skipped > 0)
-                self.logger.SetCountVariables(failed, skipped, success)
+                #self.logger.SetCountVariables(failed, skipped, success)
                 return report
 
             result = self.process_duplicate_book(book, self.HeldDuplicateBooks[book])
@@ -798,7 +799,7 @@ class UndoMover(BookMover):
                 continue
 
         report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0  or skipped > 0)
-        self.logger.SetCountVariables(failed, skipped, success)
+        #self.logger.SetCountVariables(failed, skipped, success)
         return report
 
 
@@ -1275,6 +1276,8 @@ class PathMaker(object):
                 if not line.strip():
                     line = self.profile.EmptyFolder
                 line = self.replace_illegal_characters(line)
+                #Fix for illegal periods at the end of folder names
+                line = line.strip(".")
                 folder_path = Path.Combine(folder_path, line.strip())
         
         if self.failed and self.profile.MoveFailed:

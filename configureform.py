@@ -51,7 +51,7 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
-VERSION = "2.1.3"
+VERSION = "2.1.4"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
