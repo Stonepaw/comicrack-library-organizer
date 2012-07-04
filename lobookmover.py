@@ -40,7 +40,7 @@ from loforms import PathTooLongForm, MultiValueSelectionFormArgs, MultiValueSele
 
 import locommon
 
-from locommon import Mode, get_earliest_book, name_to_field, field_to_name, check_metadata_rules, check_excluded_folders, UNDOFILE, UndoCollection
+from locommon import Mode, get_earliest_book, name_to_field, field_to_name, check_metadata_rules, check_excluded_folders, UNDOFILE, UndoCollection, get_last_book
 
 from loduplicate import DuplicateResult, DuplicateForm, DuplicateAction
 
@@ -1205,7 +1205,7 @@ class PathMaker(object):
                          "manga" : "Manga", "seriesComplete" : "SeriesComplete", "first" : "FirstLetter", "read" : "ReadPercentage",
                          "counter" : "Counter", "startmonth" : "StartMonth", "startmonth#" : "StartMonth", "colorist" : "Colorist", "coverartist" : "CoverArtist",
                          "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
-                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam"}
+                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber"}
 
     template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
 
@@ -1465,11 +1465,20 @@ class PathMaker(object):
             elif field == "ReadPercentage" and len(args) == 3:
                 return self.insert_read_percentage(args)
 
-            elif field == "FirstLetter" and (args[0] in name_to_field or args[0] in field_to_name):
-                return self.insert_first_letter(args[0])
+            elif field == "FirstLetter":
+                if len(args) == 0:
+                   return None
+                elif args[0] in name_to_field or args[0] in field_to_name:
+                    return self.insert_first_letter(args[0])
 
             elif field == "Counter" and len(args) == 3:
                 return self.insert_counter(args)
+
+            elif field == "FirstIssueNumber":
+                return self.insert_first_issue_number(args_match)
+
+            elif field == "LastIssueNumber":
+                return self.insert_last_issue_number(args_match)
 
             #Yes/no fields can have 1 or 2 args
             elif field in self.yes_no_fields and 0 < len(args) < 3:
@@ -1695,6 +1704,30 @@ class PathMaker(object):
             if month in self.profile.Months:
                 return self.replace_illegal_characters(self.profile.Months[month])
             return ""
+
+
+    def insert_first_issue_number(self, padding):
+        """
+        padding is the padding used, can be none.
+        """
+        number = get_earliest_book(self.book).ShadowNumber
+        
+        if padding is not None and padding.isdigit():
+            return self.replace_illegal_characters(self.pad(number, int(padding)))
+        else:
+            return self.replace_illegal_characters(number)
+
+
+    def insert_last_issue_number(self, padding):
+        """
+        padding is the padding used, can be none.
+        """
+        number = get_last_book(self.book).ShadowNumber
+        
+        if padding is not None and padding.isdigit():
+            return self.replace_illegal_characters(self.pad(number, int(padding)))
+        else:
+            return self.replace_illegal_characters(number)
 
 
     def insert_multi_value_field(self, field, args):

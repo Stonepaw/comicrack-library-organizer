@@ -150,6 +150,15 @@ def LibraryOrganizerUndo(books):
         MessageBox.Show(str(ex))
 
 
+#@Name Library Organizer - Startup
+#@Enabled false
+#@Hook Startup
+#@Image libraryorganizer.png
+def LibraryOrganizerStartup():
+    books = ComicRack.App.GetLibraryBooks()
+    LibraryOrganizerQuick(books)
+
+
 def show_config_form(profiles, lastused, books):
     """Shows the configure form and saves the changes if the user press okay.
     Returns True if the user press Okay.
