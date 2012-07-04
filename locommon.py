@@ -50,6 +50,7 @@ clr.AddReferenceByPartialName('ComicRack.Engine')
 from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
 startbooks = {}
+endbooks = {}
 
 name_to_field = {"Age Rating" : "AgeRating", "Alternate Count" : "AlternateCount", "Alternate Number" : "AlternateNumber",
                  "Alternate Series" : "AlternateSeries", "Black And White" : "BlackAndWhite", "Characters" : "Characters", "Colorist" : "Colorist",
@@ -449,11 +450,68 @@ def get_earliest_book(book):
                 #Month is earlier
                 elif b.Month < startbook.Month:
                     startbook = b
+
+                #Month is the same so check for later issue numbers:
+                elif b.Month == startbook.Month:
+                    if b.ShadowNumber < startbook.ShadowNumber:
+                        startbook = b
             
     #Store this final result in the dict so no calculation require for others of the series.
     startbooks[index] = startbook
 
     return startbook
+
+
+
+def get_last_book(book):
+    """
+    Finds the last published issue of a series in the library.
+    Returns a ComicBook object.
+    """
+    #Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
+        
+    index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
+        
+    if index in endbooks:
+        return endbooks[index]
+
+    endbook = book
+            
+    for b in ComicRack.App.GetLibraryBooks():
+        if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+                    
+            #Notes:
+            #Year can be empty (-1)
+            #Month can be empty (-1)
+
+            #In case the initial value is bad
+            if endbook.ShadowYear == -1 and b.ShadowYear != 1:
+                startbook = b
+                    
+            #Check if the current book's year is later
+            if b.ShadowYear != -1 and b.ShadowYear > endbook.ShadowYear:
+                startbook = b
+
+            #Check if year the same and a valid month
+            if b.ShadowYear == endbook.ShadowYear and b.Month != -1:
+
+                #Current book has empty month
+                if endbook.Month == -1:
+                    endbook = b
+                        
+                #Month is later
+                elif b.Month > endbook.Month:
+                    endbook = b
+
+                #Month is the same so check for later issue numbers:
+                elif b.Month == endbook.Month:
+                    if b.ShadowNumber > endbook.ShadowNumber:
+                        endbook = b
+            
+    #Store this final result in the dict so no calculation require for others of the series.
+    endbooks[index] = endbook
+
+    return endbook
 
 
 

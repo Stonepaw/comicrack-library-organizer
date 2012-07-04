@@ -1,4 +1,5 @@
-﻿2.1.4
-Bugfix: Periods at the end of folders paths are now removed.
-Bugfix: Fixed error when running Library Organizer - Undo Last Move
-Change: Library Organizer Quick will now give a warning and exit when Basefolder is empty. 
+﻿2.1.5
+Bugfix: Fixed error when firstletter is typed manually into the template
+Bugfix: Should no longer overwrite profiles on updates.
+New: Added a script for startup. Disabled by default. When enabled it will organize every book in the library on startup.
+New: Added fields First Issue Number and Last Issue Number.

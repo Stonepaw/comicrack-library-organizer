@@ -1877,9 +1877,25 @@ class ConfigureForm(Form):
         self.StartMonth.Name = "Start Month"
         self._calculated_insert_controls_list["start month"] = self.StartMonth
 
+        self.FirstIssueNumber = InsertControlNumber()
+        self.FirstIssueNumber.Location = Point(4, 100)
+        self.FirstIssueNumber.Tag = self.FirstIssueNumber.Location
+        self.FirstIssueNumber.SetTemplate("firstissuenumber", "First Issue Number")
+        self.FirstIssueNumber.SetLabels("Prefix", "", "Suffix", "")
+        self.FirstIssueNumber.Name = "First Issue Number"
+        self._calculated_insert_controls_list["first issue number"] = self.FirstIssueNumber
+
+        self.LastIssueNumber = InsertControlNumber()
+        self.LastIssueNumber.Location = Point(4, 145)
+        self.LastIssueNumber.Tag = self.LastIssueNumber.Location
+        self.LastIssueNumber.SetTemplate("lastissuenumber", "Last Issue Number")
+        self.LastIssueNumber.SetLabels("Prefix", "", "Suffix", "")        
+        self.LastIssueNumber.Name = "Last Issue Number"
+        self._calculated_insert_controls_list["last issue number"] = self.LastIssueNumber
+
         self.FirstLetter = InsertControlFirstLetter()
         self.FirstLetter.SetTemplate("first", "FirstLetter")
-        self.FirstLetter.Location = Point(4, 100)
+        self.FirstLetter.Location = Point(4, 190)
         self.FirstLetter.Tag = self.FirstLetter.Location
         self.FirstLetter.SetLabels("Prefix", "", "Suffix", "Field")
         self.FirstLetter.Name = "First Letter"
@@ -1889,7 +1905,7 @@ class ConfigureForm(Form):
         self.Counter = InsertControlCounter()
         self.Counter.SetTemplate("counter", "Counter")
         self.Counter.SetLabels("Prefix", "", "Suffix", "Start", "Increment", "Pad")
-        self.Counter.Location = Point(4, 145)
+        self.Counter.Location = Point(4, 235)
         self.Counter.Name = "Counter"
         self.Counter.Tag = self.Counter.Location
         self._calculated_insert_controls_list["counter"] = self.Counter
@@ -1897,7 +1913,7 @@ class ConfigureForm(Form):
         self.Read = InsertControlReadPercentage()
         self.Read.SetTemplate("read", "Read %")
         self.Read.SetLabels("Prefix", "", "Suffix", "Text", "Operator", "Percent")
-        self.Read.Location = Point(4, 190)
+        self.Read.Location = Point(4, 280)
         self.Read.Tag = self.Read.Location
         self.Read.Name = "Read Percentage"
         self._calculated_insert_controls_list["read percentage"] = self.Read
@@ -1905,11 +1921,11 @@ class ConfigureForm(Form):
         # 
         # calculated_insert_controls_start_year_information
         # 
-        self._calculated_insert_controls_start_year_information.Location = System.Drawing.Point(225, 20)
+        self._calculated_insert_controls_start_year_information.Location = System.Drawing.Point(225, 10)
         self._calculated_insert_controls_start_year_information.Name = "calculated_insert_controls_start_year_information"
-        self._calculated_insert_controls_start_year_information.Size = System.Drawing.Size(253, 35)
+        self._calculated_insert_controls_start_year_information.Size = System.Drawing.Size(253, 50)
         self._calculated_insert_controls_start_year_information.TabIndex = 1
-        self._calculated_insert_controls_start_year_information.Text = "Start year and start month are calculated from the earliest issue of each series in your library."
+        self._calculated_insert_controls_start_year_information.Text = "Start year, start month, first issue number and last issue number are calculated from the available issues of each series in your library."
         
         self._calculated_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._calculated_insert_controls_list.Values))
         self._calculated_insert_controls.Controls.Add(self._calculated_insert_controls_start_year_information)
