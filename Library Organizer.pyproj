@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{c91c54bf-45ed-4964-b901-9059e4a512a7}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Program.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <IsWindowsApplication>True</IsWindowsApplication>
+    <AssemblyName>Library Organizer</AssemblyName>
+    <Name>Library Organizer</Name>
+    <RootNamespace>Library Organizer</RootNamespace>
+    <PublishUrl>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer-root\Release</PublishUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="arrow.png">
+      <Publish>True</Publish>
+    </None>
+    <None Include="changelog.txt">
+      <Publish>True</Publish>
+    </None>
+    <None Include="credits.txt">
+      <Publish>True</Publish>
+    </None>
+    <None Include="libraryorganizer.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="lobookmover.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="locommon.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="loduplicate.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="loforms.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="lologger.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="losettings.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="losettingsx.dat">
+      <Publish>False</Publish>
+    </None>
+    <None Include="loworkerform.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="Package.ini">
+      <Publish>True</Publish>
+    </None>
+    <None Include="Program.py">
+      <Publish>False</Publish>
+    </None>
+    <None Include="pyevent.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="todo.txt">
+      <Publish>False</Publish>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="configformcontrols.py">
+      <Publish>True</Publish>
+    </Compile>
+    <Compile Include="configureform.py">
+      <Publish>True</Publish>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="add_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="arrow_down_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="blue_arrow_up_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="chart_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="close_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="DuplicateForm.xaml">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="folder_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="home_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizer.ico">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizer.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizerquick.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="lopackagelogo.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="page_text_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="pencil_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="save_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="tools_32.png">
+      <Publish>True</Publish>
+    </Content>
+  </ItemGroup>
+</Project>
