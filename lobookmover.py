@@ -1533,6 +1533,10 @@ class PathMaker(object):
         if number == "":
             return ""
 
+        if padding == 0:
+            value = getattr(get_last_book(self.book), field)
+            padding = len(str(value))
+
         return self.replace_illegal_characters(self.pad(number, padding))
 
 
