@@ -51,7 +51,7 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
-VERSION = "2.1.6"
+VERSION = "2.1.7"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -2144,7 +2144,7 @@ class ConfigureForm(Form):
         """Stops any illegal character from being entered as an illegal character replacement."""
         if e.KeyChar in ("\\", "/", "|", "*", "<", ">", "?", '"', ":"):
             e.Handled = True
-
+        self.profile.IllegalCharacters[self._illegal_character_selector.SelectedItem] = self._illegal_character_replacement.Text
 
     def add_illegal_character(self, sender, e):
         """Adds a new character replacement into the form and profile"""
@@ -2583,6 +2583,9 @@ class ConfigureForm(Form):
         self.profile.FailEmptyValues = self._failed_empty_checkbox.Checked
         self.profile.MoveFailed = self._move_failed_empty.Checked
         self.profile.CopyReadPercentage = self._copy_read_percentage.Checked
+        self.illegal_character_replacement_leave(self._illegal_character_replacement, None)
+        self.month_name_leave(self._month_name, None)
+        self.empty_subsititution_value_leave(self._empty_substitution_value, None)
 
 
     #These 11 methods manage the profile actions

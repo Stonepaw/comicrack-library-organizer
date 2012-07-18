@@ -1,3 +1,2 @@
-﻿2.1.6
-Added automatic padding to number fields. (Use a padding of 0)
-Fix for a small error when logging when a folder fails to be created.
+﻿2.1.7
+Fixed saving empty illegal characters
