@@ -209,6 +209,8 @@ class Profile:
         xmlwriter->The xml writer to write with.
         write_empty->A bool of whether to write empty values to the xml file. Default is don't write them.
         """
+        if attribute_name in ("IllegalCharacters", "Months"):
+            write_empty = True
         dictionary = getattr(self, attribute_name)
         xmlwriter.WriteStartElement(attribute_name)
         for key in dictionary:
