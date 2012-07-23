@@ -1,2 +1,5 @@
-﻿2.1.7
-Fixed saving empty illegal characters
+﻿2.1.8
+Fixes an error when handleing an error that occurs when moving files.
+Restored default templates for new users.
+
+

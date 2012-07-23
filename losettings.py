@@ -392,6 +392,9 @@ def load_profiles(file_path):
         #Just in case
         profiles["Default"] = Profile()
         profiles["Default"].Name = "Default"
+        #Some default templates
+        profiles["Default"].FileTemplate = "{<series>}{ Vol.<volume>}{ #<number2>}{ (of <count2>)}{ ({<month>, }<year>)}"
+        profiles["Default"].FolderTemplate = "{<publisher>}\{<imprint>}\{<series>}{ (<startyear>{ <format>})}"
         
     if not lastused:
         lastused = [profiles.keys()[0]]

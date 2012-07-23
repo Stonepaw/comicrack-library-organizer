@@ -661,7 +661,7 @@ class BookMover(object):
                     Directory.CreateDirectory(folder_path)
 
             except (IOException, ArgumentException, ArgumentNullException, PathTooLongException, DirectoryNotFoundException, NotSupportedException), ex:
-                self.logger.Add("Failed to create folder", folder_path, "Book " + self.report_book_name + " was not moved.\nThe error was: " + str(type(ex)) + ": " + ex.message)
+                self.logger.Add("Failed to create folder", folder_path, "Book " + self.report_book_name + " was not moved.\nThe error was: " + str(type(ex)) + ": " + ex.Message)
                 return MoveResult.Failed
 
         return MoveResult.Success
