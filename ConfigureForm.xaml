@@ -1,0 +1,1041 @@
+<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="MainWindow" Height="502" Width="640"
+        UseLayoutRounding="True"
+        Name="ConfigureForm"
+        Background="{x:Static SystemColors.ControlBrush}" ResizeMode="NoResize">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <!-- For changing the tabs on the tab control to white-->
+        <Style TargetType="{x:Type TabItem}" xmlns:s="clr-namespace:System;assembly=mscorlib" x:Key="WhiteTabItem">
+            <Style.Resources>
+                <ResourceDictionary />
+            </Style.Resources>
+            <Setter Property="FrameworkElement.FocusVisualStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type IFrameworkInputElement}">
+                        <Style.Resources>
+                            <ResourceDictionary />
+                        </Style.Resources>
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2" Margin="3,3,3,1" SnapsToDevicePixels="True" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="TextElement.Foreground">
+                <Setter.Value>
+                    <SolidColorBrush>
+                        #FF000000</SolidColorBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.Padding">
+                <Setter.Value>
+                    <Thickness>
+                        6,1,6,1</Thickness>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Border.BorderBrush">
+                <Setter.Value>
+                    <SolidColorBrush>
+                        #FF8C8E94</SolidColorBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Panel.Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Color="#FFF3F3F3" Offset="0" />
+                            <GradientStop Color="#FFEBEBEB" Offset="0.5" />
+                            <GradientStop Color="#FFDDDDDD" Offset="0.5" />
+                            <GradientStop Color="#FFCDCDCD" Offset="1" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.HorizontalContentAlignment">
+                <Setter.Value>
+                    <x:Static Member="HorizontalAlignment.Stretch" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.VerticalContentAlignment">
+                <Setter.Value>
+                    <x:Static Member="VerticalAlignment.Stretch" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border BorderThickness="1,1,1,0" Padding="{TemplateBinding Control.Padding}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="Bd">
+                                <ContentPresenter RecognizesAccessKey="True" Content="{TemplateBinding HeaderedContentControl.Header}" ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}" ContentStringFormat="{TemplateBinding HeaderedContentControl.HeaderStringFormat}" ContentSource="Header" Name="Content" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="UIElement.IsMouseOver">
+                                <Setter Property="Panel.Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <LinearGradientBrush.GradientStops>
+                                                <GradientStop Color="#FFEAF6FD" Offset="0.15" />
+                                                <GradientStop Color="#FFD9F0FC" Offset="0.5" />
+                                                <GradientStop Color="#FFBEE6FD" Offset="0.5" />
+                                                <GradientStop Color="#FFA7D9F5" Offset="1" />
+                                            </LinearGradientBrush.GradientStops>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>
+                                        True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="Selector.IsSelected">
+                                <Setter Property="Panel.ZIndex">
+                                    <Setter.Value>
+                                        <s:Int32>
+                                            1</s:Int32>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Panel.Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        White
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>
+                                        True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelected">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                False</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                    <Condition Property="UIElement.IsMouseOver">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                True</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Border.BorderBrush" TargetName="Bd">
+                                    <Setter.Value>
+                                        <SolidColorBrush>
+                                            #FF3C7FB1</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiTrigger>
+                            <Trigger Property="TabItem.TabStripPlacement">
+                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            1,0,1,1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <x:Static Member="Dock.Bottom" />
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="TabItem.TabStripPlacement">
+                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            1,1,0,1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <x:Static Member="Dock.Left" />
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="TabItem.TabStripPlacement">
+                                <Setter Property="Border.BorderThickness" TargetName="Bd">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,1,1,1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <x:Static Member="Dock.Right" />
+                                </Trigger.Value>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelected">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                True</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                    <Condition Property="TabItem.TabStripPlacement" Value="{x:Static Dock.Top}" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="FrameworkElement.Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            -2,-2,-2,-1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="Content">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,0,0,1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelected">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                True</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                    <Condition Property="TabItem.TabStripPlacement" Value="{x:Static Dock.Bottom}" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="FrameworkElement.Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            -2,-1,-2,-2</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="Content">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,1,0,0</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelected">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                True</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                    <Condition Property="TabItem.TabStripPlacement" Value="{x:Static Dock.Left}" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="FrameworkElement.Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            -2,-2,-1,-2</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="Content">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            0,0,1,0</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Selector.IsSelected">
+                                        <Condition.Value>
+                                            <s:Boolean>
+                                                True</s:Boolean>
+                                        </Condition.Value>
+                                    </Condition>
+                                    <Condition Property="TabItem.TabStripPlacement" Value="{x:Static Dock.Right}" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="FrameworkElement.Margin">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            -1,-2,-2,-2</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="Content">
+                                    <Setter.Value>
+                                        <Thickness>
+                                            1,0,0,0</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiTrigger>
+                            <Trigger Property="UIElement.IsEnabled">
+                                <Setter Property="Panel.Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <SolidColorBrush>
+                                            #FFF4F4F4</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="Bd">
+                                    <Setter.Value>
+                                        <SolidColorBrush>
+                                            #FFC9C7BA</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextElement.Foreground">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>
+                                        False</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style  TargetType="{x:Type ToggleButton}" x:Key="PageButton2">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="70" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style TargetType="{x:Type RadioButton}" x:Key="PageButton" BasedOn="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="70" />
+        </Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ExcludeRuleNumericOperator">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="Numeric">
+                    <Setter Property="SelectedValue" Value="{Binding Path=Operator, Mode=TwoWay}" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ExcludeRuleStringOperator">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="String">
+                    <Setter Property="SelectedValue" Value="{Binding Path=Operator, Mode=TwoWay}" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ExcludeRuleYesNoOperator">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="YesNo">
+                    <Setter Property="SelectedValue" Value="{Binding Path=Operator, Mode=TwoWay}" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ExcludeRuleBoolOperator">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="Bool">
+                    <Setter Property="SelectedValue" Value="{Binding Path=Operator, Mode=TwoWay}" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ExcludeRuleMangaYesNoOperator">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="MangaYesNo">
+                    <Setter Property="SelectedValue" Value="{Binding Path=Operator, Mode=TwoWay}" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type TextBox}" x:Key="ExcludeRuleValue">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Type}" Value="MangaYesNo">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=Type}" Value="YesNo">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="ExcludeRule">
+            <Grid Margin="0, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ExlcudeRuleFieldComboBox" Grid.Column="0" SelectedValue="{Binding Path=field}" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_field_names}" SelectedValuePath="Value" DisplayMemberPath="Key"  Margin="0,0,5,0" SelectionChanged="exclude_rules_field_selection_changed"  />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_string_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleStringOperator}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_numeric_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleNumericOperator}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleYesNoOperator}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_bool_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleMangaYesNoOperator}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleMangaYesNoOperator}" />
+                <TextBox Grid.Column="2" Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ExcludeRuleValue}" />
+                <Button Click="drop_down_button_clicked" Grid.Column="3" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4" Margin="5, 0, 0, 0" >
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add Rule" Command="{Binding Path=parent.InsertNewRule}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Add Group" Command="{Binding Path=parent.InsertNewGroup}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Delete" Command="{Binding Path=parent.RemoveRule}" CommandParameter="{Binding}" />
+                            <Separator />
+                            <MenuItem Header="Move Up" Command="{Binding Path=parent.MoveRuleUp}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Move Down" Command="{Binding Path=parent.MoveRuleDown}" CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                    <Path Data="M0,0L3.5,4 7,0z" Fill="#FF000000" Name="Arrow" Margin="0,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <!--<Button Grid.Column="3" Margin="5, 0, 0, 0" Content="-" VerticalAlignment="Center" Padding="5, 0" HorizontalAlignment="Center" Click="remove_rule" Tag="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ItemsControl, AncestorLevel=1}, Path=ItemsSource}"/>-->
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ExcludeGroup">
+            <DockPanel LastChildFill="False" Margin="0, 10, 0, 0">
+                <DockPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Padding" Value="5, 2, 5, 2" />
+                        <Setter Property="Margin" Value="5, 0, 5, 0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </DockPanel.Resources>
+                <ItemsControl ItemsSource="{Binding Path=rules}" ItemTemplateSelector="{StaticResource ResourceKey=rulestemplateselector}" Margin="20, 0, 0, 0" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch" />
+                <Label>Match</Label>
+                <ComboBox VerticalAlignment="Center" MinWidth="50" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_group_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=operator, Mode=TwoWay}" />
+                <Label>of the following rules</Label>
+                <!--<Button DockPanel.Dock="Right" Padding="5, 0" Tag="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ItemsControl, AncestorLevel=1}, Path=ItemsSource}" Click="remove_rule" Margin="5, 0, 0, 0" VerticalAlignment="Center">-</Button>-->
+                <Button Click="drop_down_button_clicked" DockPanel.Dock="Right" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4" Margin="5, 0, 0, 0">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add Rule" Command="{Binding Path=parent.InsertNewRule}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Add Group" Command="{Binding Path=parent.InsertNewGroup}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Delete" Command="{Binding Path=parent.RemoveRule}" CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                    <Path Data="M0,0L3.5,4 7,0z" Fill="#FF000000" Name="Arrow" Margin="0,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+            </DockPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+            <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0">
+                <StackPanel>
+                    <Image Stretch="None">
+                        <Image.Source>
+                            <BitmapImage UriSource="home_32.png" />
+                        </Image.Source>
+                    </Image>
+                    <Label Content="Overview" HorizontalAlignment="Center" />
+                </StackPanel>
+            </RadioButton>
+            <RadioButton IsEnabled="{Binding ElementName=UseFileOrganization, Path=IsChecked}" Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FileButton">
+                <StackPanel>
+                    <Image IsEnabled="{Binding ElementName=UseFileOrganization, Path=IsChecked}" Stretch="None">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.5" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.Source>
+                            <BitmapImage UriSource="page_text_32.png" DecodePixelWidth="32"  />
+                        </Image.Source>
+                    </Image>
+                    <Label Content="Files" HorizontalAlignment="Center" />
+                </StackPanel>
+            </RadioButton>
+            <RadioButton IsEnabled="{Binding ElementName=UseFolderOrganization, Path=IsChecked}" Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FolderButton">
+                <StackPanel>
+                    <Image Stretch="None" IsEnabled="{Binding ElementName=UseFolderOrganization, Path=IsChecked}" >
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.5" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                        <Image.Source>
+                            <BitmapImage UriSource="folder_32.png" DecodePixelWidth="32"  />
+                        </Image.Source>
+                    </Image>
+                    <Label Content="Folders" />
+                </StackPanel>
+            </RadioButton>
+            <RadioButton Style="{StaticResource PageButton}" Tag="2" Checked="Page_Button_Checked">
+                <StackPanel>
+                    <Image Stretch="None">
+                        <Image.Source>
+                            <BitmapImage UriSource="chart_32.png" DecodePixelWidth="32"  />
+                        </Image.Source>
+                    </Image>
+                    <Label Content="Rules" />
+                </StackPanel>
+            </RadioButton>
+            <RadioButton Style="{StaticResource PageButton}" Name="OptionsButton" Tag="3" Checked="Page_Button_Checked">
+                <StackPanel>
+                    <Image Stretch="None">
+                        <Image.Source>
+                            <BitmapImage UriSource="tools_32.png" DecodePixelWidth="32"  />
+                        </Image.Source>
+                    </Image>
+                    <Label Content="Options" />
+                </StackPanel>
+            </RadioButton>
+        </StackPanel>
+        <Grid DockPanel.Dock="Top" Margin="0, 5, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="Margin" Value="3,0,3,0" />
+                </Style>
+            </Grid.Resources>
+            <Label x:Name="ProfileLabel" Grid.Column="0">Profile:</Label>
+            <ComboBox Width="Auto" MinWidth="200" x:Name="ProfileSelector" Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=profilenames}" SelectionChanged="Profile_SelectionChanged" VerticalAlignment="Center"></ComboBox>
+            <Menu Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Static SystemColors.ControlBrush}">
+                <MenuItem Header="Profile Actions" VerticalContentAlignment="Stretch" Padding="7,4,8,5">
+                    <MenuItem.Icon>
+                        <Image Stretch="None">
+                            <Image.Source>
+                                <BitmapImage UriSource="tools_32.png" DecodePixelWidth="16" />
+                            </Image.Source>
+                        </Image>
+                    </MenuItem.Icon>
+                    <MenuItem Header="New">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="add_16.png" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Rename">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="pencil_32.png" DecodePixelWidth="16" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Delete">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="close_16.png" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Duplicate">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="save_32.png" DecodePixelWidth="16" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Import">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="arrow_down_16.png" DecodePixelWidth="16" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Export">
+                        <MenuItem.Icon>
+                            <Image>
+                                <Image.Source>
+                                    <BitmapImage UriSource="blue_arrow_up_32.png" DecodePixelWidth="16" />
+                                </Image.Source>
+                            </Image>
+                        </MenuItem.Icon>
+                        <MenuItem Header="Export"></MenuItem>
+                        <MenuItem Header="Export All"></MenuItem>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </Grid>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5">Okay</Button>
+            <Button Grid.Column="1" HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5">Cancel</Button>
+        </Grid>
+        <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" Background="Transparent" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ConfigureForm, Path=profile}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Visibility="Collapsed" x:Name="OverviewPage">
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White">
+                    <AdornerDecorator>
+                        <Canvas Margin="5">
+                            <GroupBox Header="Mode" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas, AncestorLevel=1}, Path=ActualWidth}">
+                                <Grid Margin="0,5,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".2*"/>
+                                        <ColumnDefinition Width=".3*" />
+                                        <ColumnDefinition Width=".3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <RadioButton HorizontalAlignment="Center" x:Name="Move" Checked="mode_check_changed">Move</RadioButton>
+                                    <RadioButton Grid.Column="1" HorizontalAlignment="Center" x:Name="Copy" Checked="mode_check_changed">Copy</RadioButton>
+                                    <RadioButton Grid.Column="2" HorizontalAlignment="Center" x:Name="Simulate" Checked="mode_check_changed">Simulate</RadioButton>
+                                    <CheckBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Padding="4,0,0,0" Margin="0,5,0,0" VerticalAlignment="Center" x:Name="CopyOption" IsEnabled="{Binding ElementName=Copy, Path=IsChecked}">
+                                        <TextBlock TextWrapping="Wrap" x:Name="CopyOptionLabel">Add copied book to library</TextBlock>
+                                    </CheckBox>
+                                    <TextBlock Grid.Column="3" Grid.Row="2" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center" x:Name="SimulateLabel">No files will be moved or renamed. A log file will be created.</TextBlock>
+                                </Grid>
+                            </GroupBox>
+                            <Grid Canvas.Top="110" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas, AncestorLevel=1}, Path=ActualWidth}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="BaseFolderLabel">Base Folder:</Label>
+                                <TextBox Grid.Column="1" VerticalAlignment="Center" x:Name="BaseFolder" Text="{Binding Path=BaseFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}" />
+                                <Button Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0" Padding="5,1" Click="Button_Browse_Click">Browse</Button>
+                            </Grid>
+                            <Grid Canvas.Top="160" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas, AncestorLevel=1}, Path=ActualWidth}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <CheckBox Margin="0, 0, 20, 0" HorizontalAlignment="Left" x:Name="UseFileOrganization" IsChecked="{Binding Path=UseFileName, Mode=TwoWay}">Use file organization</CheckBox>
+                                <CheckBox Grid.Column="1" HorizontalAlignment="Left" Margin="15, 0" x:Name="UseFolderOrganization" IsChecked="{Binding Path=UseFolder, Mode=TwoWay}">Use folder organization</CheckBox>
+                                <CheckBox x:Name="CopyFileless" Grid.Column="0" Margin="0, 0, 20, 0" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" IsChecked="{Binding Path=MoveFileless, Mode=TwoWay}">
+                                    <TextBlock TextWrapping="Wrap" x:Name="CopyFilelessLabel">Copy fileless book custom thumbnails to the calculated path.(Does not affect the original image)</TextBlock>
+                                </CheckBox>
+                                <Label Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" x:Name="FilelessImageFormatLabel" IsEnabled="{Binding ElementName=CopyFileless, Path=IsChecked}" >Image Format</Label>
+                                <ComboBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="70" x:Name="FilelessImageFormat" IsEnabled="{Binding ElementName=CopyFileless, Path=IsChecked}" SelectedItem="{Binding Path=FilelessFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=ConfigureForm, Path=filelessformats}"/>
+                            </Grid>
+                        </Canvas>
+                    </AdornerDecorator>
+                </Border>
+            </TabItem>
+            <TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White">
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0">
+                            <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">File Structure:</Label>
+                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Folder Structure:</Label>
+                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label x:Name="PreviewLabel">Preivew:</Label>
+                            <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0, 10">
+                            <StackPanel.Resources>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Margin" Value="10, 0, 0, 0"  />
+                                    <Setter Property="Padding" Value="5, 1"  />
+                                </Style>
+                            </StackPanel.Resources>
+                            <Label>Field:</Label>
+                            <ComboBox x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0">
+                            </ComboBox>
+                            <Button VerticalAlignment="Center">Insert Field</Button>
+                            <Button VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Insert Folder Seperator</Button>
+                        </StackPanel>
+                        <GroupBox x:Name="InsertArguments"  Header="Options" Grid.Row="2">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <WrapPanel Grid.Row="0">
+                                    <WrapPanel.Resources>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Label.HorizontalAlignment" Value="Center"/>
+                                        </Style>
+                                        <Style TargetType="{x:Type TextBox}">
+                                            <Setter Property="Width" Value="Auto" />
+                                        </Style>
+                                        <Style TargetType="{x:Type StackPanel}">
+                                            <Setter Property="Margin" Value="5, 0" />
+                                        </Style>
+                                    </WrapPanel.Resources>
+                                    <StackPanel>
+                                        <Label>Prefix</Label>
+                                        <TextBox />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <Label>Suffix</Label>
+                                        <TextBox />
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <!--<Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Numerical">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Month" />
+                                                            <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>-->
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Padding</Label>
+
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="YesNo">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Inserted Text</Label>
+                                        <TextBox/>
+                                    </StackPanel>
+                                    <StackPanel VerticalAlignment="Bottom" Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="YesNo">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <ToggleButton Padding="5,1">!</ToggleButton>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="MultiValue">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Seperator</Label>
+                                        <TextBox></TextBox>
+                                    </StackPanel>
+                                    <StackPanel VerticalAlignment="Center" Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="MultiValue">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <CheckBox>All Issues in series</CheckBox>
+                                    </StackPanel>
+                                    <StackPanel VerticalAlignment="Center" Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Month">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <CheckBox x:Name="UseMonthNames">Use month names</CheckBox>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="FirstLetter">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Field</Label>
+                                        <ComboBox Width="100">
+                                            <ComboBoxItem>Series</ComboBoxItem>
+                                            <ComboBoxItem>Longggggg Text</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Start</Label>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Increment</Label>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Operator</Label>
+                                        <ComboBox>
+                                            <ComboBoxItem>=</ComboBoxItem>
+                                            <ComboBoxItem>></ComboBoxItem>
+                                            <ComboBoxItem>&lt;</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <StackPanel Margin="5, 0">
+                                        <StackPanel.Style>
+                                            <Style>
+                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
+                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <Label>Percent</Label>
+
+                                    </StackPanel>
+                                </WrapPanel>
+                                <CheckBox Grid.Row="1" Margin="5">Space inserted fields automatically</CheckBox>
+                            </Grid>
+                        </GroupBox>
+
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Visibility="Collapsed" x:Name="RulesPage" >
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White" Padding="5">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                        <StackPanel>
+                            <Expander Header="Folders Rules" Padding="5" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock TextWrapping="Wrap">Do not move files that are in the folders:</TextBlock>
+                                    <ListBox Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Height="100" Margin="0, 0, 5, 0"></ListBox>
+                                    <Button Grid.Column="1" Grid.Row="1" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                    <Button Grid.Column="1" Grid.Row="2" Content="Remove" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Expander>
+                            <Expander  Padding="5" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Margin="0,5,0,0">
+                                <Expander.Header>
+                                    Comic Field Rules
+                                </Expander.Header>
+                                <DockPanel Background="White">
+                                    <DockPanel.Resources>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Padding" Value="5, 2, 5, 2" />
+                                            <Setter Property="Margin" Value="5, 0, 5, 0" />
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                        <Style TargetType="{x:Type ComboBox}">
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="VerticalAlignment" Value="Center" />
+                                        </Style>
+                                    </DockPanel.Resources>
+                                    <Grid DockPanel.Dock="Top">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <WrapPanel HorizontalAlignment="Left" Margin="5" Grid.Column="0">
+                                            <ComboBox MinWidth="70" SelectedValue="{Binding Path=ExcludeRules.operator}" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_mode}" DisplayMemberPath="Value" SelectedValuePath="Key" />
+                                            <Label>move books that match</Label>
+                                            <ComboBox MinWidth="50" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_group_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=ExcludeRules.mode, Mode=TwoWay}" />
+                                            <Label>of the following rules</Label>
+                                        </WrapPanel>
+                                        <Button Click="drop_down_button_clicked" Grid.Column="1" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4">
+                                            <Button.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Add Rule" Command="{Binding Path=ExcludeRules.AddNewRule}" />
+                                                    <MenuItem Header="Add Group" Command="{Binding Path=ExcludeRules.AddNewGroup}" />
+                                                </ContextMenu>
+                                            </Button.ContextMenu>
+                                            <Path Data="M0,0L3.5,4 7,0z" Fill="#FF000000" Name="Arrow" Margin="0,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Button>
+                                    </Grid>
+                                    <ItemsControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" ItemsSource="{Binding Path=ExcludeRules.rules}" ItemTemplateSelector="{StaticResource rulestemplateselector}" Margin="5" HorizontalContentAlignment="Stretch" BorderThickness="0" Padding="0" />
+                                </DockPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </TabItem>
+            <TabItem Name="OptionsPage" Visibility="Collapsed">
+                <TabControl SelectedIndex="2" Padding="10" Background="White">
+                    <TabItem Header="General Options" Style="{StaticResource WhiteTabItem}">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Path=ReplaceMultipleSpaces}">Replace multiple spaces with a single space</CheckBox>
+                                <CheckBox IsChecked="{Binding Path=CopyReadPercentage}">
+                                    <TextBlock TextWrapping="Wrap">When overwriting an existing file, copy the read percentage to the new file</TextBlock>
+                                </CheckBox>
+                                <CheckBox IsChecked="{Binding Path=DontAskWhenMultiOne}">If there is only one value in a multiple value field then insert it without asking</CheckBox>
+                                <DockPanel>
+                                    <Label DockPanel.Dock="Bottom" VerticalAlignment="Center">(Leave empty to remove empty folder names in the path)</Label>
+                                    <Label DockPanel.Dock="Left" VerticalAlignment="Center">Replace empty folder names with:</Label>
+                                    <TextBox Text="{Binding Path=EmptyFolder, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
+                                </DockPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label>Month</Label>
+                                    <ComboBox ItemsSource="{Binding Path=Months}" Name="MonthSelector"  SelectionChanged="months_selection_changed" VerticalAlignment="Center" />
+                                    <Label>is</Label>
+                                    <TextBox Width="100" x:Name="MonthName" TextChanged="months_text_changed" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label>Replace Illegal character</Label>
+                                    <ComboBox VerticalAlignment="Center" ItemsSource="{Binding ElementName=ConfigureForm, Path=illegal_characters}" x:Name="illegal_characters_selector" SelectionChanged="illegal_characters_selector_selection_changed" />
+                                    <Label>with</Label>
+                                    <TextBox Width="50" VerticalAlignment="Center" x:Name="illegal_character_textbox" PreviewTextInput="illegal_character_textbox_preview_text_input" />
+                                    <ToggleButton Padding="5, 0" Margin="5, 0" VerticalAlignment="Center" Content="+" x:Name="show_illegal_character_popup_button" />
+                                    <Popup x:Name="add_illegal_character_popup" StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding ElementName=show_illegal_character_popup_button, Path=IsChecked}" PlacementTarget="{Binding ElementName=show_illegal_character_popup_button}">
+                                        <Border Background="White" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Padding="5">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBox Margin="0, 0, 5, 0" Width="20" MaxLength="1" PreviewTextInput="illegal_character_textbox_preview_text_input" x:Name="add_illegal_character_textbox"/>
+                                                <Button Content="Add" Click="add_illegal_character" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
+                                    <Button Padding="5, 0" Margin="5,0" VerticalAlignment="Center" Click="remove_illegal_character">-</Button>
+                                </StackPanel>
+                                <DockPanel>
+                                    <Label>When</Label>
+                                    <ComboBox x:Name="EmptyFieldSubstitutionFieldNames" VerticalAlignment="Center" />
+                                    <Label>is empty then substitue with:</Label>
+                                    <TextBox  x:Name="EmptyFieldSubstitutionSubstitution" VerticalAlignment="Center"></TextBox>
+                                </DockPanel>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="RemoveEmptyFolders"  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" IsChecked="{Binding Path=RemoveEmptyFolder}">Remove empty folders</CheckBox>
+                                    <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}">But do not remove these folders</Label>
+                                    <ListView Grid.Column="0" Grid.Row="2" Height="80" ItemsSource="{Binding Path=ExcludedEmptyFolder}" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}" />
+                                    <Button Margin="5"  Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" Click="add_excluded_folder" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}">Add</Button>
+                                    <Button Margin="5"  Grid.Column="1" Grid.Row="2" Width="Auto" VerticalAlignment="Bottom" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}">Remove</Button>
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Empty values" Style="{StaticResource WhiteTabItem}">
+                        <StackPanel>
+
+
+                            <CheckBox Margin="0, 20, 0, 5">If any of the selected fields are empty then mark the operation as failed</CheckBox>
+                            <Grid Margin="10, 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <CheckBox Grid.Column="0" Grid.Row="1" Margin="0, 5">Move/copy them to this folder</CheckBox>
+                                <TextBox Grid.Column="0" Grid.Row="2" />
+                                <Button Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" Margin="5, 0">Browse</Button>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
