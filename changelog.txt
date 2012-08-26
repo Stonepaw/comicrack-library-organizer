@@ -1,5 +1,5 @@
-﻿2.1.5
-Bugfix: Fixed error when firstletter is typed manually into the template
-Bugfix: Should no longer overwrite profiles on updates.
-New: Added a script for startup. Disabled by default. When enabled it will organize every book in the library on startup.
-New: Added fields First Issue Number and Last Issue Number.
+﻿2.1.8
+Fixes an error when handleing an error that occurs when moving files.
+Restored default templates for new users.
+
+
