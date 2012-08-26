@@ -31,18 +31,16 @@ import System
 clr.AddReference("System.Xml")
 
 from System import Convert
-from System.Collections.Generic import Dictionary, SortedDictionary
-from System.Collections.ObjectModel import ObservableCollection
 from System.IO import File, StreamReader, StreamWriter
 from System.Xml import XmlDocument, XmlWriter, XmlWriterSettings
 
 from System.Windows.Forms import MessageBox, MessageBoxIcon, MessageBoxButtons
 
-from locommon import ExcludeRule, ExcludeGroup, Mode, PROFILEFILE, VERSION, ExcludeRuleCollection
+from locommon import ExcludeRule, ExcludeGroup, Mode, PROFILEFILE, VERSION
 
 
 
-class Profile(object):
+class Profile:
     """This class contains all the variables for a profile.
     Use save_to_xml to save the profile to a xml file.
     Use load_from_xml to load the profile from the file.
@@ -51,7 +49,7 @@ class Profile(object):
     """
     def __init__(self):
         
-        self.Version = VERSION
+        self.Version = 0
 
         self.FolderTemplate = ""
         self.BaseFolder = ""
@@ -82,15 +80,19 @@ class Profile(object):
     
         self.DontAskWhenMultiOne = True
         
-        self.ExcludeRules = ExcludeRuleCollection()
+        self.ExcludeRules = []
     
-    
+        self.ExcludeOperator = "Any"
+        
         self.RemoveEmptyFolder = True
-        self.ExcludedEmptyFolder = ObservableCollection[str]()
+        self.ExcludedEmptyFolder = []
         
         self.MoveFileless = False       
         self.FilelessFormat = ".jpg"
         
+        self.ExcludeMode = "Do not"
+        
+
         self.FailEmptyValues = False
         self.MoveFailed = False
         self.FailedFolder = ""
@@ -121,7 +123,6 @@ class Profile(object):
 
 
     def update(self):
-        #Major version
         if self.Version < 2.0:
             if self.Mode is "Test":
                 self.Mode = "Simulate"
@@ -155,9 +156,6 @@ class Profile(object):
                     self.Seperator[insert_control_replacements[key]] = self.Seperator[key]
                     del(self.Seperator[key])
 
-        
-
-
         self.Version = VERSION
 
                 
@@ -189,9 +187,9 @@ class Profile(object):
                 self.write_list_to_xml(var_name, xwriter)
 
         xwriter.WriteStartElement("ExcludeRules")
-        xwriter.WriteAttributeString("Operator", self.ExcludeRules.operator)
-        xwriter.WriteAttributeString("ExcludeMode", self.ExcludeRules.mode)
-        for rule in self.ExcludeRules.rules:
+        xwriter.WriteAttributeString("Operator", self.ExcludeOperator)
+        xwriter.WriteAttributeString("ExcludeMode", self.ExcludeMode)
+        for rule in self.ExcludeRules:
             if rule:
                 rule.save_xml(xwriter)
         xwriter.WriteEndElement()
@@ -216,35 +214,6 @@ class Profile(object):
         dictionary = getattr(self, attribute_name)
         xmlwriter.WriteStartElement(attribute_name)
         for key in dictionary:
-            if dictionary[key] or write_empty:
-                xmlwriter.WriteStartElement("Item")
-                xmlwriter.WriteStartAttribute("Name")
-                xmlwriter.WriteValue(key)
-                xmlwriter.WriteEndAttribute()
-                xmlwriter.WriteStartAttribute("Value")
-                xmlwriter.WriteValue(dictionary[key])
-                xmlwriter.WriteEndAttribute()
-                xmlwriter.WriteEndElement()
-        xmlwriter.WriteEndElement()
-
-
-    def write_dictionary_to_xml(self, attribute_name, xmlwriter, write_empty=False):
-        """Writes a .net dictionary to an xml file in the form of
-        <attribute_name>
-            <Item Name="attribute_name key" Value="attribute_name value" />
-            <Item Name="attribute_name key" Value="attribute_name value" />
-            etc.
-        </attribute_name>
-
-        attribute_name->The name of the dictonary attribute to write.
-        xmlwriter->The xml writer to write with.
-        write_empty->A bool of whether to write empty values to the xml file. Default is don't write them.
-        """
-        if attribute_name in ("IllegalCharacters", "Months"):
-            write_empty = True
-        dictionary = getattr(self, attribute_name)
-        xmlwriter.WriteStartElement(attribute_name)
-        for key in dictionary.Keys:
             if dictionary[key] or write_empty:
                 xmlwriter.WriteStartElement("Item")
                 xmlwriter.WriteStartAttribute("Name")
@@ -313,13 +282,8 @@ class Profile(object):
 
             if "Version" in Xml.Attributes:
                 self.Version = float(Xml.Attributes["Version"].Value)
-            else:
-                self.Version = 2.2
 
             for var_name in self.__dict__:
-
-                t = type(getattr(self, var_name))
-
                 if type(getattr(self,var_name)) is str:
                     self.load_text_from_xml(Xml, var_name)
 
@@ -331,18 +295,15 @@ class Profile(object):
                 elif type(getattr(self, var_name)) is list and var_name != "ExcludeRules":
                     self.load_list_from_xml(Xml, var_name)
 
-                elif type(getattr(self, var_name)) in (dict, Dictionary[str, str], SortedDictionary[int, str]):
+                elif type(getattr(self, var_name)) is dict:
                     self.load_dict_from_xml(Xml, var_name)
 
             #Exclude Rules
             exclude_rules_node = Xml.SelectSingleNode("ExcludeRules")
             if exclude_rules_node is not None:
-                excludeoperator = exclude_rules_node.Attributes["Operator"].Value
+                self.ExcludeOperator = exclude_rules_node.Attributes["Operator"].Value
 
-                excludemode = exclude_rules_node.Attributes["ExcludeMode"].Value
-
-                self.ExcludeRules.operator = excludeoperator
-                self.ExcludeRules.mode = excludemode
+                self.ExcludeMode = exclude_rules_node.Attributes["ExcludeMode"].Value
 
                 for node in exclude_rules_node.ChildNodes:
                     if node.Name == "ExcludeRule":
@@ -351,12 +312,12 @@ class Profile(object):
                         except AttributeError:
                             rule = ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Text"].Value)
 
-                        self.ExcludeRules.add_rule(rule)
+                        self.ExcludeRules.append(rule)
     
                     elif node.Name == "ExcludeGroup":
                         group = ExcludeGroup(node.Attributes["Operator"].Value)
                         group.load_from_xml(node)
-                        self.ExcludeRules.add_group(group)
+                        self.ExcludeRules.append(group)
 
             self.update()
 
@@ -431,6 +392,9 @@ def load_profiles(file_path):
         #Just in case
         profiles["Default"] = Profile()
         profiles["Default"].Name = "Default"
+        #Some default templates
+        profiles["Default"].FileTemplate = "{<series>}{ Vol.<volume>}{ #<number2>}{ (of <count2>)}{ ({<month>, }<year>)}"
+        profiles["Default"].FolderTemplate = "{<publisher>}\{<imprint>}\{<series>}{ (<startyear>{ <format>})}"
         
     if not lastused:
         lastused = [profiles.keys()[0]]
