@@ -661,7 +661,7 @@ class BookMover(object):
                     Directory.CreateDirectory(folder_path)
 
             except (IOException, ArgumentException, ArgumentNullException, PathTooLongException, DirectoryNotFoundException, NotSupportedException), ex:
-                self.logger.Add("Failed to create folder", folder_path, "Book " + self.report_book_name + " was not moved.\nThe error was: " + str(type(ex)) + ": " + ex.message)
+                self.logger.Add("Failed to create folder", folder_path, "Book " + self.report_book_name + " was not moved.\nThe error was: " + str(type(ex)) + ": " + ex.Message)
                 return MoveResult.Failed
 
         return MoveResult.Success
@@ -1532,6 +1532,10 @@ class PathMaker(object):
 
         if number == "":
             return ""
+
+        if padding == 0:
+            value = getattr(get_last_book(self.book), field)
+            padding = len(str(value))
 
         return self.replace_illegal_characters(self.pad(number, padding))
 

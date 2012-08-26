@@ -1,1 +1,3 @@
-﻿
+﻿Fix inversion to act as expected when value is null. Act more like "is not" with conditional acting as "is". Added gui for this.
+Investigate Error thrown when folder is not empty. Should fail gracefully with an error.
+Add tracking for moving fileless images (via custom value in comicbook)

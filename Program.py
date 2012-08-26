@@ -53,5 +53,5 @@ try:
         losettings.save_profiles(SETTINGSFILE, profiles, last_used_profile)
 except Exception, ex:
     print ex
-    System.Console.ReadKey()
+    System.Console.Read()
 

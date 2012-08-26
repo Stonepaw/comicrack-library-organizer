@@ -468,10 +468,11 @@ def get_last_book(book):
     Finds the last published issue of a series in the library.
     Returns a ComicBook object.
     """
-    #Find the Earliest by going through the whole list of comics in the library find the earliest year field and month field of the same series and volume
+    #Find the last by going through the whole list of comics in the library find the earliest issue of the series
         
     index = book.Publisher+book.ShadowSeries+str(book.ShadowVolume)
         
+    #If we have already found this series:
     if index in endbooks:
         return endbooks[index]
 
@@ -479,40 +480,13 @@ def get_last_book(book):
             
     for b in ComicRack.App.GetLibraryBooks():
         if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
-                    
-            #Notes:
-            #Year can be empty (-1)
-            #Month can be empty (-1)
-
-            #In case the initial value is bad
-            if endbook.ShadowYear == -1 and b.ShadowYear != 1:
-                startbook = b
-                    
-            #Check if the current book's year is later
-            if b.ShadowYear != -1 and b.ShadowYear > endbook.ShadowYear:
-                startbook = b
-
-            #Check if year the same and a valid month
-            if b.ShadowYear == endbook.ShadowYear and b.Month != -1:
-
-                #Current book has empty month
-                if endbook.Month == -1:
-                    endbook = b
-                        
-                #Month is later
-                elif b.Month > endbook.Month:
-                    endbook = b
-
-                #Month is the same so check for later issue numbers:
-                elif b.Month == endbook.Month:
-                    if b.ShadowNumber > endbook.ShadowNumber:
-                        endbook = b
-            
+            if (endbook.ShadowNumber.isdigit() and b.ShadowNumber.isdigit()) and int(endbook.ShadowNumber) < int(b.ShadowNumber):
+                endbook = b
+          
     #Store this final result in the dict so no calculation require for others of the series.
     endbooks[index] = endbook
 
     return endbook
-
 
 
 def check_metadata_rules(book, profile):

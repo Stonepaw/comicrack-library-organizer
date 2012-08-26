@@ -51,7 +51,7 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
-VERSION = "2.1.5"
+VERSION = "2.1.8"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -1608,6 +1608,8 @@ class ConfigureForm(Form):
         
         self._insert_controls.SuspendLayout()
         self._number_insert_controls.SuspendLayout()
+        
+        number_insert_controls_label = Label()
 
         self.AlternateCount = InsertControlNumber()
         self.AlternateCount.SetTemplate("altCount", "Alt. Count")
@@ -1660,6 +1662,12 @@ class ConfigureForm(Form):
         self.Year.Tag = self.Year.Location
         self._number_insert_controls_list["year"] = self.Year
 
+        number_insert_controls_label.Text = "Use a padding of 0 for automatic padding. This is based on the last issue of the series in the library. For example if the last issue number is #50 then the padding will be 2 for all issues in the series."
+        number_insert_controls_label.AutoSize = True
+        number_insert_controls_label.MaximumSize = Size(490, 0)
+        number_insert_controls_label.Location = Point(4, 190)
+
+        self._number_insert_controls.Controls.Add(number_insert_controls_label)
         self._number_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._number_insert_controls_list.Values))
 
         self._insert_controls_dict.update(self._number_insert_controls_list)
@@ -2136,7 +2144,7 @@ class ConfigureForm(Form):
         """Stops any illegal character from being entered as an illegal character replacement."""
         if e.KeyChar in ("\\", "/", "|", "*", "<", ">", "?", '"', ":"):
             e.Handled = True
-
+        self.profile.IllegalCharacters[self._illegal_character_selector.SelectedItem] = self._illegal_character_replacement.Text
 
     def add_illegal_character(self, sender, e):
         """Adds a new character replacement into the form and profile"""
@@ -2575,6 +2583,9 @@ class ConfigureForm(Form):
         self.profile.FailEmptyValues = self._failed_empty_checkbox.Checked
         self.profile.MoveFailed = self._move_failed_empty.Checked
         self.profile.CopyReadPercentage = self._copy_read_percentage.Checked
+        self.illegal_character_replacement_leave(self._illegal_character_replacement, None)
+        self.month_name_leave(self._month_name, None)
+        self.empty_subsititution_value_leave(self._empty_substitution_value, None)
 
 
     #These 11 methods manage the profile actions
