@@ -19,48 +19,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-
-
-
-
 import clr
 
 import System
-
+from System.Collections.Generic import Dictionary, SortedDictionary
 clr.AddReference("System.Drawing")
 from System.Drawing import Size, Point
 
-clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import TextBox, Button, ComboBox, FlowLayoutPanel, Panel, Label, ComboBoxStyle
-
-
 from System.IO import Path, FileInfo
 
+
 SCRIPTDIRECTORY = FileInfo(__file__).DirectoryName
-
 PROFILEFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
-
 ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
-
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
+VERSION = 2.2
 
-VERSION = 2.1
-
-clr.AddReferenceByPartialName('ComicRack.Engine')
-from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
+#clr.AddReferenceByPartialName('ComicRack.Engine')
+#from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
 
 startbooks = {}
 endbooks = {}
 
+#Don't actually need these anymore because all names are now localized. These do have to be kept for updating from previous versions though.
 name_to_field = {"Age Rating" : "AgeRating", "Alternate Count" : "AlternateCount", "Alternate Number" : "AlternateNumber",
-                 "Alternate Series" : "AlternateSeries", "Black And White" : "BlackAndWhite", "Characters" : "Characters", "Colorist" : "Colorist",
-                 "Counter" : "Counter", "Count" : "ShadowCount", "Cover Artist" : "CoverArtist", "Editor" : "Editor", "File Format" : "FileFormat", "File Name" : "FileName", 
-                 "File Path" : "FilePath", "First Letter" : "FirstLetter",
-                 "Format" : "ShadowFormat", "Genre" : "Genre", "Imprint" : "Imprint", "Inker" : "Inker", "Language" : "LanguageISO", "Letterer" : "Letterer", "Locations" : "Locations",
-                 "Main Character Or Team": "MainCharacterOrTeam", "Manga" : "Manga", "Month" : "Month", "Notes" : "Notes", "Number" : "ShadowNumber", "Penciller" : "Penciller", "Publisher" : "Publisher", 
-                 "Rating" : "Rating", "Read Percentage" : "ReadPercentage", "Review" : "Review", "Scan Information" : "ScanInformation", "Series" : "ShadowSeries",
-                 "Series Complete" : "SeriesComplete", "Series Group" : "SeriesGroup", "Start Month" : "StartMonth", "Start Year" : "StartYear", "Story Arc": "StoryArc", "Tags" : "Tags",
-                 "Teams" : "Teams", "Title" : "ShadowTitle", "Volume" : "ShadowVolume", "Web" : "Web", "Writer" : "Writer", "Year" : "ShadowYear"}
+                 "Alternate Series" : "AlternateSeries", "Black And White" : "BlackAndWhite", "Cover Artist" : "CoverArtist", "File Format" : "FileFormat", "File Name" : "FileName", 
+                 "File Path" : "FilePath", "First Letter" : "FirstLetter", "Language" : "LanguageAsText",
+                 "Main Character Or Team": "MainCharacterOrTeam", "Read Percentage" : "ReadPercentage", "Scan Information" : "ScanInformation", "Series Complete" : "SeriesComplete", "Series Group" : "SeriesGroup", "Start Month" : "StartMonth", "Start Year" : "StartYear", "Story Arc": "StoryArc"}
 
 field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count", "AlternateNumber" : "Alternate Number", 
                  "AlternateSeries" : "Alternate Series", "BlackAndWhite" : "Black And White", "Characters" : "Characters", "Colorist" : "Colorist",
@@ -72,236 +57,49 @@ field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count
                  "ShadowSeries" : "Series", "SeriesGroup" : "Series Group", "StoryArc": "Story Arc", "ShadowTitle" : "Title", "ShadowVolume" : "Volume", "ShadowYear" : "Year", "StartMonth" : "Start Month", 
                  "StartYear" : "Start Year", "Tags" : "Tags", "Teams" : "Teams", "Web" : "Web", "Writer" : "Writer"}
 
+#These next few lists are just to make certain functions easier while providing one place needed to add new fields in buy simply add the property to the relavent list.
 
-                                                               
+#Contains all the used fields in the comic. This is used to build the translations
+comic_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
 
+#This contains the fields that are available to add into the template. Used for building the correct list of things later.
+template_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Colorist', 'CommunityRating', 'Conditional', 'Count', 'Counter', 'CoverArtist', 'Editor', 'FirstIssueNumber', 'FirstLetter', 'Format', 'Genre', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StartMonth', 'StartYear', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Writer', 'Year']
+
+#These are special fields that are created in library organizer. Needs to be seperate for ease of getting translations
+library_organizer_fields = ["Counter", "FirstLetter", "Conditional", "StartMonth", "StartYear", "FirstIssueNumber"]
+
+#These are the fields useable in the exclude rules.
+exclude_rule_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
+
+multiple_value_fields = ["AlternateSeries", "Character", "Colorist", "CoverArtist", "Editor", "Genre", "Inker", "Letterer", "Locations", "Penciller", "ScanInformation", "Tags", "Teams", "Writer"]
+
+
+
+#Although we could assume that any of the shadow fields are filled it is better to get they value from the shadow fields when possible.
+#Can use book.GetPropertyValue[type](Name, bool:check shadow)
+
+
+class Translations(object):
+    def __init__(self):
+        self.rules_operators = SortedDictionary[str, str]({"contains" : "contains", "does not contain" : "does not contain", "greater than" : "greater than", "less than" : "less than",  "is" : "istrans", "is not" : "is not trans", })
+        self.rules_operators_yes_no = SortedDictionary[str, str]({"is" : "istrans", "is not" : "is not trans"})
+    rules_fields = SortedDictionary[str, str](field_to_name)
+    rules_values_manga = SortedDictionary[str, str]({"Yes" : "Yes", "Yes (Right to Left)" : "Yes (Right to Left)", "No" : "No", "Unknown" : "Unknown"})
+    rules_values = SortedDictionary[str, str]({"Yes" : "Yes", "No" : "No", "Unknown" : "Unknown"})
+    rules_mode = SortedDictionary[str, str]({"Only" : "Only", "Do not" : "Do not"})
+    rules_group_operators = SortedDictionary[str, str]({"All" : "All", "Any" : "Any"})
+        
+
+                                                  
 class Mode(object):
     Move = "Move"
     Copy = "Copy"
     Simulate = "Simulate"
 
 
-
 class CopyMode(object):
     AddToLibrary = True
     DoNotAdd = False
-
-
-                
-class ExcludeGroup(object):
-    """
-    Contains a list of rules or rule groups and can calculate if a book should be moved under it's rules.
-    """
-    
-    def __init__(self, operator, rules = None):
-
-        if rules is None:
-            self.rules = []
-        else:
-            self.rules = rules
-        
-        self.operator = operator
-        
-
-    def add_rule(self, rule):
-        """Adds a single rule to this group's list of rules."""
-        self.rules.append(rule)
-
-
-    def add_rules(self, rules):
-        """Adds a list of rules to this group's list of rules."""
-        self.rules.extend(rules)
-
-        
-    def book_should_be_moved(self, book):
-        """
-        Checks if the book should be moved under the rules in the rule group.
-        Returns 1 if the book should be moved.
-        Returns 0 if the book should not be moved.
-        """
-        
-        #Keeps track of the amount of rules the book fell under
-        count = 0
-        
-        #Keep track of the total amount of rules
-        total = 0
-        
-        for rule in self.rules:
-            
-
-            result = rule.book_should_be_moved(book)
-            
-            #Something went wrong, possible empty group. Thus we don't count that rule
-            if result is None:
-                continue
-        
-            count += result
-            total += 1
-
-        if total == 0:
-            return None
-        
-        if self.operator == "Any":
-            if count > 0:
-                return 1
-            else:
-                return 0
-        else:
-            if count == total:
-                return 1
-            else:
-                return 0
-
-
-    def save_xml(self, xmlwriter):
-        """Saves this rule group and its containing rules to an xml file using the specified xmlwriter."""
-        xmlwriter.WriteStartElement("ExcludeGroup")
-        xmlwriter.WriteAttributeString("Operator", self.operator)
-        for rule in self.rules:
-            rule.save_xml(xmlwriter)
-        xmlwriter.WriteEndElement()
-
-
-    def load_from_xml(self, xml_node):
-        """Loads the rules and groups from the xml_node."""
-        for node in xml_node.ChildNodes:
-            if node.Name == "ExcludeRule":
-                #Changes from 1.7.17 to 2.0
-                try:
-                    self.add_rule(ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Value"].Value))
-                except AttributeError:
-                    self.add_rule(ExcludeRule(node.Attributes["Field"].Value, node.Attributes["Operator"].Value, node.Attributes["Text"].Value))
-            
-            elif node.Name == "ExcludeGroup":
-                group = ExcludeGroup(node.Attributes["Operator"].Value)
-                group.load_from_xml(node)
-                self.add_rule(group)
-
-
-            
-class ExcludeRule(object):
-    """Contains the data of an exlude rule. It can calculate if a book should be moved using it's rules."""
-    
-    def __init__(self, field, operator, value):
-        
-        self.field = field
-        
-        self.operator = operator
-        
-        self.value = value
-        
-
-    def get_yes_no_value(self):
-        """Returns the correct YesNo value."""
-        if self.field == "Manga":
-            if self.value == "Yes (Right to Left)":
-                return MangaYesNo.YesAndRightToLeft
-            else:
-                return getattr(MangaYesNo, self.value)
-
-        return getattr(YesNo, self.value)
-
-        
-    def book_should_be_moved(self, book):
-        """
-        Finds if the book should be moved using this rule.
-        Returns 1 if the book should be moved.
-        Returns 0 if the book should not be moved.
-        """
-
-        field = name_to_field[self.field]
-
-        if field in ("Manga", "SeriesComplete", "BlackAndWhite"):
-            return self.calculate_book_should_be_moved(book, getattr(book, field), self.get_yes_no_value())
-
-        elif field in ("StartYear", "StartMonth"):
-            return self.calculate_book_should_be_moved(book, self.get_start_field_data(book, field), self.value)
-
-        else:
-            return self.calculate_book_should_be_moved(book, getattr(book, field), self.value)
-    
-
-    def calculate_book_should_be_moved(self, book, field_data, value):
-        """
-        Checks if the book should be moved based on this single rule.
-        field_data -> the contents of the field.
-        value -> the value to check the contents of the field against.
-        Returns 1 if the book should be moved.
-        Returns 0 if the book should not be moved.
-        """
-
-        if self.operator == "is":
-        #Convert to string just in case
-            if field_data == value:
-                return 1
-            else:
-                return 0
-        elif self.operator == "does not contain":
-            if value not in field_data:
-                return 1
-            else:
-                return 0
-        elif self.operator == "contains":
-            if value in field_data:
-                return 1
-            else:
-                return 0
-        elif self.operator == "is not":
-            if value != field_data:
-                return 1
-            else:
-                return 0
-        elif self.operator == "greater than":
-            #Try to use the int value to compare if possible
-            try:
-                if int(value) < int(field_data):
-                    return 1
-                else:
-                    return 0
-            except ValueError:
-                if value < field_data:
-                    return 1
-                else:
-                    return 0
-        elif self.operator == "less than":
-            try:
-                if int(value) > int(field_data):
-                    return 1
-                else:
-                    return 0
-            except ValueError:
-                if value > field_data:
-                    return 1
-                else:
-                    return 0
-        
-
-    def get_start_field_data(self, book, field):
-        """
-        Finds the field contents for the earlies book of the same series in the ComicRack library.
-        book -> the book of the series to search for.
-        field -> The string of the field to retrieve.
-        
-        returns -> Unicode string of the field.
-        """
-
-        startbook = get_earliest_book(book)
-        
-        if field == "StartMonth":
-            return unicode(startbook.Month)
-
-        else:
-            return unicode(startbook.ShadowYear)
-
-
-    def save_xml(self, xmlwriter):
-        """Save this rule to an xml file using the specified xmlwriter."""
-        xmlwriter.WriteStartElement("ExcludeRule")
-        xmlwriter.WriteAttributeString("Field", self.field)
-        xmlwriter.WriteAttributeString("Operator", self.operator)
-        xmlwriter.WriteAttributeString("Value", self.value)
-        xmlwriter.WriteEndElement()
-
 
 
 class UndoCollection(object):
@@ -374,7 +172,6 @@ class UndoCollection(object):
             print ex
 
 
-
 def SaveDict(dict, file):
     """
     Saves a dict of strings to a file
@@ -388,7 +185,6 @@ def SaveDict(dict, file):
     except IOError, err:
         print "Somthing went wrong saving the undo list"
         print err
-
 
 
 def LoadDict(file):
@@ -408,7 +204,6 @@ def LoadDict(file):
         print "Error loading dict from file " + file
         print err
     return dict
-
 
 
 def get_earliest_book(book):
@@ -451,6 +246,7 @@ def get_earliest_book(book):
                 elif b.Month < startbook.Month:
                     startbook = b
 
+
                 #Month is the same so check for later issue numbers:
                 elif b.Month == startbook.Month:
                     if b.ShadowNumber < startbook.ShadowNumber:
@@ -460,7 +256,6 @@ def get_earliest_book(book):
     startbooks[index] = startbook
 
     return startbook
-
 
 
 def get_last_book(book):
@@ -540,7 +335,6 @@ def check_metadata_rules(book, profile):
             return True
 
 
-
 def check_excluded_folders(book_path, profile):
     """Checks the excluded paths of a profile.
     Returns False if the book is located in an excluded path. Returns True otherwise.
@@ -549,3 +343,9 @@ def check_excluded_folders(book_path, profile):
         if path in book_path:
             return False
     return True
+
+
+
+
+
+

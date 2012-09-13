@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{b0736317-71e5-4a9f-ad6a-750305d92178}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Program.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <AssemblyName>Library Organizer WPF</AssemblyName>
+    <Name>Library Organizer</Name>
+    <RootNamespace>Library Organizer</RootNamespace>
+    <PublishUrl>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer\Release</PublishUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="arrow.png">
+      <Publish>True</Publish>
+    </None>
+    <None Include="changelog.txt">
+      <Publish>True</Publish>
+    </None>
+    <None Include="credits.txt">
+      <Publish>True</Publish>
+    </None>
+    <None Include="libraryorganizer.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="lobookmover.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="locommon.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="loduplicate.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="loforms.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="lologger.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="losettingsx.dat">
+      <Publish>False</Publish>
+    </None>
+    <None Include="loworkerform.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="Package.ini">
+      <Publish>True</Publish>
+    </None>
+    <None Include="Program.py">
+      <Publish>False</Publish>
+    </None>
+    <None Include="pyevent.py">
+      <Publish>True</Publish>
+    </None>
+    <None Include="todo.txt">
+      <Publish>False</Publish>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ComicRack.py" />
+    <Compile Include="configformcontrols.py">
+      <Publish>True</Publish>
+    </Compile>
+    <Compile Include="configureform.py">
+      <Publish>True</Publish>
+    </Compile>
+    <Compile Include="excluderules.py" />
+    <Compile Include="localizer.py" />
+    <Compile Include="losettings.py" />
+    <Compile Include="rulestest.py" />
+    <Compile Include="Test.py" />
+    <Compile Include="wpfutils.py" />
+    <Compile Include="xmlserializer.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="add_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="arrow_down_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="arrow_up_16.png" />
+    <Content Include="blue_arrow_up_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="chart_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="close_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="ComicRack.Engine.dll" />
+    <Content Include="ConfigureForm.xaml" />
+    <Content Include="cYo.Common.dll" />
+    <Content Include="DuplicateForm.xaml">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="FieldsToAdd.txt" />
+    <Content Include="folder_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="home_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizer.ico">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizer.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="libraryorganizerquick.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="LocalizationNotes.txt" />
+    <Content Include="lopackagelogo.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="Ookii.Dialogs.dll" />
+    <Content Include="Ookii.Dialogs.Wpf.dll" />
+    <Content Include="page_text_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="pencil_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="rulestest.xaml" />
+    <Content Include="save_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="Test.xaml" />
+    <Content Include="Thumbs.db" />
+    <Content Include="tools_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="wpf notes.txt" />
+    <Content Include="WPFToolkit.Extended.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>WPFToolkit.Extended</Name>
+      <AssemblyName>WPFToolkit.Extended.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer\WPF Localization\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+  </ItemGroup>
+</Project>

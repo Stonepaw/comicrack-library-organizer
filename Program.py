@@ -1,57 +1,63 @@
-﻿"""
-This file loads some sample comics from a file and shows the config form.
-Simply for testing purposes.
-"""
-
+import wpf
+import pychecker.checker
+from System.Windows import Application, Window
 
 import clr
-import System
-clr.AddReference('System.Windows.Forms')
-clr.AddReference('System.Drawing')
-clr.AddReference("System.Xml")
-clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ComicRack.Engine.dll")
-clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\cYo.Common.dll")
+clr.AddReference("System.Windows.Forms")
 
-from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
+from ComicRack import ComicRack
+c = ComicRack()
+import localizer
+localizer.ComicRack = c
 
-from System.Xml import XmlDocument
+from System.Windows.Forms import MessageBox
 
-from System.IO import StreamReader, File, FileStream, FileMode
-
-from System.Windows.Forms import Application, DialogResult
+from System.IO import Path
 import configureform
+from configureform import ConfigureForm
+import locommon
+from locommon import SCRIPTDIRECTORY
 
-import losettings
+import excluderules
+from losettings import Profile
+import xmlserializer
+from xmlserializer import XmlDeserializer
 
-from loworkerform import ProfileSelector
+def load_profiles(file_path):
+    """
+    Load profiles from a xml file. If no profiles are found it creates a blank profile.
+    file_path->The absolute path to the profile file
 
-SETTINGSFILE = "losettingsx.dat"
+    Returns a dict of the found profiles and a list of the lastused profile(s)
+    """
+    xmldeserializer = XmlDeserializer()
+    profiles, lastused = xmldeserializer.deserialize_profiles(file_path)
+    #profiles, lastused = load_profiles_from_file(file_path)
 
-try:
-    print "Loading test data"
-    f = FileStream("Sample.dat", FileMode.Open)
-    bf = BinaryFormatter()
-    books = bf.Deserialize(f)
-    print "Done loading sample data"
-    print "Starting to load profiles"
-    profiles, last_used_profiles = losettings.load_profiles(SETTINGSFILE)
-    print "Done loading profiles"
-    Application.EnableVisualStyles()
+    if len(profiles) == 0:
+        #Just in case
+        profiles["Default"] = Profile()
+        profiles["Default"].Name = "Default"
+        #Some default templates
+        profiles["Default"].FileTemplate = "{<series>}{ Vol.<volume>}{ #<number2>}{ (of <count2>)}{ ({<month>, }<year>)}"
+        profiles["Default"].FolderTemplate = "{<publisher>}\{<imprint>}\{<series>}{ (<startyear>{ <format>})}"
+        
+    if not lastused:
+        lastused = [profiles.keys()[0]]
+       
+    return profiles, lastused     
 
-    selector = ProfileSelector(profiles.keys(), last_used_profiles)
 
-    selector.ShowDialog()
+if __name__ == '__main__':
+    ComicRack = ComicRack()
+    #localizer.ComicRack = ComicRack
+    configureform.ComicRack = ComicRack
+    locommon.ComicRack = ComicRack
+    settings, lastused = load_profiles(Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"))
+    d = ConfigureForm(settings, lastused[0])
+    Application().Run(d)
+    serializer = xmlserializer.XmlSerializer()
+    serializer.serialize_profiles(settings, lastused, Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"))
+    #save_profiles(Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"), settings, lastused)
 
-    print selector.get_profiles_to_use()
-
-    form = configureform.ConfigureForm(profiles, last_used_profiles[0], books)
-    r = form.ShowDialog()
-
-    if r != DialogResult.Cancel:
-        form.save_profile()
-        last_used_profile = form._profile_selector.SelectedItem
-        losettings.save_profiles(SETTINGSFILE, profiles, last_used_profile)
-except Exception, ex:
-    print ex
-    System.Console.Read()
 
