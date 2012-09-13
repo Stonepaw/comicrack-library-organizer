@@ -11,7 +11,6 @@ clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ComicRack.Engine.dl
 clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\cYo.Common.dll")
 
 import System
-import pyevent
 import localizer
 import locommon
 import Ookii.Dialogs.Wpf
@@ -27,17 +26,20 @@ from System.Windows.Data import Binding, BindingMode, BindingOperations, UpdateS
 from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs
 from System.Windows.Forms import MessageBox, FolderBrowserDialog, DialogResult
 from System.Windows.Media import VisualTreeHelper
-
+from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
 from Ookii.Dialogs import InputDialog
 
-from Xceed.Wpf.Toolkit import DropDownButton
+from Xceed.Wpf.Toolkit import DropDownButton, IntegerUpDown
 
-from locommon import SCRIPTDIRECTORY, Translations, ExcludeGroup, ExcludeRule, NotifyPropertyChangedBase, notify_property, Mode, template_fields, exclude_rule_fields
+from locommon import SCRIPTDIRECTORY, Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields
+from excluderules import ExcludeRule, ExcludeGroup
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
+from wpfutils import notify_property, NotifyPropertyChangedBase
 
 class ConfigureForm(Window):
+
     def __init__(self, profiles, lastused):
         #TODO: Clean this up a bit
         #Setup profiles
@@ -51,7 +53,8 @@ class ConfigureForm(Window):
         rulestemplateselector = RulesTemplateSelector()
         self.Resources.Add("rulestemplateselector", rulestemplateselector)
 
-
+        self.view_model = ConfigureFormViewModel()
+        
         self._tab_index = 0
         
         self.translations = Translations()
@@ -61,53 +64,40 @@ class ConfigureForm(Window):
         #Setup some things need for the Illegal characters
         self.illegal_characters = ObservableCollection[str](self.profile.IllegalCharacters.keys())
         self.default_illegal_characters = ["?", "/", "\\", "*", ":", "<", ">", "|", "\""]
-        translated_fields = localizer.get_comic_fields()
-        self.exclude_rule_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in exclude_rule_fields})
-        self.exclude_rule_string_operators = SortedDictionary[str, str](localizer.get_exclude_rule_string_operators())
-        self.exclude_rule_numeric_operators = SortedDictionary[str, str](localizer.get_exclude_rule_numeric_operators())
-        self.exclude_rule_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_yes_no_operators())
-        self.exclude_rule_manga_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_manga_yes_no_operators())
-        self.exclude_rule_bool_operators = SortedDictionary[str, str](localizer.get_exclude_rule_bool_operators())
+        self.months_selectors = sorted(self.profile.Months.keys(), key=int)
+        self.localize()
         #Load the xaml file
         wpf.LoadComponent(self, 'ConfigureForm.xaml')
-        #Set the current profile
-        #self.template_field_names = []
-        #for name, property in translated_fields.iteritems():
-        #    if property in template_fields:
-                #self.template_field_names.append(name)
-
-        self.TemplateFieldSelector.ItemsSource = sorted([name for name, property in translated_fields.iteritems() if property in template_fields])
-
-
-        print self.exclude_rule_field_names
         self.ProfileSelector.SetValue(ComboBox.SelectedItemProperty, lastused)
         self.illegal_characters_selector.SelectedIndex = 0
         self.MonthSelector.SelectedIndex = 0
 
         self.folder_dialog = VistaFolderBrowserDialog()
 
+    def localize(self):
+        translated_fields = localizer.get_comic_fields()
+        self.exclude_rule_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
+                                                                    if property in exclude_rule_fields})
+        self.exclude_rule_string_operators = SortedDictionary[str, str](localizer.get_exclude_rule_string_operators())
+        self.exclude_rule_numeric_operators = SortedDictionary[str, str](localizer.get_exclude_rule_numeric_operators())
+        self.exclude_rule_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_yes_no_operators())
+        self.exclude_rule_manga_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_manga_yes_no_operators())
+        self.exclude_rule_bool_operators = SortedDictionary[str, str](localizer.get_exclude_rule_bool_operators())
+        self.template_field_selectors = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
+                                                                    if property in template_fields})
 
     def Button_Browse_Click(self, sender, e):
-        """
-        Shows a folderbrowser dialog and sets the basefolder to the selected path.
-        """
-        
-        self.folder_dialog.ShowDialog()
-        self.BaseFolder.SetValue(TextBox.TextProperty, folder_dialog.SelectedPath)
-
+        """Shows a folder browser dialog and sets the base folder to the selected path."""        
+        if self.folder_dialog.ShowDialog():
+            self.BaseFolder.SetValue(TextBox.TextProperty, self.folder_dialog.SelectedPath)
 
     def Page_Button_Checked(self, sender, e):
-        """
-        Handler to switch pages in the form
-        """
+        """Handler to switch pages in the form"""
         self.PagesContainer.SelectedIndex = int(sender.Tag)
 
-    
     #These two methods load and save the mode radio buttons
     def mode_check_changed(self, sender, e):
-        """
-        Saves the mode to the profile when a different mode is selected
-        """
+        """Saves the mode to the profile when a different mode is selected"""
         #There has to be a better way to do the radio buttons but I couldn't find a way
         if sender == self.Move:
             self.profile.Mode = "Move"
@@ -116,11 +106,8 @@ class ConfigureForm(Window):
         elif sender == self.Simulate:
             self.profile.Mode = "Simulate"
 
-
     def load_mode(self):
-        """
-        Sets the correct mode radio box check from the values in the profile.
-        """
+        """Sets the correct mode radio box check from the values in the profile."""
         #There has to be a better way to do the radio buttons but I couldn't find a way
         if self.profile.Mode == Mode.Move:
             self.Move.IsChecked = True
@@ -129,89 +116,63 @@ class ConfigureForm(Window):
         elif self.profile.Mode == Mode.Simulate:
             self.Simulate.IsChecked = True
 
-
     def drop_down_button_clicked(self, sender, e):
-        """
-        This method fakes a dropdown button using the contextmenu.
-        """
+        """This method fakes a dropdown button using the contextmenu."""
         sender.ContextMenu.IsEnabled = True
         sender.ContextMenu.PlacementTarget = sender
         sender.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom
         sender.ContextMenu.IsOpen = True
 
-    
     def Profile_SelectionChanged(self, sender, e):
         self.profile = self.profiles[sender.SelectedItem]
+
+        #Reload the illegal characters selector. Have to do this because of custom characters.
         index = self.illegal_characters_selector.SelectedIndex
         self.illegal_characters.Clear()
         for i in self.profile.IllegalCharacters:
             self.illegal_characters.Add(i)
         if self.illegal_characters.Count < index - 1:
             index -= 1
-        
 
         self.load_mode()
-        self.months_selection_changed(self.MonthSelector, None)
         self.PagesContainer.DataContext = self.profiles[sender.SelectedItem]
         self.illegal_characters_selector.SelectedIndex = index
-
 
     def add_profile(self, sender, e):
         pass
 
-
-    # These 6 methods controls the addition, removal and management of exclude rules/groups
-    def add_rule(self, sender, e):
-        sender.DataContext.add_rule(ExcludeRule())
-
-
-    def rule_add_rule(self, sender, e):
-        sender.DataContext.parent.insert_rule_after_rule(ExcludeRule(), sender.DataContext)
-
-
-    def add_rule_group(self, sender, e):
-        sender.DataContext.add_group()
-
-
-    def rule_add_rule_group(self, sender, e):
-        group = ExcludeGroup()
-        group.add_rule(ExcludeRule())
-        sender.DataContext.parent.insert_rule_after_rule(group, sender.DataContext)
-
-
-    def remove_rule(self, sender, e):
-        sender.DataContext.parent.remove_rule(sender.DataContext)
-
-
-    def exclude_rules_field_selection_changed(self, sender, e):
+    def insert_field_clicked(self, sender, e):
         
-        field_type = type(getattr(self.comicbook, sender.SelectedValue))
 
-        if field_type is str:
-            sender.DataContext.Type = "String"
-            if sender.DataContext.operator not in self.exclude_rule_string_operators.Values:
-                sender.DataContext.Operator = "is"
+        insert_text = self.build_template_text()
 
-        elif field_type in [int, float, Single, Double, Int64]:
-            sender.DataContext.Type = "Numeric"
-            if sender.DataContext.operator not in self.exclude_rule_numeric_operators.Values:
-                sender.DataContext.Operator = "is"
+        self.FolderStructure.SelectedText = insert_text
+        self.FolderStructure.CaretIndex += len(insert_text)
+        self.FolderStructure.SelectionLength = 0
 
-        elif field_type is bool:
-            sender.DataContext.Type = "Bool"
-            if sender.DataContext.operator not in self.exclude_rule_bool_operators.Values:
-                sender.DataContext.Operator = "is True"
+    def insert_folder_clicked(self, sender, e):
+        self.FolderStructure.SelectedText = "\\"
+        self.FolderStructure.CaretIndex += 1
+        self.FolderStructure.SelectionLength = 0
 
-        elif field_type is YesNo:
-            sender.DataContext.Type = "YesNo"
-            if sender.DataContext.operator not in self.exclude_rule_yes_no_operators.Values:
-                sender.DataContext.Operator = "is Yes"
+    def build_template_text(self):
+        args = ""
 
-        elif field_type is MangaYesNo:
-            sender.DataContext.Type = "MangaYesNo"
-            if sender.DataContext.operator not in self.exclude_rule_manga_yes_no_operators.Values:
-                sender.DataContext.Operator = "is Yes"
+        if self.view_model.template_selector_type == "Numeric":
+            args = str(self.TemplateBuilderPadding.Value)
+        elif self.view_model.template_selector_type == "YesNo":
+            args = "(%s)" % (self.TemplateBuilderYesNoText.Text)
+            if self.TemplateBuilderYesNoInvert.IsChecked:
+                args += "(!)"
+        elif self.view_model.template_selector_type == "Month":
+            pass
 
+        if self.TemplateBuilderAutoSpaceFields.IsChecked:
+            prefix = " " + self.TemplateBuilderPrefix.Text
+        else:
+            prefix = self.TemplateBuilderPrefix.Text
+
+        return "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
 
 
     #These are for the various combobox/textbox options
@@ -219,15 +180,9 @@ class ConfigureForm(Window):
         if sender.SelectedIndex == -1:
             sender.SelectedIndex = 0
             return
-        #Note:  I tried to use a binding here in a similar function as the illegal characters
-        #       but for some reason the integer index doesn't work with python dicts. I may fix this later by changing it to string indexes
-        #       but for now it works.
-        self.MonthName.Text = self.profile.Months[int(self.MonthSelector.SelectedItem)]
-
-
-    def months_text_changed(self, sender, e):
-        self.profile.Months[int(self.MonthSelector.SelectedItem)] = sender.Text
-
+        binding = Binding()
+        binding.Path = PropertyPath("Months[" + str(sender.SelectedItem) + "]")
+        self.MonthName.SetBinding(TextBox.TextProperty, binding)
 
     def illegal_characters_selector_selection_changed(self, sender, e):
         if sender.SelectedIndex == -1:
@@ -237,7 +192,6 @@ class ConfigureForm(Window):
         binding.Path = PropertyPath("IllegalCharacters[" + str(sender.SelectedItem) + "]")
         self.illegal_character_textbox.SetBinding(TextBox.TextProperty, binding)
 
-
     def add_illegal_character(self, sender, e):
         if self.add_illegal_character_textbox.Text and self.add_illegal_character_textbox.Text not in self.profile.IllegalCharacters:
             self.profile.IllegalCharacters[self.add_illegal_character_textbox.Text] = ""
@@ -246,7 +200,6 @@ class ConfigureForm(Window):
             self.illegal_characters_selector.SetValue(ComboBox.SelectedItemProperty, self.add_illegal_character_textbox.Text)
             self.add_illegal_character_textbox.Text = ""
 
-    
     def remove_illegal_character(self, sender, e):
         if self.illegal_characters_selector.SelectedItem not in self.default_illegal_characters:
             del(self.profile.IllegalCharacters[self.illegal_characters_selector.SelectedItem])
@@ -254,30 +207,22 @@ class ConfigureForm(Window):
             self.illegal_characters.Remove(self.illegal_characters_selector.SelectedItem)
             self.illegal_characters_selector.SelectedIndex = index - 1
 
-    
     def illegal_character_textbox_preview_text_input(self, sender, e):
         if e.Text in self.profile.IllegalCharacters:
             e.Handled = True
 
-
     def add_excluded_folder(self, sender, e):
         if self.folder_dialog.ShowDialog():
             self.profile.ExcludedEmptyFolder.Add(self.folder_dialog.SelectedPath)
-    
-
-
 
 
 class RulesTemplateSelector(DataTemplateSelector):
-    """
-    This is for selecting the right datatemplate for the exclude rules
-    """
+    """Selects the correct datatemplete for ExcludeRules or ExcludeGroups."""
     def SelectTemplate(self, item, container):
         if type(item) is ExcludeRule:
             return container.FindResource("ExcludeRule")
         elif type(item) is ExcludeGroup:
             return container.FindResource("ExcludeGroup")
-
 
 
 class EmptyTextBoxValidationRule(ValidationRule):
@@ -290,62 +235,40 @@ class EmptyTextBoxValidationRule(ValidationRule):
 
 
 class ConfigureFormViewModel(NotifyPropertyChangedBase):
-    
 
-    def __init__(self, profiles):
+    def __init__(self):
         super(ConfigureFormViewModel, self).__init__()
-
-
-
-    
-
-
-class ConfigureFormViewModel2(NotifyPropertyChangedBase):
-
-    def __init__(self, months, illegals, empty):
-        super(ConfigureFormViewModel, self).__init__()
-        self._months = months
-        self._month_index = 1
-        self._illegals = illegals
-        self.IllegalCharacters = ObservableCollection[str](illegals.keys())
-        self._empty = empty
-        self._illegal_index = 1
-
+        self._comicbook = ComicBook()
+        self._template_selector_type = "String"
+        self._months_selector_index = "1"
+        self._illegal_characters_index = "?"
 
     @notify_property
-    def MonthName(self):
-        return self._months[self._month_index]
+    def template_selector_type(self):
+        return self._template_selector_type
 
-    @MonthName.setter
-    def MonthName(self, value):
-        self._months[self._month_index] = value
-
-    @notify_property
-    def MonthIndex(self):
-        return self._month_index
-
-    @MonthIndex.setter
-    def MonthIndex(self, value):
-        self._month_index = value
-        self.OnPropertyChanged("MonthName")
-
-
-    @notify_property
-    def IllegalIndex(self):
-        return self._illegal_index
-
-    @IllegalIndex.setter
-    def IllegalIndex(self, value):
-        pass
-
-    def add_illegal_character(self, character):
-        self._illegals[character] = ""
-        self.IllegalCharacters.Add(character)
+    @template_selector_type.setter
+    def template_selector_type(self, value):
+        if value is None:
+            return
+        print value
+        if value in ("Counter", "FirstLetter", "Conditional", "StartMonth", "StartYear", "FirstIssueNumber", "Month"):
+            self._template_selector_type = value
+            return
+        elif value in multiple_value_fields:
+            self._template_selector_type = "MultipleValue"
+            return
+        comic_field_type = type(getattr(self._comicbook, value))
+        if comic_field_type is YesNo or comic_field_type is MangaYesNo:
+            self._template_selector_type = "YesNo"
+        elif comic_field_type in (int, Double, Int64, float, Single) or value in ("Number", "AlternateNumber"):
+            self._template_selector_type = "Numeric"
+        elif comic_field_type is bool:
+            self._template_selector_type = "Bool"
+        elif comic_field_type is str:
+            self._template_selector_type = "String"
+        print self._template_selector_type
 
 
 
-    def remove_character(self, character):
-        pass
-    def change_months(self, months):
-        self._months = months
-        self.OnPropertyChanged("MonthName") 
+

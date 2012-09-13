@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="MainWindow" Height="502" Width="640"
         UseLayoutRounding="True"
         Name="ConfigureForm"
@@ -361,24 +362,53 @@
                 <DataTrigger Binding="{Binding Path=Type}" Value="YesNo">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding Path=Type}" Value="Bool">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateYesNoStyle">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="YesNo">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateNumericStyle">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateMultipleValueStyle">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <DataTemplate x:Key="ExcludeRule">
             <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="160" />
                     <ColumnDefinition Width="130" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <ComboBox x:Name="ExlcudeRuleFieldComboBox" Grid.Column="0" SelectedValue="{Binding Path=field}" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_field_names}" SelectedValuePath="Value" DisplayMemberPath="Key"  Margin="0,0,5,0" SelectionChanged="exclude_rules_field_selection_changed"  />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_string_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleStringOperator}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_numeric_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleNumericOperator}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleYesNoOperator}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_bool_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleMangaYesNoOperator}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleMangaYesNoOperator}" />
-                <TextBox Grid.Column="2" Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ExcludeRuleValue}" />
-                <Button Click="drop_down_button_clicked" Grid.Column="3" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4" Margin="5, 0, 0, 0" >
+                <ToggleButton Grid.Column="0" IsChecked="{Binding Path=invert}" Content="!" Padding="4, 0" Margin="0, 0, 5, 0"/>
+                <ComboBox x:Name="ExlcudeRuleFieldComboBox" Grid.Column="1" SelectedValue="{Binding Path=Field}" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_field_names}" SelectedValuePath="Value" DisplayMemberPath="Key"  Margin="0,0,5,0"  />
+                <ComboBox Grid.Column="2" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_string_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleStringOperator}" />
+                <ComboBox Grid.Column="2" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_numeric_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleNumericOperator}" />
+                <ComboBox Grid.Column="2" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleYesNoOperator}" />
+                <ComboBox Grid.Column="2" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_bool_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleBoolOperator}" />
+                <ComboBox Grid.Column="2" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Margin="0,0,5,0" Style="{StaticResource ExcludeRuleMangaYesNoOperator}" />
+                <TextBox Grid.Column="3" Text="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ExcludeRuleValue}" />
+                <Button Click="drop_down_button_clicked" Grid.Column="4" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4" Margin="5, 0, 0, 0" >
                     <Button.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Add Rule" Command="{Binding Path=parent.InsertNewRule}" CommandParameter="{Binding}" />
@@ -404,6 +434,7 @@
                     </Style>
                 </DockPanel.Resources>
                 <ItemsControl ItemsSource="{Binding Path=rules}" ItemTemplateSelector="{StaticResource ResourceKey=rulestemplateselector}" Margin="20, 0, 0, 0" DockPanel.Dock="Bottom" HorizontalContentAlignment="Stretch" />
+                <ToggleButton IsChecked="{Binding Path=invert}" Padding="4, 1" Margin="0, 0, 5, 0" Content="!" VerticalAlignment="Center" />
                 <Label>Match</Label>
                 <ComboBox VerticalAlignment="Center" MinWidth="50" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_group_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=operator, Mode=TwoWay}" />
                 <Label>of the following rules</Label>
@@ -414,6 +445,9 @@
                             <MenuItem Header="Add Rule" Command="{Binding Path=parent.InsertNewRule}" CommandParameter="{Binding}" />
                             <MenuItem Header="Add Group" Command="{Binding Path=parent.InsertNewGroup}" CommandParameter="{Binding}" />
                             <MenuItem Header="Delete" Command="{Binding Path=parent.RemoveRule}" CommandParameter="{Binding}" />
+                            <Separator />
+                            <MenuItem Header="Move Up" Command="{Binding Path=parent.MoveRuleUp}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Move Down" Command="{Binding Path=parent.MoveRuleDown}" CommandParameter="{Binding}" />
                         </ContextMenu>
                     </Button.ContextMenu>
                     <Path Data="M0,0L3.5,4 7,0z" Fill="#FF000000" Name="Arrow" Margin="0,1,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -423,7 +457,7 @@
     </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
-            <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0">
+            <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0" >
                 <StackPanel>
                     <Image Stretch="None">
                         <Image.Source>
@@ -658,223 +692,217 @@
                             <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">File Structure:</Label>
                             <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                             <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Folder Structure:</Label>
-                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Label x:Name="PreviewLabel">Preivew:</Label>
+                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Label x:Name="PreviewLabel">Preview:</Label>
                             <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"></TextBlock>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0, 10">
-                            <StackPanel.Resources>
+                        <Grid Grid.Row="1" Margin="0, 10" FocusManager.IsFocusScope="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Margin" Value="10, 0, 0, 0"  />
                                     <Setter Property="Padding" Value="5, 1"  />
                                 </Style>
-                            </StackPanel.Resources>
-                            <Label>Field:</Label>
-                            <ComboBox x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0">
-                            </ComboBox>
-                            <Button VerticalAlignment="Center">Insert Field</Button>
-                            <Button VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Insert Folder Seperator</Button>
-                        </StackPanel>
-                        <GroupBox x:Name="InsertArguments"  Header="Options" Grid.Row="2">
-                            <Grid Margin="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <WrapPanel Grid.Row="0">
-                                    <WrapPanel.Resources>
-                                        <Style TargetType="{x:Type Label}">
-                                            <Setter Property="Label.HorizontalAlignment" Value="Center"/>
-                                        </Style>
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="Width" Value="Auto" />
-                                        </Style>
-                                        <Style TargetType="{x:Type StackPanel}">
-                                            <Setter Property="Margin" Value="5, 0" />
-                                        </Style>
-                                    </WrapPanel.Resources>
-                                    <StackPanel>
-                                        <Label>Prefix</Label>
-                                        <TextBox />
-                                    </StackPanel>
-                                    <StackPanel>
-                                        <Label>Suffix</Label>
-                                        <TextBox />
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <!--<Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Numerical">
+                            </Grid.Resources>
+                            <Label Grid.Column="0" Grid.Row="0">Field:</Label>
+                            <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding ElementName=ConfigureForm, Path=template_field_selectors}" SelectedValue="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type, Mode=OneWayToSource}" SelectedValuePath="Value" DisplayMemberPath="Key" />
+                            <Button Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Click="insert_field_clicked">Insert Field</Button>
+                            <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Click="insert_folder_clicked">Insert Folder Seperator</Button>
+                            <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields">Space inserted fields automatically</CheckBox>
+                        </Grid>
+                        
+                        <GroupBox Header="Options" Grid.Row="3" FocusManager.IsFocusScope="True">
+                            <WrapPanel>
+                                <WrapPanel.Resources>
+                                    <Style TargetType="{x:Type Label}">
+                                        <Setter Property="Label.HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="Width" Value="Auto" />
+                                    </Style>
+                                    <Style TargetType="{x:Type StackPanel}">
+                                        <Setter Property="Margin" Value="5, 0" />
+                                    </Style>
+                                </WrapPanel.Resources>
+                                <StackPanel>
+                                    <Label>Prefix</Label>
+                                    <TextBox x:Name="TemplateBuilderPrefix" />
+                                </StackPanel>
+                                <StackPanel>
+                                    <Label>Suffix</Label>
+                                    <TextBox x:Name="TemplateBuilderSuffix" />
+                                </StackPanel>
+                                <StackPanel x:Name="FieldTemplatePadding">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Month" />
+                                                        <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
                                                         <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Padding</Label>
+                                    <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="TemplateBuilderPadding" />
+                                </StackPanel>
+                                <StackPanel x:Name="YesNoText" Style="{StaticResource TemplateYesNoStyle}">
+                                    <Label>Inserted Text</Label>
+                                    <TextBox x:Name="TemplateBuilderYesNoText" />
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Bottom" Style="{StaticResource TemplateYesNoStyle}" >
+                                    <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert">!</ToggleButton>
+                                </StackPanel>
+                                <StackPanel>
+                                    <CheckBox x:Name="TemplateBuilderSelectMultiValue">
+                                        <TextBlock>Select which characters to use.</TextBlock>
+                                    </CheckBox>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue"/>
+                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
                                                         <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Month" />
-                                                            <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>-->
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Padding</Label>
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <CheckBox>Select once for every issue in the series</CheckBox>
+                                </StackPanel>
+                                <StackPanel x:Name="FieldTemplateMultipleFieldSeperator">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Seperator</Label>
+                                    <TextBox></TextBox>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center" Margin="5, 0" x:Name="FieldTemplateMonthNames">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Month">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <CheckBox x:Name="UseMonthNames">Use month names</CheckBox>
+                                </StackPanel>
+                                <StackPanel x:Name="FieldTemplateSeriesSelecteor">
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="FirstLetter">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Field</Label>
+                                    <ComboBox Width="100">
+                                        <ComboBoxItem>Series</ComboBoxItem>
+                                        <ComboBoxItem>Longggggg Text</ComboBoxItem>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Start</Label>
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Increment</Label>
+                                    <xctk:IntegerUpDown />
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="ReadPercentage">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Operator</Label>
+                                    <ComboBox>
+                                        <ComboBoxItem>=</ComboBoxItem>
+                                        <ComboBoxItem>></ComboBoxItem>
+                                        <ComboBoxItem>&lt;</ComboBoxItem>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style>
+                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="ReadPercentage">
+                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <Label>Percent</Label>
 
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="YesNo">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Inserted Text</Label>
-                                        <TextBox/>
-                                    </StackPanel>
-                                    <StackPanel VerticalAlignment="Bottom" Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="YesNo">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <ToggleButton Padding="5,1">!</ToggleButton>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="MultiValue">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Seperator</Label>
-                                        <TextBox></TextBox>
-                                    </StackPanel>
-                                    <StackPanel VerticalAlignment="Center" Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="MultiValue">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <CheckBox>All Issues in series</CheckBox>
-                                    </StackPanel>
-                                    <StackPanel VerticalAlignment="Center" Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Month">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <CheckBox x:Name="UseMonthNames">Use month names</CheckBox>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="FirstLetter">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Field</Label>
-                                        <ComboBox Width="100">
-                                            <ComboBoxItem>Series</ComboBoxItem>
-                                            <ComboBoxItem>Longggggg Text</ComboBoxItem>
-                                        </ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Start</Label>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="Counter">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Increment</Label>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Operator</Label>
-                                        <ComboBox>
-                                            <ComboBoxItem>=</ComboBoxItem>
-                                            <ComboBoxItem>></ComboBoxItem>
-                                            <ComboBoxItem>&lt;</ComboBoxItem>
-                                        </ComboBox>
-                                    </StackPanel>
-                                    <StackPanel Margin="5, 0">
-                                        <StackPanel.Style>
-                                            <Style>
-                                                <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=InsertFieldSelector, Path=SelectedItem.Tag}" Value="ReadPercentage">
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </StackPanel.Style>
-                                        <Label>Percent</Label>
+                                </StackPanel>
+                            </WrapPanel>
 
-                                    </StackPanel>
-                                </WrapPanel>
-                                <CheckBox Grid.Row="1" Margin="5">Space inserted fields automatically</CheckBox>
-                            </Grid>
                         </GroupBox>
 
                     </Grid>
@@ -929,9 +957,9 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <WrapPanel HorizontalAlignment="Left" Margin="5" Grid.Column="0">
-                                            <ComboBox MinWidth="70" SelectedValue="{Binding Path=ExcludeRules.operator}" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_mode}" DisplayMemberPath="Value" SelectedValuePath="Key" />
+                                            <ComboBox MinWidth="70" SelectedValue="{Binding Path=ExcludeRules.mode}" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_mode}" DisplayMemberPath="Value" SelectedValuePath="Key" />
                                             <Label>move books that match</Label>
-                                            <ComboBox MinWidth="50" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_group_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=ExcludeRules.mode, Mode=TwoWay}" />
+                                            <ComboBox MinWidth="50" ItemsSource="{Binding ElementName=ConfigureForm, Path=translations.rules_group_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=ExcludeRules.operator, Mode=TwoWay}" />
                                             <Label>of the following rules</Label>
                                         </WrapPanel>
                                         <Button Click="drop_down_button_clicked" Grid.Column="1" ContextMenuService.IsEnabled="False" HorizontalAlignment="Right" Padding="4, 4">
@@ -968,9 +996,9 @@
                                 </DockPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label>Month</Label>
-                                    <ComboBox ItemsSource="{Binding Path=Months}" Name="MonthSelector"  SelectionChanged="months_selection_changed" VerticalAlignment="Center" />
+                                    <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=months_selectors}" Name="MonthSelector"  SelectionChanged="months_selection_changed" VerticalAlignment="Center" />
                                     <Label>is</Label>
-                                    <TextBox Width="100" x:Name="MonthName" TextChanged="months_text_changed" VerticalAlignment="Center" />
+                                    <TextBox Width="100" x:Name="MonthName" VerticalAlignment="Center" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Label>Replace Illegal character</Label>

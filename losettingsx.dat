@@ -1,97 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profiles LastUsed="Default">
-  <Profile Name="Default" Version="2.1">
-    <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
-    <BaseFolder>C:\Users\Andrew\Desktop\Library Organizer Tests</BaseFolder>
+  <Profile Name="Default" Version="2.2">
+    <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced</FolderTemplate>
+    <BaseFolder>C:\Users\Andrew\Documents\Comunity Library Training Program</BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
-    <EmptyFolder />
-    <EmptyData>
-      <Item Name="ShadowFormat" Value="Series" />
-    </EmptyData>
-    <Postfix>
-      <Item Name="Format" Value=")" />
-      <Item Name="Month" Value=", " />
-      <Item Name="Month Number" Value=", " />
-      <Item Name="Count" Value=")" />
-      <Item Name="Year" Value=")" />
-    </Postfix>
-    <Prefix>
-      <Item Name="Start Year" Value="(" />
-      <Item Name="Volume" Value="Vol." />
-      <Item Name="Month" Value="(" />
-      <Item Name="Month Number" Value="(" />
-      <Item Name="Count" Value="(of " />
-      <Item Name="Number" Value="#" />
-    </Prefix>
-    <Seperator>
-      <Item Name="Scan Information" Value="," />
-      <Item Name="Locations" Value="," />
-      <Item Name="Characters" Value=", " />
-      <Item Name="Colorist" Value="," />
-      <Item Name="Tags" Value=", " />
-      <Item Name="Inker" Value="," />
-      <Item Name="Letterer" Value="," />
-      <Item Name="Genre" Value=", " />
-      <Item Name="Alternate Series Multi" Value="," />
-      <Item Name="Editor" Value="," />
-      <Item Name="Teams" Value=", " />
-      <Item Name="Cover Artist" Value="," />
-      <Item Name="Penciller" Value="," />
-      <Item Name="Writer" Value=", " />
-    </Seperator>
+    <EmptyFolder>asdfasfa</EmptyFolder>
+    <EmptyData />
+    <Postfix />
+    <Prefix />
+    <Seperator />
+    <TextBox />
     <IllegalCharacters>
+      <Item Name="?" Value="" />
+      <Item Name="&gt;" Value="]" />
+      <Item Name="&lt;" Value="[" />
+      <Item Name=":" Value=" - " />
+      <Item Name="|" Value="!" />
+      <Item Name="\" Value="" />
       <Item Name="&quot;" Value="'" />
       <Item Name="/" Value="" />
       <Item Name="*" Value="" />
-      <Item Name="&lt;" Value="[" />
-      <Item Name="?" Value="" />
-      <Item Name="&gt;" Value="]" />
-      <Item Name="|" Value="!" />
-      <Item Name=":" Value="" />
-      <Item Name="\" Value="" />
     </IllegalCharacters>
     <Months>
-      <Item Name="1" Value="January1" />
-      <Item Name="2" Value="February" />
-      <Item Name="3" Value="March" />
-      <Item Name="4" Value="April" />
-      <Item Name="5" Value="May" />
       <Item Name="6" Value="June" />
-      <Item Name="7" Value="July" />
-      <Item Name="8" Value="August" />
-      <Item Name="9" Value="September" />
-      <Item Name="10" Value="October" />
+      <Item Name="5" Value="May" />
+      <Item Name="4" Value="April" />
+      <Item Name="3" Value="March" />
+      <Item Name="2" Value="February" />
+      <Item Name="1" Value="January" />
       <Item Name="11" Value="November" />
-      <Item Name="12" Value="December" />
       <Item Name="13" Value="Spring" />
+      <Item Name="7" Value="July" />
+      <Item Name="9" Value="September" />
+      <Item Name="8" Value="August" />
       <Item Name="14" Value="Summer" />
-      <Item Name="15" Value="Fall" />
       <Item Name="16" Value="Winter" />
+      <Item Name="12" Value="December" />
+      <Item Name="10" Value="Octoberasdfdas" />
+      <Item Name="15" Value="Fall" />
     </Months>
-    <TextBox>
-      <Item Name="Read Percentage" Value="Read" />
-      <Item Name="Manga" Value="Manga" />
-      <Item Name="Series Complete" Value="Complete" />
-    </TextBox>
     <UseFolder>true</UseFolder>
     <UseFileName>true</UseFileName>
     <ExcludeFolders />
     <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
-    <ExcludeOperator>Any</ExcludeOperator>
+    <ExcludeRules Operator="All" ExcludeMode="Do not" />
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
-    <ExcludedEmptyFolder />
-    <MoveFileless>true</MoveFileless>
+    <ExcludedEmptyFolder>
+      <Item>C:\Users\Andrew\Documents\Comunity Library Training Program</Item>
+    </ExcludedEmptyFolder>
+    <MoveFileless>false</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
-    <ExcludeMode>Only</ExcludeMode>
     <FailEmptyValues>false</FailEmptyValues>
     <MoveFailed>false</MoveFailed>
     <FailedFolder />
     <FailedFields />
-    <Mode>Move</Mode>
-    <CopyMode>false</CopyMode>
+    <Mode>Copy</Mode>
+    <CopyMode>true</CopyMode>
     <AutoSpaceFields>true</AutoSpaceFields>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <CopyReadPercentage>true</CopyReadPercentage>
-    <ExcludeRules Operator="Any" ExcludeMode="Only" />
   </Profile>
 </Profiles>

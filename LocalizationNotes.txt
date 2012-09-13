@@ -1,0 +1,10 @@
+
+Look into the default scripts that ship with ComicRack and have localizations. A simple API call (ComicRack.Localize(resource, key, text)) gives you localized texts. The XML format for the resources is self explanatory I think. Your work would be to create the default en package.
+
+Now the default scripts have their language resource files in the ComicRack/Languages/[language code].zip packages (with a "Script." prefix). As this is not an option for you (till ComicVine becomes a default Script , you have to ship them with your script.
+
+Simply put all your resources (= xml files) into a language zip (e.g. en.zip) and add it to your script package. This way people can create localizations with the default ComicRack tool the same way they can create localizations for ComicRack.
+
+Only limitation is that you can only create localizations that are also available for ComicRack itself.
+
+I hope this answers your question 

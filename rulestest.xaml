@@ -1,0 +1,82 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        x:Name="TestRules"
+        Title="rulestest" Height="300" Width="500">
+    <Window.Resources>
+        <Style x:Key="RulesValueComboBox" TargetType="{x:Type ComboBox}">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window, AncestorLevel=1}, Path=translations.rules_values}" />
+            <Setter Property="SelectedValue" Value="{Binding Path=Value, Mode=TwoWay}"/>
+        </Style>
+        <Style x:Key="RulesValueTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Visibility" Value="Visible" />
+        </Style>
+        <DataTemplate x:Key="ExcludeRule">
+            <StackPanel Orientation="Horizontal">
+                <ComboBox SelectedValue="{Binding Path=Field, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window, AncestorLevel=1}, Path=translations.rules_fields}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectionChanged="rules_field_selection_changed"></ComboBox>
+                <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window, AncestorLevel=1}, Path=translations.rules_operators}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding Path=Operator, Mode=TwoWay}" ></ComboBox>
+                <TextBox Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource RulesValueTextBox}"/>
+                <ComboBox Style="{StaticResource RulesValueComboBox}" SelectedValuePath="Key" DisplayMemberPath="Value" />
+                <Button Content="-" Click="remove_rule" Tag="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox, AncestorLevel=1}, Path=ItemsSource}"/>
+                <TextBox Text="{Binding Path=Field, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding Path=Operator, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="ExcludeGroup">
+            <DockPanel LastChildFill="False">
+                <DockPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Padding" Value="5, 2, 5, 2" />
+                        <Setter Property="Margin" Value="5, 0, 5, 0" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </DockPanel.Resources>
+                <ListBox ItemsSource="{Binding Path=rules}" ItemTemplateSelector="{StaticResource ResourceKey=rulestemplateselector}" Margin="20, 0, 0, 0" DockPanel.Dock="Bottom"></ListBox>
+                <Label>Match</Label>
+                <ComboBox VerticalAlignment="Center" MinWidth="50">
+                    <ComboBoxItem>Any</ComboBoxItem>
+                    <ComboBoxItem>All</ComboBoxItem>
+                </ComboBox>
+                <Label>of the following rules</Label>
+                <Button DockPanel.Dock="Right" Tag="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox, AncestorLevel=1}, Path=ItemsSource}" Click="remove_rule">-</Button>
+                <Button DockPanel.Dock="Right" Click="add_rule" DataContext="{Binding Path=rules}">Add Rule</Button>
+                <Button DockPanel.Dock="Right" Click="add_rule_group" DataContext="{Binding Path=rules}">Add Group</Button>
+            </DockPanel>
+        </DataTemplate>
+        
+        
+    </Window.Resources>
+    <Grid>
+        <DockPanel LastChildFill="False" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Path=rules}">
+            <DockPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Padding" Value="5, 2, 5, 2" />
+                    <Setter Property="Margin" Value="5, 0, 5, 0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+                <Style TargetType="{x:Type ComboBox}">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </DockPanel.Resources>
+            <ListBox x:Name="RulesContainer" Height="220" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" ItemsSource="{Binding}" ItemTemplateSelector="{StaticResource rulestemplateselector}" DockPanel.Dock="Bottom"/>
+            <ComboBox MinWidth="70">
+                <ComboBoxItem>Only</ComboBoxItem>
+                <ComboBoxItem>Do not</ComboBoxItem>
+            </ComboBox>
+            <Label>move books that match</Label>
+            <ComboBox MinWidth="50">
+                <ComboBoxItem>All</ComboBoxItem>
+                <ComboBoxItem>Any</ComboBoxItem>
+            </ComboBox>
+            <Label>of the following rules</Label>
+            <Button DockPanel.Dock="Right" Click="add_rule">Add Rule</Button>
+            <Button DockPanel.Dock="Right" Click="add_rule_group">Add Group</Button>
+
+        </DockPanel>
+    </Grid>
+</Window>
