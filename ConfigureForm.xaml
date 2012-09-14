@@ -367,8 +367,11 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateYesNoStyle">
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderOptionsBaseStyle">
             <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Margin" Value="5, 0" />
+        </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderYesNoStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="YesNo">
                     <Setter Property="Visibility" Value="Visible" />
@@ -377,6 +380,7 @@
         </Style>
         <Style TargetType="{x:Type StackPanel}" x:Key="TemplateNumericStyle">
             <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Margin" Value="5, 0" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
                     <Setter Property="Visibility" Value="Visible" />
@@ -385,6 +389,7 @@
         </Style>
         <Style TargetType="{x:Type StackPanel}" x:Key="TemplateMultipleValueStyle">
             <Setter Property="Visibility" Value="Collapsed" />
+            <Setter Property="Margin" Value="5, 0" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
                     <Setter Property="Visibility" Value="Visible" />
@@ -767,19 +772,30 @@
                                     <Label>Padding</Label>
                                     <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="TemplateBuilderPadding" />
                                 </StackPanel>
-                                <StackPanel x:Name="YesNoText" Style="{StaticResource TemplateYesNoStyle}">
+                                <StackPanel x:Name="YesNoText" Style="{StaticResource TemplateBuilderYesNoStyle}">
                                     <Label>Inserted Text</Label>
                                     <TextBox x:Name="TemplateBuilderYesNoText" />
                                 </StackPanel>
-                                <StackPanel VerticalAlignment="Bottom" Style="{StaticResource TemplateYesNoStyle}" >
-                                    <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert">!</ToggleButton>
-                                </StackPanel>
-                                <StackPanel>
-                                    <CheckBox x:Name="TemplateBuilderSelectMultiValue">
-                                        <TextBlock>Select which characters to use.</TextBlock>
-                                    </CheckBox>
+                                <StackPanel Style="{StaticResource TemplateBuilderYesNoStyle}" >
+                                    <Label>Invert</Label>
+                                    <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
                                 </StackPanel>
                                 <StackPanel VerticalAlignment="Center">
+                                    <StackPanel.Style>
+                                        <Style TargetType="{x:Type StackPanel}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <CheckBox x:Name="TemplateBuilderSelectMultiValue">
+                                        <TextBlock>Select which characters to use</TextBlock>
+                                    </CheckBox>
+                                </StackPanel>
+                                <StackPanel x:Name="FieldTemplateMultipleFieldSeperator">
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
@@ -787,7 +803,7 @@
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue"/>
-                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" />
+                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" Value="True" />
                                                     </MultiDataTrigger.Conditions>
                                                     <MultiDataTrigger.Setters>
                                                         <Setter Property="StackPanel.Visibility" Value="Visible" />
@@ -796,22 +812,29 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <CheckBox>Select once for every issue in the series</CheckBox>
-                                </StackPanel>
-                                <StackPanel x:Name="FieldTemplateMultipleFieldSeperator">
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
                                     <Label>Seperator</Label>
                                     <TextBox></TextBox>
                                 </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel.Style>
+                                        <Style TargetType="{x:Type StackPanel}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue"/>
+                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <CheckBox>Select once for every issue in the series</CheckBox>
+                                </StackPanel>
+
                                 <StackPanel VerticalAlignment="Center" Margin="5, 0" x:Name="FieldTemplateMonthNames">
                                     <StackPanel.Style>
                                         <Style>
