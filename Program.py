@@ -1,5 +1,4 @@
 import wpf
-import pychecker.checker
 from System.Windows import Application, Window
 
 import clr
