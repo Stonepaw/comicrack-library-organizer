@@ -32,7 +32,7 @@ class ExcludeRuleCollection(object):
         if mode not in ("Only", "Do not"): mode = "Do not"
         self.mode = mode
 
-        #Create Commands
+        #Create Commands for wpf form
         self.AddNewRule = Command(self.add_new_rule)
         self.InsertNewRule = Command(self.insert_new_rule, uses_parameter=True)
         self.AddNewGroup = Command(self.add_new_group)

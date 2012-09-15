@@ -6,7 +6,7 @@
         Title="MainWindow" Height="502" Width="640"
         UseLayoutRounding="True"
         Name="ConfigureForm"
-        Background="{x:Static SystemColors.ControlBrush}" ResizeMode="NoResize">
+        Background="{x:Static SystemColors.ControlLightBrush}" ResizeMode="NoResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <!-- For changing the tabs on the tab control to white-->
@@ -373,27 +373,32 @@
         </Style>
         <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderYesNoStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="YesNo">
+                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="YesNo">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MangaYesNo">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateNumericStyle">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Setter Property="Margin" Value="5, 0" />
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderNumericStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateMultipleValueStyle">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Setter Property="Margin" Value="5, 0" />
+        <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" x:Key="TemplateBuilderMultipleValueStyle">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue" />
+                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultipleValue, Path=IsChecked}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <MultiDataTrigger.Setters>
+                        <Setter Property="Visibility" Value="Visible" />
+                    </MultiDataTrigger.Setters>
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
         <DataTemplate x:Key="ExcludeRule">
@@ -461,7 +466,7 @@
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Background="{x:Static SystemColors.ControlLightBrush}">
             <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0" >
                 <StackPanel>
                     <Image Stretch="None">
@@ -549,7 +554,7 @@
             </Grid.Resources>
             <Label x:Name="ProfileLabel" Grid.Column="0">Profile:</Label>
             <ComboBox Width="Auto" MinWidth="200" x:Name="ProfileSelector" Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=profilenames}" SelectionChanged="Profile_SelectionChanged" VerticalAlignment="Center"></ComboBox>
-            <Menu Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{x:Static SystemColors.ControlBrush}">
+            <Menu Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <MenuItem Header="Profile Actions" VerticalContentAlignment="Stretch" Padding="7,4,8,5">
                     <MenuItem.Icon>
                         <Image Stretch="None">
@@ -625,9 +630,9 @@
             <Button HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5">Okay</Button>
             <Button Grid.Column="1" HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5">Cancel</Button>
         </Grid>
-        <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" Background="Transparent" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ConfigureForm, Path=profile}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
+        <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ConfigureForm, Path=profile}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
             <TabItem Visibility="Collapsed" x:Name="OverviewPage">
-                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White">
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlBrush}">
                     <AdornerDecorator>
                         <Canvas Margin="5">
                             <GroupBox Header="Mode" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas, AncestorLevel=1}, Path=ActualWidth}">
@@ -685,7 +690,7 @@
                 </Border>
             </TabItem>
             <TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
-                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White">
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}" >
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -719,7 +724,7 @@
                                 </Style>
                             </Grid.Resources>
                             <Label Grid.Column="0" Grid.Row="0">Field:</Label>
-                            <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding ElementName=ConfigureForm, Path=template_field_selectors}" SelectedValue="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type, Mode=OneWayToSource}" SelectedValuePath="Value" DisplayMemberPath="Key" />
+                            <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding ElementName=ConfigureForm, Path=template_field_selectors}" SelectedValuePath="Value" DisplayMemberPath="Key" />
                             <Button Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Click="insert_field_clicked">Insert Field</Button>
                             <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Click="insert_folder_clicked">Insert Folder Seperator</Button>
                             <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields">Space inserted fields automatically</CheckBox>
@@ -738,28 +743,28 @@
                                         <Setter Property="Margin" Value="5, 0" />
                                     </Style>
                                 </WrapPanel.Resources>
-                                <StackPanel>
+                                <StackPanel Name="Prefix">
                                     <Label>Prefix</Label>
                                     <TextBox x:Name="TemplateBuilderPrefix" />
                                 </StackPanel>
-                                <StackPanel>
+                                <StackPanel Name="Suffix">
                                     <Label>Suffix</Label>
                                     <TextBox x:Name="TemplateBuilderSuffix" />
                                 </StackPanel>
-                                <StackPanel x:Name="FieldTemplatePadding">
+                                <StackPanel Name="PaddingStackPanel">
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Month" />
+                                                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month" />
                                                         <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
                                                     </MultiDataTrigger.Conditions>
                                                     <MultiDataTrigger.Setters>
@@ -776,71 +781,38 @@
                                     <Label>Inserted Text</Label>
                                     <TextBox x:Name="TemplateBuilderYesNoText" />
                                 </StackPanel>
-                                <StackPanel Style="{StaticResource TemplateBuilderYesNoStyle}" >
+                                <StackPanel Style="{StaticResource TemplateBuilderYesNoStyle}" Name="YesNoInvert" >
                                     <Label>Invert</Label>
                                     <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
                                 </StackPanel>
-                                <StackPanel VerticalAlignment="Center">
+                                <StackPanel VerticalAlignment="Center" Name="SelectMultipleValue">
                                     <StackPanel.Style>
-                                        <Style TargetType="{x:Type StackPanel}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <CheckBox x:Name="TemplateBuilderSelectMultiValue">
-                                        <TextBlock>Select which characters to use</TextBlock>
+                                    <CheckBox x:Name="TemplateBuilderSelectMultipleValue">
+                                        <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}">
+                                        </TextBlock>
                                     </CheckBox>
                                 </StackPanel>
-                                <StackPanel x:Name="FieldTemplateMultipleFieldSeperator">
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue"/>
-                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" Value="True" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <MultiDataTrigger.Setters>
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                    </MultiDataTrigger.Setters>
-                                                </MultiDataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
+                                <StackPanel Name="MuiltipleValueSeperator" Style="{StaticResource TemplateBuilderMultipleValueStyle}">
                                     <Label>Seperator</Label>
-                                    <TextBox></TextBox>
+                                    <TextBox x:Name="TemplateBuilderMultipleValueSeperator"></TextBox>
                                 </StackPanel>
-                                <StackPanel VerticalAlignment="Center">
-                                    <StackPanel.Style>
-                                        <Style TargetType="{x:Type StackPanel}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <MultiDataTrigger>
-                                                    <MultiDataTrigger.Conditions>
-                                                        <Condition Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="MultipleValue"/>
-                                                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultiValue, Path=IsChecked}" Value="True" />
-                                                    </MultiDataTrigger.Conditions>
-                                                    <MultiDataTrigger.Setters>
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                    </MultiDataTrigger.Setters>
-                                                </MultiDataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
-                                    <CheckBox>Select once for every issue in the series</CheckBox>
+                                <StackPanel VerticalAlignment="Center" Name="MultipleValueSelectOnce" Style="{StaticResource TemplateBuilderMultipleValueStyle}">
+                                    <CheckBox x:Name="TemplateBuilderMultipleValueSelectOnce">Select once for every issue in the series</CheckBox>
                                 </StackPanel>
-
                                 <StackPanel VerticalAlignment="Center" Margin="5, 0" x:Name="FieldTemplateMonthNames">
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Month">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -853,7 +825,7 @@
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="FirstLetter">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="FirstLetter">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -870,34 +842,35 @@
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
                                     <Label>Start</Label>
+                                    <xctk:IntegerUpDown Value="1" />
                                 </StackPanel>
                                 <StackPanel>
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Counter">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
                                     <Label>Increment</Label>
-                                    <xctk:IntegerUpDown />
+                                    <xctk:IntegerUpDown Value="1" />
                                 </StackPanel>
                                 <StackPanel>
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="ReadPercentage">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="ReadPercentage">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -915,14 +888,13 @@
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="ReadPercentage">
+                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="ReadPercentage">
                                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
                                     <Label>Percent</Label>
-
                                 </StackPanel>
                             </WrapPanel>
 
