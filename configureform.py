@@ -7,36 +7,27 @@ clr.AddReference("System.Windows.Forms")
 clr.AddReference("PresentationCore")
 clr.AddReference("Ookii.Dialogs.Wpf")
 clr.AddReference("Ookii.Dialogs")
-clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ComicRack.Engine.dll")
-clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\cYo.Common.dll")
+clr.AddReferenceToFile("ComicRack.Engine.dll")
+clr.AddReferenceToFile("cYo.Common.dll")
 
 import System
 import localizer
-import locommon
-import Ookii.Dialogs.Wpf
-
 from System import Single, Double, Int64
-from System.IO import Path
 from System.Collections.ObjectModel import ObservableCollection
-from System.Collections.Generic import Dictionary, SortedDictionary
-from System.Windows import Window, PropertyPath, Visibility
-from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox, Grid
+from System.Collections.Generic import SortedDictionary
+from System.Windows import Window, PropertyPath
+from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox
 from System.Windows.Controls.Primitives import Popup
-from System.Windows.Data import Binding, BindingMode, BindingOperations, UpdateSourceTrigger, IValueConverter
-from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs
-from System.Windows.Forms import MessageBox, FolderBrowserDialog, DialogResult
-from System.Windows.Media import VisualTreeHelper
-from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs
+from System.Windows.Data import Binding, IValueConverter
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
-from Ookii.Dialogs import InputDialog
-
-from Xceed.Wpf.Toolkit import DropDownButton, IntegerUpDown
-
-from locommon import SCRIPTDIRECTORY, Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields
+from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields
 from excluderules import ExcludeRule, ExcludeGroup
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
 from wpfutils import notify_property, NotifyPropertyChangedBase
+
+#Use global so it isn't contantly created in the converter class
+COMICBOOK = ComicBook()
 
 class ConfigureForm(Window):
 
@@ -52,6 +43,10 @@ class ConfigureForm(Window):
         #For the exclude rules data template
         rulestemplateselector = RulesTemplateSelector()
         self.Resources.Add("rulestemplateselector", rulestemplateselector)
+        self.field_name_to_type_name_converter = FieldNameToTypeNameConverter()
+        self.Resources.Add("FieldNameToTypeNameConverter", self.field_name_to_type_name_converter)
+        fieldnametomultivaluedescription = FieldNameToMultiValueDescription()
+        self.Resources.Add("FieldNameToMultiValueDescription", fieldnametomultivaluedescription)
 
         self.view_model = ConfigureFormViewModel()
         
@@ -142,29 +137,15 @@ class ConfigureForm(Window):
         pass
 
     def insert_field_clicked(self, sender, e):
-        
-
-        insert_text = self.build_template_text()
-
-        self.FolderStructure.SelectedText = insert_text
-        self.FolderStructure.CaretIndex += len(insert_text)
-        self.FolderStructure.SelectionLength = 0
-
-    def insert_folder_clicked(self, sender, e):
-        self.FolderStructure.SelectedText = "\\"
-        self.FolderStructure.CaretIndex += 1
-        self.FolderStructure.SelectionLength = 0
-
-    def build_template_text(self):
         args = ""
-
-        if self.view_model.template_selector_type == "Numeric":
+        field_type = self.field_name_to_type_name_converter.Convert(self.TemplateFieldSelector.SelectedValue, None, None, None)
+        if field_type == "Numeric":
             args = str(self.TemplateBuilderPadding.Value)
-        elif self.view_model.template_selector_type == "YesNo":
+        elif field_type == "YesNo" or field_type == "MangaYesNo":
             args = "(%s)" % (self.TemplateBuilderYesNoText.Text)
             if self.TemplateBuilderYesNoInvert.IsChecked:
                 args += "(!)"
-        elif self.view_model.template_selector_type == "Month":
+        elif field_type == "Month":
             pass
 
         if self.TemplateBuilderAutoSpaceFields.IsChecked:
@@ -172,7 +153,28 @@ class ConfigureForm(Window):
         else:
             prefix = self.TemplateBuilderPrefix.Text
 
-        return "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
+        insert_text = "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
+        self.insert_text_into_template(insert_text)
+
+    def insert_folder_clicked(self, sender, e):
+        self.insert_text_into_template("\\")
+
+
+    def insert_text_into_template(self, insert_text):
+        """Inserts text into the correct template textbox. 
+        
+        Replaces the selected text or inserts at the caret location."""
+        if self.FolderButton.IsChecked:
+            self.FolderStructure.SelectedText = insert_text
+            self.FolderStructure.CaretIndex += len(insert_text)
+            self.FolderStructure.SelectionLength = 0
+        elif self.FileButton.IsChecked:
+            self.FileStructure.SelectedText = insert_text
+            self.FileStructure.CaretIndex += len(insert_text)
+            self.FileStructure.SelectionLength = 0
+
+    def build_template_text(self):
+        pass
 
 
     #These are for the various combobox/textbox options
@@ -232,6 +234,38 @@ class EmptyTextBoxValidationRule(ValidationRule):
             return ValidationResult(False, "Error")
         else:
             return ValidationResult.ValidResult
+
+
+class FieldNameToTypeNameConverter(IValueConverter):
+
+    def Convert(self, value, targetType, paramater, culture):
+        global COMICBOOK
+        if value is None:
+            return ""
+        if value in ("Counter", "FirstLetter", "Conditional", "StartMonth", "StartYear", "FirstIssueNumber", "Month"):
+            return value
+        elif value in multiple_value_fields:
+            return "MultipleValue"
+        comic_field_type = type(getattr(COMICBOOK, value))
+        if comic_field_type is YesNo:
+            return "YesNo"
+        elif  comic_field_type is MangaYesNo:
+            return "MangaYesNo"
+        elif comic_field_type in (int, Double, Int64, float, Single) or value in ("Number", "AlternateNumber"):
+            return "Numeric"
+        elif comic_field_type is bool:
+            return "Bool"
+        elif comic_field_type is str:
+           return "String"
+        print self._template_selector_type
+
+
+class FieldNameToMultiValueDescription(IValueConverter):
+
+    def Convert(self, value, targetType, paramater, culture):
+        if value is None:
+            return ""
+        return "Select which %s to use" % (value.lower())
 
 
 class ConfigureFormViewModel(NotifyPropertyChangedBase):
