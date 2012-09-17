@@ -700,9 +700,9 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
                             <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">File Structure:</Label>
-                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                             <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Folder Structure:</Label>
-                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="40" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <Label x:Name="PreviewLabel">Preview:</Label>
                             <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"></TextBlock>
                         </StackPanel>
