@@ -53,7 +53,7 @@ class Command(ICommand):
     
     Originally from: http://mark-dot-net.blogspot.ca/2010/10/wpf-and-mvvm-in-ironpython.html
     """    
-    def __init__(self, execute, can_execute=lambda: True, uses_parameter=False):
+    def __init__(self, execute, can_execute=None, uses_parameter=False):
         """Initiates a new command.
 
         Args:
@@ -90,8 +90,15 @@ class Command(ICommand):
             handler(self, EventArgs.Empty)
  
     def CanExecute(self, parameter):
+        if self._canexecute is None:
+            return True
+        #There is a possiblity that the parameter will be none even when it's not supposed to be.
+        #So instead of checking for None, use a try except.
         if self._uses_parameter:
-            return self._canexecute(parameter)
+            try:
+                return self._canexecute(parameter)
+            except TypeError:
+                return self._canexecute()
         else:
             return self._canexecute()            
             

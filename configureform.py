@@ -48,10 +48,6 @@ class ConfigureForm(Window):
         fieldnametomultivaluedescription = FieldNameToMultiValueDescription()
         self.Resources.Add("FieldNameToMultiValueDescription", fieldnametomultivaluedescription)
 
-        self.view_model = ConfigureFormViewModel()
-        
-        self._tab_index = 0
-        
         self.translations = Translations()
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
