@@ -21,7 +21,7 @@ from System.Windows.Controls.Primitives import Popup
 from System.Windows.Data import Binding, IValueConverter
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
-from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields
+from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields
 from excluderules import ExcludeRule, ExcludeGroup
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
 from wpfutils import notify_property, NotifyPropertyChangedBase
@@ -143,6 +143,12 @@ class ConfigureForm(Window):
                 args += "(!)"
         elif field_type == "Month":
             pass
+        elif field_type == "MultipleValue":
+            if self.TemplateBuilderSelectMultipleValue.IsChecked:                
+                if self.TemplateBuilderMultipleValueSelectOnce.IsChecked:
+                    args = "(%s)(series)" % (self.TemplateBuilderMultipleValueSeperator.Text)
+                else:
+                    args = "(%s)(issue)" % (self.TemplateBuilderMultipleValueSeperator.Text)
 
         if self.TemplateBuilderAutoSpaceFields.IsChecked:
             prefix = " " + self.TemplateBuilderPrefix.Text
@@ -238,20 +244,24 @@ class FieldNameToTypeNameConverter(IValueConverter):
         global COMICBOOK
         if value is None:
             return ""
-        if value in ("Counter", "FirstLetter", "Conditional", "StartMonth", "StartYear", "FirstIssueNumber", "Month"):
+
+        if value in ("Counter", "FirstLetter", "Conditional"):
             return value
+        elif value in ("StartMonth","Month"):
+            return "Month"
         elif value in multiple_value_fields:
             return "MultipleValue"
-        comic_field_type = type(getattr(COMICBOOK, value))
-        if comic_field_type is YesNo:
+        if value not in library_organizer_fields and value not in ("Month", "Number", "AlternateNumber"):
+            value = type(getattr(COMICBOOK, value))
+        if value is YesNo:
             return "YesNo"
-        elif  comic_field_type is MangaYesNo:
+        elif value is MangaYesNo:
             return "MangaYesNo"
-        elif comic_field_type in (int, Double, Int64, float, Single) or value in ("Number", "AlternateNumber"):
+        elif value in ("Number", "AlternateNumber", "FirstIssueNumber", "LastIssueNumber", "StartYear", int, Double, Int64, float, Single):
             return "Numeric"
-        elif comic_field_type is bool:
+        elif value is bool:
             return "Bool"
-        elif comic_field_type is str:
+        elif value is str:
            return "String"
         print self._template_selector_type
 
