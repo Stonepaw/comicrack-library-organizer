@@ -1,5 +1,4 @@
 ﻿2.1.8
-Fixes an error when handleing an error that occurs when moving files.
-Restored default templates for new users.
+Fix for non-integer values messing up the automatic padding system
 
 
