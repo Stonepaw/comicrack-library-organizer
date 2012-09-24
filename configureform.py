@@ -149,7 +149,10 @@ class ConfigureForm(Window):
                     args = "(%s)(series)" % (self.TemplateBuilderMultipleValueSeperator.Text)
                 else:
                     args = "(%s)(issue)" % (self.TemplateBuilderMultipleValueSeperator.Text)
-
+        elif field_type == "Counter":
+            args = "(%s)(%s)(%s)" % (self.TemplateBuilderCounterStart.Value, 
+                                     self.TemplateBuilderCounterIncrement.Value, 
+                                     self.TemplateBuilderPadding.Value)
         if self.TemplateBuilderAutoSpaceFields.IsChecked:
             prefix = " " + self.TemplateBuilderPrefix.Text
         else:
@@ -251,7 +254,7 @@ class FieldNameToTypeNameConverter(IValueConverter):
             return "Month"
         elif value in multiple_value_fields:
             return "MultipleValue"
-        if value not in library_organizer_fields and value not in ("Month", "Number", "AlternateNumber"):
+        if value not in library_organizer_fields and value not in ("Number", "AlternateNumber"):
             value = type(getattr(COMICBOOK, value))
         if value is YesNo:
             return "YesNo"

@@ -6,7 +6,7 @@
         Title="MainWindow" Height="502" Width="640"
         UseLayoutRounding="True"
         Name="ConfigureForm"
-        Background="{x:Static SystemColors.ControlLightBrush}" ResizeMode="NoResize">
+        Background="{x:Static SystemColors.ControlBrush}" ResizeMode="NoResize">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
         <!-- For changing the tabs on the tab control to white-->
@@ -401,6 +401,13 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderCounterStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
+                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <DataTemplate x:Key="ExcludeRule">
             <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
@@ -466,7 +473,7 @@
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Background="{x:Static SystemColors.ControlLightBrush}">
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical">
             <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0" >
                 <StackPanel>
                     <Image Stretch="None">
@@ -632,7 +639,7 @@
         </Grid>
         <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ConfigureForm, Path=profile}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
             <TabItem Visibility="Collapsed" x:Name="OverviewPage">
-                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlBrush}">
+                <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}">
                     <AdornerDecorator>
                         <Canvas Margin="5">
                             <GroupBox Header="Mode" Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Canvas, AncestorLevel=1}, Path=ActualWidth}">
@@ -729,7 +736,7 @@
                             <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Click="insert_folder_clicked">Insert Folder Seperator</Button>
                             <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields">Space inserted fields automatically</CheckBox>
                         </Grid>
-                        
+
                         <GroupBox Header="Options" Grid.Row="3" FocusManager.IsFocusScope="True">
                             <WrapPanel>
                                 <WrapPanel.Resources>
@@ -753,14 +760,13 @@
                                 </StackPanel>
                                 <StackPanel Name="PaddingStackPanel">
                                     <StackPanel.Style>
-                                        <Style>
-                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                                        <Style BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" TargetType="{x:Type StackPanel}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                    <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
@@ -768,7 +774,7 @@
                                                         <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
                                                     </MultiDataTrigger.Conditions>
                                                     <MultiDataTrigger.Setters>
-                                                        <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                     </MultiDataTrigger.Setters>
                                                 </MultiDataTrigger>
                                             </Style.Triggers>
@@ -795,9 +801,9 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <CheckBox x:Name="TemplateBuilderSelectMultipleValue">
-                                        <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}">
-                                        </TextBlock>
+                                    <TextBlock />
+                                    <CheckBox x:Name="TemplateBuilderSelectMultipleValue" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
                                     </CheckBox>
                                 </StackPanel>
                                 <StackPanel Name="MuiltipleValueSeperator" Style="{StaticResource TemplateBuilderMultipleValueStyle}">
@@ -837,33 +843,13 @@
                                         <ComboBoxItem>Longggggg Text</ComboBoxItem>
                                     </ComboBox>
                                 </StackPanel>
-                                <StackPanel>
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
+                                <StackPanel x:Name="CounterStart" Style="{StaticResource TemplateBuilderCounterStyle}">
                                     <Label>Start</Label>
-                                    <xctk:IntegerUpDown Value="1" />
+                                    <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterStart"/>
                                 </StackPanel>
-                                <StackPanel>
-                                    <StackPanel.Style>
-                                        <Style>
-                                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
+                                <StackPanel Name="CounterIncrement" Style="{StaticResource TemplateBuilderCounterStyle}">
                                     <Label>Increment</Label>
-                                    <xctk:IntegerUpDown Value="1" />
+                                    <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterIncrement"/>
                                 </StackPanel>
                                 <StackPanel>
                                     <StackPanel.Style>

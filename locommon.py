@@ -71,7 +71,7 @@ library_organizer_fields = ["Counter", "FirstLetter", "Conditional", "StartMonth
 #These are the fields useable in the exclude rules.
 exclude_rule_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
 
-multiple_value_fields = ["AlternateSeries", "Character", "Colorist", "CoverArtist", "Editor", "Genre", "Inker", "Letterer", "Locations", "Penciller", "ScanInformation", "Tags", "Teams", "Writer"]
+multiple_value_fields = ["AlternateSeries", "Characters", "Colorist", "CoverArtist", "Editor", "Genre", "Inker", "Letterer", "Locations", "Penciller", "ScanInformation", "Tags", "Teams", "Writer"]
 
 
 
@@ -275,6 +275,9 @@ def get_last_book(book):
             
     for b in ComicRack.App.GetLibraryBooks():
         if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+            if not endbook.ShadowNumber.isdigit():
+                endbook = b
+                continue
             if (endbook.ShadowNumber.isdigit() and b.ShadowNumber.isdigit()) and int(endbook.ShadowNumber) < int(b.ShadowNumber):
                 endbook = b
           
