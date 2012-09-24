@@ -480,6 +480,9 @@ def get_last_book(book):
             
     for b in ComicRack.App.GetLibraryBooks():
         if b.ShadowSeries == book.ShadowSeries and b.ShadowVolume == book.ShadowVolume and b.Publisher == book.Publisher:
+            if not endbook.ShadowNumber.isdigit():
+                endbook = b
+                continue
             if (endbook.ShadowNumber.isdigit() and b.ShadowNumber.isdigit()) and int(endbook.ShadowNumber) < int(b.ShadowNumber):
                 endbook = b
           
