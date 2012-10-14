@@ -11,6 +11,11 @@ change exclude rules manga to use "is Yes" with only one combo box. Will be easi
 Exclude rules from ComicRack looks complicated. Continue using the method I'm using but expand the operators. "Matches" has the translations of the operators.
 
 
+fields still to do:
+conditional
+read percentage
+one other
+
 
 Overhaul getting property values with:
 	print books[0].GetStringPropertyValue("Series", ComicValueType.Shadow) #Gets the value and if failing, getting the shadowvalues
