@@ -21,7 +21,7 @@ from System.Windows.Controls.Primitives import Popup
 from System.Windows.Data import Binding, IValueConverter
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
-from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields
+from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields, first_letter_fields
 from excluderules import ExcludeRule, ExcludeGroup
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
 from wpfutils import notify_property, NotifyPropertyChangedBase
@@ -76,6 +76,7 @@ class ConfigureForm(Window):
         self.exclude_rule_bool_operators = SortedDictionary[str, str](localizer.get_exclude_rule_bool_operators())
         self.template_field_selectors = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
                                                                     if property in template_fields})
+        self.first_letter_fields_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in first_letter_fields})
 
     def Button_Browse_Click(self, sender, e):
         """Shows a folder browser dialog and sets the base folder to the selected path."""        
@@ -143,6 +144,8 @@ class ConfigureForm(Window):
                 args += "(!)"
         elif field_type == "Month":
             pass
+        elif field_type == "FirstLetter":
+            args = "(%s)" % (self.FirstLetterSeriesSelector.SelectedValue)
         elif field_type == "MultipleValue":
             if self.TemplateBuilderSelectMultipleValue.IsChecked:                
                 if self.TemplateBuilderMultipleValueSelectOnce.IsChecked:
@@ -248,7 +251,7 @@ class FieldNameToTypeNameConverter(IValueConverter):
         if value is None:
             return ""
 
-        if value in ("Counter", "FirstLetter", "Conditional"):
+        if value in ("Counter", "FirstLetter", "Conditional", "Year", "StartYear"):
             return value
         elif value in ("StartMonth","Month"):
             return "Month"
@@ -260,7 +263,7 @@ class FieldNameToTypeNameConverter(IValueConverter):
             return "YesNo"
         elif value is MangaYesNo:
             return "MangaYesNo"
-        elif value in ("Number", "AlternateNumber", "FirstIssueNumber", "LastIssueNumber", "StartYear", int, Double, Int64, float, Single):
+        elif value in ("Number", "AlternateNumber", "FirstIssueNumber", "LastIssueNumber", int, Double, Int64, float, Single):
             return "Numeric"
         elif value is bool:
             return "Bool"

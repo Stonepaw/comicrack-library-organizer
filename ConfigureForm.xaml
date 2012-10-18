@@ -826,7 +826,7 @@
                                     </StackPanel.Style>
                                     <CheckBox x:Name="UseMonthNames">Use month names</CheckBox>
                                 </StackPanel>
-                                <StackPanel x:Name="FieldTemplateSeriesSelecteor">
+                                <StackPanel x:Name="FirstLetter">
                                     <StackPanel.Style>
                                         <Style>
                                             <Setter Property="StackPanel.Visibility" Value="Collapsed" />
@@ -838,9 +838,7 @@
                                         </Style>
                                     </StackPanel.Style>
                                     <Label>Field</Label>
-                                    <ComboBox Width="100">
-                                        <ComboBoxItem>Series</ComboBoxItem>
-                                        <ComboBoxItem>Longggggg Text</ComboBoxItem>
+                                    <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="FirstLetterSeriesSelector">
                                     </ComboBox>
                                 </StackPanel>
                                 <StackPanel x:Name="CounterStart" Style="{StaticResource TemplateBuilderCounterStyle}">
