@@ -14,7 +14,7 @@ Exclude rules from ComicRack looks complicated. Continue using the method I'm us
 fields still to do:
 conditional
 read percentage
-one other
+first letter
 
 
 Overhaul getting property values with:
