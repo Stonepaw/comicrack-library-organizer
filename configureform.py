@@ -15,13 +15,13 @@ import localizer
 from System import Single, Double, Int64
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Generic import SortedDictionary
-from System.Windows import Window, PropertyPath
+from System.Windows import Window, PropertyPath, Visibility
 from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox
 from System.Windows.Controls.Primitives import Popup
 from System.Windows.Data import Binding, IValueConverter
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
-from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields, first_letter_fields
+from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields, first_letter_fields, conditional_fields, conditional_then_else_fields
 from excluderules import ExcludeRule, ExcludeGroup
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
 from wpfutils import notify_property, NotifyPropertyChangedBase
@@ -47,7 +47,8 @@ class ConfigureForm(Window):
         self.Resources.Add("FieldNameToTypeNameConverter", self.field_name_to_type_name_converter)
         fieldnametomultivaluedescription = FieldNameToMultiValueDescription()
         self.Resources.Add("FieldNameToMultiValueDescription", fieldnametomultivaluedescription)
-
+        fieldnametovisiblityconverter = FieldNameToVisiblityConverter()
+        self.Resources.Add("FieldNameToVisibilityConverter", fieldnametovisiblityconverter)
         self.translations = Translations()
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
@@ -77,6 +78,8 @@ class ConfigureForm(Window):
         self.template_field_selectors = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
                                                                     if property in template_fields})
         self.first_letter_fields_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in first_letter_fields})
+        self.conditional_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in conditional_fields})
+        self.conditional_then_else_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in conditional_then_else_fields})
 
     def Button_Browse_Click(self, sender, e):
         """Shows a folder browser dialog and sets the base folder to the selected path."""        
@@ -156,6 +159,10 @@ class ConfigureForm(Window):
             args = "(%s)(%s)(%s)" % (self.TemplateBuilderCounterStart.Value, 
                                      self.TemplateBuilderCounterIncrement.Value, 
                                      self.TemplateBuilderPadding.Value)
+        elif field_type == "ReadPercentage":
+            args = "(%s)(%s)(%s)" % (self.TemplateBuilderReadPercentageText.Text,
+                                     self.TemplateBuilderReadPercentageOperator.Text,
+                                     self.TemplateBuilderReadPercentageNumber.Value)
         if self.TemplateBuilderAutoSpaceFields.IsChecked:
             prefix = " " + self.TemplateBuilderPrefix.Text
         else:
@@ -180,9 +187,6 @@ class ConfigureForm(Window):
             self.FileStructure.SelectedText = insert_text
             self.FileStructure.CaretIndex += len(insert_text)
             self.FileStructure.SelectionLength = 0
-
-    def build_template_text(self):
-        pass
 
 
     #These are for the various combobox/textbox options
@@ -246,12 +250,12 @@ class EmptyTextBoxValidationRule(ValidationRule):
 
 class FieldNameToTypeNameConverter(IValueConverter):
 
-    def Convert(self, value, targetType, paramater, culture):
+    def Convert(self, value, targetType, parameter, culture):
         global COMICBOOK
         if value is None:
             return ""
 
-        if value in ("Counter", "FirstLetter", "Conditional", "Year", "StartYear"):
+        if value in ("Counter", "FirstLetter", "Conditional", "Year", "StartYear", "ReadPercentage"):
             return value
         elif value in ("StartMonth","Month"):
             return "Month"
@@ -270,6 +274,27 @@ class FieldNameToTypeNameConverter(IValueConverter):
         elif value is str:
            return "String"
         print self._template_selector_type
+
+
+class FieldNameToVisiblityConverter(IValueConverter):
+
+    fieldnameconverter = FieldNameToTypeNameConverter()
+
+    def Convert(self, value, targetType, parameter, culture):
+        """Converts the name of a field to a type and then compares it to the parameter(s).
+
+        Args:
+            parameter: Can either be a single type or a | seperated list of parameters.
+        
+        Returns:
+            System.Windows.Visiblity.Visible or System.Windows.Visiblity.Collapsed
+        """
+        fieldtype = self.fieldnameconverter.Convert(value, targetType, parameter, culture)
+        parameters = parameter.split("|")
+        for p in parameters:
+            if fieldtype == p:
+                return Visibility.Visible
+        return Visibility.Collapsed
 
 
 class FieldNameToMultiValueDescription(IValueConverter):
@@ -314,7 +339,3 @@ class ConfigureFormViewModel(NotifyPropertyChangedBase):
         elif comic_field_type is str:
             self._template_selector_type = "String"
         print self._template_selector_type
-
-
-
-

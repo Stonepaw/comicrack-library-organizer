@@ -60,7 +60,19 @@ field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count
 #These next few lists are just to make certain functions easier while providing one place needed to add new fields in buy simply add the property to the relavent list.
 
 #Contains all the used fields in the comic. This is used to build the translations
-comic_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
+comic_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries',
+                'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition',
+                'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 
+                'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 
+                'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 
+                'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 
+                'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 
+                'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 
+                'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 
+                'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 
+                'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 
+                'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 
+                'Web', 'Writer', 'Year']
 
 #This contains the fields that are available to add into the template. Used for building the correct list of things later.
 template_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Colorist', 'CommunityRating', 'Conditional', 'Count', 'Counter', 'CoverArtist', 'Editor', 'FirstIssueNumber', 'FirstLetter', 'Format', 'Genre', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StartMonth', 'StartYear', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Writer', 'Year']
@@ -76,6 +88,10 @@ multiple_value_fields = ["AlternateSeries", "Characters", "Colorist", "CoverArti
 
 #These are fields that are usable in the first letter selector. Typically string fields.
 first_letter_fields = ['AlternateSeries', 'Imprint', 'Publisher', 'Series' ]
+
+#This contains the fields usable in the selectors for condtitional. Should basically contain everything but Conditional with the additon of Text\
+conditional_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FirstIssueNumber', 'FirstLetter', 'Format', 'Genre', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StartMonth', 'StartYear', 'StoryArc', 'Summary', 'Tags', 'Text', 'Teams', 'Title', 'Volume', 'Writer', 'Year']
+conditional_then_else_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Colorist', 'CommunityRating', 'Count', 'Counter', 'CoverArtist', 'Editor', 'FirstIssueNumber', 'FirstLetter', 'Format', 'Genre', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StartMonth', 'StartYear', 'StoryArc', 'Summary', 'Tags', 'Text', 'Teams', 'Title', 'Volume', 'Writer', 'Year']
 
 
 
