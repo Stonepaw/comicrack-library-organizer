@@ -13,8 +13,6 @@ Exclude rules from ComicRack looks complicated. Continue using the method I'm us
 
 fields still to do:
 conditional
-read percentage
-first letter
 
 
 Overhaul getting property values with:
@@ -22,3 +20,14 @@ Overhaul getting property values with:
         print books[0].GetPropertyValue[str]("BlackAndWhite", True)
 
 
+group yesno stuff together in wrap panel.
+
+group multiple value stuff together in wrap panel
+
+possibly field to visiblity converter.
+
+yes/no add selector for yes/no/unkown/yes right to left
+
+All better error catching in all places where files are moved/modifed etc.
+
+add user text to if and then for conditionals

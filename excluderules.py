@@ -1,9 +1,6 @@
 import clr
-import System
-clr.AddReference("System.Xml")
 from System import Single, Double, Int64, Int32
 from System.Collections.ObjectModel import ObservableCollection
-from System.Xml import XmlConvert
 clr.AddReference("ComicRack.Engine")
 clr.AddReference("cYo.Common")
 from cYo.Projects.ComicRack.Engine import ComicBook, MangaYesNo, YesNo, ComicValueType
@@ -163,6 +160,7 @@ class ExcludeGroup(ExcludeRuleCollection):
    
     Can also calculate if a book should be moved under its rules.
     """
+
     def __init__(self, operator="All", invert=False):
         """Initiates a new ExcludeGroup.
 

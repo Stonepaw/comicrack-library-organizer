@@ -16,7 +16,7 @@ from System import Single, Double, Int64
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Generic import SortedDictionary
 from System.Windows import Window, PropertyPath, Visibility
-from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox
+from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox, BooleanToVisibilityConverter
 from System.Windows.Controls.Primitives import Popup
 from System.Windows.Data import Binding, IValueConverter
 
@@ -49,6 +49,9 @@ class ConfigureForm(Window):
         self.Resources.Add("FieldNameToMultiValueDescription", fieldnametomultivaluedescription)
         fieldnametovisiblityconverter = FieldNameToVisiblityConverter()
         self.Resources.Add("FieldNameToVisibilityConverter", fieldnametovisiblityconverter)
+        self.Resources.Add("InverseFieldNameToVisibilityConverter", InverseFieldNameToVisiblityConverter())
+        inverse_converter = InverseBooleanToVisibilityConverter()
+        self.Resources.Add("InverseBooleanToVisibilityConverter", inverse_converter)
         self.translations = Translations()
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
@@ -297,6 +300,16 @@ class FieldNameToVisiblityConverter(IValueConverter):
         return Visibility.Collapsed
 
 
+class InverseFieldNameToVisiblityConverter(FieldNameToVisiblityConverter):
+
+    def Convert(self, value, targetType, parameter, culture):
+        visiblity = super(InverseFieldNameToVisiblityConverter, self).Convert(value, targetType, parameter, culture)
+        if visiblity is Visibility.Visible:
+            return Visibility.Collapsed
+        else:
+            return Visibility.Visible
+
+
 class FieldNameToMultiValueDescription(IValueConverter):
 
     def Convert(self, value, targetType, paramater, culture):
@@ -305,37 +318,32 @@ class FieldNameToMultiValueDescription(IValueConverter):
         return "Select which %s to use" % (value.lower())
 
 
-class ConfigureFormViewModel(NotifyPropertyChangedBase):
+class InverseBooleanToVisibilityConverter(IValueConverter):
+    """Converts a boolean value to a System.Windows.Visibility value."""
+    _boolean_converter = BooleanToVisibilityConverter()
 
-    def __init__(self):
-        super(ConfigureFormViewModel, self).__init__()
-        self._comicbook = ComicBook()
-        self._template_selector_type = "String"
-        self._months_selector_index = "1"
-        self._illegal_characters_index = "?"
+    def Convert(self, value, targetType, parameter, culture):
+        """Converts a boolean value to a System.Windows.Visibility value.
 
-    @notify_property
-    def template_selector_type(self):
-        return self._template_selector_type
+        Args:
+            value: The Bool to convert.
+            other args are not used.
 
-    @template_selector_type.setter
-    def template_selector_type(self, value):
-        if value is None:
-            return
-        print value
-        if value in ("Counter", "FirstLetter", "Conditional", "StartMonth", "StartYear", "FirstIssueNumber", "Month"):
-            self._template_selector_type = value
-            return
-        elif value in multiple_value_fields:
-            self._template_selector_type = "MultipleValue"
-            return
-        comic_field_type = type(getattr(self._comicbook, value))
-        if comic_field_type is YesNo or comic_field_type is MangaYesNo:
-            self._template_selector_type = "YesNo"
-        elif comic_field_type in (int, Double, Int64, float, Single) or value in ("Number", "AlternateNumber"):
-            self._template_selector_type = "Numeric"
-        elif comic_field_type is bool:
-            self._template_selector_type = "Bool"
-        elif comic_field_type is str:
-            self._template_selector_type = "String"
-        print self._template_selector_type
+        Returns:
+            System.Windows.Visibility.Collapsed when the value is True; 
+            otherwise Visiblity.Collapsed is returned.
+        """
+        return self._boolean_converter.Convert(not value, targetType, parameter, culture)
+
+    def ConvertBack(self, value, targetType, parameter, culture):
+        """Converts a System.Windows.Visibility value to a boolean.
+
+        Args:
+            value: The System.Windows.Visibility to convert.
+            other args are not used.
+
+        Returns:
+            True when the value is System.Windows.Visibility.Collapsed; 
+            otherwise False is returned.
+        """
+        return self._boolean_converter.ConvertBack(not value, targetType, parameter, culture)
