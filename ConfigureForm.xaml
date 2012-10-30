@@ -8,7 +8,7 @@
         Name="ConfigureForm"
         Background="{x:Static SystemColors.ControlBrush}" ResizeMode="NoResize">
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisbilityConverter" />
         <!-- For changing the tabs on the tab control to white-->
         <Style TargetType="{x:Type TabItem}" xmlns:s="clr-namespace:System;assembly=mscorlib" x:Key="WhiteTabItem">
             <Style.Resources>
@@ -367,99 +367,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderOptionsBaseStyle">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Setter Property="Margin" Value="5, 0" />
-        </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderYesNoStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="YesNo">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MangaYesNo">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                        <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="YesNo" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                        <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MangaYesNo" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="{x:Type StackPanel}" x:Key="TemplateBuilderNumericStyle" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=ConfigureForm, Path=view_model.template_selector_type}" Value="Numeric">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                        <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" x:Key="TemplateBuilderMultipleValueStyle">
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue" />
-                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultipleValue, Path=IsChecked}" Value="True" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                        <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue" />
-                        <Condition Binding="{Binding ElementName=TemplateBuilderSelectMultipleValue, Path=IsChecked}" Value="True" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" x:Key="ConditionalIfMultipleValueStyle">
-            <Style.Triggers>
-                <MultiDataTrigger>
-                    <MultiDataTrigger.Conditions>
-                        <Condition Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue" />
-                        <Condition Binding="{Binding ElementName=ConditionalIfSelectMultipleValue, Path=IsChecked}" Value="True" />
-                    </MultiDataTrigger.Conditions>
-                    <MultiDataTrigger.Setters>
-                        <Setter Property="Visibility" Value="Visible" />
-                    </MultiDataTrigger.Setters>
-                </MultiDataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="TemplateBuilderConditionalStyle" TargetType="{x:Type GroupBox}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-
-                <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" >
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
         <DataTemplate x:Key="ExcludeRule">
             <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
@@ -759,10 +666,10 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">File Structure:</Label>
-                                <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                                <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">Folder Structure:</Label>
-                                <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">File Structure:</Label>
+                                <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FileStructure" Visibility="{Binding ElementName=FileButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                                <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">Folder Structure:</Label>
+                                <TextBox Height="Auto" TextWrapping="Wrap" MinHeight="60" MaxHeight="200" x:Name="FolderStructure" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <Label x:Name="PreviewLabel">Preview:</Label>
                                 <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"></TextBlock>
                             </StackPanel>
@@ -786,7 +693,7 @@
                                 <Label Grid.Column="0" Grid.Row="0">Field:</Label>
                                 <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding ElementName=ConfigureForm, Path=template_field_selectors}" SelectedValuePath="Value" DisplayMemberPath="Key" />
                                 <Button Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Click="insert_field_clicked">Insert Field</Button>
-                                <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Click="insert_folder_clicked">Insert Folder Seperator</Button>
+                                <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FolderButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Click="insert_folder_clicked">Insert Folder Seperator</Button>
                                 <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields">Space inserted fields automatically</CheckBox>
                             </Grid>
                             <StackPanel Grid.Row="3" FocusManager.IsFocusScope="True" CanVerticallyScroll="True">
@@ -801,7 +708,78 @@
                                         <Setter Property="Margin" Value="5, 0" />
                                     </Style>
                                 </StackPanel.Resources>
-                                <GroupBox Style="{StaticResource TemplateBuilderConditionalStyle}" Margin="0,0,0,10" Name="ConditionalIf" Padding="10">
+                                <GroupBox Name="TemplateBuilderNormalOptions" Header="Options" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource InverseFieldNameToVisibilityConverter}, ConverterParameter=Conditional}">
+                                    <WrapPanel>
+                                        <StackPanel Name="Prefix">
+                                            <Label>Prefix</Label>
+                                            <TextBox x:Name="TemplateBuilderPrefix" />
+                                        </StackPanel>
+                                        <StackPanel Name="Suffix">
+                                            <Label>Suffix</Label>
+                                            <TextBox x:Name="TemplateBuilderSuffix" />
+                                        </StackPanel>
+                                        <StackPanel Name="PaddingStackPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Numeric|Counter|Month}">
+                                            <Label>Padding</Label>
+                                            <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="TemplateBuilderPadding" />
+                                        </StackPanel>
+                                        <WrapPanel Name="YesNoPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo|MangaYesNo}" VerticalAlignment="Bottom">
+                                            <ToggleButton Padding="5,1" x:Name="YesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
+                                            <Label>Insert</Label>
+                                            <TextBox x:Name="YesNoText" Width="100" VerticalAlignment="Center" />
+                                            <Label Margin="0" Padding="2, 5, 2, 0">when</Label>
+                                            <Label Content="{Binding ElementName=TemplateFieldSelector, Path=Text}" Margin="0" Padding="0, 5, 5, 0" />
+                                            <ComboBox x:Name="YesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo}" SelectedIndex="2" VerticalAlignment="Center" />
+                                            <ComboBox x:Name="MangaYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MangaYesNo}" SelectedIndex="2" VerticalAlignment="Center" />
+                                        </WrapPanel>
+                                        <WrapPanel VerticalAlignment="Center" Name="MultipleValuePanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
+                                            <CheckBox x:Name="SelectMultipleValue" VerticalAlignment="Center" Margin="0,23,10,0">
+                                                <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                            <StackPanel Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
+                                                <Label>Seperator:</Label>
+                                                <TextBox x:Name="MultipleValueSeperator" Width="50" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </WrapPanel>
+                                        <StackPanel Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
+                                            <CheckBox x:Name="MultipleValueSelectOnce" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="5, 0" Name="UseMonthNamesPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
+                                            <CheckBox x:Name="UseMonthNames" VerticalAlignment="Bottom" Margin="0, 0, 0, 4">Use month names</CheckBox>
+                                        </StackPanel>
+                                        <StackPanel Name="FirstLetterPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
+                                            <Label>Field</Label>
+                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="FirstLetterSeriesSelector" />
+                                        </StackPanel>
+                                        <WrapPanel Orientation="Horizontal" Height="Auto" Name="ReadPercentagePanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=ReadPercentage}">
+                                            <WrapPanel.Resources>
+                                                <Style TargetType="{x:Type Label}">
+                                                    <Setter Property="VerticalAlignment" Value="Bottom" />
+                                                </Style>
+                                            </WrapPanel.Resources>
+                                            <Label>Insert</Label>
+                                            <TextBox MinWidth="50" VerticalAlignment="Bottom" x:Name="ReadPercentageText" />
+                                            <Label>when read percentage</Label>
+                                            <ComboBox VerticalAlignment="Bottom" SelectedIndex="1" x:Name="ReadPercentageOperator">
+                                                <ComboBoxItem>=</ComboBoxItem>
+                                                <ComboBoxItem>></ComboBoxItem>
+                                                <ComboBoxItem>&lt;</ComboBoxItem>
+                                            </ComboBox>
+                                            <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5,0,0,0" VerticalAlignment="Bottom" Value="90" x:Name="ReadPercentageNumber" />
+                                            <Label>%</Label>
+                                        </WrapPanel>
+                                        <WrapPanel Name="CounterPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Counter}">
+                                            <StackPanel>
+                                                <Label>Start</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ThenCounterStart"/>
+                                            </StackPanel>
+                                            <StackPanel>
+                                                <Label>Increment</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ThenCounterIncrement"/>
+                                            </StackPanel>
+                                        </WrapPanel>
+                                    </WrapPanel>
+                                </GroupBox>
+                                <GroupBox Margin="0,0,0,10" x:Name="ConditionalIf" Padding="10" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Conditional}">
                                     <GroupBox.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <ToggleButton Content="!" VerticalAlignment="Center" Padding="5,2" />
@@ -816,28 +794,7 @@
                                         <StackPanel VerticalAlignment="Center" Margin="5, 0" Name="ConditionalIfUseMonthNamesPanel" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
                                             <CheckBox x:Name="ConditionalIfUseMonthNames">Use month names</CheckBox>
                                         </StackPanel>
-                                        <StackPanel Name="ConditionalIfPaddingPanel">
-                                            <StackPanel.Style>
-                                                <Style BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" TargetType="{x:Type StackPanel}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month" />
-                                                                <Condition Binding="{Binding ElementName=ConditionalIfUseMonthNames, Path=IsChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
+                                        <StackPanel Name="ConditionalIfPaddingPanel" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Numeric|Counter|Month}">
                                             <Label>Padding</Label>
                                             <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="ConditionalIfPadding" />
                                         </StackPanel>
@@ -845,17 +802,20 @@
                                             <ToggleButton Padding="5,1" x:Name="ConditionalIfYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
                                             <Label>Insert</Label>
                                             <TextBox x:Name="ConditionalIfYesNoText" Width="100" />
-                                            <Label>when value is yes</Label>
+                                            <Label Margin="0" Padding="2, 5, 2, 0">when</Label>
+                                            <Label Content="{Binding ElementName=ConditionalIfField, Path=Text}" Margin="0" Padding="0, 5, 5, 0" />
+                                            <ComboBox x:Name="ConditionalIfYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo}" SelectedIndex="2" VerticalAlignment="Center" />
+                                            <ComboBox x:Name="ConditionalIfMangaYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MangaYesNo}" SelectedIndex="2" VerticalAlignment="Center" />
                                         </WrapPanel>
                                         <WrapPanel VerticalAlignment="Center" Name="ConditionalIfMultipleValuePanel" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
                                             <CheckBox x:Name="ConditionalIfSelectMultipleValue" VerticalAlignment="Center" Margin="0,0,10,0">
                                                 <TextBlock Text="{Binding ElementName=ConditionalIfField, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
                                             </CheckBox>
-                                            <StackPanel Visibility="{Binding ElementName=ConditionalIfSelectMultipleValue, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Orientation="Horizontal">
+                                            <StackPanel Visibility="{Binding ElementName=ConditionalIfSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Orientation="Horizontal">
                                                 <Label>Seperator:</Label>
                                                 <TextBox x:Name="ConditionalIfMultipleValueSeperator" Width="50" VerticalAlignment="Center" />
                                             </StackPanel>
-                                            <CheckBox x:Name="ConditionalIfMultipleValueSelectOnce" Visibility="{Binding ElementName=ConditionalIfSelectMultipleValue, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Margin="0, 5, 0, 0">Select once for every issue in the series</CheckBox>
+                                            <CheckBox x:Name="ConditionalIfMultipleValueSelectOnce" Visibility="{Binding ElementName=ConditionalIfSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0">Select once for every issue in the series</CheckBox>
                                         </WrapPanel>
                                         <StackPanel Name="ConditionalIfFirstLetterSeriesSelectorPanel" Visibility="{Binding ElementName=ConditionalIfField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
                                             <Label>Field</Label>
@@ -880,231 +840,92 @@
                                         </WrapPanel>
                                     </WrapPanel>
                                 </GroupBox>
-                                <GroupBox Name="ConditionalThenAndNormalOptions">
+                                <GroupBox x:Name="ConditionalThen" Margin="0,0,0,10" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Conditional}">
                                     <GroupBox.Header>
                                         <StackPanel Orientation="Horizontal">
-                                            <Label Content="Then insert" VerticalAlignment="Center">
-                                                <Label.Style>
-                                                    <Style>
-                                                        <Setter Property="Label.Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-
-                                                            <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" >
-                                                                <Setter Property="Label.Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Label.Style>
-                                            </Label>
-                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=conditional_then_else_field_names}" DisplayMemberPath="Key" SelectedValuePath="Value" VerticalAlignment="Center" SelectedIndex="0" x:Name="ConditionalThenField">
-                                                <ComboBox.Style>
-                                                    <Style>
-                                                        <Setter Property="ComboBox.Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" >
-                                                                <Setter Property="ComboBox.Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ComboBox.Style>
-                                            </ComboBox>
-                                            <Label Content="Options" VerticalAlignment="Center">
-                                                <Label.Style>
-                                                    <Style>
-                                                        <Setter Property="Label.Visibility" Value="Visible" />
-                                                        <Style.Triggers>
-
-                                                            <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" >
-                                                                <Setter Property="Label.Visibility" Value="Collapsed" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Label.Style>
-                                            </Label>
+                                            <Label Content="Then insert" VerticalAlignment="Center" />
+                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=conditional_then_else_field_names}" DisplayMemberPath="Key" SelectedValuePath="Value" VerticalAlignment="Center" SelectedIndex="0" x:Name="ConditionalThenField" />
                                         </StackPanel>
                                     </GroupBox.Header>
                                     <WrapPanel>
-                                        <StackPanel Name="Prefix">
+                                        <StackPanel>
                                             <Label>Prefix</Label>
-                                            <TextBox x:Name="TemplateBuilderPrefix" />
+                                            <TextBox x:Name="ConditionalThenPrefix" />
                                         </StackPanel>
-                                        <StackPanel Name="Suffix">
+                                        <StackPanel>
                                             <Label>Suffix</Label>
-                                            <TextBox x:Name="TemplateBuilderSuffix" />
+                                            <TextBox x:Name="ConditionalThenSuffix" />
                                         </StackPanel>
-                                        <StackPanel Name="PaddingStackPanel">
-                                            <StackPanel.Style>
-                                                <Style BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" TargetType="{x:Type StackPanel}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month" />
-                                                                <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                                                                <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                                                                <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Conditional" />
-                                                                <Condition Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month" />
-                                                                <Condition Binding="{Binding ElementName=UseMonthNames, Path=IsChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
+                                        <StackPanel Name="ConditionalThenPaddingPanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Numeric|Counter|Month}">
                                             <Label>Padding</Label>
-                                            <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="TemplateBuilderPadding" />
+                                            <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="ConditionalThenPadding" />
                                         </StackPanel>
-                                        <StackPanel x:Name="YesNoText" Style="{StaticResource TemplateBuilderYesNoStyle}">
-                                            <Label>Inserted Text</Label>
-                                            <TextBox x:Name="TemplateBuilderYesNoText" />
+                                        <StackPanel Orientation="Horizontal" Margin="5, 0" Name="ConditionalThenUseMonthNamesPanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
+                                            <CheckBox x:Name="ConditionalThenUseMonthNames" VerticalAlignment="Bottom" Margin="0, 0, 0, 4">Use month names</CheckBox>
                                         </StackPanel>
-                                        <StackPanel Style="{StaticResource TemplateBuilderYesNoStyle}" Name="YesNoInvert" >
-                                            <Label>Invert</Label>
-                                            <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
-                                        </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Name="SelectMultipleValue">
-                                            <StackPanel.Style>
-                                                <Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="MultipleValue">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <TextBlock />
-                                            <CheckBox x:Name="TemplateBuilderSelectMultipleValue" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
+                                        <WrapPanel Name="ConditionalThenYesNoPanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo|MangaYesNo}" VerticalAlignment="Bottom">
+                                            <ToggleButton Padding="5,1" x:Name="ConditionalThenYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
+                                            <Label>Insert</Label>
+                                            <TextBox x:Name="ConditionalThenYesNoText" Width="100" VerticalAlignment="Center" />
+                                            <Label Margin="0" Padding="2, 5, 2, 0">when</Label>
+                                            <Label Content="{Binding ElementName=ConditionalThenField, Path=Text}" Margin="0" Padding="0, 5, 5, 0" />
+                                            <ComboBox x:Name="ConditionalThenYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo}" SelectedIndex="2" VerticalAlignment="Center" />
+                                            <ComboBox x:Name="ConditionalThenMangaYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MangaYesNo}" SelectedIndex="2" VerticalAlignment="Center" />
+                                        </WrapPanel>
+                                        <WrapPanel VerticalAlignment="Center" Name="ConditionalThenMultipleValuePanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
+                                            <CheckBox x:Name="ConditionalThenSelectMultipleValue" VerticalAlignment="Center" Margin="0,23,10,0">
+                                                <TextBlock Text="{Binding ElementName=ConditionalThenField, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
                                             </CheckBox>
-                                        </StackPanel>
-                                        <StackPanel Name="MuiltipleValueSeperator" Style="{StaticResource TemplateBuilderMultipleValueStyle}">
-                                            <Label>Seperator</Label>
-                                            <TextBox x:Name="TemplateBuilderMultipleValueSeperator"></TextBox>
-                                        </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Name="MultipleValueSelectOnce" Style="{StaticResource TemplateBuilderMultipleValueStyle}">
-                                            <CheckBox x:Name="TemplateBuilderMultipleValueSelectOnce">Select once for every issue in the series</CheckBox>
-                                        </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Margin="5, 0" x:Name="FieldTemplateMonthNames">
-                                            <StackPanel.Style>
-                                                <Style>
-                                                    <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month">
-                                                            <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <CheckBox x:Name="UseMonthNames">Use month names</CheckBox>
-                                        </StackPanel>
-                                        <StackPanel x:Name="FirstLetter">
-                                            <StackPanel.Style>
-                                                <Style>
-                                                    <Setter Property="StackPanel.Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="FirstLetter">
-                                                            <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <Label>Field</Label>
-                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="FirstLetterSeriesSelector">
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <WrapPanel Name="CounterPanel">
-                                            <WrapPanel.Style>
-                                                <Style TargetType="{x:Type WrapPanel}">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Setter Property="Margin" Value="5, 0" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </WrapPanel.Style>
-                                            <StackPanel>
-                                                <Label>Start</Label>
-                                                <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterStart"/>
-                                            </StackPanel>
-                                            <StackPanel>
-                                                <Label>Increment</Label>
-                                                <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterIncrement"/>
+                                            <StackPanel Visibility="{Binding ElementName=ConditionalThenSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
+                                                <Label>Seperator:</Label>
+                                                <TextBox x:Name="ConditionalThenMultipleValueSeperator" Width="50" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </WrapPanel>
-                                        <WrapPanel Orientation="Horizontal" Height="Auto" Margin="0, 22, 0, 0" Name="ReadPercentagePanel">
-                                            <WrapPanel.Style>
-                                                <Style>
-                                                    <Setter Property="WrapPanel.Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="ReadPercentage">
-                                                            <Setter Property="WrapPanel.Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </WrapPanel.Style>
+                                        <StackPanel Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
+                                            <CheckBox x:Name="ConditionalThenMultipleValueSelectOnce" Visibility="{Binding ElementName=ConditionalThenSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
+                                        </StackPanel>
+                                        <StackPanel Name="ConditionalThenFirstLetterSeriesSelectorPanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
+                                            <Label>Field</Label>
+                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="ConditionalThenFirstLetterSeriesSelector" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                        <WrapPanel Orientation="Horizontal" Height="Auto" Name="ConditionalThenReadPercentagePanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=ReadPercentage}">
                                             <WrapPanel.Resources>
                                                 <Style TargetType="{x:Type Label}">
                                                     <Setter Property="VerticalAlignment" Value="Bottom" />
                                                 </Style>
                                             </WrapPanel.Resources>
                                             <Label>Insert</Label>
-                                            <TextBox MinWidth="50" VerticalAlignment="Bottom" x:Name="TemplateBuilderReadPercentageText" />
+                                            <TextBox MinWidth="50" VerticalAlignment="Bottom" x:Name="ConditionalThenReadPercentageText" />
                                             <Label>when read percentage</Label>
-                                            <ComboBox VerticalAlignment="Bottom" SelectedIndex="1" x:Name="TemplateBuilderReadPercentageOperator">
+                                            <ComboBox VerticalAlignment="Bottom" SelectedIndex="1" x:Name="ConditionalThenReadPercentageOperator">
                                                 <ComboBoxItem>=</ComboBoxItem>
                                                 <ComboBoxItem>></ComboBoxItem>
                                                 <ComboBoxItem>&lt;</ComboBoxItem>
                                             </ComboBox>
-                                            <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5,0,0,0" VerticalAlignment="Bottom" Value="90" x:Name="TemplateBuilderReadPercentageNumber" />
+                                            <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5,0,0,0" VerticalAlignment="Bottom" Value="90" x:Name="ConditionalThenReadPercentageNumber" />
                                             <Label>%</Label>
+                                        </WrapPanel>
+                                        <WrapPanel Name="ConditionalThenCounterPanel" Visibility="{Binding ElementName=ConditionalThenField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Counter}">
+                                            <StackPanel>
+                                                <Label>Start</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ConditionalThenCounterStart"/>
+                                            </StackPanel>
+                                            <StackPanel>
+                                                <Label>Increment</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ConditionalThenCounterIncrement"/>
+                                            </StackPanel>
                                         </WrapPanel>
                                     </WrapPanel>
                                 </GroupBox>
-                                <GroupBox Style="{StaticResource TemplateBuilderConditionalStyle}" Name="ConditionalElse">
+                                <GroupBox x:Name="ConditionalElse" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Conditional}">
                                     <GroupBox.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <CheckBox Name="ConditionalElseCheckBox" VerticalAlignment="Center">Else</CheckBox>
-                                            <Label Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" VerticalAlignment="Center">insert</Label>
-                                            <ComboBox Name="ConditionalElseField" Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" VerticalAlignment="Center" ItemsSource="{Binding ElementName=ConfigureForm, Path=conditional_then_else_field_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="0" />
+                                            <Label Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" VerticalAlignment="Center">insert</Label>
+                                            <ComboBox Name="ConditionalElseField" Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" VerticalAlignment="Center" ItemsSource="{Binding ElementName=ConfigureForm, Path=conditional_then_else_field_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="0" />
                                         </StackPanel>
                                     </GroupBox.Header>
-                                    <WrapPanel Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                                    <WrapPanel Visibility="{Binding ElementName=ConditionalElseCheckBox, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
                                         <StackPanel>
                                             <Label>Prefix</Label>
                                             <TextBox x:Name="ConditionalElsePrefix" />
@@ -1113,33 +934,12 @@
                                             <Label>Suffix</Label>
                                             <TextBox x:Name="ConditionalElseSuffix" />
                                         </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Margin="5, 0" Name="ConditionalElseUseMonthNamesPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
-                                            <CheckBox x:Name="ConditionalElseUseMonthNames">Use month names</CheckBox>
-                                        </StackPanel>
-                                        <StackPanel Name="ConditionalElsePaddingPanel">
-                                            <StackPanel.Style>
-                                                <Style BasedOn="{StaticResource TemplateBuilderOptionsBaseStyle}" TargetType="{x:Type StackPanel}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Numeric">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Counter">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToTypeNameConverter}}" Value="Month" />
-                                                                <Condition Binding="{Binding ElementName=ConditionalElseUseMonthNames, Path=IsChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <MultiDataTrigger.Setters>
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </MultiDataTrigger.Setters>
-                                                        </MultiDataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
+                                        <StackPanel Name="ConditionalElsePaddingPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Numeric|Counter|Month}">
                                             <Label>Padding</Label>
                                             <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="ConditionalElsePadding" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="5, 0" Name="ConditionalElseUseMonthNamesPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
+                                            <CheckBox x:Name="ConditionalElseUseMonthNames" VerticalAlignment="Bottom" Margin="0, 0, 0, 4">Use month names</CheckBox>
                                         </StackPanel>
                                         <WrapPanel Name="ConditionalElseYesNoPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo|MangaYesNo}">
                                             <ToggleButton Padding="5,1" x:Name="ConditionalElseYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
@@ -1151,15 +951,15 @@
                                             <CheckBox x:Name="ConditionalElseSelectMultipleValue" VerticalAlignment="Center" Margin="0,23,10,0">
                                                 <TextBlock Text="{Binding ElementName=ConditionalElseField, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
                                             </CheckBox>
-                                            <StackPanel Visibility="{Binding ElementName=ConditionalElseSelectMultipleValue, Path=IsChecked, Converter={StaticResource BoolToVisibility}}">
+                                            <StackPanel Visibility="{Binding ElementName=ConditionalElseSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
                                                 <Label>Seperator:</Label>
                                                 <TextBox x:Name="ConditionalElseMultipleValueSeperator" Width="50" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </WrapPanel>
                                         <StackPanel Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
-                                        <CheckBox x:Name="ConditionalElseMultipleValueSelectOnce" Visibility="{Binding ElementName=ConditionalElseSelectMultipleValue, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
+                                            <CheckBox x:Name="ConditionalElseMultipleValueSelectOnce" Visibility="{Binding ElementName=ConditionalElseSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
                                         </StackPanel>
-                                        <WrapPanel Name="ConditionalElseFirstLetterSeriesSelectorPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
+                                        <WrapPanel Name="ConditionalElseFirstLetterPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
                                             <Label>Field</Label>
                                             <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="ConditionalElseFirstLetterSeriesSelector" />
                                         </WrapPanel>
@@ -1179,6 +979,16 @@
                                             </ComboBox>
                                             <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5,0,0,0" VerticalAlignment="Bottom" Value="90" x:Name="ConditionalElseReadPercentageNumber" />
                                             <Label>%</Label>
+                                        </WrapPanel>
+                                        <WrapPanel Name="ConditionalElseCounterPanel" Visibility="{Binding ElementName=ConditionalElseField, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Counter}">
+                                            <StackPanel>
+                                                <Label>Start</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ConditionalElseCounterStart"/>
+                                            </StackPanel>
+                                            <StackPanel>
+                                                <Label>Increment</Label>
+                                                <xctk:IntegerUpDown Value="1" x:Name="ConditionalElseCounterIncrement"/>
+                                            </StackPanel>
                                         </WrapPanel>
                                     </WrapPanel>
                                 </GroupBox>
