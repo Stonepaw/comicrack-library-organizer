@@ -14,6 +14,13 @@
     <Name>Library Organizer</Name>
     <RootNamespace>Library Organizer</RootNamespace>
     <PublishUrl>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer\Release</PublishUrl>
+    <InterpreterId>80659ab7-4d53-4e0c-8588-a766116cbd46</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <CommandLineArguments />
+    <InterpreterPath />
+    <DebugStdLib>False</DebugStdLib>
+    <InterpreterArguments />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -153,8 +160,20 @@
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
       <Name>WPFToolkit.Extended</Name>
       <AssemblyName>WPFToolkit.Extended.dll</AssemblyName>
-      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer\WPF Localization\WPFToolkit.Extended.dll</HintPath>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\WPFToolkit.Extended.dll</HintPath>
     </Reference>
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
   </ItemGroup>
