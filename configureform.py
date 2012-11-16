@@ -203,14 +203,11 @@ class ConfigureForm(Window):
             insert_text = "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
             self.insert_text_into_template(insert_text)
 
-    def create_field_text(self, field_type):
-        pass
-
     def get_field_args(self, field, arg_type):
         field_type = self.field_name_to_type_name_converter.Convert(field, None, None, None)
 
         if field_type == "Numeric":
-            return str(self.FindName(arg_type + "Padding").Value)
+            return "(%s)" % (self.FindName(arg_type + "Padding").Value)
 
         elif field_type == "YesNo" or field_type == "MangaYesNo":
             args = "(%s)" % (self.FindName(arg_type + "YesNoText").Text)
@@ -245,7 +242,6 @@ class ConfigureForm(Window):
     def insert_folder_clicked(self, sender, e):
         self.insert_text_into_template("\\")
 
-
     def insert_text_into_template(self, insert_text):
         """Inserts text into the correct template textbox. 
         
@@ -258,7 +254,6 @@ class ConfigureForm(Window):
             self.FileStructure.SelectedText = insert_text
             self.FileStructure.CaretIndex += len(insert_text)
             self.FileStructure.SelectionLength = 0
-
 
     #These are for the various combobox/textbox options
     def months_selection_changed(self, sender, e = None):
@@ -325,20 +320,22 @@ class FieldNameToTypeNameConverter(IValueConverter):
         global COMICBOOK
         if value is None:
             return ""
-
-        if value in ("Counter", "FirstLetter", "Conditional", "Year", "StartYear", "ReadPercentage"):
+        if value in ("Counter", "FirstLetter", "Conditional", "Year", 
+                     "StartYear", "ReadPercentage"):
             return value
         elif value in ("StartMonth","Month"):
             return "Month"
         elif value in multiple_value_fields:
             return "MultipleValue"
-        if value not in library_organizer_fields and value not in ("Number", "AlternateNumber"):
+        if value not in library_organizer_fields and value not in ("Number", 
+                                                                   "AlternateNumber"):
             value = type(getattr(COMICBOOK, value))
         if value is YesNo:
             return "YesNo"
         elif value is MangaYesNo:
             return "MangaYesNo"
-        elif value in ("Number", "AlternateNumber", "FirstIssueNumber", "LastIssueNumber", int, Double, Int64, float, Single):
+        elif value in ("Number", "AlternateNumber", "FirstIssueNumber", 
+                       "LastIssueNumber", int, Double, Int64, float, Single):
             return "Numeric"
         elif value is bool:
             return "Bool"
@@ -414,4 +411,4 @@ class InverseBooleanToVisibilityConverter(IValueConverter):
             True when the value is System.Windows.Visibility.Collapsed; 
             otherwise False is returned.
         """
-        return self._boolean_converter.ConvertBack(not value, targetType, parameter, culture)
+        return not self._boolean_converter.ConvertBack(value, targetType, parameter, culture)
