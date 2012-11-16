@@ -723,32 +723,32 @@
                                             <xctk:IntegerUpDown Value="0" Minimum="0" x:Name="TemplateBuilderPadding" />
                                         </StackPanel>
                                         <WrapPanel Name="YesNoPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo|MangaYesNo}" VerticalAlignment="Bottom">
-                                            <ToggleButton Padding="5,1" x:Name="YesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
+                                            <ToggleButton Padding="5,1" x:Name="TemplateBuilderYesNoInvert" HorizontalAlignment="Center">!</ToggleButton>
                                             <Label>Insert</Label>
-                                            <TextBox x:Name="YesNoText" Width="100" VerticalAlignment="Center" />
+                                            <TextBox x:Name="TemplateBuilderYesNoText" Width="100" VerticalAlignment="Center" />
                                             <Label Margin="0" Padding="2, 5, 2, 0">when</Label>
                                             <Label Content="{Binding ElementName=TemplateFieldSelector, Path=Text}" Margin="0" Padding="0, 5, 5, 0" />
                                             <ComboBox x:Name="YesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=YesNo}" SelectedIndex="2" VerticalAlignment="Center" />
                                             <ComboBox x:Name="MangaYesNoOperator" ItemsSource="{Binding ElementName=ConfigureForm, Path=exclude_rule_manga_yes_no_operators}" SelectedValuePath="Value" DisplayMemberPath="Key" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MangaYesNo}" SelectedIndex="2" VerticalAlignment="Center" />
                                         </WrapPanel>
                                         <WrapPanel VerticalAlignment="Center" Name="MultipleValuePanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
-                                            <CheckBox x:Name="SelectMultipleValue" VerticalAlignment="Center" Margin="0,23,10,0">
+                                            <CheckBox x:Name="TemplateBuilderSelectMultipleValue" VerticalAlignment="Center" Margin="0,23,10,0">
                                                 <TextBlock Text="{Binding ElementName=TemplateFieldSelector, Path=SelectedItem.Key, Converter={StaticResource FieldNameToMultiValueDescription}}" VerticalAlignment="Center"/>
                                             </CheckBox>
-                                            <StackPanel Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
+                                            <StackPanel Visibility="{Binding ElementName=TemplateBuilderSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">
                                                 <Label>Seperator:</Label>
-                                                <TextBox x:Name="MultipleValueSeperator" Width="50" VerticalAlignment="Center" />
+                                                <TextBox x:Name="TemplateBuilderMultipleValueSeperator" Width="50" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </WrapPanel>
                                         <StackPanel Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=MultipleValue}">
-                                            <CheckBox x:Name="MultipleValueSelectOnce" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
+                                            <CheckBox x:Name="TemplateBuilderMultipleValueSelectOnce" Visibility="{Binding ElementName=TemplateBuilderSelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="0, 5, 0, 0" >Select once for every issue in the series</CheckBox>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="5, 0" Name="UseMonthNamesPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Month}">
                                             <CheckBox x:Name="UseMonthNames" VerticalAlignment="Bottom" Margin="0, 0, 0, 4">Use month names</CheckBox>
                                         </StackPanel>
                                         <StackPanel Name="FirstLetterPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=FirstLetter}">
                                             <Label>Field</Label>
-                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="FirstLetterSeriesSelector" />
+                                            <ComboBox ItemsSource="{Binding ElementName=ConfigureForm, Path=first_letter_fields_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="1" x:Name="TemplateBuilderFirstLetterSeriesSelector" />
                                         </StackPanel>
                                         <WrapPanel Orientation="Horizontal" Height="Auto" Name="ReadPercentagePanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=ReadPercentage}">
                                             <WrapPanel.Resources>
@@ -770,11 +770,11 @@
                                         <WrapPanel Name="CounterPanel" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Counter}">
                                             <StackPanel>
                                                 <Label>Start</Label>
-                                                <xctk:IntegerUpDown Value="1" x:Name="ThenCounterStart"/>
+                                                <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterStart"/>
                                             </StackPanel>
                                             <StackPanel>
                                                 <Label>Increment</Label>
-                                                <xctk:IntegerUpDown Value="1" x:Name="ThenCounterIncrement"/>
+                                                <xctk:IntegerUpDown Value="1" x:Name="TemplateBuilderCounterIncrement"/>
                                             </StackPanel>
                                         </WrapPanel>
                                     </WrapPanel>
@@ -782,12 +782,12 @@
                                 <GroupBox Margin="0,0,0,10" x:Name="ConditionalIf" Padding="10" Visibility="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue, Converter={StaticResource FieldNameToVisibilityConverter}, ConverterParameter=Conditional}">
                                     <GroupBox.Header>
                                         <StackPanel Orientation="Horizontal">
-                                            <ToggleButton Content="!" VerticalAlignment="Center" Padding="5,2" />
+                                            <ToggleButton Content="!" VerticalAlignment="Center" Padding="5,2" x:Name="ConditionalIfInvert" />
                                             <Label VerticalAlignment="Center">If</Label>
                                             <ComboBox VerticalAlignment="Center" ItemsSource="{Binding ElementName=ConfigureForm, Path=conditional_field_names}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedIndex="0" x:Name="ConditionalIfField" />
                                             <Label VerticalAlignment="Center">is</Label>
-                                            <TextBox VerticalAlignment="Center" Width="100"/>
-                                            <CheckBox VerticalAlignment="Center" Margin="5,0,0,0">Regex</CheckBox>
+                                            <TextBox VerticalAlignment="Center" Width="100" x:Name="ConditionalIfMatchText" />
+                                            <CheckBox VerticalAlignment="Center" Margin="5,0,0,0" x:Name="ConditionalIfRegex">Regex</CheckBox>
                                         </StackPanel>
                                     </GroupBox.Header>
                                     <WrapPanel>

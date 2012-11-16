@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profiles LastUsed="Default">
   <Profile Name="Default" Version="2.2">
-    <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced</FolderTemplate>
+    <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced{ &lt;FirstIssueNumber0&gt;}{ &lt;Format&gt;}</FolderTemplate>
     <BaseFolder>C:\Users\Andrew\Documents\Comunity Library Training Program</BaseFolder>
     <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
     <EmptyFolder>asdfasfa</EmptyFolder>

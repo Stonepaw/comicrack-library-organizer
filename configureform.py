@@ -135,44 +135,112 @@ class ConfigureForm(Window):
         self.load_mode()
         self.PagesContainer.DataContext = self.profiles[sender.SelectedItem]
         self.illegal_characters_selector.SelectedIndex = index
+        self.FolderStructure.CaretIndex = len(self.profile.FolderTemplate)
+        self.FileStructure.CaretIndex = len(self.profile.FileTemplate)
 
     def add_profile(self, sender, e):
         pass
 
     def insert_field_clicked(self, sender, e):
-        args = ""
-        field_type = self.field_name_to_type_name_converter.Convert(self.TemplateFieldSelector.SelectedValue, None, None, None)
+        if self.TemplateFieldSelector.SelectedValue == "Conditional":
+            if_args = self.get_field_args(self.ConditionalIfField.SelectedValue, "ConditionalIf")
+            if self.ConditionalIfInvert.IsChecked:
+                field = "!" + self.ConditionalIfField.SelectedValue
+            else:
+                field = "?" + self.ConditionalIfField.SelectedValue
+            if self.ConditionalIfRegex.IsChecked:
+                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, if_args)
+            else:
+                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, if_args)
+            if self.TemplateBuilderAutoSpaceFields.IsChecked:
+                then_prefix = " " + self.ConditionalThenPrefix.Text
+                else_prefix = " " + self.ConditionalElsePrefix.Text
+            else:
+                then_prefix = self.ConditionalThenPrefix.Text
+                else_prefix = self.ConditionalElsePrefix.Text
+            then_args = self.get_field_args(self.ConditionalThenField.SelectedValue, "ConditionalThen")
+            then_field = "{%s<%s%s>%s}" % (then_prefix, self.ConditionalThenField.SelectedValue, then_args, self.ConditionalThenSuffix.Text)
+            if self.ConditionalElseCheckBox.IsChecked:
+                else_args = self.get_field_args(self.ConditionalElseField.SelectedValue, "ConditionalElse")
+                else_field = "{%s<%s%s>%s}" % (else_prefix, self.ConditionalElseField.SelectedValue, else_args, self.ConditionalElseSuffix.Text)
+            else:
+                else_field = ""
+            insert_text = "{%s<%s>%s}" % (else_field, field, then_field)
+            self.insert_text_into_template(insert_text)
+
+        else:
+            args = self.get_field_args(self.TemplateFieldSelector.SelectedValue, "TemplateBuilder")
+        #field_type = self.field_name_to_type_name_converter.Convert(self.TemplateFieldSelector.SelectedValue, None, None, None)
+        #if field_type == "Numeric":
+        #    args = str(self.TemplateBuilderPadding.Value)
+        #elif field_type == "YesNo" or field_type == "MangaYesNo":
+        #    args = "(%s)" % (self.TemplateBuilderYesNoText.Text)
+        #    if self.TemplateBuilderYesNoInvert.IsChecked:
+        #        args += "(!)"
+        #elif field_type == "Month":
+        #    pass
+        #elif field_type == "FirstLetter":
+        #    args = "(%s)" % (self.FirstLetterSeriesSelector.SelectedValue)
+        #elif field_type == "MultipleValue":
+        #    if self.TemplateBuilderSelectMultipleValue.IsChecked:                
+        #        if self.TemplateBuilderMultipleValueSelectOnce.IsChecked:
+        #            args = "(%s)(series)" % (self.TemplateBuilderMultipleValueSeperator.Text)
+        #        else:
+        #            args = "(%s)(issue)" % (self.TemplateBuilderMultipleValueSeperator.Text)
+        #elif field_type == "Counter":
+        #    args = "(%s)(%s)(%s)" % (self.TemplateBuilderCounterStart.Value, 
+        #                             self.TemplateBuilderCounterIncrement.Value, 
+        #                             self.TemplateBuilderPadding.Value)
+        #elif field_type == "ReadPercentage":
+        #    args = "(%s)(%s)(%s)" % (self.TemplateBuilderReadPercentageText.Text,
+        #                             self.TemplateBuilderReadPercentageOperator.Text,
+        #                             self.TemplateBuilderReadPercentageNumber.Value)
+            if self.TemplateBuilderAutoSpaceFields.IsChecked:
+                prefix = " " + self.TemplateBuilderPrefix.Text
+            else:
+                prefix = self.TemplateBuilderPrefix.Text
+
+            insert_text = "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
+            self.insert_text_into_template(insert_text)
+
+    def create_field_text(self, field_type):
+        pass
+
+    def get_field_args(self, field, arg_type):
+        field_type = self.field_name_to_type_name_converter.Convert(field, None, None, None)
+
         if field_type == "Numeric":
-            args = str(self.TemplateBuilderPadding.Value)
+            return str(self.FindName(arg_type + "Padding").Value)
+
         elif field_type == "YesNo" or field_type == "MangaYesNo":
-            args = "(%s)" % (self.TemplateBuilderYesNoText.Text)
-            if self.TemplateBuilderYesNoInvert.IsChecked:
+            args = "(%s)" % (self.FindName(arg_type + "YesNoText").Text)
+            if self.FindName(arg_type + "YesNoInvert").IsChecked:
                 args += "(!)"
+            return args
+
         elif field_type == "Month":
-            pass
+            return ""
+
         elif field_type == "FirstLetter":
-            args = "(%s)" % (self.FirstLetterSeriesSelector.SelectedValue)
+            return "(%s)" % (self.FindName(arg_type + "FirstLetterSeriesSelector").SelectedValue)
+
         elif field_type == "MultipleValue":
-            if self.TemplateBuilderSelectMultipleValue.IsChecked:                
-                if self.TemplateBuilderMultipleValueSelectOnce.IsChecked:
-                    args = "(%s)(series)" % (self.TemplateBuilderMultipleValueSeperator.Text)
+            if self.FindName(arg_type + "SelectMultipleValue").IsChecked:                
+                if self.FindName(arg_type + "MultipleValueSelectOnce").IsChecked:
+                    return "(%s)(series)" % (self.FindName(arg_type + "MultipleValueSeperator").Text)
                 else:
-                    args = "(%s)(issue)" % (self.TemplateBuilderMultipleValueSeperator.Text)
+                    return "(%s)(issue)" % (self.FindName(arg_type + "MultipleValueSeperator").Text)
+
         elif field_type == "Counter":
-            args = "(%s)(%s)(%s)" % (self.TemplateBuilderCounterStart.Value, 
-                                     self.TemplateBuilderCounterIncrement.Value, 
-                                     self.TemplateBuilderPadding.Value)
+            return "(%s)(%s)(%s)" % (self.FindName(arg_type + "CounterStart").Value, 
+                                     self.FindName(arg_type + "CounterIncrement").Value, 
+                                     self.FindName(arg_type + "Padding").Value)
+
         elif field_type == "ReadPercentage":
             args = "(%s)(%s)(%s)" % (self.TemplateBuilderReadPercentageText.Text,
-                                     self.TemplateBuilderReadPercentageOperator.Text,
-                                     self.TemplateBuilderReadPercentageNumber.Value)
-        if self.TemplateBuilderAutoSpaceFields.IsChecked:
-            prefix = " " + self.TemplateBuilderPrefix.Text
-        else:
-            prefix = self.TemplateBuilderPrefix.Text
-
-        insert_text = "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
-        self.insert_text_into_template(insert_text)
+                                        self.TemplateBuilderReadPercentageOperator.Text,
+                                        self.TemplateBuilderReadPercentageNumber.Value)
+        return ""
 
     def insert_folder_clicked(self, sender, e):
         self.insert_text_into_template("\\")
