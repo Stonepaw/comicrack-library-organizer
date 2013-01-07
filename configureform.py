@@ -12,19 +12,21 @@ clr.AddReferenceToFile("cYo.Common.dll")
 
 import System
 import localizer
+from copy import copy, deepcopy
 from System import Single, Double, Int64
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Generic import SortedDictionary
 from System.Windows import Window, PropertyPath, Visibility
 from System.Windows.Controls import ValidationRule, ValidationResult, TextBox, DataTemplateSelector, ComboBox, BooleanToVisibilityConverter
-from System.Windows.Controls.Primitives import Popup
+from System.Windows.Controls.Primitives import Popup, PlacementMode
 from System.Windows.Data import Binding, IValueConverter
 
 from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
 from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields, first_letter_fields, conditional_fields, conditional_then_else_fields
 from excluderules import ExcludeRule, ExcludeGroup
+from losettings import Profile
+from wpfutils import Command
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
-from wpfutils import notify_property, NotifyPropertyChangedBase
 
 #Use global so it isn't contantly created in the converter class
 COMICBOOK = ComicBook()
@@ -41,24 +43,32 @@ class ConfigureForm(Window):
         self.comicbook = ComicBook()
         
         #For the exclude rules data template
-        rulestemplateselector = RulesTemplateSelector()
-        self.Resources.Add("rulestemplateselector", rulestemplateselector)
+        self.Resources.Add("rulestemplateselector", RulesTemplateSelector())
         self.field_name_to_type_name_converter = FieldNameToTypeNameConverter()
-        self.Resources.Add("FieldNameToTypeNameConverter", self.field_name_to_type_name_converter)
-        fieldnametomultivaluedescription = FieldNameToMultiValueDescription()
-        self.Resources.Add("FieldNameToMultiValueDescription", fieldnametomultivaluedescription)
-        fieldnametovisiblityconverter = FieldNameToVisiblityConverter()
-        self.Resources.Add("FieldNameToVisibilityConverter", fieldnametovisiblityconverter)
-        self.Resources.Add("InverseFieldNameToVisibilityConverter", InverseFieldNameToVisiblityConverter())
-        inverse_converter = InverseBooleanToVisibilityConverter()
-        self.Resources.Add("InverseBooleanToVisibilityConverter", inverse_converter)
+        self.Resources.Add("FieldNameToTypeNameConverter", 
+                           self.field_name_to_type_name_converter)
+        self.Resources.Add("FieldNameToMultiValueDescription",
+                           FieldNameToMultiValueDescription())
+        self.Resources.Add("FieldNameToVisibilityConverter",
+                           FieldNameToVisiblityConverter())
+        self.Resources.Add("InverseFieldNameToVisibilityConverter",
+                           InverseFieldNameToVisiblityConverter())
+        self.Resources.Add("InverseBooleanToVisibilityConverter", 
+                           InverseBooleanToVisibilityConverter())
         self.translations = Translations()
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
 
+        #Commands
+        self.add_profile_command = Command(self.add_profile, self.profile_name_is_valid, True)
+        self.rename_profile_command = Command(self.rename_profile, self.profile_name_is_valid, True)
+        self.duplicate_profile_command = Command(self.duplicate_profile, self.profile_name_is_valid, True)
+        self.delete_profile_command = Command(self.delete_profile, lambda:len(self.profiles) > 1)
+
         #Setup some things need for the Illegal characters
         self.illegal_characters = ObservableCollection[str](self.profile.IllegalCharacters.keys())
-        self.default_illegal_characters = ["?", "/", "\\", "*", ":", "<", ">", "|", "\""]
+        self.default_illegal_characters = ["?", "/", "\\", "*", ":", "<", ">",
+                                           "|", "\""]
         self.months_selectors = sorted(self.profile.Months.keys(), key=int)
         self.localize()
         #Load the xaml file
@@ -68,6 +78,13 @@ class ConfigureForm(Window):
         self.MonthSelector.SelectedIndex = 0
 
         self.folder_dialog = VistaFolderBrowserDialog()
+
+    def profile_name_is_valid(self, name):
+        if not name:
+            return False
+        if name in self.profilenames:
+            return False
+        return True
 
     def localize(self):
         translated_fields = localizer.get_comic_fields()
@@ -118,7 +135,7 @@ class ConfigureForm(Window):
         """This method fakes a dropdown button using the contextmenu."""
         sender.ContextMenu.IsEnabled = True
         sender.ContextMenu.PlacementTarget = sender
-        sender.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom
+        sender.ContextMenu.Placement = PlacementMode.Bottom
         sender.ContextMenu.IsOpen = True
 
     def Profile_SelectionChanged(self, sender, e):
@@ -138,84 +155,137 @@ class ConfigureForm(Window):
         self.FolderStructure.CaretIndex = len(self.profile.FolderTemplate)
         self.FileStructure.CaretIndex = len(self.profile.FileTemplate)
 
-    def add_profile(self, sender, e):
-        pass
+    def add_profile(self, name):
+        """Creates a blank new profile with the provided name.
+
+        Args:
+            name: The name of the new profile.
+        """
+        new_profile = Profile()
+        new_profile.Name = name
+        self.profiles[name] = new_profile
+        self.profilenames.Add(name)
+        self.ProfileSelector.SetValue(ComboBox.SelectedItemProperty, name)
+        self.hide_profile_input()
+
+    def delete_profile(self):
+        name = self.ProfileSelector.SelectedItem
+        index = self.ProfileSelector.SelectedIndex
+        #index is zero based so to see if it's the last item minus one from the length
+        i = len(self.profilenames) -1
+        if index + 1 == len(self.profilenames):
+            self.ProfileSelector.SelectedIndex = index - 1
+        else:
+            self.ProfileSelector.SelectedIndex = index + 1
+        self.profilenames.Remove(name)
+        del(self.profiles[name])
+
+    def rename_profile(self, name):
+        original_name = self.ProfileSelector.SelectedItem
+        self.profiles[name] = self.profiles[original_name]
+        self.profilenames.Add(name)
+        self.ProfileSelector.SelectedItem = name
+        self.profilenames.Remove(original_name)
+        del(self.profiles[original_name])
+        self.hide_profile_input()
+
+    def duplicate_profile(self, name):
+        new_profile = deepcopy(self.profile)
+        new_profile.Name = name
+        self.profiles[name] = new_profile
+        self.profilenames.Add(name)
+        self.ProfileSelector.SelectedItem = name
+        self.hide_profile_input()
+
+
+    def show_profile_input(self, sender, e):
+        """Shows the profile input overlay and changes the commands based
+        on the sending menu item.
+        """
+        if sender.Name == "RenameMenuItem":
+            self.ProfileNameInputYesButton.Command = self.rename_profile_command
+            self.ProfileNameInputBox.InputBindings[0].Command = self.rename_profile_command
+        elif sender.Name == "NewMenuItem":
+            self.ProfileNameInputYesButton.Command = self.add_profile_command
+            self.ProfileNameInputBox.InputBindings[0].Command = self.add_profile_command
+        elif sender.Name == "DuplicateMenuItem":
+            self.ProfileNameInputYesButton.Command = self.duplicate_profile_command
+            self.ProfileNameInputBox.InputBindings[0].Command = self.duplicate_profile_command
+        self.ProfileNameInput.Visibility = Visibility.Visible
+        self.ProfileNameInputBox.Focus()
+
+    def hide_profile_input(self, *args):
+        self.ProfileNameInput.Visibility = Visibility.Collapsed
+        self.ProfileNameInputBox.Text = ""
 
     def insert_field_clicked(self, sender, e):
         if self.TemplateFieldSelector.SelectedValue == "Conditional":
-            if_args = self.get_field_args(self.ConditionalIfField.SelectedValue, "ConditionalIf")
+            if_args = self.get_field_args(self.ConditionalIfField.SelectedValue,
+                                          "ConditionalIf")
             if self.ConditionalIfInvert.IsChecked:
                 field = "!" + self.ConditionalIfField.SelectedValue
             else:
                 field = "?" + self.ConditionalIfField.SelectedValue
             if self.ConditionalIfRegex.IsChecked:
-                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, if_args)
+                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, 
+                                      if_args)
             else:
-                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, if_args)
+                field += "(!%s)%s" % (self.ConditionalIfMatchText.Text, 
+                                      if_args)
             if self.TemplateBuilderAutoSpaceFields.IsChecked:
                 then_prefix = " " + self.ConditionalThenPrefix.Text
                 else_prefix = " " + self.ConditionalElsePrefix.Text
             else:
                 then_prefix = self.ConditionalThenPrefix.Text
                 else_prefix = self.ConditionalElsePrefix.Text
-            then_args = self.get_field_args(self.ConditionalThenField.SelectedValue, "ConditionalThen")
-            then_field = "{%s<%s%s>%s}" % (then_prefix, self.ConditionalThenField.SelectedValue, then_args, self.ConditionalThenSuffix.Text)
+            then_args = self.get_field_args(self.ConditionalThenField.SelectedValue,
+                                            "ConditionalThen")
+            then_field = "{%s<%s%s>%s}" % (then_prefix, 
+                                           self.ConditionalThenField.SelectedValue, 
+                                           then_args, self.ConditionalThenSuffix.Text)
             if self.ConditionalElseCheckBox.IsChecked:
-                else_args = self.get_field_args(self.ConditionalElseField.SelectedValue, "ConditionalElse")
-                else_field = "{%s<%s%s>%s}" % (else_prefix, self.ConditionalElseField.SelectedValue, else_args, self.ConditionalElseSuffix.Text)
+                else_args = self.get_field_args(self.ConditionalElseField.SelectedValue, 
+                                                "ConditionalElse")
+                else_field = "{%s<%s%s>%s}" % (else_prefix, 
+                                               self.ConditionalElseField.SelectedValue, 
+                                               else_args, self.ConditionalElseSuffix.Text)
             else:
                 else_field = ""
             insert_text = "{%s<%s>%s}" % (else_field, field, then_field)
             self.insert_text_into_template(insert_text)
 
         else:
-            args = self.get_field_args(self.TemplateFieldSelector.SelectedValue, "TemplateBuilder")
-        #field_type = self.field_name_to_type_name_converter.Convert(self.TemplateFieldSelector.SelectedValue, None, None, None)
-        #if field_type == "Numeric":
-        #    args = str(self.TemplateBuilderPadding.Value)
-        #elif field_type == "YesNo" or field_type == "MangaYesNo":
-        #    args = "(%s)" % (self.TemplateBuilderYesNoText.Text)
-        #    if self.TemplateBuilderYesNoInvert.IsChecked:
-        #        args += "(!)"
-        #elif field_type == "Month":
-        #    pass
-        #elif field_type == "FirstLetter":
-        #    args = "(%s)" % (self.FirstLetterSeriesSelector.SelectedValue)
-        #elif field_type == "MultipleValue":
-        #    if self.TemplateBuilderSelectMultipleValue.IsChecked:                
-        #        if self.TemplateBuilderMultipleValueSelectOnce.IsChecked:
-        #            args = "(%s)(series)" % (self.TemplateBuilderMultipleValueSeperator.Text)
-        #        else:
-        #            args = "(%s)(issue)" % (self.TemplateBuilderMultipleValueSeperator.Text)
-        #elif field_type == "Counter":
-        #    args = "(%s)(%s)(%s)" % (self.TemplateBuilderCounterStart.Value, 
-        #                             self.TemplateBuilderCounterIncrement.Value, 
-        #                             self.TemplateBuilderPadding.Value)
-        #elif field_type == "ReadPercentage":
-        #    args = "(%s)(%s)(%s)" % (self.TemplateBuilderReadPercentageText.Text,
-        #                             self.TemplateBuilderReadPercentageOperator.Text,
-        #                             self.TemplateBuilderReadPercentageNumber.Value)
+            args = self.get_field_args(self.TemplateFieldSelector.SelectedValue,
+                                       "TemplateBuilder")
             if self.TemplateBuilderAutoSpaceFields.IsChecked:
                 prefix = " " + self.TemplateBuilderPrefix.Text
             else:
                 prefix = self.TemplateBuilderPrefix.Text
-
-            insert_text = "{%s<%s%s>%s}" % (prefix, self.TemplateFieldSelector.SelectedItem.Value, args, self.TemplateBuilderSuffix.Text)
+            insert_text = "{%s<%s%s>%s}" % (prefix,
+                                            self.TemplateFieldSelector.SelectedItem.Value,
+                                            args, self.TemplateBuilderSuffix.Text)
             self.insert_text_into_template(insert_text)
 
     def get_field_args(self, field, arg_type):
         field_type = self.field_name_to_type_name_converter.Convert(field, None, None, None)
-
         if field_type == "Numeric":
             return "(%s)" % (self.FindName(arg_type + "Padding").Value)
 
         elif field_type == "YesNo" or field_type == "MangaYesNo":
-            args = "(%s)" % (self.FindName(arg_type + "YesNoText").Text)
+            args = []
+            args.append("(%s)" % (self.FindName(arg_type + "YesNoText").Text))
             if self.FindName(arg_type + "YesNoInvert").IsChecked:
-                args += "(!)"
-            return args
+                args.append("(!)")
+            if field_type == "YesNo":
+                operator = self.FindName(arg_type + "YesNoOperator").SelectedValue[3:]
+            else:
+                operator = self.FindName(arg_type + "MangaYesNoOperator").SelectedValue[3:]
+            args.append("(%s)" % (operator))
+            return ''.join(args)
 
         elif field_type == "Month":
+            if not self.FindName(arg_type + "UseMonthNames").IsChecked:
+                return "(%s)" % (self.FindName(arg_type + "Padding").Value)
             return ""
 
         elif field_type == "FirstLetter":
