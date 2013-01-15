@@ -1,5 +1,5 @@
 import pyevent
-from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs
+from System.ComponentModel import INotifyPropertyChanged, PropertyChangedEventArgs, IDataErrorInfo
 from System.Windows.Input import ICommand, CommandManager
 
 """notify_property and NotifyPropertyChangedBase are from:
@@ -79,7 +79,7 @@ class Command(ICommand):
          
     def add_CanExecuteChanged(self, handler):
         #Using CommandManager.RequerySuggested seems to fix a bug in WPF menus
-        #Where the CanExecute parameter is not passed
+        #where the CanExecute parameter is not passed
         CommandManager.RequerySuggested += handler 
      
     def remove_CanExecuteChanged(self, handler):
@@ -102,3 +102,7 @@ class Command(ICommand):
         else:
             return self._canexecute()            
             
+
+class ViewModelBase(NotifyPropertyChangedBase):
+    def __init__(self):
+        return super(ViewModelBase, self).__init__()

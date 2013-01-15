@@ -520,7 +520,7 @@
                     </Style>
                 </Grid.Resources>
                 <Label x:Name="ProfileLabel" Grid.Column="0">Profile:</Label>
-                <ComboBox Width="Auto" MinWidth="200" x:Name="ProfileSelector" Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=profilenames}" SelectionChanged="Profile_SelectionChanged" VerticalAlignment="Center"></ComboBox>
+                <ComboBox Width="Auto" MinWidth="200" x:Name="ProfileSelector" Grid.Column="1" ItemsSource="{Binding ElementName=ConfigureForm, Path=viewmodel.profile_collection}" DisplayMemberPath="Name" VerticalAlignment="Center"></ComboBox>
                 <Menu Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <MenuItem Header="Profile Actions" VerticalContentAlignment="Stretch" Padding="7,4,8,5">
                         <MenuItem.Icon>
@@ -597,7 +597,7 @@
                 <Button HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5" IsDefault="True" >Okay</Button>
                 <Button Grid.Column="1" HorizontalAlignment="Right" Padding="10, 2" Margin="5, 0, 5, 5" IsCancel="True">Cancel</Button>
             </Grid>
-            <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ConfigureForm, Path=profile}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
+            <TabControl Margin="0, 5, 5, 5" Padding="0" TabStripPlacement="Left" BorderThickness="0" x:Name="PagesContainer" DataContext="{Binding ElementName=ProfileSelector, Path=SelectedItem}" SelectedIndex="{Binding ElementName=ConfigureForm, Path=_tab_index, UpdateSourceTrigger=PropertyChanged}">
                 <TabItem Visibility="Collapsed" x:Name="OverviewPage">
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}">
                         <AdornerDecorator>
@@ -613,9 +613,9 @@
                                             <ColumnDefinition Width=".3*" />
                                             <ColumnDefinition Width=".3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <RadioButton HorizontalAlignment="Center" x:Name="Move" Checked="mode_check_changed">Move</RadioButton>
-                                        <RadioButton Grid.Column="1" HorizontalAlignment="Center" x:Name="Copy" Checked="mode_check_changed">Copy</RadioButton>
-                                        <RadioButton Grid.Column="2" HorizontalAlignment="Center" x:Name="Simulate" Checked="mode_check_changed">Simulate</RadioButton>
+                                        <RadioButton HorizontalAlignment="Center" x:Name="Move" IsChecked="{Binding Path=ProfileMode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Move}">Move</RadioButton>
+                                        <RadioButton HorizontalAlignment="Center" x:Name="Copy" Grid.Column="1" IsChecked="{Binding Path=ProfileMode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Copy}">Copy</RadioButton>
+                                        <RadioButton HorizontalAlignment="Center" x:Name="Simulate" Grid.Column="2" IsChecked="{Binding Path=ProfileMode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Simulate}">Simulate</RadioButton>
                                         <CheckBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Padding="4,0,0,0" Margin="0,5,0,0" VerticalAlignment="Center" x:Name="CopyOption" IsEnabled="{Binding ElementName=Copy, Path=IsChecked}">
                                             <TextBlock TextWrapping="Wrap" x:Name="CopyOptionLabel">Add copied book to library</TextBlock>
                                         </CheckBox>
@@ -644,19 +644,19 @@
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <CheckBox Margin="0, 0, 20, 0" HorizontalAlignment="Left" x:Name="UseFileOrganization" IsChecked="{Binding Path=UseFileName, Mode=TwoWay}">Use file organization</CheckBox>
-                                    <CheckBox Grid.Column="1" HorizontalAlignment="Left" Margin="15, 0" x:Name="UseFolderOrganization" IsChecked="{Binding Path=UseFolder, Mode=TwoWay}">Use folder organization</CheckBox>
-                                    <CheckBox x:Name="CopyFileless" Grid.Column="0" Margin="0, 0, 20, 0" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" IsChecked="{Binding Path=MoveFileless, Mode=TwoWay}">
+                                    <CheckBox Margin="0, 0, 20, 0" HorizontalAlignment="Left" x:Name="UseFileOrganization" IsChecked="{Binding Path=profile.UseFileName, Mode=TwoWay}">Use file organization</CheckBox>
+                                    <CheckBox Grid.Column="1" HorizontalAlignment="Left" Margin="15, 0" x:Name="UseFolderOrganization" IsChecked="{Binding Path=profile.UseFolder, Mode=TwoWay}">Use folder organization</CheckBox>
+                                    <CheckBox x:Name="CopyFileless" Grid.Column="0" Margin="0, 0, 20, 0" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" IsChecked="{Binding Path=profile.MoveFileless, Mode=TwoWay}">
                                         <TextBlock TextWrapping="Wrap" x:Name="CopyFilelessLabel">Copy fileless book custom thumbnails to the calculated path.(Does not affect the original image)</TextBlock>
                                     </CheckBox>
                                     <Label Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" x:Name="FilelessImageFormatLabel" IsEnabled="{Binding ElementName=CopyFileless, Path=IsChecked}" >Image Format</Label>
-                                    <ComboBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="70" x:Name="FilelessImageFormat" IsEnabled="{Binding ElementName=CopyFileless, Path=IsChecked}" SelectedItem="{Binding Path=FilelessFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=ConfigureForm, Path=filelessformats}"/>
+                                    <ComboBox Grid.Column="2" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="70" x:Name="FilelessImageFormat" IsEnabled="{Binding ElementName=CopyFileless, Path=IsChecked}" SelectedItem="{Binding Path=profile.FilelessFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ElementName=ConfigureForm, Path=filelessformats}"/>
                                 </Grid>
                             </Canvas>
                         </AdornerDecorator>
                     </Border>
                 </TabItem>
-                <TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
+                <!--<TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}" >
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <Grid Margin="5">
@@ -997,8 +997,8 @@
                             </Grid>
                         </ScrollViewer>
                     </Border>
-                </TabItem>
-                <TabItem Visibility="Collapsed" x:Name="RulesPage" >
+                </TabItem>-->
+                <!--<TabItem Visibility="Collapsed" x:Name="RulesPage" >
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White" Padding="5">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
                             <StackPanel>
@@ -1068,21 +1068,21 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
-                </TabItem>
+                </TabItem>-->
                 <TabItem Name="OptionsPage" Visibility="Collapsed">
                     <TabControl SelectedIndex="2" Padding="10" Background="White">
                         <TabItem Header="General Options" Style="{StaticResource WhiteTabItem}">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                                 <StackPanel>
-                                    <CheckBox IsChecked="{Binding Path=ReplaceMultipleSpaces}">Replace multiple spaces with a single space</CheckBox>
-                                    <CheckBox IsChecked="{Binding Path=CopyReadPercentage}">
+                                    <CheckBox IsChecked="{Binding Path=profile.ReplaceMultipleSpaces}">Replace multiple spaces with a single space</CheckBox>
+                                    <CheckBox IsChecked="{Binding Path=profile.CopyReadPercentage}">
                                         <TextBlock TextWrapping="Wrap">When overwriting an existing file, copy the read percentage to the new file</TextBlock>
                                     </CheckBox>
-                                    <CheckBox IsChecked="{Binding Path=DontAskWhenMultiOne}">If there is only one value in a multiple value field then insert it without asking</CheckBox>
+                                    <CheckBox IsChecked="{Binding Path=profile.DontAskWhenMultiOne}">If there is only one value in a multiple value field then insert it without asking</CheckBox>
                                     <DockPanel>
                                         <Label DockPanel.Dock="Bottom" VerticalAlignment="Center">(Leave empty to remove empty folder names in the path)</Label>
                                         <Label DockPanel.Dock="Left" VerticalAlignment="Center">Replace empty folder names with:</Label>
-                                        <TextBox Text="{Binding Path=EmptyFolder, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
+                                        <TextBox Text="{Binding Path=profile.EmptyFolder, UpdateSourceTrigger=PropertyChanged}"  VerticalAlignment="Center"/>
                                     </DockPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Label>Month</Label>
@@ -1151,7 +1151,7 @@
                             </StackPanel>
                         </TabItem>
                     </TabControl>
-                </TabItem>
+                </TabItem>-->
             </TabControl>
         </DockPanel>
         <Grid x:Name="ProfileNameInput" Visibility="Collapsed" FocusManager.IsFocusScope="True">

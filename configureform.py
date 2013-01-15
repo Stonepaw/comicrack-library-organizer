@@ -25,7 +25,7 @@ from Ookii.Dialogs.Wpf import VistaFolderBrowserDialog
 from locommon import Translations, Mode, template_fields, exclude_rule_fields, multiple_value_fields, library_organizer_fields, first_letter_fields, conditional_fields, conditional_then_else_fields
 from excluderules import ExcludeRule, ExcludeGroup
 from losettings import Profile
-from wpfutils import Command
+from wpfutils import Command, ViewModelBase, notify_property
 from cYo.Projects.ComicRack.Engine import YesNo, ComicBook, MangaYesNo
 
 #Use global so it isn't contantly created in the converter class
@@ -39,6 +39,8 @@ class ConfigureForm(Window):
         self.profiles = profiles
         self.profilenames = ObservableCollection[str](profiles.keys())
         self.profile = profiles[lastused]
+
+        self.viewmodel = ConfigureFormViewModel(profiles, lastused)
 
         self.comicbook = ComicBook()
         
@@ -55,6 +57,8 @@ class ConfigureForm(Window):
                            InverseFieldNameToVisiblityConverter())
         self.Resources.Add("InverseBooleanToVisibilityConverter", 
                            InverseBooleanToVisibilityConverter())
+        self.Resources.Add("ComparisonConverter", 
+                           ComparisonConverter())
         self.translations = Translations()
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
@@ -73,9 +77,9 @@ class ConfigureForm(Window):
         self.localize()
         #Load the xaml file
         wpf.LoadComponent(self, 'ConfigureForm.xaml')
-        self.ProfileSelector.SetValue(ComboBox.SelectedItemProperty, lastused)
-        self.illegal_characters_selector.SelectedIndex = 0
-        self.MonthSelector.SelectedIndex = 0
+        #self.ProfileSelector.SetValue(ComboBox.SelectedItemProperty, lastused)
+        #self.illegal_characters_selector.SelectedIndex = 0
+        #self.MonthSelector.SelectedIndex = 0
 
         self.folder_dialog = VistaFolderBrowserDialog()
 
@@ -109,27 +113,6 @@ class ConfigureForm(Window):
     def Page_Button_Checked(self, sender, e):
         """Handler to switch pages in the form"""
         self.PagesContainer.SelectedIndex = int(sender.Tag)
-
-    #These two methods load and save the mode radio buttons
-    def mode_check_changed(self, sender, e):
-        """Saves the mode to the profile when a different mode is selected"""
-        #There has to be a better way to do the radio buttons but I couldn't find a way
-        if sender == self.Move:
-            self.profile.Mode = "Move"
-        elif sender == self.Copy:
-            self.profile.Mode = "Copy"
-        elif sender == self.Simulate:
-            self.profile.Mode = "Simulate"
-
-    def load_mode(self):
-        """Sets the correct mode radio box check from the values in the profile."""
-        #There has to be a better way to do the radio buttons but I couldn't find a way
-        if self.profile.Mode == Mode.Move:
-            self.Move.IsChecked = True
-        elif self.profile.Mode == Mode.Copy:
-            self.Copy.IsChecked = True
-        elif self.profile.Mode == Mode.Simulate:
-            self.Simulate.IsChecked = True
 
     def drop_down_button_clicked(self, sender, e):
         """This method fakes a dropdown button using the contextmenu."""
@@ -482,3 +465,50 @@ class InverseBooleanToVisibilityConverter(IValueConverter):
             otherwise False is returned.
         """
         return not self._boolean_converter.ConvertBack(value, targetType, parameter, culture)
+
+
+class ComparisonConverter(IValueConverter):
+    def Convert(self, value, targetType, parameter, culture):
+        return value == parameter
+
+    def ConvertBack(self, value, targetType, parameter, culture):
+        if value:
+            return parameter
+        else:
+            return Binding.DoNothing
+
+
+class ConfigureFormViewModel(ViewModelBase):
+    def __init__(self, profiles, lastused):
+        super(ConfigureFormViewModel, self).__init__()
+        self.profiles = profiles
+        self.profile_collection = ObservableCollection[ProfileViewModel]([ProfileViewModel(profile) for profile in profiles.values()])
+
+
+
+class ProfileViewModel(ViewModelBase):
+    def __init__(self, profile):
+        super(ProfileViewModel, self).__init__()
+        self.profile = profile
+
+    @notify_property
+    def Name(self):
+        return self.profile.Name
+
+    @Name.setter
+    def Name(self, value):
+        self.profile.Name = value
+
+    @notify_property
+    def BaseFolder(self):
+        return self.profile.BaseFolder
+    @BaseFolder.setter
+    def BaseFolder(self, value):
+        self.profile.BaseFolder = value
+
+    @notify_property
+    def ProfileMode(self):
+        return self.profile.Mode
+    @ProfileMode.setter
+    def ProfileMode(self, value):
+        self.profile.Mode = value
