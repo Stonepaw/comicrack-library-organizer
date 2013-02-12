@@ -28,7 +28,7 @@ import pyevent
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, Button, Panel, Label, AutoSizeMode, NumericUpDown, CheckBox, ComboBox, ComboBoxStyle, BorderStyle
+from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, Button, Panel, Label, AutoSizeMode, NumericUpDown, CheckBox, ComboBox, ComboBoxStyle, BorderStyle, BindingSource
                                  
 from System.Drawing import Size, Point, ContentAlignment
 
@@ -622,6 +622,76 @@ class InsertControlCounter(InsertControl):
             s = " "
         return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + str(self.Start.Value) + ")(" + str(self.Increment.Value) + ")(" + str(self.Pad.Value) + ")>" + self.Postfix.Text + "}"
 
+
+
+class InsertControlDateTime(InsertControl):
+    """
+    Insert control containing a prefix textbox, button, postfix textbox and a combobox
+    """
+    def __init__(self):
+        InsertControl.__init__(self)
+
+        self.ComboBox = ComboBox()
+        self.ComboBox.DropDownStyle = ComboBoxStyle.DropDownList
+        self.SetComboBoxItems()
+        self.ComboBox.Width = 100
+        self.ComboBox.Margin = Padding(3, 0, 3, 0)
+        
+        
+        self.Controls.Add(self.ComboBox)
+        self.Width = self.PreferredSize.Width
+
+
+    def SetLabels(self, prefix_label, button_label, postfix_label, combobox_label):
+        InsertControl.SetLabels(self,prefix_label, button_label, postfix_label)
+
+        self.SuspendLayout()
+        
+        self.ComboBoxLabel = Label()
+        self.ComboBoxLabel.Text = combobox_label
+        self.ComboBoxLabel.AutoSize = True
+        self.LabelPanel.Controls.Add(self.ComboBoxLabel)
+        self.ComboBoxLabel.Location = Point(self.ComboBox.Location.X + self.ComboBox.Width/2 - self.ComboBoxLabel.Width/2, 0)
+        self.ComboBoxLabel.Margin = Padding(0)
+
+        self.LabelPanel.Height = self.PrefixLabel.Height
+        self.LabelPanel.Width = self.LabelPanel.PreferredSize.Width
+        
+        self.ResumeLayout()
+
+
+    def SetComboBoxItems(self):
+        """
+        Sets the ComboBox items.
+        items should be either an array or list or strings
+        """
+        datetime = System.DateTime(2013, 2, 1)
+
+        format_dictionary = System.Collections.Generic.Dictionary[System.String, System.String]()
+        format_dictionary.Add("dd/MM/yy", datetime.ToString("dd/MM/yy"))
+        format_dictionary.Add("MM/dd/yy", datetime.ToString("MM/dd/yy"))
+        format_dictionary.Add("D", datetime.ToString("D"))
+        format_dictionary.Add("M", datetime.ToString("M"))
+        format_dictionary.Add("Y", datetime.ToString("Y"))
+        format_dictionary.Add("MMM d, yyy", datetime.ToString("MMM d, yyy"))
+        format_dictionary.Add("MMM dd, yyy", datetime.ToString("MMM dd, yyy"))
+        format_dictionary.Add("MMMM d, yyy", datetime.ToString("MMMM d, yyy"))
+        format_dictionary.Add("MMMM dd, yyy", datetime.ToString("MMMM dd, yyy"))
+        self.ComboBox.DisplayMember = "Value"
+        self.ComboBox.ValueMember = "Key"
+        self.ComboBox.DataSource = BindingSource(format_dictionary, "")
+
+
+    def GetTemplateText(self, space):
+        """
+        Builds the template text and returns it as a string
+        space-> Boolean if automatically inserting spaceing
+        """
+        s = ""
+        if space:
+            s = " "
+
+        return "{" + s + self.Prefix.Text + "<" + self.Template + "(" + self.ComboBox.SelectedValue + ")>" + self.Postfix.Text + "}"
 
 
 class MetadataExcludeGroupControl(Panel):

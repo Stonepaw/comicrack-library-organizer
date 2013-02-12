@@ -1464,6 +1464,7 @@ class ConfigureForm(Form):
         self._calculated_insert_controls.TabIndex = 3
         self._calculated_insert_controls.Text = "Calculated Values"
         self._calculated_insert_controls.UseVisualStyleBackColor = True
+        self._calculated_insert_controls.AutoScroll = True
         # 
         # search_insert_controls
         # 
@@ -1633,32 +1634,39 @@ class ConfigureForm(Form):
         self.Count.Location = Point(4, 55)
         self.Count.Tag = self.Count.Location
         self._number_insert_controls_list["count"] = self.Count
-        
+
+        self.Day = InsertControlNumber()
+        self.Day.SetTemplate("Day", "Day")
+        self.Day.Name = "Day"
+        self.Day.Location = Point(248, 55)
+        self.Day.Tag = self.Day.Location
+        self._number_insert_controls_list["Day"] = self.Day
+
         self.MonthNumber = InsertControlNumber()
         self.MonthNumber.SetTemplate("month#", "Month#")
         self.MonthNumber.Name = "Month Number"
-        self.MonthNumber.Location = Point(248, 55)
+        self.MonthNumber.Location = Point(4, 100)
         self.MonthNumber.Tag = self.MonthNumber.Location
         self._number_insert_controls_list["month number"] = self.MonthNumber
         
         self.Number = InsertControlNumber()
         self.Number.SetTemplate("number", "Number")
         self.Number.Name = "Number"
-        self.Number.Location = Point(4, 100)
+        self.Number.Location = Point(248, 100)
         self.Number.Tag = self.Number.Location
         self._number_insert_controls_list["number"] = self.Number
         
         self.Volume = InsertControlNumber()
         self.Volume.SetTemplate("volume", "Volume")
         self.Volume.Name = "Volume"
-        self.Volume.Location = Point(248, 100)
+        self.Volume.Location = Point(4, 145)
         self.Volume.Tag = self.Volume.Location
         self._number_insert_controls_list["volume"] = self.Volume
         
         self.Year = InsertControlNumber()
         self.Year.SetTemplate("year", "Year")
         self.Year.Name = "Year"
-        self.Year.Location = Point(4, 145)
+        self.Year.Location = Point(248, 145)
         self.Year.Tag = self.Year.Location
         self._number_insert_controls_list["year"] = self.Year
 
@@ -1885,8 +1893,41 @@ class ConfigureForm(Form):
         self.StartMonth.Name = "Start Month"
         self._calculated_insert_controls_list["start month"] = self.StartMonth
 
+        self.EndYear = InsertControl()
+        self.EndYear.Location = Point(4, 100)
+        self.EndYear.Tag = self.EndYear.Location
+        self.EndYear.SetLabels("Prefix", "", "Suffix")
+        self.EndYear.Name = "End Year"
+        self.EndYear.SetTemplate("EndYear", "End Year")
+        self._calculated_insert_controls_list["end year"] = self.EndYear
+
+        self.EndMonth = InsertControlStartMonth("Use month names")
+        self.EndMonth.InsertButton.Width += 10
+        self.EndMonth.Location = Point(4, 145)
+        self.EndMonth.Tag = self.EndMonth.Location
+        self.EndMonth.SetLabels("Prefix", "", "Suffix", "Padding")
+        self.EndMonth.SetTemplate("EndMonth", "End Month")
+        self.EndMonth.Name = "End Month"
+        self._calculated_insert_controls_list["end month"] = self.EndMonth
+
+        self.AddedDate = InsertControlDateTime()
+        self.AddedDate.Location = Point(4, 190)
+        self.AddedDate.Tag = self.AddedDate.Location
+        self.AddedDate.SetLabels("Prefix", "", "Suffix", "Date Format")
+        self.AddedDate.Name = "Added Date"
+        self.AddedDate.SetTemplate("AddedDate", "Added Date")
+        self._calculated_insert_controls_list["added date"] = self.AddedDate
+
+        self.ReleasedDate = InsertControlDateTime()
+        self.ReleasedDate.Location = Point(4, 235)
+        self.ReleasedDate.Tag = self.ReleasedDate.Location
+        self.ReleasedDate.SetLabels("Prefix", "", "Suffix", "Date Format")
+        self.ReleasedDate.Name = "Released Date"
+        self.ReleasedDate.SetTemplate("ReleasedDate", "Released Date")
+        self._calculated_insert_controls_list["released date"] = self.ReleasedDate
+
         self.FirstIssueNumber = InsertControlNumber()
-        self.FirstIssueNumber.Location = Point(4, 100)
+        self.FirstIssueNumber.Location = Point(4, 280)
         self.FirstIssueNumber.Tag = self.FirstIssueNumber.Location
         self.FirstIssueNumber.SetTemplate("firstissuenumber", "First Issue Number")
         self.FirstIssueNumber.SetLabels("Prefix", "", "Suffix", "")
@@ -1894,7 +1935,7 @@ class ConfigureForm(Form):
         self._calculated_insert_controls_list["first issue number"] = self.FirstIssueNumber
 
         self.LastIssueNumber = InsertControlNumber()
-        self.LastIssueNumber.Location = Point(4, 145)
+        self.LastIssueNumber.Location = Point(4, 325)
         self.LastIssueNumber.Tag = self.LastIssueNumber.Location
         self.LastIssueNumber.SetTemplate("lastissuenumber", "Last Issue Number")
         self.LastIssueNumber.SetLabels("Prefix", "", "Suffix", "")        
@@ -1903,7 +1944,7 @@ class ConfigureForm(Form):
 
         self.FirstLetter = InsertControlFirstLetter()
         self.FirstLetter.SetTemplate("first", "FirstLetter")
-        self.FirstLetter.Location = Point(4, 190)
+        self.FirstLetter.Location = Point(4, 370)
         self.FirstLetter.Tag = self.FirstLetter.Location
         self.FirstLetter.SetLabels("Prefix", "", "Suffix", "Field")
         self.FirstLetter.Name = "First Letter"
@@ -1913,7 +1954,7 @@ class ConfigureForm(Form):
         self.Counter = InsertControlCounter()
         self.Counter.SetTemplate("counter", "Counter")
         self.Counter.SetLabels("Prefix", "", "Suffix", "Start", "Increment", "Pad")
-        self.Counter.Location = Point(4, 235)
+        self.Counter.Location = Point(4, 415)
         self.Counter.Name = "Counter"
         self.Counter.Tag = self.Counter.Location
         self._calculated_insert_controls_list["counter"] = self.Counter
@@ -1921,7 +1962,7 @@ class ConfigureForm(Form):
         self.Read = InsertControlReadPercentage()
         self.Read.SetTemplate("read", "Read %")
         self.Read.SetLabels("Prefix", "", "Suffix", "Text", "Operator", "Percent")
-        self.Read.Location = Point(4, 280)
+        self.Read.Location = Point(4, 450)
         self.Read.Tag = self.Read.Location
         self.Read.Name = "Read Percentage"
         self._calculated_insert_controls_list["read percentage"] = self.Read
