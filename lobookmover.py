@@ -1196,7 +1196,8 @@ class PathMaker(object):
     Some of the functions are based on functions in wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified.
     """
 
-    template_to_field = {"series" : "ShadowSeries", "number" : "ShadowNumber", "count" : "ShadowCount",
+    template_to_field = {"series" : "ShadowSeries", "number" : "ShadowNumber", "count" : "ShadowCount", "Day" : "Day", "ReleasedDate": "ReleasedTime",
+                         "AddedDate" : "AddedTime", "EndYear" : "EndYear", "EndMonth" : "EndMonth", "EndMonth#" : "EndMonth",
                          "month" : "Month", "month#" : "Month", "year" : "ShadowYear", "imprint" : "Imprint", "publisher" : "Publisher",
                          "altSeries" : "AlternateSeries", "altNumber" : "AlternateNumber", "altCount" : "AlternateCount",
                          "volume" : "ShadowVolume", "title" : "ShadowTitle", "ageRating" : "AgeRating", "language" : "LanguageAsText",
@@ -1459,7 +1460,7 @@ class PathMaker(object):
         args = re.findall("\(([^)]*)\)", args_match)
 
         try:
-            if field in ("StartYear", "StartMonth"):
+            if field in ("StartYear", "StartMonth", "EndYear", "EndMonth"):
                 return self.insert_start_value(field, args_match, template_name)
 
             elif field == "ReadPercentage" and len(args) == 3:
@@ -1479,6 +1480,12 @@ class PathMaker(object):
 
             elif field == "LastIssueNumber":
                 return self.insert_last_issue_number(args_match)
+
+            elif type(getattr(self.book, field)) is System.DateTime:
+                if args:
+                    return self.insert_formated_datetime(args[0], field)
+                else:
+                    return self.insert_formated_datetime("", field)
 
             #Yes/no fields can have 1 or 2 args
             elif field in self.yes_no_fields and 0 < len(args) < 3:
@@ -1671,16 +1678,19 @@ class PathMaker(object):
         returns the string of the field or an empty string.
         """
 
-        if field == "StartYear":
-            return self.insert_start_year()
+        if field in ("StartYear", "EndYear"):
+            return self.insert_start_year(field == "EndYear")
 
-        elif field == "StartMonth":
-            return self.insert_start_month(args, template_name)
+        elif field in ("StartMonth", "EndMonth"):
+            return self.insert_start_month(args, template_name, field == "EndMonth")
 
 
-    def insert_start_year(self):
+    def insert_start_year(self, end=False):
         """Gets the start year of the earliest book in the series of the current issue."""
-        year = get_earliest_book(self.book).ShadowYear
+        if end:
+            year = get_last_book(self.book).ShadowYear
+        else:
+            year = get_earliest_book(self.book).ShadowYear
 
         if year == -1:
             return ""
@@ -1688,18 +1698,20 @@ class PathMaker(object):
         return self.replace_illegal_characters(unicode(year))
 
 
-    def insert_start_month(self, args, template_name):
+    def insert_start_month(self, args, template_name, end=False):
         """Gets the start month of from the earliest issues in the series.
         Depending on the template_name the month as name or month as a number is inserted.
         args->can be either null or a number.
         template_name->The name of the field as entered in the template. This is for keeping month and month# seperate.
         Returns a string."""
-
-        month = get_earliest_book(self.book).Month
+        if end:
+            month = get_last_book(self.book).Month
+        else:
+            month = get_earliest_book(self.book).Month
 
         if month == -1:
             return ""
-        if template_name == "startmonth#":
+        if template_name.endswith('#'):
             if args and args.isdigit():
                 month = self.pad(month, int(args))
             return self.replace_illegal_characters(unicode(month))
@@ -1709,6 +1721,12 @@ class PathMaker(object):
                 return self.replace_illegal_characters(self.profile.Months[month])
             return ""
 
+    def insert_formated_datetime(self, time_format, field):
+
+        date_time = getattr(self.book, field)
+        if time_format:
+            return date_time.ToString(time_format)
+        return date_time.ToString()
 
     def insert_first_issue_number(self, padding):
         """
