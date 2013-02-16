@@ -15,6 +15,9 @@ fields still to do:
 conditional
 
 
+fields to add:
+Day, Released Date, AddedDate, EndYear, EndMonth
+
 Overhaul getting property values with:
 	print books[0].GetStringPropertyValue("Series", ComicValueType.Shadow) #Gets the value and if failing, getting the shadowvalues
         print books[0].GetPropertyValue[str]("BlackAndWhite", True)
@@ -31,3 +34,7 @@ yes/no add selector for yes/no/unkown/yes right to left
 All better error catching in all places where files are moved/modifed etc.
 
 add user text to if and then for conditionals
+
+tracking for moving fielless images
+
+remember to show in release notes changes for the if/not

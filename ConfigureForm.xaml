@@ -656,7 +656,7 @@
                         </AdornerDecorator>
                     </Border>
                 </TabItem>
-                <!--<TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
+                <TabItem Visibility="Collapsed" x:Name="TemplateBuilderPage">
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}" >
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <Grid Margin="5">
@@ -997,8 +997,8 @@
                             </Grid>
                         </ScrollViewer>
                     </Border>
-                </TabItem>-->
-                <!--<TabItem Visibility="Collapsed" x:Name="RulesPage" >
+                </TabItem>
+                <TabItem Visibility="Collapsed" x:Name="RulesPage" >
                     <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="White" Padding="5">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
                             <StackPanel>
@@ -1068,7 +1068,7 @@
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
-                </TabItem>-->
+                </TabItem>
                 <TabItem Name="OptionsPage" Visibility="Collapsed">
                     <TabControl SelectedIndex="2" Padding="10" Background="White">
                         <TabItem Header="General Options" Style="{StaticResource WhiteTabItem}">
