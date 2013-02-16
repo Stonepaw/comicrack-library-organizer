@@ -14,6 +14,7 @@ from System.Windows.Forms import MessageBox
 from System.IO import Path
 import configureform
 from configureform import ConfigureForm
+from configure_form_new import ConfigureFormNew
 import locommon
 from locommon import SCRIPTDIRECTORY
 
@@ -54,6 +55,7 @@ if __name__ == '__main__':
     locommon.ComicRack = ComicRack
     settings, lastused = load_profiles(Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"))
     d = ConfigureForm(settings, lastused[0])
+    #d = ConfigureFormNew()
     Application().Run(d)
     serializer = xmlserializer.XmlSerializer()
     serializer.serialize_profiles(settings, lastused, Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"))

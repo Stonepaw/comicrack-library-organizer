@@ -90,6 +90,8 @@
     <Compile Include="losettings.py" />
     <Compile Include="rulestest.py" />
     <Compile Include="Test.py" />
+    <Compile Include="tests\field_template_tests.py" />
+    <Compile Include="configure_form_new.py" />
     <Compile Include="wpfutils.py" />
     <Compile Include="xmlserializer.py" />
   </ItemGroup>
@@ -153,6 +155,7 @@
     <Content Include="tools_32.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="ConfigureFormNew.xaml" />
     <Content Include="wpf notes.txt" />
     <Content Include="WPFToolkit.Extended.dll" />
   </ItemGroup>
@@ -176,5 +179,15 @@
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="tests\" />
   </ItemGroup>
 </Project>
