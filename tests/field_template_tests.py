@@ -10,5 +10,8 @@ class TestTemplateFields(TestCase):
     def setUp(self):
         return super(TestTemplateFields, self).setUp()
 
+    def test_series(self):
+        pass
+
     def test_endmonth(self):
         pass
