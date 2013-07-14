@@ -14,9 +14,12 @@ Exclude rules from ComicRack looks complicated. Continue using the method I'm us
 fields still to do:
 conditional
 
+illegal characters use commands to grey out remove button and add buttons.
 
 fields to add:
 Day, Released Date, AddedDate, EndYear, EndMonth
+
+add date field to rules
 
 Overhaul getting property values with:
 	print books[0].GetStringPropertyValue("Series", ComicValueType.Shadow) #Gets the value and if failing, getting the shadowvalues
