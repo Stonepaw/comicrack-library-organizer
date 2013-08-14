@@ -2,7 +2,7 @@
 <Profiles LastUsed="Default">
   <Profile Name=";oiu2918u4" Version="2.2">
     <FolderTemplate />
-    <BaseFolder>C:\Users\Andrew\Documents\Lego Display</BaseFolder>
+    <BaseFolder>C:\Users\Andrew\Desktop\Age2XPatch</BaseFolder>
     <FileTemplate />
     <EmptyFolder />
     <EmptyData />
@@ -54,7 +54,7 @@
     <FailedFields />
     <Mode>Simulate</Mode>
     <CopyMode>true</CopyMode>
-    <AutoSpaceFields>true</AutoSpaceFields>
+    <AutoSpaceFields>false</AutoSpaceFields>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
@@ -97,7 +97,7 @@
       <Item Name="10" Value="October" />
       <Item Name="15" Value="Fall" />
     </Months>
-    <UseFolder>true</UseFolder>
+    <UseFolder>false</UseFolder>
     <UseFileName>true</UseFileName>
     <ExcludeFolders />
     <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
@@ -112,14 +112,14 @@
     <FailedFields />
     <Mode>Move</Mode>
     <CopyMode>true</CopyMode>
-    <AutoSpaceFields>true</AutoSpaceFields>
+    <AutoSpaceFields>false</AutoSpaceFields>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
   <Profile Name="Default" Version="2.2">
-    <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced{ &lt;FirstIssueNumber0&gt;}{ &lt;Format&gt;}</FolderTemplate>
+    <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced{ &lt;FirstIssueNumber0&gt;}{ &lt;Format&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
     <BaseFolder>C:\Users\Andrew\Documents\Dust</BaseFolder>
-    <FileTemplate>{&lt;series&gt;}{ Vol.&lt;volume&gt;}{ #&lt;number2&gt;}{ (of &lt;count2&gt;)}{ ({&lt;month&gt;, }&lt;year&gt;)}</FileTemplate>
+    <FileTemplate />
     <EmptyFolder>asdfasfa</EmptyFolder>
     <EmptyData />
     <Postfix />
@@ -170,14 +170,14 @@
     <MoveFailed>false</MoveFailed>
     <FailedFolder />
     <FailedFields />
-    <Mode>Move</Mode>
+    <Mode>Simulate</Mode>
     <CopyMode>true</CopyMode>
     <AutoSpaceFields>true</AutoSpaceFields>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
   <Profile Name="lkajsdf" Version="2.2">
-    <FolderTemplate />
+    <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
     <BaseFolder />
     <FileTemplate />
     <EmptyFolder />
@@ -215,8 +215,8 @@
       <Item Name="10" Value="October" />
       <Item Name="15" Value="Fall" />
     </Months>
-    <UseFolder>true</UseFolder>
-    <UseFileName>true</UseFileName>
+    <UseFolder>false</UseFolder>
+    <UseFileName>false</UseFileName>
     <ExcludeFolders />
     <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ExcludeRules Operator="All" ExcludeMode="Do not" />

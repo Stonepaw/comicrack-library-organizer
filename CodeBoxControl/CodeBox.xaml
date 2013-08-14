@@ -1,0 +1,32 @@
+﻿<TextBox x:Class="CodeBoxControl.CodeBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:c="clr-namespace:CodeBoxControl"
+    >
+    <TextBox.Template>
+    <ControlTemplate TargetType="c:CodeBox" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}"
+                Background="{TemplateBinding Panel.Background}" Name="Bd" SnapsToDevicePixels="True">
+                <ScrollViewer Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+            </Border >
+            <ControlTemplate.Triggers>
+            <Trigger Property="UIElement.IsEnabled">
+                <Setter Property="Panel.Background" TargetName="Bd">
+                    <Setter.Value>
+                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlBrushKey}" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="TextElement.Foreground">
+                    <Setter.Value>
+                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                    </Setter.Value>
+                </Setter>
+                <Trigger.Value>
+                    <s:Boolean>False</s:Boolean>
+                </Trigger.Value>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+</TextBox.Template>
+</TextBox>

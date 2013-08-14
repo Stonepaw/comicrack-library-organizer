@@ -1,23 +1,8 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xck="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         Title="Test" Height="325" Width="775">
     <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Label>Match</Label>
-            <ComboBox Grid.Column="1" VerticalAlignment="Top" />
-            <Label Content="of the following rules" Grid.Column="2" VerticalAlignment="Top" /> 
-            <Button Grid.Column="4" VerticalAlignment="Top" HorizontalAlignment="Right">Add Group</Button>
-            <Button Grid.Column="5" VerticalAlignment="Top">Add Rule</Button>
-            <Button Grid.Column="6" VerticalAlignment="Top">-</Button>
-        </Grid>
+        <xck:IntegerUpDown />
     </Grid>
 </Window>

@@ -41,6 +41,12 @@ VERSION = 2.2
 startbooks = {}
 endbooks = {}
 
+#The usable date formated for any date fields
+date_formats = ["dd-MM-yy", "dd-MM-yyyy", "MM-dd-yy", "MM-dd-yyyy", 
+                "yyyy-MM-dd", "M", "Y", "MMMM d, yyyy", "MMMM dd, yyyy", 
+                "MMM d, yyyy", "MMM dd, yyyy", "MMM yyyy", "MMMM yyyy", 
+                "MMM, yyyy"]
+
 #Don't actually need these anymore because all names are now localized. These do have to be kept for updating from previous versions though.
 name_to_field = {"Age Rating" : "AgeRating", "Alternate Count" : "AlternateCount", "Alternate Number" : "AlternateNumber",
                  "Alternate Series" : "AlternateSeries", "Black And White" : "BlackAndWhite", "Cover Artist" : "CoverArtist", "File Format" : "FileFormat", "File Name" : "FileName", 
@@ -63,16 +69,16 @@ field_to_name = {"AgeRating" : "Age Rating", "AlternateCount" : "Alternate Count
 comic_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries',
                 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition',
                 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 
-                'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 
+                'Characters', 'Checked', 'Colorist', 'CommunityRating', 'ShadowCount', 
                 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 
                 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 
-                'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 
+                'ShadowFormat', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 
                 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 
-                'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 
+                'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'ShadowNumber', 
                 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 
-                'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 
-                'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 
-                'Web', 'Writer', 'Year']
+                'ScanInformation', 'ShadowSeries', 'SeriesComplete', 'SeriesGroup', 
+                'StoryArc', 'Summary', 'Tags', 'Teams', 'ShadowTitle', 'ShadowVolume', 
+                'Web', 'Writer', 'ShadowYear']
 
 #This contains the fields that are available to add into the template. Used for building the correct list of things later.
 template_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Colorist', 'CommunityRating', 'Conditional', 'Count', 'Counter', 'CoverArtist', 'Editor', 'FirstIssueNumber', 'FirstLetter', 'Format', 'Genre', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StartMonth', 'StartYear', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Writer', 'Year']
