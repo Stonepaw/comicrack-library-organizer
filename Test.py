@@ -1,7 +1,11 @@
-import wpf
+import System
 
-from System.Windows import Window
+import clr
+clr.AddReference("IronPython.Wpf")
+clr.AddReference("PresentationCore")
 
-class Test(Window):
+from IronPython.Modules import Wpf
+
+class Test(Object):
     def __init__(self):
-        wpf.LoadComponent(self, 'Test.xaml')
+        Wpf.LoadComponent("Test.xaml")

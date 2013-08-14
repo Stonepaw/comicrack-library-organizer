@@ -444,7 +444,7 @@
                         <Label Content="Overview" HorizontalAlignment="Center" />
                     </StackPanel>
                 </RadioButton>
-                <RadioButton IsEnabled="{Binding ElementName=UseFileOrganization, Path=IsChecked}" Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FileButton">
+                <RadioButton IsEnabled="{Binding ElementName=UseFileOrganization, Path=IsChecked}" Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FileButton" >
                     <StackPanel>
                         <Image IsEnabled="{Binding ElementName=UseFileOrganization, Path=IsChecked}" Stretch="None">
                             <Image.Style>
@@ -463,7 +463,7 @@
                         <Label Content="Files" HorizontalAlignment="Center" />
                     </StackPanel>
                 </RadioButton>
-                <RadioButton IsEnabled="{Binding ElementName=UseFolderOrganization, Path=IsChecked}" Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FolderButton">
+                <RadioButton IsEnabled="{Binding ElementName=UseFolderOrganization, Path=IsChecked}"  Style="{StaticResource PageButton}" Tag="1" Checked="Page_Button_Checked" x:Name="FolderButton">
                     <StackPanel>
                         <Image Stretch="None" IsEnabled="{Binding ElementName=UseFolderOrganization, Path=IsChecked}" >
                             <Image.Style>

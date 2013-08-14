@@ -33,159 +33,171 @@ clr.AddReference("System.Xml")
 import System.Xml
 from System.Xml import XmlWriter, Formatting, XmlTextWriter, XmlWriterSettings, XmlDocument
 
-import configureform
-from configureform import ConfigureForm
+#import configureform
+#from configureform import ConfigureForm
 
-import losettings
-from losettings import load_profiles, save_profiles, save_last_used
+#import losettings
+#from losettings import load_profiles, save_profiles, save_last_used
 
-import loworkerform
-from loworkerform import ProfileSelector, WorkerForm, WorkerFormUndo
+#import loworkerform
+#from loworkerform import ProfileSelector, WorkerForm, WorkerFormUndo
 
 import locommon
+locommon.ComicRack = ComicRack
 from locommon import PROFILEFILE, UNDOFILE, UndoCollection
 
-import lobookmover
+#import lobookmover
 
+import localizer
+localizer.ComicRack = ComicRack
+import configure_form_new
 
 #@Name Library Organizer
 #@Hook Books
 #@Key library-organizer-main
 #@Image libraryorganizer.png
 def LibraryOrganizer(books):
-    if books:
-        try:
-            profiles, lastused = load_profiles(PROFILEFILE)
+    d = configure_form_new.ConfigureForm()
+    d.ShowDialog()
 
-            loworkerform.ComicRack = ComicRack
-            locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
-            #Create the config form
-            print "Creating config form"
-            if show_config_form(profiles, lastused, books):
-                show_worker_form(profiles, lastused, books)
+##@Name Library Organizer
+##@Hook Books
+##@Key library-organizer-main
+##@Image libraryorganizer.png
+#def LibraryOrganizer(books):
+#    if books:
+#        try:
+#            profiles, lastused = load_profiles(PROFILEFILE)
 
-        except Exception, ex:
-            print "The following error occured"
-            print Exception
-            MessageBox.Show(str(ex))
+#            loworkerform.ComicRack = ComicRack
+#            locommon.ComicRack = ComicRack
+#            lobookmover.ComicRack = ComicRack
+#            #Create the config form
+#            print "Creating config form"
+#            if show_config_form(profiles, lastused, books):
+#                show_worker_form(profiles, lastused, books)
+
+#        except Exception, ex:
+#            print "The following error occured"
+#            print Exception
+#            MessageBox.Show(str(ex))
 
 
-#@Name Configure Library Organizer
-#@Hook Library
-#@Image libraryorganizer.png
-def ConfigureLibraryOrganizer(books):
-    if books is None:
-        books = ComicRack.App.GetLibraryBooks()
-    try:
-        locommon.ComicRack = ComicRack
-        lobookmover.ComicRack = ComicRack
-        profiles, lastused = load_profiles(PROFILEFILE)
+##@Name Configure Library Organizer
+##@Hook Library
+##@Image libraryorganizer.png
+#def ConfigureLibraryOrganizer(books):
+#    if books is None:
+#        books = ComicRack.App.GetLibraryBooks()
+#    try:
+#        locommon.ComicRack = ComicRack
+#        lobookmover.ComicRack = ComicRack
+#        profiles, lastused = load_profiles(PROFILEFILE)
 
-        show_config_form(profiles, lastused, books)
+#        show_config_form(profiles, lastused, books)
         
-    except Exception, ex:
-        print "The Following error occured"
-        print Exception
-        MessageBox.Show(str(ex))
+#    except Exception, ex:
+#        print "The Following error occured"
+#        print Exception
+#        MessageBox.Show(str(ex))
 
 
-#@Key library-organizer-main
-#@Hook ConfigScript
-def ConfigLibraryOrganizer():
-    ConfigureLibraryOrganizer(None)
+##@Key library-organizer-main
+##@Hook ConfigScript
+#def ConfigLibraryOrganizer():
+#    ConfigureLibraryOrganizer(None)
 
 
-#@Name Library Organizer (Quick)
-#@Hook Books
-#@Key library-organizer-quick
-#@Image libraryorganizerquick.png
-def LibraryOrganizerQuick(books):
-    if books:
-        try:
-            loworkerform.ComicRack = ComicRack
-            locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
-            profiles, lastused = load_profiles(PROFILEFILE)
+##@Name Library Organizer (Quick)
+##@Hook Books
+##@Key library-organizer-quick
+##@Image libraryorganizerquick.png
+#def LibraryOrganizerQuick(books):
+#    if books:
+#        try:
+#            loworkerform.ComicRack = ComicRack
+#            locommon.ComicRack = ComicRack
+#            lobookmover.ComicRack = ComicRack
+#            profiles, lastused = load_profiles(PROFILEFILE)
 
-            if len(profiles) == 1 and profiles[profiles.keys()[0]].BaseFolder == "":
-                MessageBox.Show("Library Organizer will not work as expected when the BaseFolder is empty. Please run the normal Library Organizer script or the Configure Library Organizer script before running Library Organizer Quick", "BaseFolder empty", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                return
+#            if len(profiles) == 1 and profiles[profiles.keys()[0]].BaseFolder == "":
+#                MessageBox.Show("Library Organizer will not work as expected when the BaseFolder is empty. Please run the normal Library Organizer script or the Configure Library Organizer script before running Library Organizer Quick", "BaseFolder empty", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+#                return
             
-            show_worker_form(profiles, lastused, books)
+#            show_worker_form(profiles, lastused, books)
 
-        except Exception, ex:
-            print "The following error occured"
-            print Exception
-            MessageBox.Show(str(ex))
+#        except Exception, ex:
+#            print "The following error occured"
+#            print Exception
+#            MessageBox.Show(str(ex))
       
               
-#@Name Library Organizer - Undo last move
-#@Hook Library
-#@Image libraryorganizer.png
-def LibraryOrganizerUndo(books):
-    try:
-        if File.Exists(UNDOFILE):
-            loworkerform.ComicRack = ComicRack
-            locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
-            profiles, lastused = load_profiles(PROFILEFILE)
+##@Name Library Organizer - Undo last move
+##@Hook Library
+##@Image libraryorganizer.png
+#def LibraryOrganizerUndo(books):
+#    try:
+#        if File.Exists(UNDOFILE):
+#            loworkerform.ComicRack = ComicRack
+#            locommon.ComicRack = ComicRack
+#            lobookmover.ComicRack = ComicRack
+#            profiles, lastused = load_profiles(PROFILEFILE)
                 
-            undo_collection = UndoCollection()
+#            undo_collection = UndoCollection()
 
-            undo_collection.load(UNDOFILE)
+#            undo_collection.load(UNDOFILE)
 
-            if len(undo_collection) > 0:
-                undo_form = WorkerFormUndo(undo_collection, profiles)
-                undo_form.ShowDialog()
-                undo_form.Dispose()
-                File.Delete(UNDOFILE)
-            else:
-                MessageBox.Show("Error loading Undo file", "Library Organizer - Undo")
-        else:
-            MessageBox.Show("Nothing to Undo", "Library Organizer - Undo")
-    except Exception, ex:
-        print "The following error occured"
-        print Exception
-        MessageBox.Show(str(ex))
-
-
-#@Name Library Organizer - Startup
-#@Enabled false
-#@Hook Startup
-#@Image libraryorganizer.png
-def LibraryOrganizerStartup():
-    books = ComicRack.App.GetLibraryBooks()
-    LibraryOrganizerQuick(books)
+#            if len(undo_collection) > 0:
+#                undo_form = WorkerFormUndo(undo_collection, profiles)
+#                undo_form.ShowDialog()
+#                undo_form.Dispose()
+#                File.Delete(UNDOFILE)
+#            else:
+#                MessageBox.Show("Error loading Undo file", "Library Organizer - Undo")
+#        else:
+#            MessageBox.Show("Nothing to Undo", "Library Organizer - Undo")
+#    except Exception, ex:
+#        print "The following error occured"
+#        print Exception
+#        MessageBox.Show(str(ex))
 
 
-def show_config_form(profiles, lastused, books):
-    """Shows the configure form and saves the changes if the user press okay.
-    Returns True if the user press Okay.
-    Returns False if the user pressed cancel."""
-    configform = ConfigureForm(profiles, lastused[0], books)
-    result = configform.ShowDialog()
-    configform.save_profile()
-    configform.Dispose()
-    if result != DialogResult.Cancel:
-        save_profiles(PROFILEFILE, profiles, lastused)
-        return True
-    return False
+##@Name Library Organizer - Startup
+##@Enabled false
+##@Hook Startup
+##@Image libraryorganizer.png
+#def LibraryOrganizerStartup():
+#    books = ComicRack.App.GetLibraryBooks()
+#    LibraryOrganizerQuick(books)
 
 
-def show_worker_form(profiles, lastused, books):
-    """Gets the profile(s) to use and shows the worker form."""
-    if len(profiles) > 1:
-        profile_selector = ProfileSelector(profiles.keys(), lastused)
-        result = profile_selector.ShowDialog()
-        if result == DialogResult.Cancel:
-            profile_selector.Dispose()
-            return
-        lastused = profile_selector.get_profiles_to_use()
-        save_last_used(PROFILEFILE, lastused)
-        profile_selector.Dispose()
+#def show_config_form(profiles, lastused, books):
+#    """Shows the configure form and saves the changes if the user press okay.
+#    Returns True if the user press Okay.
+#    Returns False if the user pressed cancel."""
+#    configform = ConfigureForm(profiles, lastused[0], books)
+#    result = configform.ShowDialog()
+#    configform.save_profile()
+#    configform.Dispose()
+#    if result != DialogResult.Cancel:
+#        save_profiles(PROFILEFILE, profiles, lastused)
+#        return True
+#    return False
 
-    profiles_to_use = [profiles[name] for name in lastused]
 
-    worker_form = WorkerForm(books, profiles_to_use)
-    worker_form.ShowDialog()
+#def show_worker_form(profiles, lastused, books):
+#    """Gets the profile(s) to use and shows the worker form."""
+#    if len(profiles) > 1:
+#        profile_selector = ProfileSelector(profiles.keys(), lastused)
+#        result = profile_selector.ShowDialog()
+#        if result == DialogResult.Cancel:
+#            profile_selector.Dispose()
+#            return
+#        lastused = profile_selector.get_profiles_to_use()
+#        save_last_used(PROFILEFILE, lastused)
+#        profile_selector.Dispose()
+
+#    profiles_to_use = [profiles[name] for name in lastused]
+
+#    worker_form = WorkerForm(books, profiles_to_use)
+#    worker_form.ShowDialog()

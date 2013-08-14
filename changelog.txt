@@ -1,4 +1,15 @@
-﻿2.1.8
+﻿2.2
+
+Added template fields: Age, Price, Book Condition, Book Location, Collection Status, Community Rating, ISBN, Owner, Rating, Store
+
+Values in the options for the template inserter are no longer saved
+
+Configure form:
+Change: Browsing for a base folder now uses the windows vista/7 folder browser dialog when available
+Addition: Implemented syntax highlighting for the file and folder templates
+
+
+2.1.8
 Fixes an error when handleing an error that occurs when moving files.
 Restored default templates for new users.
 

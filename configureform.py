@@ -3,8 +3,9 @@ import clr
 
 clr.AddReferenceByPartialName("WPFToolkit.Extended")
 clr.AddReference("PresentationFramework")
-clr.AddReference("System.Windows.Forms")
 clr.AddReference("PresentationCore")
+clr.AddReference("System.Windows.Forms")
+
 clr.AddReference("Ookii.Dialogs.Wpf")
 clr.AddReference("Ookii.Dialogs")
 clr.AddReferenceToFile("ComicRack.Engine.dll")
@@ -63,6 +64,8 @@ class ConfigureForm(Window):
         
         self.filelessformats = [".bmp", ".jpg", ".png"]
 
+        self.fieldoptions = NumberInsertViewModel();
+
         #Commands
         self.add_profile_command = Command(self.add_profile, self.profile_name_is_valid, True)
         self.rename_profile_command = Command(self.rename_profile, self.profile_name_is_valid, True)
@@ -92,18 +95,18 @@ class ConfigureForm(Window):
 
     def localize(self):
         translated_fields = localizer.get_comic_fields()
-        self.exclude_rule_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
+        self.exclude_rule_field_names = SortedDictionary[str, str]({name : property for property, name in translated_fields.iteritems() 
                                                                     if property in exclude_rule_fields})
         self.exclude_rule_string_operators = SortedDictionary[str, str](localizer.get_exclude_rule_string_operators())
         self.exclude_rule_numeric_operators = SortedDictionary[str, str](localizer.get_exclude_rule_numeric_operators())
         self.exclude_rule_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_yes_no_operators())
-        self.exclude_rule_manga_yes_no_operators = SortedDictionary[str, str](localizer.get_exclude_rule_manga_yes_no_operators())
+        self.exclude_rule_manga_yes_no_operators = SortedDictionary[str, str](localizer.get_manga_yes_no_operators())
         self.exclude_rule_bool_operators = SortedDictionary[str, str](localizer.get_exclude_rule_bool_operators())
-        self.template_field_selectors = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() 
+        self.template_field_selectors = SortedDictionary[str, str]({name : property for property, name in translated_fields.iteritems() 
                                                                     if property in template_fields})
-        self.first_letter_fields_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in first_letter_fields})
-        self.conditional_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in conditional_fields})
-        self.conditional_then_else_field_names = SortedDictionary[str, str]({name : property for name, property in translated_fields.iteritems() if property in conditional_then_else_fields})
+        self.first_letter_fields_names = SortedDictionary[str, str]({name : property for property, name in translated_fields.iteritems() if property in first_letter_fields})
+        self.conditional_field_names = SortedDictionary[str, str]({name : property for property, name in translated_fields.iteritems() if property in conditional_fields})
+        self.conditional_then_else_field_names = SortedDictionary[str, str]({name : property for property, name in translated_fields.iteritems() if property in conditional_then_else_fields})
 
     def Button_Browse_Click(self, sender, e):
         """Shows a folder browser dialog and sets the base folder to the selected path."""        
@@ -357,6 +360,14 @@ class RulesTemplateSelector(DataTemplateSelector):
         elif type(item) is ExcludeGroup:
             return container.FindResource("ExcludeGroup")
 
+class InsertFieldTemplateSelector(DataTemplateSelector):
+    """Selects the correct datatemplete for the insert rules"""
+    def SelectTemplate(self, item, container):
+        if type(item) is ExcludeRule:
+            return container.FindResource("ExcludeRule")
+        elif type(item) is ExcludeGroup:
+            return container.FindResource("ExcludeGroup")
+
 
 class EmptyTextBoxValidationRule(ValidationRule):
     
@@ -512,3 +523,43 @@ class ProfileViewModel(ViewModelBase):
     @ProfileMode.setter
     def ProfileMode(self, value):
         self.profile.Mode = value
+
+
+class InsertViewModel(ViewModelBase):
+
+    def __init__(self):
+        self._prefix = ""
+        self._suffix = ""
+        self._field = ""
+
+    @notify_property
+    def Prefix(self):
+        return self._prefix
+
+    @Prefix.setter
+    def Name(self, value):
+        self._prefix = value
+
+    @notify_property
+    def Suffix(self):
+        return self._suffix
+
+    @Suffix.setter
+    def Suffix(self, value):
+        self._suffix = value
+
+    @notify_property
+    def Field(self):
+        return self._field
+
+    @Field.setter
+    def Field(self, value):
+        self._field = value
+
+
+class NumberInsertViewModel(InsertViewModel):
+
+    def __init__(self):
+        return super(NumberInsertViewModel, self).__init__()
+        self.Padding = 0
+

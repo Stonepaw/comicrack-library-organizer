@@ -228,7 +228,7 @@ class ExcludeRule(NotifyPropertyChangedBase):
     _comicbook = ComicBook()
     _numeric_operators = localizer.get_exclude_rule_numeric_operators().values()
     _string_operators = localizer.get_exclude_rule_string_operators().values()
-    _manga_yes_no_operators = localizer.get_exclude_rule_manga_yes_no_operators().values()
+    _manga_yes_no_operators = localizer.get_manga_yes_no_operators().values()
     _yes_no_operators = localizer.get_exclude_rule_yes_no_operators().values()
     _bool_operators = localizer.get_exclude_rule_bool_operators().values()
 

@@ -1,0 +1,68 @@
+Common Template Syntax:
+	{<Field>}
+	Anything text between {< is the prefix which will only be inserted when the comic book field is not empty.
+	Simularly text between >} is the Suffix.
+	eg:
+		{Prefix Text <Series> Suffix Text} will insert "Prefix Text Green Arrow Suffix Text" (Note the spaces in the prefix and suffix)
+
+
+String Field:
+	{<Field>}
+
+	Note: Any field can be used as a string field, however results may not be as intended for many fields.
+
+Number Field:
+	{<Field(Padding)>}
+
+	Padding can be any number from 0 up. A 0 is automatic padding. The script will go through every issue in that series and find the highest number available it will then pad the number to the same number of digits as that number.
+
+	A padding of 1 is no padding or you can insert the number field as a string field in which case no padding will be used.
+
+	Number fields are: 
+
+Yes No Fields:
+	{<Field(Text to insert when true)(Yes No Operator, Yes, No, Unknown, Yes (Left to Right))(!:Invert, optional)>}
+
+	eg:
+	{<BlackAndWhite(B&W)(Yes)>}
+	{<BlackAndWhite(Colour)(Yes)(!)>}
+
+	Old version:
+		{<Field(Text to insert when true)(!:Invert, optional)>}
+
+	Fields:
+		Manga, Series Complete, Black & White
+
+Conditional
+	If:
+		{ElseField<?Field(Operator)(value)>ThenField)
+	If Not:
+		{ElseField<!Field(Operator)(value)>ThenField)
+
+	Where operator is one of:
+		is
+		contains
+		any
+		all
+		starts
+		ends
+		=
+		>
+		<
+		regex
+
+	Old:
+		IF IS
+		{ElseField<?Field(laksjdflj)>ThenField}
+
+		IF IS REGEX
+		{ElseField<?Field(!laksjdflj)>ThenField}
+
+		IF NOT
+		{ElseField<!Field(laksjdflj)>ThenField}
+
+		IF NOT REGEX
+		{ElseField<!Field(laksjdflj)>ThenField}
+
+
+
