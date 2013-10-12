@@ -134,7 +134,21 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Date Format:</Label>
-                    <ComboBox Width="Auto" VerticalAlignment="Center" SelectedValue="{Binding SelectedDateFormat}" ItemsSource="{Binding DateFormats}" SelectedValuePath="Value" DisplayMemberPath="Key" />
+                    <ComboBox x:Name="DateFormat"  Width="Auto" VerticalAlignment="Center" SelectedValue="{Binding SelectedDateFormat}" ItemsSource="{Binding DateFormats}" SelectedValuePath="Value" DisplayMemberPath="Key" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
+                    <StackPanel.Style>
+                        <Style>
+                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=DateFormat, Path=SelectedValue}" Value="Custom">
+                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                </DataTrigger> 
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <Label>Custom Date Format:</Label>
+                    <TextBox Width="50" VerticalAlignment="Center" Text="{Binding CustomDateFormat, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </WrapPanel>
         </DataTemplate>

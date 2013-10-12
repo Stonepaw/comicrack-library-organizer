@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Globalization;
 using CodeBoxControl.Decorations;
-
 using System.Diagnostics;
 using System.Reflection;
 
@@ -22,7 +21,8 @@ namespace CodeBoxControl
 {
     /// <summary>
     ///  A control to view or edit styled text
-    ///  Originally from http://www.codeproject.com/Articles/33939/CodeBox. Modified by Stonepaw to have bindable selection start and length
+    ///  
+    /// Modified by Andrew Feltham 06/10/2013
     /// </summary>
     public partial class CodeBox : TextBox
     {
@@ -179,6 +179,7 @@ namespace CodeBoxControl
         }
 
         #region BindableSelection
+        // Added 06/10/2013 by Andrew Feltham (Stonepaw) to enable bindable selection start and selection end.
         public static readonly DependencyProperty BindableSelectionStartProperty =
              DependencyProperty.Register(
              "BindableSelectionStart",
@@ -267,5 +268,5 @@ namespace CodeBoxControl
         }
         #endregion
     }
-
 }
+

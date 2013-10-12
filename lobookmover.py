@@ -1207,7 +1207,7 @@ class PathMaker(object):
                          "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
                          "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber"}
 
-    template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
+    template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<suffix>[^{}]*)}")
 
     yes_no_fields = ["Manga", "SeriesComplete"]
 
@@ -1397,13 +1397,13 @@ class PathMaker(object):
                     return ""
                 #Insert prefix and suffix if there is a match.
                 if re.match(conditional_args[1:], result) is not None:
-                    return match_groups["prefix"] + match_groups["postfix"]
+                    return match_groups["prefix"] + match_groups["suffix"]
                 else:
                     return ""
             else:
                 #Text argument. Insert if matching the result
                 if result == conditional_args:
-                    return match_groups["prefix"] + match_groups["postfix"]
+                    return match_groups["prefix"] + match_groups["suffix"]
                 else:
                     return ""
 
@@ -1412,20 +1412,20 @@ class PathMaker(object):
             if not inversion_args:
                 #No args so only insert the prefix and suffix if the result is empty
                 if not result:
-                    return match_groups["prefix"] + match_groups["postfix"]
+                    return match_groups["prefix"] + match_groups["suffix"]
                 else:
                     return ""
 
             elif inversion_args.startswith("!"):
                 #Regex so only insert the prefix and suffix if there is no matches
                 if re.match(inversion_args[1:], result) is None:
-                    return match_groups["prefix"] + match_groups["postfix"]
+                    return match_groups["prefix"] + match_groups["suffix"]
                 else:
                     return ""
             else:
                 #Text to match to. Only insert if the result doesn't match the arg
                 if result != inversion_args:
-                    return match_groups["prefix"] + match_groups["postfix"]
+                    return match_groups["prefix"] + match_groups["suffix"]
                 else:
                     return ""
 
@@ -1444,7 +1444,7 @@ class PathMaker(object):
                 return ""
 
 
-        return match_groups["prefix"] + result + match_groups["postfix"]
+        return match_groups["prefix"] + result + match_groups["suffix"]
     
 
     def get_field_text(self, field, template_name, args_match):
