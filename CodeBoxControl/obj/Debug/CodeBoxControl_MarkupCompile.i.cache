@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\CodeBoxControl\obj\Debug\
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\
 CodeBoxControl
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 
 1-1027264020
 
-19-1651904767
-12-425035913
+17-1957402362
+11-192729156
 CodeBox.xaml;
 
-True
+False
 

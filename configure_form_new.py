@@ -21,90 +21,58 @@ from locommon import SCRIPTDIRECTORY, date_formats
 from System.IO import Path
 from losettings import Profile
 import localizer
-clr.AddReferenceToFile("CodeBoxControl.dll")
-from CodeBoxControl.Decorations import MultiStringDecoration, RegexGroupDecoration
+#clr.AddReferenceToFile("CodeBoxControl.dll")
+#from CodeBoxControl.Decorations import MultiStringDecoration, RegexGroupDecoration
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.dll")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.Shell.dll")
 from Microsoft.WindowsAPICodePack.Dialogs import CommonOpenFileDialog, CommonFileDialogResult
 clr.AddReferenceToFile("Ookii.Dialogs.dll")
 clr.AddReferenceToFile("Ookii.Dialogs.Wpf.dll")
 
+from codeboxdecorations import (LibraryOrganizerNameDecoration, 
+                                LibraryOrganizerArgsDecoration,
+                                LibraryOrganizerPrefixSuffixDecoration)
+
 
 class ConfigureForm(Window):
     def __init__(self, profiles, last_used_profiles):
         self.ViewModel = ConfigureFormViewModel(profiles, last_used_profiles)
         self.DataContext = self.ViewModel
-        self.Resources.Add("InsertFieldTemplateSelector", InsertFieldTemplateSelector())
+        self.Resources.Add("InsertFieldTemplateSelector", 
+                           InsertFieldTemplateSelector())
         self.Resources.Add("ComparisonConverter", ComparisonConverter())
-        Wpf.LoadComponent(self, Path.Combine(SCRIPTDIRECTORY, 'ConfigureFormNew.xaml'))
+        Wpf.LoadComponent(self, Path.Combine(SCRIPTDIRECTORY, 
+                                             'ConfigureFormNew.xaml'))
         self.setup_text_highlighting();
 
     def setup_text_highlighting(self):
         """
         Setups up the text highlighting for the template text boxes
         """
-        suffix = RegexGroupDecoration();
-        suffix.Brush = SolidColorBrush(Colors.Teal);
-        suffix.RegexString = ">([^{}<>]*?)}";
-        self.FileTemplateTextBox.Decorations.Add(suffix);
-        self.FolderTemplateBox.Decorations.Add(suffix);
+        names = LibraryOrganizerNameDecoration()
+        names.Brush = SolidColorBrush(Colors.Blue)
+        self.FileTemplateTextBox.Decorations.Add(names);
+        self.FolderTemplateBox.Decorations.Add(names);
 
-        suffix1 = RegexGroupDecoration();
-        suffix1.Brush = SolidColorBrush(Colors.Teal);
-        suffix1.RegexString = ">([^{}<>]*?){";
-        self.FileTemplateTextBox.Decorations.Add(suffix1);
-        self.FolderTemplateBox.Decorations.Add(suffix1);
-
-        suffix2 = RegexGroupDecoration();
-        suffix2.Brush = SolidColorBrush(Colors.Teal);
-        suffix2.RegexString = "}([^<>]*?)}";
-        self.FileTemplateTextBox.Decorations.Add(suffix2);
-        self.FolderTemplateBox.Decorations.Add(suffix2);
-
-        prefix2 = RegexGroupDecoration();
-        prefix2.Brush = SolidColorBrush(Colors.Teal);
-        prefix2.RegexString = "{([^<>]*?){";
-        self.FileTemplateTextBox.Decorations.Add(prefix2);
-        self.FolderTemplateBox.Decorations.Add(prefix2);
-
-        suffix3 = RegexGroupDecoration();
-        suffix3.Brush = SolidColorBrush(Colors.Teal);
-        suffix3.RegexString = "}([^<>{}]*?)<";
-        self.FileTemplateTextBox.Decorations.Add(suffix3);
-        self.FolderTemplateBox.Decorations.Add(suffix3);
-
-        prefix = RegexGroupDecoration();
-        prefix.Brush = SolidColorBrush(Colors.Teal);
-        prefix.RegexString = "{([^{}<>]*?)<";
+        prefix = LibraryOrganizerPrefixSuffixDecoration()
+        prefix.Brush = SolidColorBrush(Colors.Teal)
         self.FileTemplateTextBox.Decorations.Add(prefix);
         self.FolderTemplateBox.Decorations.Add(prefix);
 
-        args = RegexGroupDecoration();
+        args = LibraryOrganizerArgsDecoration();
         args.Brush = SolidColorBrush(Colors.Red);
-        args.RegexString = "\\(([^}]*?)\\)";
         self.FileTemplateTextBox.Decorations.Add(args);
         self.FolderTemplateBox.Decorations.Add(args);
 
-        fields = MultiStringDecoration();
-        fields.Brush = SolidColorBrush(Colors.Blue);
-        templates = [t.template for t in FIELDS if t.field in template_fields and t.template]
-        fields.Strings.AddRange(templates)
-        self.FileTemplateTextBox.Decorations.Add(fields);
-        self.FolderTemplateBox.Decorations.Add(fields);
-
-        brackets = MultiStringDecoration();
-        brackets.Brush = SolidColorBrush(Colors.Black);
-        brackets.Strings.AddRange(["{", "}", "(", ")"])
-        self.FileTemplateTextBox.Decorations.Add(brackets);
-        self.FolderTemplateBox.Decorations.Add(brackets);
-
     def new_profile_clicked(self, *args):
         self.ProfileNameInputBox.Text = ""
-        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, Visibility.Visible)
+        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, 
+                                       Visibility.Visible)
         self.ProfileNameInputBox.Focus()
 
     def close_inputbox(self, *args):
-        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, Visibility.Collapsed)
+        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, 
+                                       Visibility.Collapsed)
 
     
 
@@ -120,7 +88,8 @@ class ConfigureFormViewModel(ViewModelBase):
         self._input_is_visible = False;
         #Commands
         self.SelectBaseFolderCommand = Command(self.select_base_folder)
-        self.NewProfileCommand = Command(self.add_new_profile, lambda x: x and x not in self._profile_names, True)
+        self.NewProfileCommand = Command(self.add_new_profile, 
+                                         lambda x: x and x not in self._profile_names, True)
 
     #Profile
     @notify_property
@@ -153,8 +122,8 @@ class ConfigureFormViewModel(ViewModelBase):
 
     def select_base_folder(self):
         """
-        Shows a folder browser dialog and sets the BaseFolder to the selected
-        folder
+        Shows a folder browser dialog and sets the BaseFolder to the 
+        selected folder
         """
         c = CommonOpenFileDialog()
         c.IsFolderPicker = True
@@ -266,14 +235,11 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
         Returns:
             The template with the new item inserted into the existing template.
         """
-        s = template[:start]
-        s += new_item
-        s += template[start + length:]
-        return s
+        return "".join((template[:start], new_item, template[start + length:]))
 
     def insert_folder(self):
         """
-        Inserts a folder seperator character "\" into the folder template
+        Inserts a folder separator character "\" into the folder template
         """
         start = self.FolderSelectionStart
         length = self.FolderSelectionLength
@@ -302,7 +268,9 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     def SelectedField(self, value):
         self._selectedField = value
         if type(value) == TemplateItem:
-            self.FieldOptions = SelectFieldTemplateFromType(value.type, value.template, value.name)
+            self.FieldOptions = SelectFieldTemplateFromType(value.type, 
+                                                            value.template, 
+                                                            value.name)
 
     #FileTemplate
     @notify_property
@@ -353,18 +321,20 @@ class InsertViewModel(object):
 
     def make_template(self, autospace, args=""):
         """
-        Creates the insertable template with the provided args.
+        Creates the template string with the provided args.
 
         Args:
             autospace: Inserts a space before the prefix
             args: (Optional)The args to insert into the template
 
         Returns:
-            The string of the constructed insertable template
+            The string of the constructed template
         """
         if autospace:
-            return "{ %s<%s%s>%s}" % (self.Prefix, self._template, args, self.Suffix)
-        return "{%s<%s%s>%s}" % (self.Prefix, self._template, args, self.Suffix)
+            return "{ %s<%s%s>%s}" % (self.Prefix, self._template, args, 
+                                      self.Suffix)
+        return "{%s<%s%s>%s}" % (self.Prefix, self._template, args, 
+                                 self.Suffix)
 
 
 class NumberInsertViewModel(InsertViewModel):
@@ -477,10 +447,12 @@ class DateInsertViewModel(InsertViewModel):
     
     def __init__(self, field):
         if self.DateFormats.Count == 0:
+            self.DateFormats["Custom"] = "Custom"
             date = DateTime.Now
             for d in date_formats:
                 self.DateFormats[date.ToString(d)] = d
         self.SelectedDateFormat = "MMMM dd, yyyy"
+        self.CustomDateFormat = ""
         super(DateInsertViewModel, self).__init__(field)
 
     def make_template(self, autospace):
@@ -493,7 +465,10 @@ class DateInsertViewModel(InsertViewModel):
         Returns:
             The string of the constructed insertable template
         """
-        args = "(%s)" % (self.SelectedDateFormat)
+        if self.SelectedDateFormat == "Custom":
+            args = "(%s)" % (self.CustomDateFormat)
+        else:
+            args = "(%s)" % (self.SelectedDateFormat)
         return super(DateInsertViewModel, self).make_template(autospace, args)
 
 

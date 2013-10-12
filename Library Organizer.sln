@@ -1,11 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer WPF", "Library Organizer WPF.pyproj", "{B0736317-71E5-4A9F-AD6A-750305D92178}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer", "Library Organizer.pyproj", "{B0736317-71E5-4A9F-AD6A-750305D92178}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stonepaw.LibraryOrganizer.Controls", "Stonepaw.LibraryOrganizer.Controls\Stonepaw.LibraryOrganizer.Controls.csproj", "{FC5762EF-7CC7-49F9-8614-AAE370662752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBoxControl", "..\..\..\Downloads\CodeBoxSource\CodeBoxControl\CodeBoxControl.csproj", "{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBoxControl", "CodeBoxControl\CodeBoxControl.csproj", "{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution

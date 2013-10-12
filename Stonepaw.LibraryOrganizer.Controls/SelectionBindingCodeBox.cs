@@ -1,49 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using CodeBoxControl;
-using CodeBoxControl.Decorations;
-using System.Windows.Media;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Stonepaw.LibraryOrganizer.Controls
 {
-    public class TemplateTextBox : CodeBox
+    public class BindableCodeBox : CodeBox
     {
-        
-        
         public static readonly DependencyProperty BindableSelectionStartProperty =
             DependencyProperty.Register(
             "BindableSelectionStart",
             typeof(int),
-            typeof(TemplateTextBox),
+            typeof(BindableCodeBox),
             new PropertyMetadata(OnBindableSelectionStartChanged));
 
         public static readonly DependencyProperty BindableSelectionLengthProperty =
             DependencyProperty.Register(
             "BindableSelectionLength",
             typeof(int),
-            typeof(TemplateTextBox),
+            typeof(BindableCodeBox),
             new PropertyMetadata(OnBindableSelectionLengthChanged));
 
         private bool changeFromUI;
 
-        public TemplateTextBox()
+        public BindableCodeBox()
             : base()
         {
             this.SelectionChanged += this.OnSelectionChanged;
-            RegexDecoration fields = new RegexDecoration();
-            fields.Brush = new SolidColorBrush(Colors.Blue);
-            fields.RegexString = "{.*?<(\\w+).*>.*?}";
-            this.Decorations.Add(fields);
-
-            CommonOpenFileDialog c = new CommonOpenFileDialog();
-            c.IsFolderPicker = true;
-            
-
         }
 
         public int BindableSelectionStart
@@ -74,7 +55,7 @@ namespace Stonepaw.LibraryOrganizer.Controls
 
         private static void OnBindableSelectionStartChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
         {
-            var textBox = dependencyObject as TemplateTextBox;
+            var textBox = dependencyObject as BindableCodeBox;
 
             if (!textBox.changeFromUI)
             {
@@ -89,7 +70,7 @@ namespace Stonepaw.LibraryOrganizer.Controls
 
         private static void OnBindableSelectionLengthChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
         {
-            var textBox = dependencyObject as TemplateTextBox;
+            var textBox = dependencyObject as BindableCodeBox;
 
             if (!textBox.changeFromUI)
             {

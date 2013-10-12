@@ -1,14 +1,13 @@
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\bin\Debug\CodeBoxControl.dll
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\bin\Debug\CodeBoxControl.pdb
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBox.g.cs
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl_MarkupCompile.cache
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl_MarkupCompile.lref
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBox.baml
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl.g.resources
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl.Properties.Resources.resources
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl.csproj.GenerateResource.Cache
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl.dll
-C:\Users\Andrew\Downloads\CodeBoxSource\CodeBoxControl\obj\Debug\CodeBoxControl.pdb
-C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\CodeBoxControl\obj\Debug\CodeBoxControl.dll
-C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\CodeBoxControl\obj\Debug\CodeBoxControl.pdb
+C:\repos\comicrack-library-organizer\CodeBoxControl\bin\Debug\CodeBoxControl.dll
+C:\repos\comicrack-library-organizer\CodeBoxControl\bin\Debug\CodeBoxControl.pdb
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.csprojResolveAssemblyReference.cache
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBox.g.cs
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl_MarkupCompile.cache
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl_MarkupCompile.lref
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBox.baml
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.g.resources
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.Properties.Resources.resources
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.csproj.GenerateResource.Cache
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.dll
+C:\repos\comicrack-library-organizer\CodeBoxControl\obj\Debug\CodeBoxControl.pdb

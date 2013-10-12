@@ -3,17 +3,25 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{c91c54bf-45ed-4964-b901-9059e4a512a7}</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectGuid>{b0736317-71e5-4a9f-ad6a-750305d92178}</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>Program.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <IsWindowsApplication>True</IsWindowsApplication>
-    <AssemblyName>Library Organizer</AssemblyName>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <AssemblyName>Library Organizer WPF</AssemblyName>
     <Name>Library Organizer</Name>
     <RootNamespace>Library Organizer</RootNamespace>
-    <PublishUrl>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer\Release</PublishUrl>
+    <PublishUrl>%appdata%\cYo\ComicRack\Scripts\Library Organizer</PublishUrl>
+    <InterpreterId>{80659ab7-4d53-4e0c-8588-a766116cbd46}</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <CommandLineArguments />
+    <InterpreterPath />
+    <DebugStdLib>False</DebugStdLib>
+    <InterpreterArguments />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,9 +59,6 @@
     <None Include="lologger.py">
       <Publish>True</Publish>
     </None>
-    <None Include="losettings.py">
-      <Publish>True</Publish>
-    </None>
     <None Include="losettingsx.dat">
       <Publish>False</Publish>
     </None>
@@ -74,18 +79,28 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="configformcontrols.py">
-      <Publish>True</Publish>
-    </Compile>
-    <Compile Include="configureform.py">
-      <Publish>True</Publish>
-    </Compile>
+    <Compile Include="codeboxdecorations.py" />
+    <Compile Include="ComicRack.py" />
+    <Compile Include="configureform.py" />
+    <Compile Include="configure_form_new.py" />
+    <Compile Include="excluderules.py" />
+    <Compile Include="fieldmappings.py" />
+    <Compile Include="localizer.py" />
+    <Compile Include="losettings.py" />
+    <Compile Include="rulestest.py" />
+    <Compile Include="Test.py" />
+    <Compile Include="tests\field_template_tests.py" />
+    <Compile Include="wpfutils.py" />
+    <Compile Include="xmlserializer.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="add_16.png">
       <Publish>True</Publish>
     </Content>
     <Content Include="arrow_down_16.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="arrow_up_16.png">
       <Publish>True</Publish>
     </Content>
     <Content Include="blue_arrow_up_32.png">
@@ -97,13 +112,27 @@
     <Content Include="close_16.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="CodeBoxControl.dll" />
+    <Content Include="ComicRack.Engine.dll" />
+    <Content Include="ConfigureForm.xaml">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="ConfigureFormNew.xaml">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="cYo.Common.dll" />
     <Content Include="DuplicateForm.xaml">
       <Publish>True</Publish>
     </Content>
+    <Content Include="FieldsToAdd.txt" />
     <Content Include="folder_32.png">
       <Publish>True</Publish>
     </Content>
     <Content Include="home_32.png">
+      <Publish>True</Publish>
+    </Content>
+    <Content Include="IronPython.Wpf.dll">
+      <SubType>Content</SubType>
       <Publish>True</Publish>
     </Content>
     <Content Include="libraryorganizer.ico">
@@ -115,20 +144,158 @@
     <Content Include="libraryorganizerquick.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="LocalizationNotes.txt" />
     <Content Include="lopackagelogo.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="Microsoft.WindowsAPICodePack.dll" />
+    <Content Include="Microsoft.WindowsAPICodePack.Shell.dll" />
+    <Content Include="Ookii.Dialogs.dll" />
+    <Content Include="Ookii.Dialogs.Wpf.dll" />
     <Content Include="page_text_32.png">
       <Publish>True</Publish>
     </Content>
     <Content Include="pencil_32.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="rulestest.xaml" />
     <Content Include="save_32.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="Stonepaw.LibraryOrganizer.Controls.dll" />
+    <Content Include="Template Fields Syntax.txt" />
+    <Content Include="Test.xaml" />
+    <Content Include="Thumbs.db" />
     <Content Include="tools_32.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="wpf notes.txt" />
+    <Content Include="WPFToolkit.Extended.dll" />
+    <Content Include="Xceed.Wpf.Toolkit.dll">
+      <SubType>Content</SubType>
+      <Publish>True</Publish>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CodeBoxControl, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <Name>CodeBoxControl</Name>
+      <AssemblyName>CodeBoxControl.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\CodeBoxControl.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeBoxControl, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.WindowsAPICodePack</Name>
+      <AssemblyName>Microsoft.WindowsAPICodePack.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>Microsoft.WindowsAPICodePack.Shell</Name>
+      <AssemblyName>Microsoft.WindowsAPICodePack.Shell.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249">
+      <Name>Ookii.Dialogs</Name>
+      <AssemblyName>Ookii.Dialogs.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Ookii.Dialogs.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249">
+      <Name>Ookii.Dialogs.Wpf</Name>
+      <AssemblyName>Ookii.Dialogs.Wpf.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Ookii.Dialogs.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <Name>Stonepaw.LibraryOrganizer.Controls</Name>
+      <AssemblyName>Stonepaw.LibraryOrganizer.Controls.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Stonepaw.LibraryOrganizer.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{80659ab7-4d53-4e0c-8588-a766116cbd46}\2.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="CodeBoxControl\CodeBoxControl.csproj">
+      <Name>CodeBoxControl</Name>
+      <Project>{fafc1291-82f4-4a3a-b70f-111dbf2ec194}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

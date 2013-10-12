@@ -20,7 +20,7 @@ limitations under the License.
 
 """
 import clr
-
+import re
 import System
 from System.Collections.Generic import Dictionary, SortedDictionary
 clr.AddReference("System.Drawing")
@@ -34,6 +34,11 @@ PROFILEFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
 ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
 VERSION = 2.2
+
+SUBSTITUTION_REGEX = re.compile("{(?P<prefix>[^{}<]*)<"
+                               "(?P<name>[^\d\s(>]+)"
+                               "(?P<args>\d*|(?:\([^)]*\))*)>"
+                               "(?P<suffix>[^{}]*)}")
 
 #clr.AddReferenceByPartialName('ComicRack.Engine')
 #from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
