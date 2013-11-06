@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
     xmlns:c="clr-namespace:CodeBoxControl;assembly=CodeBoxControl"
+    xmlns:wt="http://schemas.microsoft.com/wpf/2008/toolkit"
 	x:Name="ConfigureForm"
 	Title="Library Organizer"
     Background="{x:Static SystemColors.ControlBrush}"
@@ -143,12 +144,16 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=DateFormat, Path=SelectedValue}" Value="Custom">
                                     <Setter Property="StackPanel.Visibility" Value="Visible" />
-                                </DataTrigger> 
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
                     <Label>Custom Date Format:</Label>
-                    <TextBox Width="50" VerticalAlignment="Center" Text="{Binding CustomDateFormat, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Width="100" VerticalAlignment="Center" Text="{Binding CustomDateFormat, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label>
+                        <Hyperlink NavigateUri="http://goo.gl/e2P0VF" RequestNavigate="navigate_uri">?</Hyperlink>
+                    </Label>
+                    <Label Content="{Binding CustomDateFormatPreview}" />
                 </StackPanel>
             </WrapPanel>
         </DataTemplate>
@@ -299,12 +304,12 @@
                     </MenuItem>
                 </Menu>
             </Grid>
-            <TabControl HorizontalContentAlignment="Center" TabStripPlacement="Left">
+            <TabControl HorizontalContentAlignment="Center" TabStripPlacement="Left" Padding="0">
                 <TabControl.Background>
                     <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
                 </TabControl.Background>
                 <TabItem x:Name="OverviewTabPage" Visibility="Collapsed" IsSelected="{Binding IsChecked, ElementName=OverviewButton}" Background="{x:Null}">
-                    <Grid>
+                    <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -369,7 +374,7 @@
                 </TabItem>
                 <TabItem x:Name="TemplateBuilderTabPage" Visibility="Collapsed" Background="{x:Null}" DataContext="{Binding FileFolderViewModel}">
                     <TabItem.Style>
-                        <Style TargetType="{x:Type TabItem}">
+                        <Style TargetType="TabItem">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=FilesButton, Path=IsChecked}" Value="True">
                                     <Setter Property="IsSelected" Value="True" />
@@ -382,7 +387,7 @@
                     </TabItem.Style>
                     <!--<Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Background="{x:Static SystemColors.ControlLightLightBrush}" >-->
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <Grid Margin="5">
+                        <Grid Margin="10">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -538,8 +543,99 @@
                 <TabItem x:Name="RulesTabPage" Visibility="Collapsed" IsSelected="{Binding IsChecked, ElementName=RulesButton}" Background="{x:Null}">
                     <Grid/>
                 </TabItem>
-                <TabItem x:Name="OptionsTabPage" IsSelected="{Binding IsChecked, ElementName=OptionsButton}" Visibility="Collapsed" Background="{x:Null}">
-                    <Grid/>
+                <TabItem x:Name="OptionsTabPage" IsSelected="{Binding IsChecked, ElementName=OptionsButton}" Visibility="Collapsed" Background="{x:Null}" DataContext="{Binding OptionsViewModel}" Padding="0" Margin="0" >
+                    <TabControl Margin="-1" Padding="0" >
+                        <TabControl.Background>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
+                        </TabControl.Background>
+                        <TabItem Header="Profile Options">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                <StackPanel Margin="10" >
+                                    <CheckBox IsChecked="{Binding Profile.ReplaceMultipleSpaces}">
+                                        <TextBlock Text="Replace multiple spaces with a single space" />
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding Profile.CopyReadPercentage}" Margin="0, 15, 0, 0">
+                                        <TextBlock Text="When overwriting an existing file, copy the read percentage to the new file." />
+                                    </CheckBox>
+                                    <CheckBox Margin="0, 15, 0, 0" IsChecked="{Binding Profile.DontAskWhenMultiOne}">
+                                        <TextBlock Text="If there is only one value in a multiple value field then insert it without asking." />
+                                    </CheckBox>
+                                    <CheckBox x:Name="ReplaceEmptyFolders" Margin="0, 15, 0, 0" IsChecked="{Binding Profile.ReplaceEmptyFolders}">Replace empty folder names instead of removing empty folders</CheckBox>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0" Visibility="{Binding IsChecked, ElementName=ReplaceEmptyFolders, Converter={StaticResource BooleanToVisbilityConverter}}">
+                                        <Label>Replace with</Label>
+                                        <TextBox Width="200" VerticalAlignment="Center" Text="{Binding Profile.EmptyFolder}" />
+                                    </StackPanel>
+                                    <Label Margin="0, 15, 0, 0">When a field is empty insert a substitute</Label>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
+                                        <ComboBox ItemsSource="{Binding empty_fields}" DisplayMemberPath="name" SelectedValuePath="field" SelectedValue="{Binding SelectedEmptyField}" />
+                                        <TextBox Width="200" Margin="5, 0" Text="{Binding EmptyFieldReplacement, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <CheckBox Margin="0, 15, 0, 0" IsChecked="{Binding Profile.FailEmptyValues}">If any of the selected fields are empty then mark the operation as failed</CheckBox>
+                                    <xctk:CheckListBox Height="100" Width="Auto" Margin="20, 2, 0, 0" ItemsSource="{Binding empty_fields}" DisplayMemberPath="name" ValueMemberPath="field" SelectedItemsOverride="{Binding SelectedFailedFields}" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Global Options">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel Margin="10">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="CheckBox">
+                                                <Setter Property="Margin" Value="0, 15, 0, 0"/>
+                                            </Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="0, 15, 0, 0"/>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label>Replace illegal character</Label>
+                                            <ComboBox VerticalAlignment="Center" ItemsSource="{Binding illegal_characters}" SelectedItem="{Binding SelectedIllegalCharacter}" />
+                                            <Label>with</Label>
+                                            <TextBox MinWidth="30" VerticalAlignment="Center" Text="{Binding IllegalCharacterReplacement, UpdateSourceTrigger=PropertyChanged}" />
+                                            <ToggleButton x:Name="AddIllegalCharacter" Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" IsChecked="{Binding AddIllegalCharacterIsChecked}" Click="add_illegal_character_clicked" />
+                                            <Popup StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding ElementName=AddIllegalCharacter, Path=IsChecked}" PlacementTarget="{Binding ElementName=AddIllegalCharacter}">
+                                                <Border Background="White" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Padding="5">
+                                                    <StackPanel Orientation="Horizontal" Margin="0">
+                                                        <TextBox Margin="0, 0, 5, 0" Width="20" MaxLength="1" x:Name="NewIllegalCharacter" >
+                                                            <TextBox.InputBindings>
+                                                                <KeyBinding Key="Enter" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
+                                                            </TextBox.InputBindings>
+                                                        </TextBox>
+                                                        <Button Content="Add" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </Popup>
+                                            <Button Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveIllegalCharacterCommand}" CommandParameter="{Binding SelectedIllegalCharacter}"/>
+                                        </StackPanel>
+                                        <CheckBox x:Name="GenerateLocalizedMonthNames">
+                                            Generate localized month names from system language
+                                        </CheckBox>
+                                        <StackPanel Orientation="Horizontal" Margin="20, 5, 0, 0">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=GenerateLocalizedMonthNames, Path=IsChecked}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <ComboBox VerticalAlignment="Center" ItemsSource="{Binding months}" SelectedItem="{Binding SelectedMonth}"/>
+                                            <Label>is</Label>
+                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="300" Text="{Binding MonthReplacement, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+
+                                        <CheckBox IsChecked="{Binding global_settings.remove_empty_folders}" x:Name="RemoveEmptyFolders">Remove empty folders</CheckBox>
+                                        <StackPanel Orientation="Horizontal" Margin="20, 2, 0, 0">
+                                            <Label>Do not remove these folders:</Label>
+                                            <Button IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}"  Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding AddExcludedFolderCommand}" />
+                                            <Button IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}" Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveExcludedFolderCommand}" CommandParameter="{Binding ElementName=ExcludedFolderList, Path=SelectedItem}"/>
+                                        </StackPanel>
+                                        <ListBox x:Name="ExcludedFolderList" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}" Grid.Column="0" Grid.RowSpan="2" Margin="20, 0" Height="80" ItemsSource="{Binding excluded_empty_folders}" />
+
+                                    </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
             </TabControl>
         </DockPanel>

@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Profiles LastUsed="Default">
   <Profile Name=";oiu2918u4" Version="2.2">
+    <Version>2.2</Version>
     <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(None)&gt;}{&lt;Added(MM-dd-yy)&gt;}</FolderTemplate>
     <BaseFolder>C:\Users\Andrew\Desktop\Age2XPatch</BaseFolder>
     <FileTemplate>{aasdfasdsdfsadfasfasdf&lt;Series(adsf)(a)&gt;asd{&lt;Title&gt;}fasasdfd}</FileTemplate>
-    <EmptyFolder />
-    <EmptyData />
     <Postfix />
     <Prefix />
     <Seperator />
@@ -42,28 +41,46 @@
     <UseFolder>true</UseFolder>
     <UseFileName>true</UseFileName>
     <ExcludeFolders />
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ExcludeRules Operator="All" ExcludeMode="Do not" />
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
     <ExcludedEmptyFolder />
     <MoveFileless>false</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
-    <FailEmptyValues>false</FailEmptyValues>
-    <MoveFailed>false</MoveFailed>
-    <FailedFolder />
-    <FailedFields />
     <Mode>Simulate</Mode>
     <CopyMode>true</CopyMode>
     <AutoSpaceFields>false</AutoSpaceFields>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <CopyReadPercentage>true</CopyReadPercentage>
+    <ReplaceEmptyFolders>false</ReplaceEmptyFolders>
+    <EmptyFolder />
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <EmptyData>
+      <Item Name="AddedTime" Value="SADAasdfas" />
+      <Item Name="BookCondition" Value="sadf" />
+    </EmptyData>
+    <FailEmptyValues>false</FailEmptyValues>
+    <MoveFailed>false</MoveFailed>
+    <FailedFolder />
+    <FailedFields>
+      <Item>AlternateCount</Item>
+      <Item>BookCondition</Item>
+      <Item>BookCollectionStatus</Item>
+      <Item>Day</Item>
+      <Item>LastIssueNumber</Item>
+      <Item>Manga</Item>
+      <Item>ShadowFormat</Item>
+      <Item>Editor</Item>
+      <Item>ShadowCount</Item>
+      <Item>Colorist</Item>
+      <Item>Inker</Item>
+      <Item>Locations</Item>
+    </FailedFields>
   </Profile>
   <Profile Name="l;kajsfd" Version="2.2">
+    <Version>2.2</Version>
     <FolderTemplate />
     <BaseFolder />
     <FileTemplate />
-    <EmptyFolder />
-    <EmptyData />
     <Postfix />
     <Prefix />
     <Seperator />
@@ -100,28 +117,30 @@
     <UseFolder>false</UseFolder>
     <UseFileName>true</UseFileName>
     <ExcludeFolders />
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ExcludeRules Operator="All" ExcludeMode="Do not" />
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
     <ExcludedEmptyFolder />
     <MoveFileless>false</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
+    <Mode>Move</Mode>
+    <CopyMode>true</CopyMode>
+    <AutoSpaceFields>false</AutoSpaceFields>
+    <CopyReadPercentage>true</CopyReadPercentage>
+    <ReplaceEmptyFolders>false</ReplaceEmptyFolders>
+    <EmptyFolder />
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <EmptyData />
     <FailEmptyValues>false</FailEmptyValues>
     <MoveFailed>false</MoveFailed>
     <FailedFolder />
     <FailedFields />
-    <Mode>Move</Mode>
-    <CopyMode>true</CopyMode>
-    <AutoSpaceFields>false</AutoSpaceFields>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
   <Profile Name="lkajsdf" Version="2.2">
+    <Version>2.2</Version>
     <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
     <BaseFolder />
     <FileTemplate />
-    <EmptyFolder />
-    <EmptyData />
     <Postfix />
     <Prefix />
     <Seperator />
@@ -158,28 +177,30 @@
     <UseFolder>false</UseFolder>
     <UseFileName>false</UseFileName>
     <ExcludeFolders />
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ExcludeRules Operator="All" ExcludeMode="Do not" />
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
     <ExcludedEmptyFolder />
     <MoveFileless>false</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
+    <Mode>Move</Mode>
+    <CopyMode>true</CopyMode>
+    <AutoSpaceFields>true</AutoSpaceFields>
+    <CopyReadPercentage>true</CopyReadPercentage>
+    <ReplaceEmptyFolders>false</ReplaceEmptyFolders>
+    <EmptyFolder />
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <EmptyData />
     <FailEmptyValues>false</FailEmptyValues>
     <MoveFailed>false</MoveFailed>
     <FailedFolder />
     <FailedFields />
-    <Mode>Move</Mode>
-    <CopyMode>true</CopyMode>
-    <AutoSpaceFields>true</AutoSpaceFields>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
   <Profile Name="Default" Version="2.2">
+    <Version>2.2</Version>
     <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced{ &lt;FirstIssueNumber0&gt;}{ &lt;Format&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
     <BaseFolder>C:\Users\Andrew\Documents\Dust</BaseFolder>
     <FileTemplate />
-    <EmptyFolder>asdfasfa</EmptyFolder>
-    <EmptyData />
     <Postfix />
     <Prefix />
     <Seperator />
@@ -216,7 +237,6 @@
     <UseFolder>true</UseFolder>
     <UseFileName>true</UseFileName>
     <ExcludeFolders />
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ExcludeRules Operator="All" ExcludeMode="Do not" />
     <RemoveEmptyFolder>true</RemoveEmptyFolder>
     <ExcludedEmptyFolder>
@@ -224,14 +244,18 @@
     </ExcludedEmptyFolder>
     <MoveFileless>false</MoveFileless>
     <FilelessFormat>.jpg</FilelessFormat>
+    <Mode>Simulate</Mode>
+    <CopyMode>true</CopyMode>
+    <AutoSpaceFields>true</AutoSpaceFields>
+    <CopyReadPercentage>true</CopyReadPercentage>
+    <ReplaceEmptyFolders>true</ReplaceEmptyFolders>
+    <EmptyFolder>asdfasfa</EmptyFolder>
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <EmptyData />
     <FailEmptyValues>false</FailEmptyValues>
     <MoveFailed>false</MoveFailed>
     <FailedFolder />
     <FailedFields />
-    <Mode>Simulate</Mode>
-    <CopyMode>true</CopyMode>
-    <AutoSpaceFields>true</AutoSpaceFields>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <CopyReadPercentage>true</CopyReadPercentage>
   </Profile>
 </Profiles>

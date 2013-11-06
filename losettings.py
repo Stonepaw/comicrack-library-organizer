@@ -27,6 +27,7 @@ limitations under the License.
 
 import clr
 import System
+import pickle
 
 clr.AddReference("System.Xml")
 
@@ -42,6 +43,8 @@ from locommon import Mode, PROFILEFILE, VERSION, template_fields
 from excluderules import ExcludeRule, ExcludeGroup, ExcludeRuleCollection
 
 
+
+
 class Profile(object):
     """This class contains all the variables for a profile.
     Use save_to_xml to save the profile to a xml file.
@@ -55,8 +58,8 @@ class Profile(object):
         self.BaseFolder = ""
         self.FileTemplate = ""
         self.Name = ""
-        self.EmptyFolder = ""
-        self.EmptyData = {key : "" for key in template_fields}        
+        
+        
         self.Postfix = {key : "" for key in template_fields}
         self.Prefix = {key : "" for key in template_fields}
         self.Seperator = {key : "" for key in template_fields}
@@ -70,21 +73,32 @@ class Profile(object):
         self.UseFolder = True
         self.UseFileName = True
         self.ExcludeFolders = []
-        self.DontAskWhenMultiOne = True
+        
         self.ExcludeRules = ExcludeRuleCollection()
         self.RemoveEmptyFolder = True
         self.ExcludedEmptyFolder = ObservableCollection[str]()
         self.MoveFileless = False       
         self.FilelessFormat = ".jpg"
+        
+        
+
+        self.Mode = Mode.Move
+        self.CopyMode = True
+        self.AutoSpaceFields = True
+
+        #Profile Options
+        self.CopyReadPercentage = True
+        self.ReplaceEmptyFolders = False
+        self.EmptyFolder = ""
+        self.DontAskWhenMultiOne = True
+        self.ReplaceMultipleSpaces = True
+        self.EmptyData = {}
+
         self.FailEmptyValues = False
         self.MoveFailed = False
         self.FailedFolder = ""
         self.FailedFields = []
-        self.Mode = Mode.Move
-        self.CopyMode = True
-        self.AutoSpaceFields = True
-        self.ReplaceMultipleSpaces = True
-        self.CopyReadPercentage = True
+        
 
     def duplicate(self):
         """Returns a duplicate of the profile instance."""
@@ -99,6 +113,11 @@ class Profile(object):
         return duplicate
 
     def update(self):
+        #TODO: add version catching for lastest version
+        self.ReplaceEmptyFolders = bool(self.EmptyFolder)
+
+
+        #TODO: Check if this is still neeeded.
         #Major version
         if self.Version < 2.0:
             if self.Mode is "Test":
@@ -202,7 +221,7 @@ def load_profiles_from_file(file_path):
 
                     #Error loading the profile
                     if result == False:
-                        MessageBox.Show("An error occured loading the profile " + profile.Name + ". That profile has been skipped.")
+                        MessageBox.Show("An error occurred loading the profile " + profile.Name + ". That profile has been skipped.")
 
                     else:
                         profiles[profile.Name] = profile
@@ -275,3 +294,4 @@ def save_last_used(file_path, lastused):
     x.Load(file_path)
     x.DocumentElement.SetAttribute("LastUsed", ",".join(lastused))
     x.Save(file_path)
+

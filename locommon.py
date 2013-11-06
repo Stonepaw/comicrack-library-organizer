@@ -33,7 +33,10 @@ SCRIPTDIRECTORY = FileInfo(__file__).DirectoryName
 PROFILEFILE = Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat")
 ICON = Path.Combine(SCRIPTDIRECTORY, "libraryorganizer.ico")
 UNDOFILE = Path.Combine(SCRIPTDIRECTORY, "undo.dat")
-VERSION = 2.2
+GLOBAL_SETTINGS_FILE = Path.Combine(SCRIPTDIRECTORY, "globalsettings.dat")
+VERSION = "2.2"
+MAJORVERSION = 2
+MINORVERSION = 2
 
 SUBSTITUTION_REGEX = re.compile("{(?P<prefix>[^{}<]*)<"
                                "(?P<name>[^\d\s(>]+)"
@@ -42,6 +45,8 @@ SUBSTITUTION_REGEX = re.compile("{(?P<prefix>[^{}<]*)<"
 
 #clr.AddReferenceByPartialName('ComicRack.Engine')
 #from cYo.Projects.ComicRack.Engine import MangaYesNo, YesNo
+
+REQUIRED_ILLEGAL_CHARS = ['?', '>', '<', ':', '|', '\\', '"', '/', '*']
 
 startbooks = {}
 endbooks = {}

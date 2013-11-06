@@ -4,23 +4,25 @@ clr.AddReference("PresentationFramework")
 clr.AddReference("PresentationCore")
 clr.AddReference("IronPython.Modules")
 from IronPython.Modules import PythonLocale
+from System.Diagnostics import Process, ProcessStartInfo
 PythonLocale.setlocale(PythonLocale.LC_ALL, "")
 from IronPython.Modules import Wpf
-from System.Collections.Generic import SortedDictionary, Dictionary
 from System.Collections.ObjectModel import ObservableCollection
+from System.Collections.Specialized import NotifyCollectionChangedAction, NotifyCollectionChangedEventArgs
 from System.Windows import Window, Visibility
 from System.Windows.Controls import Grid
 from System.Windows.Media import SolidColorBrush, Colors
-from System import DateTime
-from wpfutils import ViewModelBase, notify_property, Command
+from wpfutils import (ViewModelBase, notify_property, 
+                      Command, ComparisonConverter)
 from System.Windows.Data import IValueConverter, Binding
+from System.Windows.Navigation import RequestNavigateEventArgs
 clr.AddReference("System.Windows.Forms")
 from System.Windows.Controls import DataTemplateSelector
-from fieldmappings import FIELDS, TemplateItem, template_fields, first_letter_fields, conditional_fields, conditional_then_else_fields
-from locommon import SCRIPTDIRECTORY, date_formats
+from fieldmappings import (FIELDS, TemplateItem, template_fields, 
+                           library_organizer_fields)
+from locommon import SCRIPTDIRECTORY, REQUIRED_ILLEGAL_CHARS
 from System.IO import Path
 from losettings import Profile
-import localizer
 #clr.AddReferenceToFile("CodeBoxControl.dll")
 #from CodeBoxControl.Decorations import MultiStringDecoration, RegexGroupDecoration
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.dll")
@@ -33,10 +35,12 @@ from codeboxdecorations import (LibraryOrganizerNameDecoration,
                                 LibraryOrganizerArgsDecoration,
                                 LibraryOrganizerPrefixSuffixDecoration)
 
+from insert_view_models import *
+
 
 class ConfigureForm(Window):
-    def __init__(self, profiles, last_used_profiles):
-        self.ViewModel = ConfigureFormViewModel(profiles, last_used_profiles)
+    def __init__(self, profiles, global_settings):
+        self.ViewModel = ConfigureFormViewModel(profiles, global_settings)
         self.DataContext = self.ViewModel
         self.Resources.Add("InsertFieldTemplateSelector", 
                            InsertFieldTemplateSelector())
@@ -74,22 +78,31 @@ class ConfigureForm(Window):
         self.ProfileNameInput.SetValue(Grid.VisibilityProperty, 
                                        Visibility.Collapsed)
 
-    
+    def add_illegal_character_clicked(self, *args):
+        self.NewIllegalCharacter.Text = ""
+        self.NewIllegalCharacter.Focus()
+
+    def navigate_uri(self, sender, e):
+        Process.Start(ProcessStartInfo(e.Uri.AbsoluteUri))
+        e.Handled = True
 
 
 class ConfigureFormViewModel(ViewModelBase):
-    def __init__(self, profiles, last_used_profiles):
+    def __init__(self, profiles, global_settings):
         super(ConfigureFormViewModel, self).__init__()
-        self.FileFolderViewModel = ConfigureFormFileFolderViewModel();
+        self.FileFolderViewModel = ConfigureFormFileFolderViewModel()
+        self.OptionsViewModel = ConfigureFormOptionsViewModel(global_settings)
         self.Profiles = ObservableCollection[Profile](profiles.values())
         self._profile = None
         self._profile_names = profiles.keys()
         self.Profile = self.Profiles[0]
-        self._input_is_visible = False;
+        self._input_is_visible = False
         #Commands
         self.SelectBaseFolderCommand = Command(self.select_base_folder)
         self.NewProfileCommand = Command(self.add_new_profile, 
-                                         lambda x: x and x not in self._profile_names, True)
+                                         lambda x: x and 
+                                         x not in self._profile_names, 
+                                         True)
 
     #Profile
     @notify_property
@@ -100,6 +113,7 @@ class ConfigureFormViewModel(ViewModelBase):
     def Profile(self, value):
         self._profile = value
         self.FileFolderViewModel.Profile = value
+        self.OptionsViewModel.Profile = value
         self.OnPropertyChanged("BaseFolder")
     
     #BaseFolder
@@ -308,449 +322,215 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     def FolderSelectionStart(self, value):
         self._folder_selection_start = value
 
-           
-class InsertViewModel(object):
+
+class ConfigureFormOptionsViewModel(ViewModelBase):
     """
-    The insert view model for a string. Also the base insert view model
-    that other insert view models inherit from.
+    Coordinates between fields in the profile/global options and the view.
     """
-    def __init__(self, template):
-        self.Prefix = ""
-        self.Suffix = ""
-        self._template = template
-
-    def make_template(self, autospace, args=""):
-        """
-        Creates the template string with the provided args.
-
-        Args:
-            autospace: Inserts a space before the prefix
-            args: (Optional)The args to insert into the template
-
-        Returns:
-            The string of the constructed template
-        """
-        if autospace:
-            return "{ %s<%s%s>%s}" % (self.Prefix, self._template, args, 
-                                      self.Suffix)
-        return "{%s<%s%s>%s}" % (self.Prefix, self._template, args, 
-                                 self.Suffix)
-
-
-class NumberInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a number field.
-    """
-    def __init__(self, field):
-        self.Padding = 0
-        super(NumberInsertViewModel, self).__init__(field)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a number field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = "(%s)" % (self.Padding)
-        return super(NumberInsertViewModel, self).make_template(autospace, args)
-
-
-class MultipleValueInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a multiple value field.
-    """
-    def __init__(self, template, name):
-        self.SelectWhichMultipleValue = False
-        self.SelectOnceForEachSeries = False
-        self.SelectWhichText = "Select which %s to insert" % (name.lower())
-        self.Seperator = ""
-        super(MultipleValueInsertViewModel, self).__init__(template)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a 
-        multiple value field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = ""
-        if self.SelectWhichMultipleValue:
-            if self.SelectOnceForEachSeries:
-                args = "(%s)(series)" % (self.Seperator)
-            else:
-                args = "(%s)(issue)" % (self.Seperator)
-        return super(MultipleValueInsertViewModel, self).make_template(autospace, args)
-
-
-class MonthValueInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a month field.
-    """
-    def __init__(self, template):
-        self.UseMonthNames = True
-        self.Padding = 0
-        super(MonthValueInsertViewModel, self).__init__(template)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a month field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = ""
-        if not self.UseMonthNames:
-            args = "(%s)" % (self.Padding)
-        return super(MonthValueInsertViewModel, self).make_template(autospace, args)
-
-
-class CounterInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a counter field.
-    """
-    def __init__(self, field):
-        self.Padding = 0
-        self.Start = 1
-        self.Increment = 1
-        super(CounterInsertViewModel, self).__init__(field)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a counter field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = "(%s)(%s)(%s)" % (self.Start, self.Increment, self.Padding)
-        return super(CounterInsertViewModel, self).make_template(autospace, args)
-
-
-class DateInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a date field.
-    """
-    DateFormats = SortedDictionary[str, str]()
     
-    def __init__(self, field):
-        if self.DateFormats.Count == 0:
-            self.DateFormats["Custom"] = "Custom"
-            date = DateTime.Now
-            for d in date_formats:
-                self.DateFormats[date.ToString(d)] = d
-        self.SelectedDateFormat = "MMMM dd, yyyy"
-        self.CustomDateFormat = ""
-        super(DateInsertViewModel, self).__init__(field)
+    empty_fields = None
 
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a date field.
+    def __init__(self, global_settings):
+        super(ConfigureFormOptionsViewModel, self).__init__()
+        self._profile = None
+        self.global_settings = global_settings
 
-        Args:
-            autospace: Inserts a space before the prefix
+        self._add_illegal_char_checked = False
 
-        Returns:
-            The string of the constructed insertable template
-        """
-        if self.SelectedDateFormat == "Custom":
-            args = "(%s)" % (self.CustomDateFormat)
-        else:
-            args = "(%s)" % (self.SelectedDateFormat)
-        return super(DateInsertViewModel, self).make_template(autospace, args)
+        if self.empty_fields is None:
+            self.empty_fields = [FIELDS.get_item_by_field(field) 
+                                 for field in template_fields
+                                 if field not in library_organizer_fields]
 
+            #Sorting with PythonLocale to fix sorting localized strings
+            self.empty_fields.sort(key=lambda x: x.name, 
+                                   cmp=PythonLocale.strcoll)
 
-class YesNoInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a YesNo field.
-    """
-    YesNoOperators = SortedDictionary[str, str](localizer.get_yes_no_operators())
+        self._selected_empty_field = self.empty_fields[0].field
+        self._selected_failed_fields = ObservableCollection[TemplateItem]()
+        self._selected_failed_fields.CollectionChanged += self.failed_fields_changed
 
-    def __init__(self, field):
-        self.SelectedYesNo = "Yes"
-        self.Invert = False
-        self.TextToInsert = ""
-        super(YesNoInsertViewModel, self).__init__(field)
+        self.excluded_empty_folders = (ObservableCollection[str]
+                                       (global_settings.excluded_empty_folders))
+        self.excluded_empty_folders.CollectionChanged += self.excluded_empty_folders_changed
 
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a Yes No field.
+        self.illegal_characters = (ObservableCollection[str](global_settings.illegal_character_replacements.keys()))
+        self.illegal_characters.CollectionChanged += self.illegal_characters_changed
+        self._selected_illegal_character = self.illegal_characters[0]
 
-        Args:
-            autospace: Inserts a space before the prefix
+        self.months = sorted(global_settings.month_names.keys(), key=int)
+        self._selected_month = self.months[0]
 
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = "(%s)(%s)" % (self.TextToInsert, self.SelectedYesNo)
-        if self.Invert:
-            args += "(!)"
-        return super(YesNoInsertViewModel, self).make_template(autospace, args)
+        #Commands
+        self.AddExcludedFolderCommand = Command(self.add_excluded_folder)
+        self.RemoveExcludedFolderCommand = Command(lambda x: self.excluded_empty_folders.Remove(x),
+                                                   lambda x: x is not None,
+                                                   True)
+        self.RemoveIllegalCharacterCommand = Command(lambda x: self.illegal_characters.Remove(x),
+                                                     lambda x: x in self.illegal_characters and
+                                                     x not in REQUIRED_ILLEGAL_CHARS,
+                                                     True)
+        self.AddIllegalCharacterCommand = Command(self.add_illegal_character,
+                                                  lambda x: x and x not in self.illegal_characters,
+                                                  True)
+    def add_illegal_character(self, char):
+        if char:
+            self.illegal_characters.Add(char)
+            self.AddIllegalCharacterIsChecked = False
 
+    def add_excluded_folder(self):
+        """Shows a folder browser and if the folder is not already
+        in the list, added it to the excluded_empty_folders list"""
 
-class MangaYesNoInsertViewModel(YesNoInsertViewModel):
-    """
-    The insert view model for a MangaYesNo field.
-    """
+        c = CommonOpenFileDialog()
+        c.IsFolderPicker = True
+        if c.ShowDialog() == CommonFileDialogResult.Ok:
+            if c.FileName not in self.excluded_empty_folders:
+                self.excluded_empty_folders.Add(c.FileName)
 
-    YesNoOperators = SortedDictionary[str, str](localizer.get_manga_yes_no_operators())
-
-
-class FirstLetterInsertViewModel(InsertViewModel):
-    """
-    The insert view model for a first letter field.
-    """
-    FirstLetterFields = []
-
-    def __init__(self, field):
-        if not self.FirstLetterFields:
-            self.FirstLetterFields = [FIELDS.get_item_by_field(f) for f in first_letter_fields]
-            self.FirstLetterFields.sort(key=lambda x: x.name, cmp=PythonLocale.strcoll)
-        self.SelectedField = "ShadowSeries"
-        super(FirstLetterInsertViewModel, self).__init__(field)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a first letter field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = "(%s)" % (self.SelectedField)
-        return super(FirstLetterInsertViewModel, self).make_template(autospace, args)
-
-
-class ReadPercentageInsertViewModel(InsertViewModel):
-    """
-    The insert view model for the read percentage field.
-    """
-    ReadPercentageOperators = ["=", "<", ">"]
-
-    def __init__(self, field):
-        self.TextToInsert = ""
-        self.Operator = "="
-        self.Percent = 90
-        super(ReadPercentageInsertViewModel, self).__init__(field)
-
-    def make_template(self, autospace):
-        """
-        Creates the insertable template with correct args for a read percentage field.
-
-        Args:
-            autospace: Inserts a space before the prefix
-
-        Returns:
-            The string of the constructed insertable template
-        """
-        args = "(%s)(%s)(%s)" % (self.TextToInsert, self.Operator, self.Percent)
-        return super(ReadPercentageInsertViewModel, self).make_template(autospace, args)
-
-
-class ConditionalInsertViewModel(ViewModelBase):
-    """
-    The view model for a conditional field.
-    """
-
-    ConditionalStringOperators = Dictionary[str, str](localizer.get_conditional_string_operators())
-    ConditionalNumberOperators = Dictionary[str, str]({"=" : "=", "<": "<", ">" :  ">"})
-    ConditionalYesNoOperators = Dictionary[str, str](localizer.get_yes_no_operators())
-    ConditionalMangaYesNoOperators = Dictionary[str, str](localizer.get_manga_yes_no_operators())
-    ConditionalDateOperators = Dictionary[str, str](localizer.get_date_operators())
-
-    def __init__(self):
-        super(ConditionalInsertViewModel, self).__init__()
-        self.ConditionalFields = sorted([FIELDS.get_item_by_field(f) for f in conditional_fields],
-                                        PythonLocale.strcoll,
-                                        lambda x: x.name)
-        self.ConditionalThenElseFields = sorted([FIELDS.get_item_by_field(f) for f in conditional_then_else_fields],
-                                        PythonLocale.strcoll,
-                                        lambda x: x.name)
-        self._selected_conditional_field = None
-        self._selected_then_field = None
-        self._selected_else_field = None
-        self._conditional_operators = None
-        self._selected_conditional_operator = self.ConditionalStringOperators["is"]
-        self._then_field_options = InsertViewModel("")
-        self._else_field_options = InsertViewModel("")
-        self.SelectedConditionalField = self.ConditionalFields[0]
-        self.SelectedElseField = self.ConditionalThenElseFields[0]
-        self.SelectedThenField = self.ConditionalThenElseFields[0]
-        self.UseElse = False
-
-        #
-        self.StringValue = ""
-        self.NumberValue = 0
-        self.DateValue = DateTime.Now
-        self.Invert = False
-        
-    #SelectedConditionalField
+    # Profile
+    # Needs to a notify property so that the view knows to get new values for
+    # some fields
     @notify_property
-    def SelectedConditionalField(self):
-        return self._selected_conditional_field
+    def Profile(self):
+        return self._profile
 
-    @SelectedConditionalField.setter
-    def SelectedConditionalField(self, value):
-        if value is None:
-            return
-        if self._selected_conditional_field is None:
-            old_type = None
-        else:
-            old_type = self._selected_conditional_field.type
-        if old_type != value.type:
-            if value.type in ("Number", "ReadPercentage", "Year", "Month"):
-                self.ConditionalOperators = self.ConditionalNumberOperators
-                self.SelectedConditionalOperator = "="
-            if value.type == "YesNo":
-                self.ConditionalOperators = self.ConditionalYesNoOperators
-                self.SelectedConditionalOperator = "Yes"
-            if value.type == "DateTime":
-                self.ConditionalOperators = self.ConditionalDateOperators
-                self.SelectedConditionalOperator = "is"
-            if value.type == "MangaYesNo":
-                self.ConditionalOperators = self.ConditionalMangaYesNoOperators
-                self.SelectedConditionalOperator = "Yes"
-            if value.type == "String" or value.type == "MultipleValue":
-                self.ConditionalOperators = self.ConditionalStringOperators
-                self.SelectedConditionalOperator = "is"
-        self._selected_conditional_field = value
+    @Profile.setter
+    def Profile(self, value):
+        self._profile = value
+        self.OnPropertyChanged("EmptyFieldReplacement")
+        self.SelectedFailedFields = (ObservableCollection[TemplateItem]
+                                     ([FIELDS.get_item_by_field(field) 
+                                       for field in self._profile.FailedFields]))
+
+    # SelectedIllegalCharacter 
+    # Needs to be a notify property so the view can update the
+    # replacement textbox.
+    @notify_property
+    def SelectedIllegalCharacter(self):
+        return self._selected_illegal_character
+
+    @SelectedIllegalCharacter.setter
+    def SelectedIllegalCharacter(self, value):
+        self._selected_illegal_character = value
+        self.OnPropertyChanged("IllegalCharacterReplacement")
+
+    # IllegalCharacterReplacement 
+    # Needs to be a notify property so the view can update the
+    # replacement textbox.
+    @notify_property
+    def IllegalCharacterReplacement(self):
+        return (self.global_settings.illegal_character_replacements
+                [self.SelectedIllegalCharacter])
+
+    @IllegalCharacterReplacement.setter
+    def IllegalCharacterReplacement(self, value):
+        self.global_settings.illegal_character_replacements[self.SelectedIllegalCharacter] = value
+
+    @notify_property
+    def AddIllegalCharacterIsChecked(self):
+        return self._add_illegal_char_checked
+
+    @AddIllegalCharacterIsChecked.setter
+    def AddIllegalCharacterIsChecked(self, value):
+        self._add_illegal_char_checked = value
+
+    # SelectedMonth 
+    # Needs to be a notify property so the view can update the
+    # replacement textbox.
+    @notify_property
+    def SelectedMonth(self):
+        return self._selected_month
+
+    @SelectedMonth.setter
+    def SelectedMonth(self, value):
+        self._selected_month = value
+        self.OnPropertyChanged("MonthReplacement")
+
+    # MonthReplacement 
+    # Needs to be a notify property so the view can update the
+    # replacement textbox.
+    @notify_property
+    def MonthReplacement(self):
+        return self.global_settings.month_names[self.SelectedMonth]
+
+    @MonthReplacement.setter
+    def MonthReplacement(self, value):
+        self.global_settings.month_names[self.SelectedMonth] = value
+
+    # SelectedEmptyField 
+    # Needs to be a notify property so the view can update the
+    # replacement textbox.
+    @notify_property
+    def SelectedEmptyField(self):
+        return self._selected_empty_field
+
+    @SelectedEmptyField.setter
+    def SelectedEmptyField(self, value):
+        self._selected_empty_field = value
+        self.OnPropertyChanged("EmptyFieldReplacement")
     
-    #SelectedConditionalOperator
+    # EmptyFieldReplacement
+    # Needs to be a notify property in order to update the view when profile or
+    # selected empty field changes.
     @notify_property
-    def SelectedConditionalOperator(self):
-        return self._selected_conditional_operator
-
-    @SelectedConditionalOperator.setter
-    def SelectedConditionalOperator(self, value):
-        self._selected_conditional_operator = value
-
-    #ConditionalOperators
-    @notify_property
-    def ConditionalOperators(self):
-        return self._conditional_operators
-
-    @ConditionalOperators.setter
-    def ConditionalOperators(self, value):
-        self._conditional_operators = value
-
-    #SelectedThenField
-    @notify_property
-    def SelectedThenField(self):
-        return self._selected_then_field
-
-    @SelectedThenField.setter
-    def SelectedThenField(self, value):
-        if value is None:
-            return
-        self._selected_then_field = value
-        self.ThenFieldOptions = SelectFieldTemplateFromType(value.type, 
-                                                            value.template, 
-                                                            value.name)
-
-    #ThenFieldOptions
-    @notify_property
-    def ThenFieldOptions(self):
-        return self._then_field_options
-
-    @ThenFieldOptions.setter
-    def ThenFieldOptions(self, value):
-        self._then_field_options = value
-
-    #SelectedElseField
-    @notify_property
-    def SelectedElseField(self):
-        return self._selected_else_field
-
-    @SelectedElseField.setter
-    def SelectedElseField(self, value):
-        if value is not None:
-            self._selected_else_field = value
-            self.ElseFieldOptions = SelectFieldTemplateFromType(value.type, 
-                                                                value.template, 
-                                                                value.name)
+    def EmptyFieldReplacement(self):
+        if self._profile.EmptyData.has_key(self._selected_empty_field):
+            return self._profile.EmptyData[self._selected_empty_field]
         else:
-            self.SelectedElseField = self.ConditionalThenElseFields[0]
+            return ""
+    
+    @EmptyFieldReplacement.setter
+    def EmptyFieldReplacement(self, value):
+        self._profile.EmptyData[self._selected_empty_field] = value
 
-    #ElseFieldOptions
+    #SelectedFailedFields
     @notify_property
-    def ElseFieldOptions(self):
-        return self._else_field_options
+    def SelectedFailedFields(self):
+        return self._selected_failed_fields
+    
+    @SelectedFailedFields.setter
+    def SelectedFailedFields(self, value):
+        self._selected_failed_fields.CollectionChanged -= self.failed_fields_changed
+        self._selected_failed_fields = value
+        self._selected_failed_fields.CollectionChanged += self.failed_fields_changed
 
-    @ElseFieldOptions.setter
-    def ElseFieldOptions(self, value):
-        self._else_field_options = value
-
-    def make_template(self, autospace):
+    def failed_fields_changed(self, sender, e):
+        """ Handles adding and deleting the failed fields for the current
+        profile's failed fields
         """
-        Creates the template for the conditional field.
+        if e.Action == NotifyCollectionChangedAction.Add:
+            for i in e.NewItems:
+                self._profile.FailedFields.append(i.field)
+        elif e.Action == NotifyCollectionChangedAction.Remove:
+            for i in e.OldItems:
+                self._profile.FailedFields.remove(i.field)
 
-        Args:
-            autospace: Inserts a space before the prefix
+    def illegal_characters_changed(self, sender, e):
+        """ Handles adding and deleting illegal characters"""
+        if e.Action == NotifyCollectionChangedAction.Add:
+            for i in e.NewItems:
+                self.global_settings.illegal_character_replacements[i] = ""
+                self.SelectedIllegalCharacter = i
+        elif e.Action == NotifyCollectionChangedAction.Remove:
+            for i in e.OldItems:
+                index = e.OldStartingIndex
+                if index > len(self.illegal_characters) - 1:
+                    index -= 1
+                del(self.global_settings.illegal_character_replacements[i])
+                self.SelectedIllegalCharacter = self.illegal_characters[index]
+                
 
-        Returns:
-            The created conditional template
+    def excluded_empty_folders_changed(self, sender, e):
+        """ Updates the global settings excluded empty folders when a
+        folder is removed or added
         """
-        template = ""
-        if self.Invert:
-            template = "!%s(%s)" % (self.SelectedConditionalField.template, 
-                                    self.SelectedConditionalOperator)
-        else:
-            template = "?%s(%s)" % (self.SelectedConditionalField.template, 
-                                    self.SelectedConditionalOperator)
-
-        if self.SelectedConditionalField.type in ("Number", "ReadPercentage", 
-                                                  "Year", "Month"):
-            template += "(%s)" % (self.NumberValue)
-        elif self.SelectedConditionalField.type in ("String", "MultipleValue"):
-            template += "(%s)" % (self.StringValue)
-        elif self.SelectedConditionalField.type == "DateTime":
-            template += "(%s)" % (self.DateValue.ToShortDateString())
-
-        if self.UseElse:
-            return "{%s<%s>%s}" % (self.ElseFieldOptions.make_template(autospace), 
-                                   template,
-                                   self.ThenFieldOptions.make_template(autospace))
-        else:
-            return "{<%s>%s}" % (template, self.ThenFieldOptions.make_template(autospace))
-
-
-def SelectFieldTemplateFromType(type, template, name):
-    if type == "Number":
-        return NumberInsertViewModel(template)
-    elif type == "String" or type == "Year":
-        return InsertViewModel(template)
-    elif type == "Month":
-        return MonthValueInsertViewModel(template)
-    elif type == "Counter":
-        return CounterInsertViewModel(template)
-    elif type == "DateTime":
-        return DateInsertViewModel(template)
-    elif type == "YesNo":
-        return YesNoInsertViewModel(template)
-    elif type == "MangaYesNo":
-        return MangaYesNoInsertViewModel(template)
-    elif type == "FirstLetter":
-        return FirstLetterInsertViewModel(template)
-    elif type == "ReadPercentage":
-        return ReadPercentageInsertViewModel(template)
-    elif type == "MultipleValue":
-        return MultipleValueInsertViewModel(template, name)
-    elif type == "Conditional":
-        return None
+        if e.Action == NotifyCollectionChangedAction.Add:
+            for i in e.NewItems:
+                self.global_settings.excluded_empty_folders.append(i)
+        elif e.Action == NotifyCollectionChangedAction.Remove:
+            for i in e.OldItems:
+                self.global_settings.excluded_empty_folders.remove(i)
 
 
 class InsertFieldTemplateSelector(DataTemplateSelector):
@@ -776,13 +556,3 @@ class InsertFieldTemplateSelector(DataTemplateSelector):
             return container.FindResource("ReadPercentageInsertFieldTemplate")
 
 
-class ComparisonConverter(IValueConverter):
-    """A converter to databind wpf radio buttons to an enum"""
-    def Convert(self, value, targetType, parameter, culture):
-        return value == parameter
-
-    def ConvertBack(self, value, targetType, parameter, culture):
-        if value:
-            return parameter
-        else:
-            return Binding.DoNothing

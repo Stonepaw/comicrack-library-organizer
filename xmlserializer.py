@@ -94,7 +94,7 @@ class XmlSerializer(object):
                 xmlwriter.WriteElementString("Item", item)
         xmlwriter.WriteEndElement()
 
-    def serialize_dict(self, attribute, attribute_name, xmlwriter):
+    def serialize_dict(self, attribute, attribute_name, xmlwriter, write_empty = False):
         """Writes a dictionary to an xml file. Does not support nested Dictionaries.
 
         Writes in the dictonary in the format:
@@ -109,7 +109,6 @@ class XmlSerializer(object):
             attribute_name: The name of the dict attribute to write. This will be the root element.
             xmlwriter: An open XmlWriter instance to write with.
         """
-        write_empty = False
         if attribute_name in self.collections_to_write_empty_items:
             write_empty = True
         xmlwriter.WriteStartElement(attribute_name)
@@ -236,7 +235,7 @@ class XmlDeserializer(object):
         elif profiles_xml_document.DocumentElement.Name == "Profile":
             profile_nodes = profiles_xml_document.SelectNodes("Profile")
         else:
-            raise XmlDeserializerException("%s is not a vaid Library Organizer file." % file_path)
+            raise XmlDeserializerException("%s is not a valid Library Organizer file." % file_path)
         
         profiles = {}
         for profile_node in profile_nodes:
@@ -451,3 +450,38 @@ class XmlDeserializer(object):
 
 class XmlDeserializerException(Exception):
     pass
+
+def deserialize_object_from_xml2py(object, xml):
+    """Tries to find common variables in the object and xml2py node."""
+
+    for name in object.__dict__:
+        var_type = type(getattr(object, name))
+
+        if not hasattr(xml, name):
+            continue
+
+        if var_type is str:
+            setattr(object, name, unicode(getattr(xml, name)))
+
+        elif var_type is bool:
+            setattr(object, name, 
+                    XmlConvert.ToBoolean(getattr(xml, name)))
+
+        elif var_type is list:
+            new_list = []
+            if hasattr(getattr(xml, name), "Item"):
+                items = getattr(xml, name).Item
+                if type(items) is list:
+                    for i in items:
+                        new_list.append(unicode(i))
+                else:
+                    #If there is only one item then xml2py flattens it.
+                    new_list.append(unicode(getattr(xml, name)))
+            setattr(object, name, new_list)
+
+        elif var_type is dict:
+            new_dict = {}
+            if hasattr(getattr(xml, name), "Item"):
+                for i in getattr(xml, name).Item:
+                    new_dict[unicode(i.Name)] = unicode(i.Value)
+            setattr(object, name, new_dict)
