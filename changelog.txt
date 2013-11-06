@@ -2,15 +2,21 @@
 
 Added template fields: Age, Price, Book Condition, Book Location, Collection Status, Community Rating, ISBN, Owner, Rating, Store
 
-Values in the options for the template inserter are no longer saved
 
-Configure form:
-Change: Browsing for a base folder now uses the windows vista/7 folder browser dialog when available
-Addition: Implemented syntax highlighting for the file and folder templates
 
+[new] Added syntax highlighting for the file and folder templates
+[new] Options to have Month names localized automatically from the system language.
+
+[change] Browsing for a base folder now uses the windows vista/7 folder browser dialog when possible
+[change] Template field inserter rebuilt to be much cleaner and easier
+[change] Added conditional fields to the template field inserter
+[change] Added options for custom date formating to the date field inserter
+[change] Moved month, illegal character, removing empty folders into global options. (Stored in global.dat) [color=red]These settings are reset to defaults. Please check and change options as necessary
+
+[change] Values in the options for the template inserter are no longer saved
 
 2.1.8
-Fixes an error when handleing an error that occurs when moving files.
+Fixes an error when handling an error that occurs when moving files.
 Restored default templates for new users.
 
 

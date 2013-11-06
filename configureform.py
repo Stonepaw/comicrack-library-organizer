@@ -1,7 +1,7 @@
 import wpf
 import clr
 
-clr.AddReferenceByPartialName("WPFToolkit.Extended")
+clr.AddReferenceByPartialName("Xceed.Wpf.Toolkit")
 clr.AddReference("PresentationFramework")
 clr.AddReference("PresentationCore")
 clr.AddReference("System.Windows.Forms")

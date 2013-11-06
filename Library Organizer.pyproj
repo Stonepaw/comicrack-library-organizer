@@ -85,12 +85,15 @@
     <Compile Include="configure_form_new.py" />
     <Compile Include="excluderules.py" />
     <Compile Include="fieldmappings.py" />
+    <Compile Include="insert_view_models.py" />
+    <Compile Include="ipypulldom.py" />
     <Compile Include="localizer.py" />
     <Compile Include="losettings.py" />
     <Compile Include="rulestest.py" />
     <Compile Include="Test.py" />
     <Compile Include="tests\field_template_tests.py" />
     <Compile Include="wpfutils.py" />
+    <Compile Include="xml2py.py" />
     <Compile Include="xmlserializer.py" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +131,7 @@
     <Content Include="folder_32.png">
       <Publish>True</Publish>
     </Content>
+    <Content Include="globalsettings.dat" />
     <Content Include="home_32.png">
       <Publish>True</Publish>
     </Content>
@@ -162,7 +166,6 @@
     <Content Include="save_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="Stonepaw.LibraryOrganizer.Controls.dll" />
     <Content Include="Template Fields Syntax.txt" />
     <Content Include="Test.xaml" />
     <Content Include="Thumbs.db" />
@@ -170,7 +173,6 @@
       <Publish>True</Publish>
     </Content>
     <Content Include="wpf notes.txt" />
-    <Content Include="WPFToolkit.Extended.dll" />
     <Content Include="Xceed.Wpf.Toolkit.dll">
       <SubType>Content</SubType>
       <Publish>True</Publish>
@@ -203,6 +205,41 @@
       <AssemblyName>Ookii.Dialogs.Wpf.dll</AssemblyName>
       <HintPath>C:\Users\Andrew\Documents\ComicRack Scripts\Library Organizer-WPF%20Localization\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationCore</Name>
       <AssemblyName>PresentationCore.dll</AssemblyName>
@@ -217,6 +254,41 @@
       <Name>PresentationCore</Name>
       <AssemblyName>PresentationCore.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationFramework</Name>
@@ -233,6 +305,16 @@
       <AssemblyName>PresentationFramework.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <Name>Stonepaw.LibraryOrganizer.Controls</Name>
       <AssemblyName>Stonepaw.LibraryOrganizer.Controls.dll</AssemblyName>
@@ -241,6 +323,26 @@
     <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Stonepaw.LibraryOrganizer.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>System.Windows.Controls.Input.Toolkit</Name>
+      <AssemblyName>System.Windows.Controls.Input.Toolkit.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\WPF Toolkit\v3.5.50211.1\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>System.Windows.Controls.Layout.Toolkit</Name>
+      <AssemblyName>System.Windows.Controls.Layout.Toolkit.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\WPF Toolkit\v3.5.50211.1\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>WPFToolkit</Name>
+      <AssemblyName>WPFToolkit.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\WPF Toolkit\v3.5.50211.1\WPFToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Design, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>WPFToolkit.Design</Name>
+      <AssemblyName>WPFToolkit.Design.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\WPF Toolkit\v3.5.50211.1\WPFToolkit.Design.dll</HintPath>
+    </Reference>
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="WPFToolkit.Extended, Version=1.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
@@ -264,6 +366,46 @@
     <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
     <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>C:\repos\comicrack-library-organizer\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
       <Name>Xceed.Wpf.Toolkit</Name>
       <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>

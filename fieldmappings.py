@@ -280,12 +280,20 @@ conditional_then_else_fields = ['AddedTime',
                    'Writer', 
                    'ShadowYear']
 
-#These are special fields that are created in library organizer. Needs to be seperate for ease of getting translations
+#These are special fields that are created in library organizer. Needs to be separate for ease of getting translations
 library_organizer_fields = ["Counter", "FirstLetter", "Conditional", 
                             "StartMonth", "StartYear", "FirstIssueNumber"]
 
 #These are the fields useable in the exclude rules.
-exclude_rule_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 'AlternateSeries', 'BlackAndWhite', 'BookAge', 'BookCollectionStatus', 'BookCondition', 'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 'BookStore', 'Characters', 'Checked', 'Colorist', 'CommunityRating', 'Count', 'CoverArtist', 'Editor', 'FileDirectory', 'FileFormat', 'FileName', 'FileIsMissing', 'FileNameWithExtension', 'FilePath', 'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
+exclude_rule_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 
+                       'AlternateSeries', 'BlackAndWhite', 'BookAge', 
+                       'BookCollectionStatus', 'BookCondition', 
+                       'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 
+                       'BookStore', 'Characters', 'Checked', 'Colorist', 
+                       'CommunityRating', 'Count', 'CoverArtist', 'Editor', 
+                       'FileDirectory', 'FileFormat', 'FileName', 
+                       'FileIsMissing', 'FileNameWithExtension', 'FilePath', 
+                       'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
 
 #These are the fields that require the multiple value treatment.
 multiple_value_fields = ["AlternateSeries", "Characters", "Colorist", "CoverArtist", "Editor", "Genre", "Inker", "Letterer", "Locations", "Penciller", "ScanInformation", "Tags", "Teams", "Writer"]

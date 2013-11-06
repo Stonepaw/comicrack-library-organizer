@@ -1095,8 +1095,8 @@
                                         <ComboBox VerticalAlignment="Center" ItemsSource="{Binding ElementName=ConfigureForm, Path=illegal_characters}" x:Name="illegal_characters_selector" SelectionChanged="illegal_characters_selector_selection_changed" />
                                         <Label>with</Label>
                                         <TextBox Width="50" VerticalAlignment="Center" x:Name="illegal_character_textbox" PreviewTextInput="illegal_character_textbox_preview_text_input" />
-                                        <ToggleButton Padding="5, 0" Margin="5, 0" VerticalAlignment="Center" Content="+" x:Name="show_illegal_character_popup_button" />
-                                        <Popup x:Name="add_illegal_character_popup" StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding ElementName=show_illegal_character_popup_button, Path=IsChecked}" PlacementTarget="{Binding ElementName=show_illegal_character_popup_button}">
+                                        <ToggleButton Padding="5, 0" Margin="5, 0" VerticalAlignment="Center" Content="+" x:Name="show_illegal_character_popup_button" IsChecked="{Binding AddIllegalCharacterIsChecked}" />
+                                        <Popup x:Name="add_illegal_character_popup" StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding AddIllegalCharacterIsChecked}" PlacementTarget="{Binding ElementName=show_illegal_character_popup_button}">
                                             <Border Background="White" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Padding="5">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox Margin="0, 0, 5, 0" Width="20" MaxLength="1" PreviewTextInput="illegal_character_textbox_preview_text_input" x:Name="add_illegal_character_textbox"/>
