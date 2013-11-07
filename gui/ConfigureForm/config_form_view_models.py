@@ -1,93 +1,25 @@
 import clr
-clr.AddReference("IronPython.Wpf")
-clr.AddReference("PresentationFramework")
-clr.AddReference("PresentationCore")
+
 clr.AddReference("IronPython.Modules")
-from IronPython.Modules import PythonLocale
-from System.Diagnostics import Process, ProcessStartInfo
-PythonLocale.setlocale(PythonLocale.LC_ALL, "")
-from IronPython.Modules import Wpf
-from System.Collections.ObjectModel import ObservableCollection
-from System.Collections.Specialized import NotifyCollectionChangedAction, NotifyCollectionChangedEventArgs
-from System.Windows import Window, Visibility
-from System.Windows.Controls import Grid
-from System.Windows.Media import SolidColorBrush, Colors
-from wpfutils import (ViewModelBase, notify_property, 
-                      Command, ComparisonConverter)
-from System.Windows.Data import IValueConverter, Binding
-from System.Windows.Navigation import RequestNavigateEventArgs
-clr.AddReference("System.Windows.Forms")
-from System.Windows.Controls import DataTemplateSelector
-from fieldmappings import (FIELDS, TemplateItem, template_fields, 
-                           library_organizer_fields)
-from locommon import SCRIPTDIRECTORY, REQUIRED_ILLEGAL_CHARS
-from System.IO import Path
-from losettings import Profile
-#clr.AddReferenceToFile("CodeBoxControl.dll")
-#from CodeBoxControl.Decorations import MultiStringDecoration, RegexGroupDecoration
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.dll")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.Shell.dll")
+
+from IronPython.Modules import PythonLocale
 from Microsoft.WindowsAPICodePack.Dialogs import CommonOpenFileDialog, CommonFileDialogResult
-clr.AddReferenceToFile("Ookii.Dialogs.dll")
-clr.AddReferenceToFile("Ookii.Dialogs.Wpf.dll")
+from System.Collections.ObjectModel import ObservableCollection
+from System.Collections.Specialized import NotifyCollectionChangedAction
 
-from codeboxdecorations import (LibraryOrganizerNameDecoration, 
-                                LibraryOrganizerArgsDecoration,
-                                LibraryOrganizerPrefixSuffixDecoration)
+from fieldmappings import FIELDS, library_organizer_fields, template_fields, TemplateItem
+from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
+from locommon import REQUIRED_ILLEGAL_CHARS
+from losettings import Profile
+from wpfutils import Command, notify_property, ViewModelBase
 
-from insert_view_models import *
 
-
-class ConfigureForm(Window):
-    def __init__(self, profiles, global_settings):
-        self.ViewModel = ConfigureFormViewModel(profiles, global_settings)
-        self.DataContext = self.ViewModel
-        self.Resources.Add("InsertFieldTemplateSelector", 
-                           InsertFieldTemplateSelector())
-        self.Resources.Add("ComparisonConverter", ComparisonConverter())
-        Wpf.LoadComponent(self, Path.Combine(SCRIPTDIRECTORY, 
-                                             'ConfigureFormNew.xaml'))
-        self.setup_text_highlighting();
-
-    def setup_text_highlighting(self):
-        """
-        Setups up the text highlighting for the template text boxes
-        """
-        names = LibraryOrganizerNameDecoration()
-        names.Brush = SolidColorBrush(Colors.Blue)
-        self.FileTemplateTextBox.Decorations.Add(names);
-        self.FolderTemplateBox.Decorations.Add(names);
-
-        prefix = LibraryOrganizerPrefixSuffixDecoration()
-        prefix.Brush = SolidColorBrush(Colors.Teal)
-        self.FileTemplateTextBox.Decorations.Add(prefix);
-        self.FolderTemplateBox.Decorations.Add(prefix);
-
-        args = LibraryOrganizerArgsDecoration();
-        args.Brush = SolidColorBrush(Colors.Red);
-        self.FileTemplateTextBox.Decorations.Add(args);
-        self.FolderTemplateBox.Decorations.Add(args);
-
-    def new_profile_clicked(self, *args):
-        self.ProfileNameInputBox.Text = ""
-        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, 
-                                       Visibility.Visible)
-        self.ProfileNameInputBox.Focus()
-
-    def close_inputbox(self, *args):
-        self.ProfileNameInput.SetValue(Grid.VisibilityProperty, 
-                                       Visibility.Collapsed)
-
-    def add_illegal_character_clicked(self, *args):
-        self.NewIllegalCharacter.Text = ""
-        self.NewIllegalCharacter.Focus()
-
-    def navigate_uri(self, sender, e):
-        Process.Start(ProcessStartInfo(e.Uri.AbsoluteUri))
-        e.Handled = True
-
+PythonLocale.setlocale(PythonLocale.LC_ALL, "")
 
 class ConfigureFormViewModel(ViewModelBase):
+
     def __init__(self, profiles, global_settings):
         super(ConfigureFormViewModel, self).__init__()
         self.FileFolderViewModel = ConfigureFormFileFolderViewModel()
@@ -97,12 +29,11 @@ class ConfigureFormViewModel(ViewModelBase):
         self._profile_names = profiles.keys()
         self.Profile = self.Profiles[0]
         self._input_is_visible = False
+
         #Commands
         self.SelectBaseFolderCommand = Command(self.select_base_folder)
         self.NewProfileCommand = Command(self.add_new_profile, 
-                                         lambda x: x and 
-                                         x not in self._profile_names, 
-                                         True)
+                lambda x: x and x not in self._profile_names, True)
 
     #Profile
     @notify_property
@@ -160,10 +91,9 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     def __init__(self):
         super(ConfigureFormFileFolderViewModel, self).__init__()
         self._field_options = NumberInsertViewModel("Number")
-        self.template_field_selectors = sorted([FIELDS.get_item_by_field(field) 
-                                                for field in template_fields], 
-                                                key=lambda x: x.name,
-                                                cmp=PythonLocale.strcoll)
+        self.template_field_selectors = sorted(
+                [FIELDS.get_item_by_field(field) for field in template_fields], 
+                key=lambda x: x.name, cmp=PythonLocale.strcoll)
         self._selectedField = TemplateItem("", "", "", "")
         self.ConditionalViewModel = ConditionalInsertViewModel()
 
@@ -171,7 +101,7 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
         self.InsertFieldCommand = Command(self.insert_field)
         self.InsertFolderCommand = Command(self.insert_folder)
 
-        #File 
+        #File
         self._file_selection_start = 0
         self.FileSelectionLength = 0
         self._file_template = ""
@@ -282,9 +212,8 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     def SelectedField(self, value):
         self._selectedField = value
         if type(value) == TemplateItem:
-            self.FieldOptions = SelectFieldTemplateFromType(value.type, 
-                                                            value.template, 
-                                                            value.name)
+            self.FieldOptions = SelectFieldTemplateFromType(
+                    value.type, value.template, value.name)
 
     #FileTemplate
     @notify_property
@@ -339,8 +268,8 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
 
         if self.empty_fields is None:
             self.empty_fields = [FIELDS.get_item_by_field(field) 
-                                 for field in template_fields
-                                 if field not in library_organizer_fields]
+                for field in template_fields 
+                if field not in library_organizer_fields]
 
             #Sorting with PythonLocale to fix sorting localized strings
             self.empty_fields.sort(key=lambda x: x.name, 
@@ -350,8 +279,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         self._selected_failed_fields = ObservableCollection[TemplateItem]()
         self._selected_failed_fields.CollectionChanged += self.failed_fields_changed
 
-        self.excluded_empty_folders = (ObservableCollection[str]
-                                       (global_settings.excluded_empty_folders))
+        self.excluded_empty_folders = (ObservableCollection[str](global_settings.excluded_empty_folders))
         self.excluded_empty_folders.CollectionChanged += self.excluded_empty_folders_changed
 
         self.illegal_characters = (ObservableCollection[str](global_settings.illegal_character_replacements.keys()))
@@ -367,8 +295,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
                                                    lambda x: x is not None,
                                                    True)
         self.RemoveIllegalCharacterCommand = Command(lambda x: self.illegal_characters.Remove(x),
-                                                     lambda x: x in self.illegal_characters and
-                                                     x not in REQUIRED_ILLEGAL_CHARS,
+                                                     lambda x: x in self.illegal_characters and x not in REQUIRED_ILLEGAL_CHARS,
                                                      True)
         self.AddIllegalCharacterCommand = Command(self.add_illegal_character,
                                                   lambda x: x and x not in self.illegal_characters,
@@ -388,9 +315,8 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
             if c.FileName not in self.excluded_empty_folders:
                 self.excluded_empty_folders.Add(c.FileName)
 
-    # Profile
-    # Needs to a notify property so that the view knows to get new values for
-    # some fields
+    """ Profile needs to be a notify property so the view knows when
+    the profile changes """
     @notify_property
     def Profile(self):
         return self._profile
@@ -399,11 +325,10 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def Profile(self, value):
         self._profile = value
         self.OnPropertyChanged("EmptyFieldReplacement")
-        self.SelectedFailedFields = (ObservableCollection[TemplateItem]
-                                     ([FIELDS.get_item_by_field(field) 
+        self.SelectedFailedFields = (ObservableCollection[TemplateItem]([FIELDS.get_item_by_field(field) 
                                        for field in self._profile.FailedFields]))
 
-    # SelectedIllegalCharacter 
+    # SelectedIllegalCharacter
     # Needs to be a notify property so the view can update the
     # replacement textbox.
     @notify_property
@@ -415,13 +340,12 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         self._selected_illegal_character = value
         self.OnPropertyChanged("IllegalCharacterReplacement")
 
-    # IllegalCharacterReplacement 
+    # IllegalCharacterReplacement
     # Needs to be a notify property so the view can update the
     # replacement textbox.
     @notify_property
     def IllegalCharacterReplacement(self):
-        return (self.global_settings.illegal_character_replacements
-                [self.SelectedIllegalCharacter])
+        return (self.global_settings.illegal_character_replacements[self.SelectedIllegalCharacter])
 
     @IllegalCharacterReplacement.setter
     def IllegalCharacterReplacement(self, value):
@@ -435,7 +359,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def AddIllegalCharacterIsChecked(self, value):
         self._add_illegal_char_checked = value
 
-    # SelectedMonth 
+    # SelectedMonth
     # Needs to be a notify property so the view can update the
     # replacement textbox.
     @notify_property
@@ -447,7 +371,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         self._selected_month = value
         self.OnPropertyChanged("MonthReplacement")
 
-    # MonthReplacement 
+    # MonthReplacement
     # Needs to be a notify property so the view can update the
     # replacement textbox.
     @notify_property
@@ -458,7 +382,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def MonthReplacement(self, value):
         self.global_settings.month_names[self.SelectedMonth] = value
 
-    # SelectedEmptyField 
+    # SelectedEmptyField
     # Needs to be a notify property so the view can update the
     # replacement textbox.
     @notify_property
@@ -531,28 +455,3 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         elif e.Action == NotifyCollectionChangedAction.Remove:
             for i in e.OldItems:
                 self.global_settings.excluded_empty_folders.remove(i)
-
-
-class InsertFieldTemplateSelector(DataTemplateSelector):
-    """Selects the correct datatemplate for the insert rule view templates"""
-    def SelectTemplate(self, item, container):
-        if type(item) is InsertViewModel:
-            return container.FindResource("StringInsertFieldTemplate")
-        elif type(item) is NumberInsertViewModel:
-            return container.FindResource("NumberInsertFieldTemplate")
-        elif type(item) is MultipleValueInsertViewModel:
-            return container.FindResource("MultipleValueInsertFieldTemplate")
-        elif type(item) is MonthValueInsertViewModel:
-            return container.FindResource("MonthInsertFieldTemplate")
-        elif type(item) is CounterInsertViewModel:
-            return container.FindResource("CounterInsertFieldTemplate")
-        elif type(item) is YesNoInsertViewModel or type(item) is MangaYesNoInsertViewModel:
-            return container.FindResource("YesNoInsertFieldTemplate")
-        elif type(item) is DateInsertViewModel:
-            return container.FindResource("DateInsertFieldTemplate")
-        elif type(item) is FirstLetterInsertViewModel:
-            return container.FindResource("FirstLetterInsertFieldTemplate")
-        elif type(item) is ReadPercentageInsertViewModel:
-            return container.FindResource("ReadPercentageInsertFieldTemplate")
-
-

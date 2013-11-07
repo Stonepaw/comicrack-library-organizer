@@ -1,7 +1,7 @@
 """
 lobookmover.py
 
-This contains all the book moving fuction the script uses. Also the path generator
+This contains all the book moving function the script uses. Also the path generator
 
 Version 2.1:
 

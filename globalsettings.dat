@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GlobalSettings>
+  <version>2.2</version>
+  <last_used_profiles />
+  <generate_localized_months>true</generate_localized_months>
+  <remove_empty_folders>true</remove_empty_folders>
+  <excluded_empty_folders>
+    <Item>C:\Users\Public\Documents\Debug</Item>
+    <Item>C:\Users\Andrew\Documents\Dust</Item>
+    <Item>C:\Users\Andrew\Desktop\Project with Michael\tést</Item>
+  </excluded_empty_folders>
+  <month_names>
+    <Item Name="6" Value="June" />
+    <Item Name="5" Value="May" />
+    <Item Name="4" Value="April" />
+    <Item Name="3" Value="March" />
+    <Item Name="2" Value="February" />
+    <Item Name="1" Value="January" />
+    <Item Name="11" Value="November" />
+    <Item Name="9" Value="September" />
+    <Item Name="8" Value="August" />
+    <Item Name="12" Value="December" />
+    <Item Name="10" Value="October" />
+    <Item Name="7" Value="July" />
+  </month_names>
+  <illegal_character_replacements>
+    <Item Name="?" Value="" />
+    <Item Name="&gt;" Value="]" />
+    <Item Name="&lt;" Value="[" />
+    <Item Name=":" Value=" - " />
+    <Item Name="|" Value="!" />
+    <Item Name="\" Value="" />
+    <Item Name="&quot;" Value="'" />
+    <Item Name="/" Value="" />
+    <Item Name="a" Value="sdf" />
+    <Item Name="*" Value="" />
+  </illegal_character_replacements>
+</GlobalSettings>
