@@ -1,10 +1,13 @@
 import wpf
 from System.Windows import Application, Window
-
+import sys
 import clr
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Xml")
+from System.IO import Path, File, FileMode, DirectoryInfo, FileInfo
 
+#VERY IMPORTANT
+# ComicRack doesn't support folders in it's script installer
 from ComicRack import ComicRack
 c = ComicRack()
 import localizer
@@ -13,9 +16,10 @@ localizer.ComicRack = c
 
 from System.Windows.Forms import MessageBox
 from System.Xml import XmlDocument, XmlWriter, XmlWriterSettings, XmlConvert
-from System.IO import Path, File, FileMode
+
 import configureform
 from configureform import ConfigureForm
+
 import configure_form_new
 import locommon
 from locommon import SCRIPTDIRECTORY, VERSION
@@ -110,10 +114,11 @@ def load_profiles(file_path):
 
 if __name__ == '__main__':
     ComicRack = ComicRack()
+    books = ComicRack.App.GetLibraryBooks()
     #localizer.ComicRack = ComicRack
     configureform.ComicRack = ComicRack
     locommon.ComicRack = ComicRack
-    
+    configure_form_new.RUNNER = True
 
     settings, lastused = load_profiles(Path.Combine(SCRIPTDIRECTORY, "losettingsx.dat"))
     global_settings = GlobalSettings()

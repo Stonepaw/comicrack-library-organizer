@@ -54,6 +54,7 @@ FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Comm
 FIELDS.append(TemplateItem("Conditional", "Conditional", "", "Conditional"))
 FIELDS.append(TemplateItem(localizer.get_comic_field_from_columns("Count", "Count"), "ShadowCount", "Count", "Number"))
 FIELDS.append(TemplateItem("Counter", "Counter", "Counter", "Counter"))
+FIELDS.append(TemplateItem("Custom Value", "CustomValue", "CustomValue", "CustomValue"))
 FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("CoverArtist", "Cover Artist"), "CoverArtist", "CoverArtist", "MultipleValue"))
 FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Day", "Day"), "Day", "Day", "Number"))
 FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Editor", "Editor"), "Editor", "Editor", "MultipleValue"))
@@ -121,6 +122,7 @@ template_fields = ['AddedTime',
                    'ShadowCount', 
                    'Counter', 
                    'CoverArtist',
+                   'CustomValue',
                    'Day', 
                    'Editor', 
                    'EndMonth',

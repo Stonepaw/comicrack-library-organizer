@@ -180,6 +180,38 @@
                 <ComboBox SelectedValue="{Binding SelectedField}" ItemsSource="{Binding FirstLetterFields}" SelectedValuePath="field" DisplayMemberPath="name" VerticalAlignment="Center" />
             </WrapPanel>
         </DataTemplate>
+        <DataTemplate x:Key="CustomValueInsertFieldTemplate">
+            <WrapPanel>
+                <Label Margin="5, 0">Prefix:</Label>
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                <Label Margin="5, 0">Suffix:</Label>
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                <Label Margin="5, 0" VerticalAlignment="Center" Content="Custom value key:">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRetrievingCustomKeys}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <ComboBox ItemsSource="{Binding custom_keys}" VerticalAlignment="Center" SelectedItem="{Binding SelectedItem}">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRetrievingCustomKeys}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+                <TextBlock Margin="5, 0" Text="Finding custom value keys" VerticalAlignment="Center" Visibility="{Binding IsRetrievingCustomKeys, Converter={StaticResource BooleanToVisbilityConverter}}" />
+                <ProgressBar Margin="5, 0" Visibility="{Binding IsRetrievingCustomKeys, Converter={StaticResource BooleanToVisbilityConverter}}" IsIndeterminate="True" VerticalAlignment="Center" Width="50" Height="15"  />
+            </WrapPanel>
+        </DataTemplate>
         <DataTemplate x:Key="ReadPercentageInsertFieldTemplate">
             <WrapPanel>
                 <Label Margin="5, 0">Prefix:</Label>
@@ -199,50 +231,34 @@
             <StackPanel>
                 <RadioButton x:Name="OverviewButton" Style="{DynamicResource PageButtonStyle}">
                     <StackPanel>
-                        <Image Stretch="None" Margin="0,3,0,0">
-                            <Image.Source>
-                                <BitmapImage UriSource="home_32.png" />
-                            </Image.Source>
-                        </Image>
+                        <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource HomeImage}" />
                         <Label Content="Overview" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="FilesButton" Style="{DynamicResource PageButtonStyle}" IsEnabled="{Binding IsChecked, ElementName=UseFileOrganization}" IsChecked="{Binding Path=FileFolderViewModel.FileVisible, Mode=OneWayToSource}">
                     <StackPanel>
-                        <Image Stretch="None" Margin="0,3,0,0">
-                            <Image.Source>
-                                <BitmapImage UriSource="page_text_32.png" />
-                            </Image.Source>
-                        </Image>
+                        <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource FileImage}" />
                         <Label Content="Files" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="FoldersButton" Style="{DynamicResource PageButtonStyle}" IsEnabled="{Binding IsChecked, ElementName=UseFolderOrganization}">
                     <StackPanel>
-                        <Image Stretch="None" Margin="0,3,0,0">
-                            <Image.Source>
-                                <BitmapImage UriSource="folder_32.png" />
-                            </Image.Source>
-                        </Image>
+                        <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource FolderImage}" />
                         <Label Content="Folders" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="RulesButton" Style="{DynamicResource PageButtonStyle}">
                     <StackPanel>
-                        <Image Stretch="None" Margin="0,3,0,0">
-                            <Image.Source>
-                                <BitmapImage UriSource="chart_32.png" />
-                            </Image.Source>
-                        </Image>
+                        <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource RulesImage}" />
                         <Label Content="Rules" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="OptionsButton" Style="{DynamicResource PageButtonStyle}">
                     <StackPanel>
                         <Image Stretch="None" Margin="0,3,0,0">
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="tools_32.png" />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Options" HorizontalAlignment="Center"/>
                     </StackPanel>
@@ -260,44 +276,44 @@
                     <MenuItem Header="Profile Actions">
                         <MenuItem.Icon>
                             <Image Stretch="None">
-                                <Image.Source>
+                                <!--<Image.Source>
                                     <BitmapImage UriSource="tools_32.png" DecodePixelWidth="16" />
-                                </Image.Source>
+                                </Image.Source>-->
                             </Image>
                         </MenuItem.Icon>
                         <MenuItem Header="New" Click="new_profile_clicked">
                             <MenuItem.Icon>
                                 <Image Stretch="None">
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="add_16.png"/>
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Rename">
                             <MenuItem.Icon>
                                 <Image Stretch="None">
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="pencil_32.png" DecodePixelWidth="16"/>
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Delete">
                             <MenuItem.Icon>
                                 <Image Stretch="None">
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="close_16.png"/>
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Duplicate">
                             <MenuItem.Icon>
                                 <Image Stretch="None">
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="save_32.png" DecodePixelWidth="16"/>
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>

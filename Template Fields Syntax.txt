@@ -16,7 +16,7 @@ Number Field:
 
 	Padding can be any number from 0 up. A 0 is automatic padding. The script will go through every issue in that series and find the highest number available it will then pad the number to the same number of digits as that number.
 
-	A padding of 1 is no padding or you can insert the number field as a string field in which case no padding will be used.
+	A padding of 1 is no padding or you can insert the number field with no args in which case it will be treated as a string field
 
 	Number fields are: 
 
@@ -62,7 +62,7 @@ Conditional
 		{ElseField<!Field(laksjdflj)>ThenField}
 
 		IF NOT REGEX
-		{ElseField<!Field(laksjdflj)>ThenField}
+		{ElseField<!Field(!laksjdflj)>ThenField}
 
 
 

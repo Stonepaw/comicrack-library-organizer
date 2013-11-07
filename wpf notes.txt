@@ -1,3 +1,0 @@
-Binding to element property:
-
-{Binding ElementName=Partner, Path=SelectedItem}
