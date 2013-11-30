@@ -457,6 +457,10 @@ def deserialize_object_from_xml2py(object, xml):
     for name in object.__dict__:
         var_type = type(getattr(object, name))
 
+        S = "lkjasdfkj"
+
+        d = xml.__dict__
+
         if not hasattr(xml, name):
             continue
 
@@ -485,3 +489,77 @@ def deserialize_object_from_xml2py(object, xml):
                 for i in getattr(xml, name).Item:
                     new_dict[unicode(i.Name)] = unicode(i.Value)
             setattr(object, name, new_dict)
+
+
+def object_from_xml2py(object, xml):
+    
+    for name in xml.__dict__:
+        var_type = None
+
+        if name == "_nodetype":
+            continue
+
+        var = getattr(xml, name)
+
+        if hasattr(object, name):
+            var_type = type(getattr(object, name))
+        else:
+            var_type = find_type(var)
+
+        if var_type is str:
+            setattr(object, name, unicode(var))
+
+        elif var_type is int:
+            setattr(object, name, int(var))
+
+        elif var_type is bool:
+            setattr(object, name, XmlConvert.ToBoolean(var))
+
+        elif var_type is dict:
+            d = {}
+            for i in var.Item:
+                d[unicode(i.Name)] = unicode(i.Value)
+            setattr(object, name, d)
+
+        elif var_type is list:
+            l = []
+            if not hasattr(var, "Item"):
+                setattr(object, name, l)
+                continue
+
+            if type(var.Item) is list:
+                l = [unicode(i) for i in var.Item]
+            else:
+                l.append(unicode(var.Item))
+            setattr(object, name, l)
+
+        
+
+
+def find_type(xml2py_node):
+    if xml2py_node in ("true", "false"):
+        return bool
+    elif is_int(xml2py_node):
+        return int
+
+    elif hasattr(xml2py_node, "Item"):
+        l = getattr(xml2py_node, "Item")
+        if l is list:
+            i = l[0]
+        else:
+            i = l
+        if hasattr(i, "Name"):
+            return dict
+        else:
+            return list
+
+    else:
+        return str
+
+
+def is_int(s):
+    try:
+        i = int(s)
+        return True
+    except ValueError:
+        return False

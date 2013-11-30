@@ -1,0 +1,110 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="exclude_rule_test" Height="394" Width="800"
+        Name="ExcludeRuleTest"
+        >
+    <Window.Resources>
+        <Style TargetType="ToggleButton" x:Key="InvertButton">
+            <Setter Property="Content" Value="!" />
+            <Setter Property="Padding" Value="4, 0" />
+            <Setter Property="Margin" Value="0, 0, 3, 0" />
+        </Style>
+        <Style TargetType="Path" x:Key="ButtonArrow">
+            <Setter Property="Data" Value="M0,0L3.5,4 7,0z" />
+            <Setter Property="Fill" Value="#FF000000" />
+            <Setter Property="Margin" Value="0,1,0,0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <DataTemplate x:Key="ExcludeRuleTemplate">
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton IsChecked="{Binding Invert}" Grid.Column="0" Style="{StaticResource InvertButton}" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding fields}" DisplayMemberPath="name" SelectedItem="{Binding SelectedField}" >
+                </ComboBox>
+                <ComboBox Grid.Column="2" ItemsSource="{Binding Operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator}" Margin="4, 0">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="MangaYesNo">
+                                    <Setter Property="Grid.ColumnSpan" Value="2" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+                <TextBox Grid.Column="3">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="MangaYesNo">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="6">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <DatePicker Grid.Column="3">
+                    <DatePicker.Style>
+                        <Style TargetType="DatePicker">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="6">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DatePicker.Style>
+                </DatePicker>
+                <Button VerticalAlignment="Center" Padding="3" Click="Button_Click" Grid.Column="4" Margin="4, 0, 0, 0">
+                    <Path Style="{StaticResource ResourceKey=ButtonArrow}" />
+                    <Button.ContextMenu>
+                        <ContextMenu Placement="Bottom">
+                            <MenuItem Header="Add Rule" Command="{Binding parent.AddRuleCommand}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Add Rule Group" Command="{Binding parent.AddRuleGroupCommand}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Delete" Command="{Binding parent.RemoveRuleCommand}" CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid DataContext="{Binding exclude_rules_view_model}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <WrapPanel Orientation="Horizontal">
+                <ToggleButton VerticalAlignment="Center" IsChecked="{Binding Invert}" Style="{StaticResource InvertButton}" />
+                <TextBlock Text="Perform operations on books that match" VerticalAlignment="Center" Margin="5, 0" />
+                <ComboBox VerticalAlignment="Center" ItemsSource="{Binding operators}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding Operator}" />
+                <TextBlock Text="of the following rules" VerticalAlignment="Center" Margin="5, 0"/>
+                <Button VerticalAlignment="Center" Padding="3" Click="Button_Click">
+                    <Path Style="{StaticResource ResourceKey=ButtonArrow}" />
+                    <Button.ContextMenu>
+                        <ContextMenu Placement="Bottom">
+                            <MenuItem Header="Add Rule" Command="{Binding AddRuleCommand}" />
+                            <MenuItem Header="Add Rule Group" Command="{Binding AddRuleGroupCommand}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </WrapPanel>
+            <ItemsControl ItemsSource="{Binding rule_view_models}" Grid.Row="1" Grid.ColumnSpan="2" ItemTemplateSelector="{StaticResource RulesTemplateSelector}" />
+        </Grid>
+    </Grid>
+</Window>

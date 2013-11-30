@@ -92,7 +92,7 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
         super(ConfigureFormFileFolderViewModel, self).__init__()
         self._field_options = NumberInsertViewModel("Number")
         self.template_field_selectors = sorted(
-                [FIELDS.get_item_by_field(field) for field in template_fields], 
+                [FIELDS.get_by_field(field) for field in template_fields], 
                 key=lambda x: x.name, cmp=PythonLocale.strcoll)
         self._selectedField = TemplateItem("", "", "", "")
         self.ConditionalViewModel = ConditionalInsertViewModel()
@@ -267,7 +267,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         self._add_illegal_char_checked = False
 
         if self.empty_fields is None:
-            self.empty_fields = [FIELDS.get_item_by_field(field) 
+            self.empty_fields = [FIELDS.get_by_field(field) 
                 for field in template_fields 
                 if field not in library_organizer_fields]
 
@@ -325,7 +325,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def Profile(self, value):
         self._profile = value
         self.OnPropertyChanged("EmptyFieldReplacement")
-        self.SelectedFailedFields = (ObservableCollection[TemplateItem]([FIELDS.get_item_by_field(field) 
+        self.SelectedFailedFields = (ObservableCollection[TemplateItem]([FIELDS.get_by_field(field) 
                                        for field in self._profile.FailedFields]))
 
     # SelectedIllegalCharacter

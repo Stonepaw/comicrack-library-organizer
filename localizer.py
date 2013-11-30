@@ -13,6 +13,11 @@ TRANSLATED_NUMERIC_OPERATORS = None
 TRANSLATED_BOOL_OPERATORS = None
 
 
+
+
+
+
+
 def get_comic_fields():
     """Gets a dict (key=propertyname, values=translations) of all the defined comic fields and library organizer fields"""
     #ComicBook field names are contained in the comicrack translation file named columns
@@ -51,6 +56,20 @@ def get_comic_fields():
     TRANSLATED_COMIC_FIELDS = translated_fields
 
     return translated_fields
+
+def get_field_name(field, backup_text):
+    """ Retrieves a translated field name by checking ComicRack's built in 
+    translation files and the Library Organizer translation file"""
+    s = ComicRack.Localize("Columns", field + "AsText", "")
+    if s:
+        return s
+    s = ComicRack.Localize("ComicBookDialog", "label" + field, "").strip(":")
+    if s:
+        return s
+    s = ComicRack.Localize("ComicBookDialog", "label" + field + "AsText", "").strip(":")
+    if s:
+        return s
+    return ComicRack.Localize("Script.LibraryOrganizer", field, backup_text)
 
 
 def get_comic_field_from_columns(field, backup_text):
@@ -107,7 +126,7 @@ def get_exclude_rule_string_operators():
     s = ComicRack.Localize("Matchers", "StringOperators", "is|contains|contains any of|contains all of|starts with|ends with|list contains|regular expression").split("|")
 
     #Can't do list contains so make sure we don't use that operator
-    translated_operators = {s[i] : operators[i] for i in range(len(operators)) if operators[i] != "list contains"}
+    translated_operators = {s[i] : operators[i] for i in range(len(operators))}
     TRANSLATED_STRING_OPERATORS = translated_operators
     return translated_operators
     
@@ -223,7 +242,7 @@ def get_date_operators():
     if TRANSLATED_DATE_OPERATORS is not None:
         return TRANSLATED_DATE_OPERATORS
 
-    operators = ["is", "after", "before"]
+    operators = ["is", "after", "before", "last", "range"]
     s = ComicRack.Localize("Matchers", "DateOperators", "is|is after|is before|is in the last|is in the range").split("|")
 
     #Can't do list contains so make sure we don't use that operator
@@ -243,3 +262,30 @@ def camel_case_to_spaced(s):
         else:
             s2 = s2 + s[i]
     return s2
+
+class Localizer(object):
+
+    _all_any_operators = None
+    _date_operators = None
+
+    @property
+    def all_any_operators(self):
+        """Returns a dict with the key as the translation and the value
+        as the value"""
+        if self._all_any_operators is None:
+            o = ("All", "Any")
+            s = ComicRack.Localize("SmartListDialog", "MatchMode", "All|Any")
+            s = s.split("|")
+            Localizer._all_any_operators = {s[i] : o[i] for i in range(len(o))}
+
+        return self._all_any_operators
+
+    @property 
+    def date_operators(self):
+        """Returns a dict with the value as the translation the key as the value"""
+        if self._date_operators is None:
+            operators = range(5)
+            s = ComicRack.Localize("Matchers", "DateOperators", "is|is after|is before|is in the last|is in the range").split("|")
+            translated_operators = {i : s[i] for i in operators}
+            Localizer._date_operators = translated_operators
+        return self._date_operators

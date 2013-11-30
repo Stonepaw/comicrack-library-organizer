@@ -1,12 +1,20 @@
-possibly use dictonary key value pairs for combobox options in options page
-
-move items to single pages. Possible with expanders
-
-
 change template to use the actualy property instead of a wierd name
 
 change exclude rules to use negation button instead of extra combobox items
 change exclude rules manga to use "is Yes" with only one combo box. Will be easier to code the changes between types. Will require changing code in loading profile.
+
+
+
+
+
+IMPORTANT: Change the template items class to automatically get the translation instead of calling it in the args
+
+
+
+
+
+
+
 
 Exclude rules from ComicRack looks complicated. Continue using the method I'm using but expand the operators. "Matches" has the translations of the operators.
 

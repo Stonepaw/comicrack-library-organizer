@@ -4,7 +4,7 @@
     <Version>2.2</Version>
     <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(None)&gt;}{&lt;Added(MM-dd-yy)&gt;}</FolderTemplate>
     <BaseFolder>C:\Users\Andrew\Desktop\Age2XPatch</BaseFolder>
-    <FileTemplate>{aasdfasdsdfsadfasfasdf&lt;Series(adsf)(a)&gt;asd{&lt;Title&gt;}fasasdfd}</FileTemplate>
+    <FileTemplate />
     <Postfix />
     <Prefix />
     <Seperator />
@@ -136,6 +136,66 @@
     <FailedFolder />
     <FailedFields />
   </Profile>
+  <Profile Name="lkajsdf" Version="2.2">
+    <Version>2.2</Version>
+    <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
+    <BaseFolder />
+    <FileTemplate />
+    <Postfix />
+    <Prefix />
+    <Seperator />
+    <TextBox />
+    <IllegalCharacters>
+      <Item Name="?" Value="" />
+      <Item Name="&gt;" Value="]" />
+      <Item Name="&lt;" Value="[" />
+      <Item Name=":" Value=" - " />
+      <Item Name="|" Value="!" />
+      <Item Name="\" Value="" />
+      <Item Name="&quot;" Value="'" />
+      <Item Name="/" Value="" />
+      <Item Name="*" Value="" />
+    </IllegalCharacters>
+    <Months>
+      <Item Name="6" Value="June" />
+      <Item Name="5" Value="May" />
+      <Item Name="4" Value="April" />
+      <Item Name="3" Value="March" />
+      <Item Name="2" Value="February" />
+      <Item Name="1" Value="January" />
+      <Item Name="11" Value="November" />
+      <Item Name="13" Value="Spring" />
+      <Item Name="7" Value="July" />
+      <Item Name="9" Value="September" />
+      <Item Name="8" Value="August" />
+      <Item Name="14" Value="Summer" />
+      <Item Name="16" Value="Winter" />
+      <Item Name="12" Value="December" />
+      <Item Name="10" Value="October" />
+      <Item Name="15" Value="Fall" />
+    </Months>
+    <UseFolder>false</UseFolder>
+    <UseFileName>false</UseFileName>
+    <ExcludeFolders />
+    <ExcludeRules Operator="All" ExcludeMode="Do not" />
+    <RemoveEmptyFolder>true</RemoveEmptyFolder>
+    <ExcludedEmptyFolder />
+    <MoveFileless>false</MoveFileless>
+    <FilelessFormat>.jpg</FilelessFormat>
+    <Mode>Move</Mode>
+    <CopyMode>true</CopyMode>
+    <AutoSpaceFields>true</AutoSpaceFields>
+    <CopyReadPercentage>true</CopyReadPercentage>
+    <ReplaceEmptyFolders>false</ReplaceEmptyFolders>
+    <EmptyFolder />
+    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
+    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
+    <EmptyData />
+    <FailEmptyValues>false</FailEmptyValues>
+    <MoveFailed>false</MoveFailed>
+    <FailedFolder />
+    <FailedFields />
+  </Profile>
   <Profile Name="Default" Version="2.2">
     <Version>2.2</Version>
     <FolderTemplate>{&lt;publisher&gt;Replaced}\{&lt;imprint&gt;}\{&lt;sReplaceReplacedormat&gt;})}ReplacedReplaced{ &lt;FirstIssueNumber0&gt;}{ &lt;Format&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
@@ -190,66 +250,6 @@
     <CopyReadPercentage>true</CopyReadPercentage>
     <ReplaceEmptyFolders>true</ReplaceEmptyFolders>
     <EmptyFolder>asdfasfa</EmptyFolder>
-    <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
-    <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
-    <EmptyData />
-    <FailEmptyValues>false</FailEmptyValues>
-    <MoveFailed>false</MoveFailed>
-    <FailedFolder />
-    <FailedFields />
-  </Profile>
-  <Profile Name="lkajsdf" Version="2.2">
-    <Version>2.2</Version>
-    <FolderTemplate>{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}{&lt;Added(MMMM dd, yyyy)&gt;}</FolderTemplate>
-    <BaseFolder />
-    <FileTemplate />
-    <Postfix />
-    <Prefix />
-    <Seperator />
-    <TextBox />
-    <IllegalCharacters>
-      <Item Name="?" Value="" />
-      <Item Name="&gt;" Value="]" />
-      <Item Name="&lt;" Value="[" />
-      <Item Name=":" Value=" - " />
-      <Item Name="|" Value="!" />
-      <Item Name="\" Value="" />
-      <Item Name="&quot;" Value="'" />
-      <Item Name="/" Value="" />
-      <Item Name="*" Value="" />
-    </IllegalCharacters>
-    <Months>
-      <Item Name="6" Value="June" />
-      <Item Name="5" Value="May" />
-      <Item Name="4" Value="April" />
-      <Item Name="3" Value="March" />
-      <Item Name="2" Value="February" />
-      <Item Name="1" Value="January" />
-      <Item Name="11" Value="November" />
-      <Item Name="13" Value="Spring" />
-      <Item Name="7" Value="July" />
-      <Item Name="9" Value="September" />
-      <Item Name="8" Value="August" />
-      <Item Name="14" Value="Summer" />
-      <Item Name="16" Value="Winter" />
-      <Item Name="12" Value="December" />
-      <Item Name="10" Value="October" />
-      <Item Name="15" Value="Fall" />
-    </Months>
-    <UseFolder>false</UseFolder>
-    <UseFileName>false</UseFileName>
-    <ExcludeFolders />
-    <ExcludeRules Operator="All" ExcludeMode="Do not" />
-    <RemoveEmptyFolder>true</RemoveEmptyFolder>
-    <ExcludedEmptyFolder />
-    <MoveFileless>false</MoveFileless>
-    <FilelessFormat>.jpg</FilelessFormat>
-    <Mode>Move</Mode>
-    <CopyMode>true</CopyMode>
-    <AutoSpaceFields>true</AutoSpaceFields>
-    <CopyReadPercentage>true</CopyReadPercentage>
-    <ReplaceEmptyFolders>false</ReplaceEmptyFolders>
-    <EmptyFolder />
     <DontAskWhenMultiOne>true</DontAskWhenMultiOne>
     <ReplaceMultipleSpaces>true</ReplaceMultipleSpaces>
     <EmptyData />

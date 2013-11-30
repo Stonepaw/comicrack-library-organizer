@@ -1,107 +1,134 @@
 import localizer
 
+class FieldType(object):
+    """ An enum to compare field types """
+    String = 1
+    Number = 2
+    MultipleValue = 3
+    YesNo = 4
+    ManagaYesNo = 5
+    DateTime = 6
 
-#I tried serveral ways to pull all this information in automatically but nothing worked quite right. This is simple enough to keep up though.
+
+#I tried several ways to pull all this information in automatically but nothing worked quite right. This is simple enough to keep up though.
 class TemplateItem(object):
 
-    def __init__(self, name, field, template, type):
-        self.name = name
+    def __init__(self, backup_name, field, type, template=None, 
+                 exclude=True, conditional=True):
+        if template is None:
+            template = field
+        self.name = localizer.get_field_name(field, backup_name)
         self.field = field
         self.template = template
         self.type = type
+        self.exclude = exclude
+        self.conditional = conditional
 
 class TemplateItemCollection(list):
 
+    def __init__(self, *args, **kwargs):
+        self._exclude_rule_fields = None
+        return super(TemplateItemCollection, self).__init__(*args, **kwargs)
+        
     def get_name_from_template(self, template):
         for item in self.__iter__():
             if item.template == template:
                 return item.name
         raise KeyError
 
-    def get_item_by_field(self, field):
+    def get_by_field(self, field):
         for item in self.__iter__():
             if item.field == field:
                 return item
         raise KeyError
 
+    @property
+    def exclude_rule_fields(self):
+        if self._exclude_rule_fields is None:
+            l = [f for f in self.__iter__() if f.exclude]
+            self._exclude_rule_fields = l
+        return self._exclude_rule_fields
 
-#translatedfields = localizer.get_comic_field_from_comicbook_dialogs();
+    
 
+
+#Build all the fields
 FIELDS = TemplateItemCollection()
 
-FIELDS.append(TemplateItem("File Format", "FileFormat", "", ""))
-FIELDS.append(TemplateItem("File Name", "FileName", "", ""))
-FIELDS.append(TemplateItem("File Path", "FilePath", "", ""))
+FIELDS.append(TemplateItem("File Format", "FileFormat", "String", ""))
+FIELDS.append(TemplateItem("File Name", "FileName", "String", ""))
+FIELDS.append(TemplateItem("File Path", "FilePath", "String", ""))
 
 
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("AddedTime", "Added/Released"), "AddedTime", "Added", "DateTime"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("AgeRating", "Age Rating"), "AgeRating", "AgeRating", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_columns("AlternateCount", "Alternate Count"), "AlternateCount", "AlternateCount", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("AlternateNumber", "Alternate Number"), "AlternateNumber", "AlternateNumber", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("AlternateSeries", "Alternate Series"), "AlternateSeries", "AlternateSeries", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BlackAndWhite", "Black And White"), "BlackAndWhite", "BlackAndWhite", "YesNo"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookAge", "Age"), "BookAge", "Age", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookCollectionStatus", "Collection Status"), "BookCollectionStatus", "CollectionStatus", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookCondition", "Book Condition"), "BookCondition", "Condition", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookLocation", "Book Location"), "BookLocation", "BookLocation", "String"))
-FIELDS.append(TemplateItem("Book Notes", "BookNotes", "", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookOwner", "Owner"), "BookOwner", "Owner", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookPrice", "Book Price"), "BookPrice", "Price", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("BookStore", "Store"), "BookStore", "Store", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Characters", "Characters"), "Characters", "Characters", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Colorist", "Colorist"), "Colorist", "Colorist", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("CommunityRating", "Community Rating"), "CommunityRating", "CommunityRating", "Number"))
-FIELDS.append(TemplateItem("Conditional", "Conditional", "", "Conditional"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_columns("Count", "Count"), "ShadowCount", "Count", "Number"))
-FIELDS.append(TemplateItem("Counter", "Counter", "Counter", "Counter"))
-FIELDS.append(TemplateItem("Custom Value", "CustomValue", "CustomValue", "CustomValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("CoverArtist", "Cover Artist"), "CoverArtist", "CoverArtist", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Day", "Day"), "Day", "Day", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Editor", "Editor"), "Editor", "Editor", "MultipleValue"))
-FIELDS.append(TemplateItem("End Month", "EndMonth", "EndMonth", "Month"))
-FIELDS.append(TemplateItem("End Year", "EndYear", "EndYear", "Year"))
-FIELDS.append(TemplateItem("First Issue Number", "FirstIssueNumber", "FirstIssueNumber", "Number"))
-FIELDS.append(TemplateItem("First Letter", "FirstLetter", "FirstLetter", "FirstLetter"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Format", "Format"), "ShadowFormat", "Format", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Genre", "Genre"), "Genre", "Genre", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Imprint", "Imprint"), "Imprint", "Imprint", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Inker", "Inker"), "Inker", "Inker", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("ISBN", "ISBN"), "ISBN", "ISBN", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Language", "Language"), "LanguageAsText", "Language", "String"))
-FIELDS.append(TemplateItem("Last Issue Number", "LastIssueNumber", "LastIssueNumber", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Letterer", "Letterer"), "Letterer", "Letterer", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Locations", "Locations"), "Locations", "Locations", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("MainCharacterOrTeam", "Main Character Or Team"), "MainCharacterOrTeam", "MainCharacterOrTeam", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Manga", "Manga"), "Manga", "Manga", "MangaYesNo"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Month", "Month"), "Month", "Month", "Month"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Notes", "Notes"), "Notes", "", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Number", "Number"), "ShadowNumber", "Number", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Penciller", "Penciller"), "Penciller", "Penciller", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Publisher", "Publisher"), "Publisher", "Publisher", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Rating", "Rating"), "Rating", "Rating", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("ReadPercentage", "Read Percentage"), "ReadPercentage", "ReadPercentage", "ReadPercentage"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("ReleasedTime", "Released"), "ReleasedTime", "Released", "DateTime"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Review", "Review"), "Review", "", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("ScanInformation", "Scan Information"), "ScanInformation", "ScanInformation", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Series", "Series"), "ShadowSeries", "Series", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("SeriesComplete", "Series Complete"), "SeriesComplete", "SeriesComplete", "YesNo"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("SeriesGroup", "Series Group"), "SeriesGroup", "SeriesGroup", "String"))
-FIELDS.append(TemplateItem("Start Month", "StartMonth", "StartMonth", "Month"))
-FIELDS.append(TemplateItem("Start Year", "StartYear", "StartYear", "Year"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("StoryArc", "Story Arc"), "StoryArc", "StoryArc", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Summary", "Summary"), "Summary", "", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Tags", "Tags"), "Tags", "Tags", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Teams", "Teams"), "Teams", "Teams", "MultipleValue"))
-FIELDS.append(TemplateItem("Text", "Text", "", "Text"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Title", "Title"), "ShadowTitle", "Title", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("VolumeAsText", "Volume"), "ShadowVolume", "Volume", "Number"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Web", "Web"), "Web", "Web", "String"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("Writer", "Writer"), "Writer", "Writer", "MultipleValue"))
-FIELDS.append(TemplateItem(localizer.get_comic_field_from_comicbook_dialog("YearAsText", "Year"), "ShadowYear", "Year", "Year"))
+FIELDS.append(TemplateItem("Added/Purchased", "AddedTime", FieldType.DateTime, "Added"))
+FIELDS.append(TemplateItem("Age Rating", "AgeRating", "String"))
+FIELDS.append(TemplateItem("Alternate Count", "AlternateCount", "Number"))
+FIELDS.append(TemplateItem("Alternate Number", "AlternateNumber", "Number"))
+FIELDS.append(TemplateItem("Alternate Series", "AlternateSeries", "MultipleValue"))
+FIELDS.append(TemplateItem("Black And White", "BlackAndWhite", "YesNo"))
+FIELDS.append(TemplateItem("Age", "BookAge", "String", "Age"))
+FIELDS.append(TemplateItem("Collection Status", "BookCollectionStatus", "String", "CollectionStatus"))
+FIELDS.append(TemplateItem("Book Condition", "BookCondition", "String", "Condition"))
+FIELDS.append(TemplateItem("Book Location", "BookLocation", "String"))
+FIELDS.append(TemplateItem("Book Notes", "BookNotes", "String", ""))
+FIELDS.append(TemplateItem("Owner", "BookOwner", "String", "Owner"))
+FIELDS.append(TemplateItem("Book Price", "BookPrice", "String", "Price"))
+FIELDS.append(TemplateItem("Store", "BookStore", "String", "Store"))
+FIELDS.append(TemplateItem("Characters", "Characters", "MultipleValue"))
+FIELDS.append(TemplateItem("Colorist", "Colorist", "MultipleValue"))
+FIELDS.append(TemplateItem("Community Rating", "CommunityRating", "Number"))
+FIELDS.append(TemplateItem("Conditional", "Conditional", "Conditional", conditional=False))
+FIELDS.append(TemplateItem("Count", "ShadowCount", "Number", "Count"))
+FIELDS.append(TemplateItem("Counter", "Counter", "Counter"))
+FIELDS.append(TemplateItem("Custom Value", "CustomValue", "CustomValue"))
+FIELDS.append(TemplateItem("Cover Artist", "CoverArtist", "MultipleValue"))
+FIELDS.append(TemplateItem("Day", "Day", "Number"))
+FIELDS.append(TemplateItem("Editor", "Editor", "MultipleValue"))
+FIELDS.append(TemplateItem("End Month", "EndMonth", "Month"))
+FIELDS.append(TemplateItem("End Year", "EndYear", "Year"))
+FIELDS.append(TemplateItem("First Issue Number", "FirstIssueNumber", "Number"))
+FIELDS.append(TemplateItem("First Letter", "FirstLetter", "FirstLetter", exclude=False))
+FIELDS.append(TemplateItem("Format", "ShadowFormat", "String", "Format"))
+FIELDS.append(TemplateItem("Genre", "Genre", "MultipleValue"))
+FIELDS.append(TemplateItem("Imprint", "Imprint", "String"))
+FIELDS.append(TemplateItem("Inker", "Inker", "MultipleValue"))
+FIELDS.append(TemplateItem("ISBN", "ISBN", "String"))
+FIELDS.append(TemplateItem("Language", "LanguageAsText", "String", "Language"))
+FIELDS.append(TemplateItem("Last Issue Number", "LastIssueNumber", "Number"))
+FIELDS.append(TemplateItem("Letterer", "Letterer", "MultipleValue"))
+FIELDS.append(TemplateItem("Locations", "Locations", "MultipleValue"))
+FIELDS.append(TemplateItem("Main Character Or Team", "MainCharacterOrTeam", "String"))
+FIELDS.append(TemplateItem("Manga", "Manga", "MangaYesNo"))
+FIELDS.append(TemplateItem("Month", "Month", "Month"))
+FIELDS.append(TemplateItem("Notes", "Notes", "String", ""))
+FIELDS.append(TemplateItem("Number", "ShadowNumber", "Number", "Number"))
+FIELDS.append(TemplateItem("Penciller", "Penciller", "MultipleValue"))
+FIELDS.append(TemplateItem("Publisher", "Publisher", "String"))
+FIELDS.append(TemplateItem("Rating", "Rating", "Number"))
+FIELDS.append(TemplateItem("Read Percentage", "ReadPercentage", "ReadPercentage"))
+FIELDS.append(TemplateItem("Released", "ReleasedTime", FieldType.DateTime, "Released"))
+FIELDS.append(TemplateItem("Review", "Review", "String", ""))
+FIELDS.append(TemplateItem("Scan Information", "ScanInformation", "MultipleValue"))
+FIELDS.append(TemplateItem("Series", "ShadowSeries", "String", "Series"))
+FIELDS.append(TemplateItem("Series Complete", "SeriesComplete", "YesNo"))
+FIELDS.append(TemplateItem("Series Group", "SeriesGroup", "String"))
+FIELDS.append(TemplateItem("Start Month", "StartMonth", "Month"))
+FIELDS.append(TemplateItem("Start Year", "StartYear", "Year"))
+FIELDS.append(TemplateItem("Story Arc", "StoryArc", "String"))
+FIELDS.append(TemplateItem("Summary", "Summary", "String", ""))
+FIELDS.append(TemplateItem("Tags", "Tags", "MultipleValue"))
+FIELDS.append(TemplateItem("Teams", "Teams", "MultipleValue"))
+FIELDS.append(TemplateItem("Text", "Text", "Text", "", exclude=False, conditional=True))
+FIELDS.append(TemplateItem("Title", "ShadowTitle", "String", "Title"))
+FIELDS.append(TemplateItem("Volume", "ShadowVolume", "Number", "Volume"))
+FIELDS.append(TemplateItem("Web", "Web", "String", "Web"))
+FIELDS.append(TemplateItem("Writer", "Writer", "MultipleValue"))
+FIELDS.append(TemplateItem("Year", "ShadowYear", "Year", "Year"))
 
 FIELDS.sort(key=lambda x: x.name)
 
-#This contains the fields that are available to add into the template. Used for building the correct list of things later.
+# This contains the fields that are available to add into the template. 
+# Used for building the field selector list
 template_fields = ['AddedTime',
                    'AgeRating', 
                    'AlternateCount', 
@@ -161,13 +188,14 @@ template_fields = ['AddedTime',
                    'Writer', 
                    'ShadowYear']
 
-#This defines fields that are usable in the first letter selector. Typically string fields.
+# This defines fields that are usable in the first letter selector. 
 first_letter_fields = ['AlternateSeries', 
                        'Imprint', 
                        'Publisher', 
                        'ShadowSeries']
 
-#This contains the fields usable in the selectors for condtitional. Should basically contain everything but Conditional with the additon of Text\
+# This contains the fields usable in the selectors for conditional. 
+# Should basically contain everything but Conditional with the addition of Text
 conditional_fields = ['AddedTime',
                    'AgeRating', 
                    'AlternateCount', 
@@ -286,25 +314,67 @@ conditional_then_else_fields = ['AddedTime',
 library_organizer_fields = ["Counter", "FirstLetter", "Conditional", 
                             "StartMonth", "StartYear", "FirstIssueNumber"]
 
-#These are the fields useable in the exclude rules.
-exclude_rule_fields = ['AgeRating', 'AlternateCount', 'AlternateNumber', 
-                       'AlternateSeries', 'BlackAndWhite', 'BookAge', 
-                       'BookCollectionStatus', 'BookCondition', 
-                       'BookLocation', 'BookNotes', 'BookOwner', 'BookPrice', 
-                       'BookStore', 'Characters', 'Checked', 'Colorist', 
-                       'CommunityRating', 'Count', 'CoverArtist', 'Editor', 
-                       'FileDirectory', 'FileFormat', 'FileName', 
-                       'FileIsMissing', 'FileNameWithExtension', 'FilePath', 
-                       'FileSize', 'Format', 'Genre', 'HasBeenOpened', 'HasBeenRead', 'ISBN', 'Imprint', 'Inker', 'LanguageAsText', 'Letterer', 'Locations', 'MainCharacterOrTeam', 'Manga', 'Month', 'Notes', 'Number', 'Penciller', 'Publisher', 'Rating', 'ReadPercentage', 'Review', 'ScanInformation', 'Series', 'SeriesComplete', 'SeriesGroup', 'StoryArc', 'Summary', 'Tags', 'Teams', 'Title', 'Volume', 'Web', 'Writer', 'Year']
-
-#These are the fields that require the multiple value treatment.
-multiple_value_fields = ["AlternateSeries", "Characters", "Colorist", "CoverArtist", "Editor", "Genre", "Inker", "Letterer", "Locations", "Penciller", "ScanInformation", "Tags", "Teams", "Writer"]
-
-
-
-
-
-
+#These are the fields usable in the exclude rules.
+exclude_rule_fields = ['AgeRating', 
+                       'AlternateCount', 
+                       'AlternateNumber', 
+                       'AlternateSeries', 
+                       'BlackAndWhite', 
+                       'BookAge', 
+                       'BookCollectionStatus', 
+                       'BookCondition', 
+                       'BookLocation', 
+                       'BookNotes', 
+                       'BookOwner', 
+                       'BookPrice', 
+                       'BookStore', 
+                       'Characters', 
+                       #'Checked', 
+                       'Colorist', 
+                       'CommunityRating', 
+                       'ShadowCount', 
+                       'CoverArtist', 
+                       'Editor', 
+                       #'FileDirectory', 
+                       'FileFormat', 
+                       'FileName', 
+                       #'FileIsMissing', 
+                       #'FileNameWithExtension', 
+                       'FilePath', 
+                       #'FileSize', 
+                       'ShadowFormat', 
+                       'Genre', 
+                       #'HasBeenOpened', 
+                       #'HasBeenRead', 
+                       'ISBN', 
+                       'Imprint', 
+                       'Inker', 
+                       'LanguageAsText', 
+                       'Letterer', 
+                       'Locations', 
+                       'MainCharacterOrTeam', 
+                       'Manga', 
+                       'Month', 
+                       'Notes', 
+                       'ShadowNumber', 
+                       'Penciller', 
+                       'Publisher', 
+                       'Rating', 
+                       'ReadPercentage', 
+                       'Review', 
+                       'ScanInformation', 
+                       'ShadowSeries', 
+                       'SeriesComplete', 
+                       'SeriesGroup', 
+                       'StoryArc', 
+                       'Summary', 
+                       'Tags', 
+                       'Teams', 
+                       'ShadowTitle', 
+                       'ShadowVolume', 
+                       'Web', 
+                       'Writer', 
+                       'ShadowYear']
 
 rules_fields = ['BookNotes']
 

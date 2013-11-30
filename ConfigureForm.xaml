@@ -437,9 +437,9 @@
                 <RadioButton x:Name="OverviewButton" Style="{StaticResource PageButton}" Checked="Page_Button_Checked" Tag="0" >
                     <StackPanel>
                         <Image Stretch="None">
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="home_32.png" />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Overview" HorizontalAlignment="Center" />
                     </StackPanel>
@@ -456,9 +456,9 @@
                                     </Style.Triggers>
                                 </Style>
                             </Image.Style>
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="page_text_32.png" DecodePixelWidth="32"  />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Files" HorizontalAlignment="Center" />
                     </StackPanel>
@@ -475,9 +475,9 @@
                                     </Style.Triggers>
                                 </Style>
                             </Image.Style>
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="folder_32.png" DecodePixelWidth="32"  />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Folders" />
                     </StackPanel>
@@ -485,9 +485,9 @@
                 <RadioButton Style="{StaticResource PageButton}" Tag="2" Checked="Page_Button_Checked">
                     <StackPanel>
                         <Image Stretch="None">
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="chart_32.png" DecodePixelWidth="32"  />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Rules" />
                     </StackPanel>
@@ -495,9 +495,9 @@
                 <RadioButton Style="{StaticResource PageButton}" Name="OptionsButton" Tag="3" Checked="Page_Button_Checked">
                     <StackPanel>
                         <Image Stretch="None">
-                            <Image.Source>
+                            <!--<Image.Source>
                                 <BitmapImage UriSource="tools_32.png" DecodePixelWidth="32"  />
-                            </Image.Source>
+                            </Image.Source>-->
                         </Image>
                         <Label Content="Options" />
                     </StackPanel>
@@ -525,62 +525,62 @@
                     <MenuItem Header="Profile Actions" VerticalContentAlignment="Stretch" Padding="7,4,8,5">
                         <MenuItem.Icon>
                             <Image Stretch="None">
-                                <Image.Source>
+                                <!--<Image.Source>
                                     <BitmapImage UriSource="tools_32.png" DecodePixelWidth="16" />
-                                </Image.Source>
+                                </Image.Source>-->
                             </Image>
                         </MenuItem.Icon>
                         <MenuItem Header="New" Click="show_profile_input" x:Name="NewMenuItem">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="add_16.png" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Rename" x:Name="RenameMenuItem" Click="show_profile_input">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="pencil_32.png" DecodePixelWidth="16" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Delete" Command="{Binding ElementName=ConfigureForm, Path=delete_profile_command}">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="close_16.png" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Duplicate" x:Name="DuplicateMenuItem" Click="show_profile_input">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="save_32.png" DecodePixelWidth="16" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Import">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="arrow_down_16.png" DecodePixelWidth="16" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Export">
                             <MenuItem.Icon>
                                 <Image>
-                                    <Image.Source>
+                                    <!--<Image.Source>
                                         <BitmapImage UriSource="blue_arrow_up_32.png" DecodePixelWidth="16" />
-                                    </Image.Source>
+                                    </Image.Source>-->
                                 </Image>
                             </MenuItem.Icon>
                             <MenuItem Header="Export"></MenuItem>

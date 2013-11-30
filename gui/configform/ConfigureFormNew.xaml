@@ -26,11 +26,11 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </WrapPanel>
         </DataTemplate>
@@ -38,11 +38,11 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Padding:</Label>
@@ -54,14 +54,14 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <CheckBox Margin="5, 0" VerticalAlignment="Center" x:Name="SelectMultipleValue" IsChecked="{Binding SelectWhichMultipleValue, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBlock Text="{Binding SelectWhichText}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding SelectWhichText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
                 </CheckBox>
                 <CheckBox IsChecked="{Binding SelectOnceForEachSeries, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="5, 0" VerticalAlignment="Center">Select once for every issue in the series</CheckBox>
                 <StackPanel Margin="5, 0" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Orientation="Horizontal" VerticalAlignment="Center">
@@ -74,11 +74,11 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <CheckBox x:Name="UseMonthNames" VerticalAlignment="Center" Margin="5, 0" IsChecked="{Binding UseMonthNames}">Use month names</CheckBox>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
@@ -95,7 +95,7 @@
                         </Style>
                     </StackPanel.Style>
                     <Label>Padding:</Label>
-                    <xctk:IntegerUpDown Value="{Binding Padding}" Minimum="0" VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding Padding, UpdateSourceTrigger=PropertyChanged}" Minimum="0" VerticalAlignment="Center" />
                 </StackPanel>
             </WrapPanel>
         </DataTemplate>
@@ -103,23 +103,23 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Padding:</Label>
-                    <xctk:IntegerUpDown Value="{Binding Padding}" Minimum="0" VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding Padding, UpdateSourceTrigger=PropertyChanged}" Minimum="0" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Start:</Label>
-                    <xctk:IntegerUpDown Value="{Binding Start}" Minimum="1" VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding Start, UpdateSourceTrigger=PropertyChanged}" Minimum="1" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Increment:</Label>
-                    <xctk:IntegerUpDown Value="{Binding Increment}" Minimum="1" VerticalAlignment="Center" />
+                    <xctk:IntegerUpDown Value="{Binding Increment, UpdateSourceTrigger=PropertyChanged}" Minimum="1" VerticalAlignment="Center" />
                 </StackPanel>
             </WrapPanel>
         </DataTemplate>
@@ -127,11 +127,11 @@
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Prefix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Suffix:</Label>
-                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                    <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <Label>Date Format:</Label>
@@ -160,9 +160,9 @@
         <DataTemplate x:Key="YesNoInsertFieldTemplate">
             <WrapPanel>
                 <Label Margin="5, 0">Prefix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0">Suffix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" />
                 <ComboBox SelectedValue="{Binding SelectedYesNo}" ItemsSource="{Binding YesNoOperators}" SelectedValuePath="Key" DisplayMemberPath="Value" VerticalAlignment="Center" />
                 <ToggleButton IsChecked="{Binding Invert}" Content="!" VerticalAlignment="Center" Padding="3, 1" Margin="5, 0" />
@@ -173,9 +173,9 @@
         <DataTemplate x:Key="FirstLetterInsertFieldTemplate">
             <WrapPanel>
                 <Label Margin="5, 0">Prefix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0">Suffix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" Content="Field:" />
                 <ComboBox SelectedValue="{Binding SelectedField}" ItemsSource="{Binding FirstLetterFields}" SelectedValuePath="field" DisplayMemberPath="name" VerticalAlignment="Center" />
             </WrapPanel>
@@ -183,9 +183,9 @@
         <DataTemplate x:Key="CustomValueInsertFieldTemplate">
             <WrapPanel>
                 <Label Margin="5, 0">Prefix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0">Suffix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" Content="Custom value key:">
                     <Label.Style>
                         <Style TargetType="Label">
@@ -215,14 +215,14 @@
         <DataTemplate x:Key="ReadPercentageInsertFieldTemplate">
             <WrapPanel>
                 <Label Margin="5, 0">Prefix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0">Suffix:</Label>
-                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix}" />
+                <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center">When read percentage</Label>
                 <ComboBox VerticalAlignment="Center" SelectedItem="{Binding Operator}" ItemsSource="{Binding ReadPercentageOperators}"  />
                 <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5, 0" VerticalAlignment="Center" Value="{Binding Percent}" />
                 <Label VerticalAlignment="Center">% insert:</Label>
-                <TextBox Width="50" Text="{Binding TextToInsert}" VerticalAlignment="Center" />
+                <TextBox Width="50" Text="{Binding TextToInsert, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
             </WrapPanel>
         </DataTemplate>
     </Window.Resources>
@@ -255,11 +255,7 @@
                 </RadioButton>
                 <RadioButton x:Name="OptionsButton" Style="{DynamicResource PageButtonStyle}">
                     <StackPanel>
-                        <Image Stretch="None" Margin="0,3,0,0">
-                            <!--<Image.Source>
-                                <BitmapImage UriSource="tools_32.png" />
-                            </Image.Source>-->
-                        </Image>
+                        <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource OptionsImage}" />
                         <Label Content="Options" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
@@ -273,13 +269,10 @@
                 <Label HorizontalAlignment="Left" Content="Profile"/>
                 <ComboBox Grid.Column="1" Margin="10,0" MinWidth="200" VerticalAlignment="Center" ItemsSource="{Binding Profiles}" DisplayMemberPath="Name" SelectedItem="{Binding Profile}" />
                 <Menu Grid.Column="2" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}">
-                    <MenuItem Header="Profile Actions">
+                    <MenuItem Header="Profile Actions" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Stretch="None">
-                                <!--<Image.Source>
-                                    <BitmapImage UriSource="tools_32.png" DecodePixelWidth="16" />
-                                </Image.Source>-->
-                            </Image>
+                            <Image StretchDirection="DownOnly" VerticalAlignment="Center" Source="{StaticResource SmallOptionsImage}">
+                                  </Image>
                         </MenuItem.Icon>
                         <MenuItem Header="New" Click="new_profile_clicked">
                             <MenuItem.Icon>
@@ -557,7 +550,29 @@
                     <!--</Border>-->
                 </TabItem>
                 <TabItem x:Name="RulesTabPage" Visibility="Collapsed" IsSelected="{Binding IsChecked, ElementName=RulesButton}" Background="{x:Null}">
-                    <Grid/>
+                    <TabControl Margin="-1">
+                        <TabControl.Background>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
+                        </TabControl.Background>
+                        <TabItem Header="Exclude Rules">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel Orientation="Horizontal">
+                                    <Button Content="!" VerticalAlignment="Center" Padding="3, 0" />
+                                    <TextBlock Text="Perform operations on books that match" VerticalAlignment="Center" Margin="5, 0" />
+                                    <ComboBox VerticalAlignment="Center" />
+                                    <TextBlock Text="of the following rules" VerticalAlignment="Center" Margin="5, 0"/>
+                                </WrapPanel>
+                                
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
                 <TabItem x:Name="OptionsTabPage" IsSelected="{Binding IsChecked, ElementName=OptionsButton}" Visibility="Collapsed" Background="{x:Null}" DataContext="{Binding OptionsViewModel}" Padding="0" Margin="0" >
                     <TabControl Margin="-1" Padding="0" >
