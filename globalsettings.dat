@@ -6,8 +6,6 @@
   <remove_empty_folders>true</remove_empty_folders>
   <excluded_empty_folders>
     <Item>C:\Users\Public\Documents\Debug</Item>
-    <Item>C:\Users\Andrew\Documents\Dust</Item>
-    <Item>C:\Users\Andrew\Desktop\Project with Michael\tést</Item>
   </excluded_empty_folders>
   <month_names>
     <Item Name="6" Value="June" />

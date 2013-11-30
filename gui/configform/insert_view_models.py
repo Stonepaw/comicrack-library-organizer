@@ -244,7 +244,7 @@ class FirstLetterInsertViewModel(InsertViewModel):
 
     def __init__(self, field):
         if not self.FirstLetterFields:
-            self.FirstLetterFields = [FIELDS.get_item_by_field(f) for f in first_letter_fields]
+            self.FirstLetterFields = [FIELDS.get_by_field(f) for f in first_letter_fields]
             self.FirstLetterFields.sort(key=lambda x: x.name, cmp=PythonLocale.strcoll)
         self.SelectedField = "ShadowSeries"
         super(FirstLetterInsertViewModel, self).__init__(field)
@@ -302,10 +302,10 @@ class ConditionalInsertViewModel(ViewModelBase):
 
     def __init__(self):
         super(ConditionalInsertViewModel, self).__init__()
-        self.ConditionalFields = sorted([FIELDS.get_item_by_field(f) for f in conditional_fields],
+        self.ConditionalFields = sorted([FIELDS.get_by_field(f) for f in conditional_fields],
                                         PythonLocale.strcoll,
                                         lambda x: x.name)
-        self.ConditionalThenElseFields = sorted([FIELDS.get_item_by_field(f) for f in conditional_then_else_fields],
+        self.ConditionalThenElseFields = sorted([FIELDS.get_by_field(f) for f in conditional_then_else_fields],
                                         PythonLocale.strcoll,
                                         lambda x: x.name)
         self._selected_conditional_field = None

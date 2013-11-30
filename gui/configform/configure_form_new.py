@@ -49,6 +49,15 @@ class ConfigureForm(Window):
                 Uri(Path.Combine(directory, 'chart_32.png'))))
         self.Resources.Add("OptionsImage", BitmapImage(
                 Uri(Path.Combine(directory, 'tools_32.png'))))
+
+        b = BitmapImage()
+        b.BeginInit()
+        b.DecodePixelWidth = 16
+        b.UriSource = Uri(Path.Combine(directory, 'tools_32.png'))
+        b.EndInit()
+
+        self.Resources.Add("SmallOptionsImage", b)
+
         self.Resources.Add("ComparisonConverter", ComparisonConverter())
         Wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName, 
                                              'ConfigureFormNew.xaml'))

@@ -85,11 +85,9 @@ class Command(ICommand):
         #Using CommandManager.RequerySuggested seems to fix a bug in WPF menus
         #where the CanExecute parameter is not passed
         CommandManager.RequerySuggested += handler 
-        pass
      
     def remove_CanExecuteChanged(self, handler):
         CommandManager.RequerySuggested -= handler
-        pass
 
     def canExecuteChanged(self): 
         for handler in self._handlers: 

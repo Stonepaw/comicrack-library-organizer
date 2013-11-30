@@ -126,6 +126,15 @@ class Translations(object):
     rules_group_operators = SortedDictionary[str, str]({"All" : "All", "Any" : "Any"})
         
 
+exclude_string_operators = ["is", 
+                            "contains", 
+                            "contains any of", 
+                            "contains all of", 
+                            "starts with", 
+                            "ends with", 
+                            "list contains", 
+                            "regular expression"]
+
                                                   
 class Mode(object):
     Move = "Move"
