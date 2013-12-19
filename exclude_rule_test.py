@@ -8,6 +8,8 @@ c = ComicRack.ComicRack()
 import localizer
 localizer.ComicRack = c
 import fieldmappings
+import locommon
+locommon.ComicRack = c
 
 import Xceed.Wpf.Toolkit
 
