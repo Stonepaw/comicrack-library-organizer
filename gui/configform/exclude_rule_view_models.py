@@ -13,7 +13,7 @@ from System.Collections.Generic import SortedDictionary
 from System.Collections.ObjectModel import ObservableCollection
 from System.Windows.Controls import DataTemplateSelector
 
-from exclude_rules import ExcludeRuleBase, ExcludeRuleGroup, ExcludeDateTimeOperators
+from exclude_rules import ExcludeRuleBase, ExcludeRuleGroup
 from fieldmappings import exclude_rule_fields, FIELDS, FieldType
 from localizer import get_exclude_rule_bool_operators, get_exclude_rule_numeric_operators, get_exclude_rule_string_operators, get_exclude_rule_yes_no_operators, get_manga_yes_no_operators, Localizer
 from locommon import get_custom_value_keys
@@ -40,6 +40,7 @@ class ExcludeRuleCollectionViewModel(ViewModelBase):
         self.AddRuleCommand = Command(self.add_rule, uses_parameter=True)
         self.AddRuleGroupCommand = Command(self.add_rule_group, uses_parameter=True)
         self.RemoveRuleCommand = Command(self.remove_rule, uses_parameter=True)
+        self.RemoveRuleGroupCommand = Command(self.remove_rule_group, uses_parameter=True)
 
     def add_rule(self, rule_view_model=None):
         """ Creates and adds a new ExcludeRule and inserts it after a
@@ -222,6 +223,12 @@ class ExcludeRuleGroupViewModel(ExcludeRuleCollectionViewModel):
     def __init__(self, rule_collection, parent):
         self.parent = parent
         super(ExcludeRuleGroupViewModel, self).__init__(rule_collection)
+
+    def create_commands(self):
+        self.AddRuleCommand = Command(self.add_rule, uses_parameter=True)
+        self.AddRuleGroupCommand = Command(self.add_rule_group, uses_parameter=True)
+        self.RemoveRuleCommand = Command(self.remove_rule, lambda: len(self.rule_view_models) > 1, uses_parameter=True)
+        self.RemoveRuleGroupCommand = Command(self.remove_rule_group, lambda: len(self.rule_view_models) > 1, uses_parameter=True)
 
 
 class RulesTemplateSelector(DataTemplateSelector):
