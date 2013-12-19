@@ -18,7 +18,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <DataTemplate x:Key="DateExcludeRuleTemplate">
-            <Grid Background="Green">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="130" />
                     <ColumnDefinition Width="*" />
@@ -82,7 +82,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="StringExcludeRuleTemplate">
-            <Grid Background="Red">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="130" />
                     <ColumnDefinition Width="*" />
@@ -92,7 +92,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="CustomValueExcludeRuleTemplate">
-            <Grid Background="Purple">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="130" />
@@ -104,7 +104,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="MangaExcludeRuleTemplate">
-            <Grid Background="Orange">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -112,7 +112,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="YesNoExcludeRuleTemplate">
-            <Grid Background="Pink">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -120,7 +120,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="BoolExcludeRuleTemplate">
-            <Grid Background="YellowGreen">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -128,7 +128,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NumberExcludeRuleTemplate">
-            <Grid Background="Gold">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="130" />
                     <ColumnDefinition Width="*" />
@@ -163,7 +163,7 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="ExcludeRuleTemplate">
-            <Grid Margin="5" Background="Blue">
+            <Grid Margin="0, 10, 0, 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="160" />
@@ -226,7 +226,37 @@
                 </Button>
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="ExcludeGroupTemplate">
+            <Grid Margin="0, 10, 0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ToggleButton IsChecked="{Binding Invert}" Grid.Column="0" Style="{StaticResource InvertButton}" VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding operators}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding Operator}" Grid.Column="1" />
+                <TextBlock Text="of the following rules" Grid.Column="2" Margin="5, 0" />
+                <Button VerticalAlignment="Center" Padding="3" Click="Button_Click" Grid.Column="3" Margin="4, 0, 0, 0">
+                    <Path Style="{StaticResource ResourceKey=ButtonArrow}" />
+                    <Button.ContextMenu>
+                        <ContextMenu Placement="Bottom">
+                            <MenuItem Header="Add Rule" Command="{Binding parent.AddRuleCommand}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Add Rule Group" Command="{Binding parent.AddRuleGroupCommand}" CommandParameter="{Binding}" />
+                            <MenuItem Header="Delete" Command="{Binding parent.RemoveRuleGroupCommand}" CommandParameter="{Binding}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <ItemsControl ItemsSource="{Binding rule_view_models}" Grid.Row="1" Grid.ColumnSpan="4" ItemTemplateSelector="{StaticResource RulesTemplateSelector}" Margin="10, 0, 0, 0" />
+            </Grid>
+            
+        </DataTemplate>
     </Window.Resources>
+    <ScrollViewer>
     <Grid>
         <Grid DataContext="{Binding exclude_rules_view_model}">
             <Grid.RowDefinitions>
@@ -255,4 +285,5 @@
             <ItemsControl ItemsSource="{Binding rule_view_models}" Grid.Row="1" Grid.ColumnSpan="2" ItemTemplateSelector="{StaticResource RulesTemplateSelector}" />
         </Grid>
     </Grid>
+    </ScrollViewer>
 </Window>
