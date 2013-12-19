@@ -13,9 +13,10 @@ from System.Collections.Generic import SortedDictionary
 from System.Collections.ObjectModel import ObservableCollection
 from System.Windows.Controls import DataTemplateSelector
 
-from exclude_rules import ExcludeRuleBase, ExcludeRuleGroup
+from exclude_rules import ExcludeRuleBase, ExcludeRuleGroup, ExcludeDateTimeOperators
 from fieldmappings import exclude_rule_fields, FIELDS, FieldType
 from localizer import get_exclude_rule_bool_operators, get_exclude_rule_numeric_operators, get_exclude_rule_string_operators, get_exclude_rule_yes_no_operators, get_manga_yes_no_operators, Localizer
+from locommon import get_custom_value_keys
 from wpfutils import Command, notify_property, ViewModelBase
 
 LOCALIZER = Localizer()
@@ -30,7 +31,7 @@ class ExcludeRuleCollectionViewModel(ViewModelBase):
         self.rule_view_models = ObservableCollection[object]()
 
         for rule in exclude_rule_collection:
-            if type(rule) is ExcludeRuleBase:
+            if isinstance(rule, ExcludeRuleBase):
                 self.rule_view_models.Add(ExcludeRuleViewModel(rule, self))
         self.create_commands()
         return super(ExcludeRuleCollectionViewModel, self).__init__()
@@ -96,12 +97,13 @@ class ExcludeRuleViewModel(ViewModelBase):
     """The viewmodel for an exclude_rules.ExludeRule object"""
 
     fields = []
-    numeric_operators = SortedDictionary[str, str](get_exclude_rule_numeric_operators())
-    string_operators = SortedDictionary[str, str](get_exclude_rule_string_operators())
-    manga_yes_no_operators = SortedDictionary[str, str](get_manga_yes_no_operators())
-    yes_no_operators = SortedDictionary[str, str](get_exclude_rule_yes_no_operators())
-    bool_operators = SortedDictionary[str, str](get_exclude_rule_bool_operators())
+    number_operators = SortedDictionary[int, str](LOCALIZER.number_operators)
+    string_operators = SortedDictionary[int, str](LOCALIZER.string_operators)
+    manga_yes_no_operators = SortedDictionary[int, str](LOCALIZER.manga_yes_no_operators)
+    yes_no_operators = SortedDictionary[int, str](LOCALIZER.yes_no_operators)
+    bool_operators = SortedDictionary[int, str](LOCALIZER.bool_operators)
     date_operators = SortedDictionary[int, str](LOCALIZER.date_operators)
+    custom_values = get_custom_value_keys()
 
     def __init__(self, exclude_rule, parent):
         self.parent = parent
@@ -137,7 +139,12 @@ class ExcludeRuleViewModel(ViewModelBase):
 
     @Operator.setter
     def Operator(self, value):
-        self._exclude_rule.operator = value
+        if value != self._exclude_rule.operator:
+            if (self.Type == FieldType.DateTime and 
+                self._exclude_rule.operator == ExcludeDateTimeOperators.Range):
+                self._exclude_rule.value2 = ""
+            self._exclude_rule.operator = value
+            
 
     #Value
     @notify_property
@@ -147,6 +154,15 @@ class ExcludeRuleViewModel(ViewModelBase):
     @Value.setter
     def Value(self, value):
         self._exclude_rule.value = value
+
+    #Value2
+    @notify_property
+    def Value2(self):
+        return self._exclude_rule.value2
+
+    @Value2.setter
+    def Value2(self, value):
+        self._exclude_rule.value2 = value
 
     #Invert
     @notify_property
@@ -169,17 +185,28 @@ class ExcludeRuleViewModel(ViewModelBase):
         self._exclude_rule.type = value
         if value == "MangaYesNo":
             self.Operators = self.manga_yes_no_operators
+            #for whatever reason the binding doesn't update correct when the operators change
+            self.Operator = -1
+            self.Operator = 0
         elif value == "String" or value == "MultipleValue":
             self.Operators = self.string_operators
+            self.Operator = self.Operators.Keys.First()
         elif value == "YesNo":
             self.Operators = self.yes_no_operators
+            self.Operator = 0
         elif value == "Number":
-            self.Operators = self.numeric_operators
+            self.Operators = self.number_operators
+            self.Operator = self.Operators.Keys.First()
         elif value == FieldType.DateTime:
             self.Operators = self.date_operators
-
-        if not self.Operators.ContainsValue(self.Operator):
             self.Operator = self.Operators.Keys.First()
+        try:
+            if not self.Operators.ContainsKey(self.Operator):
+                self.Operator = self.Operators.Keys.First()
+        except Exception, ex:
+            print ex
+
+        print self.Operator
 
     #Operators
     @notify_property

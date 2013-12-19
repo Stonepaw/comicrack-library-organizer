@@ -17,56 +17,204 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <DataTemplate x:Key="ExcludeRuleTemplate">
-            <Grid Margin="5">
+        <DataTemplate x:Key="DateExcludeRuleTemplate">
+            <Grid Background="Green">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="150" />
                     <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ToggleButton IsChecked="{Binding Invert}" Grid.Column="0" Style="{StaticResource InvertButton}" />
-                <ComboBox Grid.Column="1" ItemsSource="{Binding fields}" DisplayMemberPath="name" SelectedItem="{Binding SelectedField}" >
-                </ComboBox>
-                <ComboBox Grid.Column="2" ItemsSource="{Binding Operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator}" Margin="4, 0">
-                    <ComboBox.Style>
-                        <Style TargetType="ComboBox">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Type}" Value="MangaYesNo">
-                                    <Setter Property="Grid.ColumnSpan" Value="2" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ComboBox.Style>
-                </ComboBox>
-                <TextBox Grid.Column="3">
+                <ComboBox Grid.Column="0" ItemsSource="{Binding date_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Type}" Value="MangaYesNo">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Type}" Value="6">
-                                    <Setter Property="Visibility" Value="Collapsed" />
+                                <DataTrigger Binding="{Binding Operator}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </TextBox.Style>
                 </TextBox>
-                <DatePicker Grid.Column="3">
+                <DatePicker Grid.Column="1" VerticalAlignment="Center" SelectedDate="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Padding="0">
                     <DatePicker.Style>
                         <Style TargetType="DatePicker">
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Grid.ColumnSpan" Value="2" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Type}" Value="6">
-                                    <Setter Property="Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding Operator}" Value="4">
+                                    <Setter Property="Grid.ColumnSpan" Value="1" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Operator}" Value="3">
+                                    <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </DatePicker.Style>
                 </DatePicker>
-                <Button VerticalAlignment="Center" Padding="3" Click="Button_Click" Grid.Column="4" Margin="4, 0, 0, 0">
+                <DatePicker Grid.Column="2" VerticalAlignment="Center" SelectedDate="{Binding Value2, UpdateSourceTrigger=PropertyChanged}" Padding="0">
+                    <DatePicker.Style>
+                        <Style TargetType="DatePicker">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Operator}" Value="4">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DatePicker.Style>
+                </DatePicker>
+                <TextBlock Text="Days" Grid.Column="3" Padding="5, 0, 0, 0" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Operator}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="StringExcludeRuleTemplate">
+            <Grid Background="Red">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding string_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Value, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="CustomValueExcludeRuleTemplate">
+            <Grid Background="Purple">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding custom_values}" SelectedItem="{Binding Value2, UpdateSourceTrigger=PropertyChanged}" Margin="5, 0, 0, 0" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding string_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Value, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="MangaExcludeRuleTemplate">
+            <Grid Background="Orange">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding manga_yes_no_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="YesNoExcludeRuleTemplate">
+            <Grid Background="Pink">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding yes_no_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="BoolExcludeRuleTemplate">
+            <Grid Background="YellowGreen">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding bool_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="NumberExcludeRuleTemplate">
+            <Grid Background="Gold">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="130" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" ItemsSource="{Binding number_operators}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Operator, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="4, 0" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Value, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" >
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Grid.ColumnSpan" Value="2" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Operator}" Value="3">
+                                    <Setter Property="Grid.ColumnSpan" Value="1" />
+                                    <Setter Property="Margin" Value="0, 0, 3, 0" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <TextBox Text="{Binding Value2, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Margin="2, 0, 0, 0" >
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Operator}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ExcludeRuleTemplate">
+            <Grid Margin="5" Background="Blue">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton IsChecked="{Binding Invert}" Grid.Column="0" Style="{StaticResource InvertButton}" VerticalAlignment="Center" />
+                <ComboBox Grid.Column="1" ItemsSource="{Binding fields}" DisplayMemberPath="name" SelectedItem="{Binding SelectedField}" VerticalAlignment="Center" >
+                </ComboBox>
+                <ContentControl Grid.Column="2" Content="{Binding}" VerticalAlignment="Center" >
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="6">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource DateExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="String">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource StringExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="CustomValue">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource CustomValueExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="MultipleValue">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource StringExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="MangaYesNo">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource MangaExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="YesNo">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource YesNoExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Number">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource NumberExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Month">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource NumberExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Year">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource NumberExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="ReadPercentage">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource NumberExcludeRuleTemplate}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Type}" Value="Bool">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource BoolExcludeRuleTemplate}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+                <Button VerticalAlignment="Center" Padding="3" Click="Button_Click" Grid.Column="3" Margin="4, 0, 0, 0">
                     <Path Style="{StaticResource ResourceKey=ButtonArrow}" />
                     <Button.ContextMenu>
                         <ContextMenu Placement="Bottom">

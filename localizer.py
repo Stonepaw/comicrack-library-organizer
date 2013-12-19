@@ -1,6 +1,8 @@
 from locommon import comic_fields, library_organizer_fields
 import clr
 
+from common import ExcludeBoolOperators, ExcludeDateOperators, ExcludeMangaYesNoOperators, ExcludeMangaYesNoOperators, ExcludeNumberOperators, ExcludeStringOperators, ExcludeYesNoOperators
+
 
 #Caching because these functions could be called in different modules.
 TRANSLATED_YES_NO_OPERATORS = None
@@ -266,7 +268,12 @@ def camel_case_to_spaced(s):
 class Localizer(object):
 
     _all_any_operators = None
+    _bool_operators = None
     _date_operators = None
+    _string_operators = None
+    _number_operators = None
+    _yes_no_operators = None
+    _manga_yes_no_operators = None
 
     @property
     def all_any_operators(self):
@@ -281,11 +288,107 @@ class Localizer(object):
         return self._all_any_operators
 
     @property 
+    def bool_operators(self):
+        """Retrieves the built-in exclude rule bool operator
+        translations from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
+        if self._bool_operators is None:
+            operators = ExcludeBoolOperators.get_list()
+            s = ComicRack.Localize("Matchers", "TrueFalseOperators", "is True|is False").split("|")
+            Localizer._bool_operators = {i : s[i] for i in operators}
+        return self._bool_operators
+
+    @property 
     def date_operators(self):
-        """Returns a dict with the value as the translation the key as the value"""
+        """Retrieves the built-in exclude rule date operators translations
+        from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
         if self._date_operators is None:
-            operators = range(5)
+            operators = ExcludeDateOperators.get_list()
             s = ComicRack.Localize("Matchers", "DateOperators", "is|is after|is before|is in the last|is in the range").split("|")
-            translated_operators = {i : s[i] for i in operators}
-            Localizer._date_operators = translated_operators
+            Localizer._date_operators = {i : s[i] for i in operators}
         return self._date_operators
+
+    @property 
+    def manga_yes_no_operators(self):
+        """Retrieves the built-in exclude rule manga yes no operators 
+        translations from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
+        if self._manga_yes_no_operators is None:
+            operators = ExcludeMangaYesNoOperators.get_list()
+            s = ComicRack.Localize("Matchers", "MangaYesNoOperators", "is Yes|is Yes (Right to Left)|is No|is Unknown").split("|")
+            Localizer._manga_yes_no_operators = {i : s[i] for i in operators}
+        return self._manga_yes_no_operators
+
+    @property 
+    def number_operators(self):
+        """Retrieves the built-in exclude rule number operators
+        translations from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
+        if self._number_operators is None:
+            operators = ExcludeNumberOperators.get_list()
+            s = ComicRack.Localize("Matchers", "NumericOperators", "is|is greater|is smaller|is in the range").split("|")
+            Localizer._number_operators = {i : s[i] for i in operators}
+        return self._number_operators
+
+    @property 
+    def string_operators(self):
+        """Retrieves the built-in exclude rule string operators
+        translations from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
+        if self._string_operators is None:
+            operators = ExcludeStringOperators.get_list()
+            s = ComicRack.Localize("Matchers", "StringOperators", 
+                                   "is|contains|contains any of|"
+                                   "contains all of|starts with|ends with|"
+                                   "list contains|regular expression").split("|")
+
+            Localizer._string_operators = {i : s[i] for i in operators}
+        return self._string_operators
+
+    @property 
+    def yes_no_operators(self):
+        """Retrieves the built-in exclude rule yes no operators
+        translations from ComicRack.
+
+        Once the dict has been called once it will be cached for further
+        retrievals.
+        
+        Returns:
+                    A dict with the operator value as the key and the 
+                    translation as the value."""
+        if self._yes_no_operators is None:
+            operators = ExcludeYesNoOperators.get_list()
+            s = ComicRack.Localize("Matchers", "YesNoOperators", "is Yes|is No|is Unknown").split("|")
+            Localizer._yes_no_operators = {i : s[i] for i in operators}
+        return self._yes_no_operators

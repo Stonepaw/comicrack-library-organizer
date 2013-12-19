@@ -1,4 +1,6 @@
-from fieldmappings import FieldType
+from fieldmappings import FieldType, FIELDS
+
+from common import ExcludeBoolOperators, ExcludeDateOperators, ExcludeMangaYesNoOperators, ExcludeNumberOperators, ExcludeStringOperators, ExcludeYesNoOperators
 
 class ExcludeRuleCollectionMode(object):
     Only = "Only"
@@ -9,31 +11,37 @@ class ExcludeRuleGroupOperator(object):
     Any = "Any"
     All = "All"
 
-class DateTimeOperators(object):
-    Is = 0
-    After = 1
-    Before = 2
-    Last = 3
-    Range = 4
-
-
 
 class ExcludeRuleBase(object):
     
-    def __init__(self):
+    operators = ExcludeStringOperators
+
+    def __init__(self, field='AddedTime', operator=0, value='', value2='', 
+                 invert=False):
         
-        self.field = ""
-        self.operator = ""
-        self.value = ""
-        self.value2 = ""
-        self.invert = False
-        self.type = ""
+        self.field = field
+        self.operator = operator
+        self.value = value
+        self.value2 = value2
+        self.invert = invert
+        self.type = FIELDS.get_by_field(field).type
+
+    @classmethod
+    def from_exclude_rule(cls, rule):
+        return cls(rule.field, invert=rule.invert)
 
 
 class StringExcludeRule(ExcludeRuleBase):
-        
-        def __init__(self):
-            super(ExcludeRuleBase, self).__init__()
+
+    operators = ExcludeStringOperators
+    
+    def __init__(self):
+        super(ExcludeRuleBase, self).__init__()
+
+
+class DateExcludeRule(ExcludeRuleBase):
+    operators = ExcludeDateOperators
+
 
 
 class NumberExcludeRule(ExcludeRuleBase):
