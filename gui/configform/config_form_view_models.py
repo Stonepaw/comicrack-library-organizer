@@ -9,7 +9,7 @@ from Microsoft.WindowsAPICodePack.Dialogs import CommonOpenFileDialog, CommonFil
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Specialized import NotifyCollectionChangedAction
 
-from fieldmappings import FIELDS, library_organizer_fields, template_fields, TemplateItem
+from fieldmappings import FIELDS, library_organizer_fields, template_fields, Field
 from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
 from locommon import REQUIRED_ILLEGAL_CHARS
 from losettings import Profile
@@ -94,7 +94,7 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
         self.template_field_selectors = sorted(
                 [FIELDS.get_by_field(field) for field in template_fields], 
                 key=lambda x: x.name, cmp=PythonLocale.strcoll)
-        self._selectedField = TemplateItem("", "", "", "")
+        self._selectedField = Field("", "", "", "")
         self.ConditionalViewModel = ConditionalInsertViewModel()
 
         #Commands
@@ -211,7 +211,7 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     @SelectedField.setter
     def SelectedField(self, value):
         self._selectedField = value
-        if type(value) == TemplateItem:
+        if type(value) == Field:
             self.FieldOptions = SelectFieldTemplateFromType(
                     value.type, value.template, value.name)
 
@@ -276,7 +276,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
                                    cmp=PythonLocale.strcoll)
 
         self._selected_empty_field = self.empty_fields[0].field
-        self._selected_failed_fields = ObservableCollection[TemplateItem]()
+        self._selected_failed_fields = ObservableCollection[Field]()
         self._selected_failed_fields.CollectionChanged += self.failed_fields_changed
 
         self.excluded_empty_folders = (ObservableCollection[str](global_settings.excluded_empty_folders))
@@ -325,7 +325,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def Profile(self, value):
         self._profile = value
         self.OnPropertyChanged("EmptyFieldReplacement")
-        self.SelectedFailedFields = (ObservableCollection[TemplateItem]([FIELDS.get_by_field(field) 
+        self.SelectedFailedFields = (ObservableCollection[Field]([FIELDS.get_by_field(field) 
                                        for field in self._profile.FailedFields]))
 
     # SelectedIllegalCharacter

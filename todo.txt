@@ -1,10 +1,10 @@
-change template to use the actualy property instead of a wierd name
+change template to use the actually property instead of a weird name
 
 change exclude rules to use negation button instead of extra combobox items
 change exclude rules manga to use "is Yes" with only one combo box. Will be easier to code the changes between types. Will require changing code in loading profile.
 
 
-
+FIX LOCALIZER: Specifically the translated fields. They don't need to be translated when the script normally runs. Just when the gui runs.
 
 
 IMPORTANT: Change the template items class to automatically get the translation instead of calling it in the args

@@ -301,7 +301,7 @@ class Localizer(object):
         if self._bool_operators is None:
             operators = ExcludeBoolOperators.get_list()
             s = ComicRack.Localize("Matchers", "TrueFalseOperators", "is True|is False").split("|")
-            Localizer._bool_operators = {i : s[i] for i in operators}
+            Localizer._bool_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._bool_operators
 
     @property 
@@ -318,7 +318,7 @@ class Localizer(object):
         if self._date_operators is None:
             operators = ExcludeDateOperators.get_list()
             s = ComicRack.Localize("Matchers", "DateOperators", "is|is after|is before|is in the last|is in the range").split("|")
-            Localizer._date_operators = {i : s[i] for i in operators}
+            Localizer._date_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._date_operators
 
     @property 
@@ -335,7 +335,7 @@ class Localizer(object):
         if self._manga_yes_no_operators is None:
             operators = ExcludeMangaYesNoOperators.get_list()
             s = ComicRack.Localize("Matchers", "MangaYesNoOperators", "is Yes|is Yes (Right to Left)|is No|is Unknown").split("|")
-            Localizer._manga_yes_no_operators = {i : s[i] for i in operators}
+            Localizer._manga_yes_no_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._manga_yes_no_operators
 
     @property 
@@ -352,7 +352,7 @@ class Localizer(object):
         if self._number_operators is None:
             operators = ExcludeNumberOperators.get_list()
             s = ComicRack.Localize("Matchers", "NumericOperators", "is|is greater|is smaller|is in the range").split("|")
-            Localizer._number_operators = {i : s[i] for i in operators}
+            Localizer._number_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._number_operators
 
     @property 
@@ -373,7 +373,7 @@ class Localizer(object):
                                    "contains all of|starts with|ends with|"
                                    "list contains|regular expression").split("|")
 
-            Localizer._string_operators = {i : s[i] for i in operators}
+            Localizer._string_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._string_operators
 
     @property 
@@ -390,5 +390,5 @@ class Localizer(object):
         if self._yes_no_operators is None:
             operators = ExcludeYesNoOperators.get_list()
             s = ComicRack.Localize("Matchers", "YesNoOperators", "is Yes|is No|is Unknown").split("|")
-            Localizer._yes_no_operators = {i : s[i] for i in operators}
+            Localizer._yes_no_operators = {operators[i] : s[i] for i in range(len(operators))}
         return self._yes_no_operators
