@@ -15,13 +15,13 @@ import Xceed.Wpf.Toolkit
 
 
 from exclude_rule_view_models import ExcludeRuleViewModel, ExcludeRuleCollectionViewModel, RulesTemplateSelector
-from exclude_rules import ExcludeRuleBase, ExcludeRuleCollection
+from exclude_rules import _ExcludeRuleBase, ExcludeRuleCollection
 
 class ExcludeRuleTest(Window):
     def __init__(self):
         self.DataContext = self
         e = ExcludeRuleCollection()
-        e.append(ExcludeRuleBase())
+        e.append(_ExcludeRuleBase())
         self.Resources.Add("RulesTemplateSelector", RulesTemplateSelector())
 
         self.exclude_rules_view_model = ExcludeRuleCollectionViewModel(e)

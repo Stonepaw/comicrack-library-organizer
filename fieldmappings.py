@@ -1,39 +1,61 @@
 import localizer
 
 class FieldType(object):
-    """ An enum to compare field types """
-    String = 1
-    Number = 2
-    MultipleValue = 3
-    YesNo = 4
-    ManagaYesNo = 5
-    DateTime = 6
+    """ An enum for field types """
+    String = 'String'
+    Number = 'Number'
+    MultipleValue = 'MultipleValue'
+    YesNo = 'YesNo'
+    MangaYesNo = 'MangaYesNo'
+    DateTime = 'DateTime'
+    Boolean = 'Boolean'
+    Month = 'Month'
+    Year = 'Year'
+    CustomValue = 'CustomValue'
+    Conditional = 'Conditional'
+    ReadPercentage = 'ReadPercentage'
+    Text = 'Text'
+    FirstLetter = 'FirstLetter'
+    Counter = 'Counter'
 
 #I tried several ways to pull all this information in automatically but nothing worked quite right. This is simple enough to keep up though.
-class TemplateItem(object):
+class Field(object):
 
     def __init__(self, backup_name, field, type, template=None, 
                  exclude=True, conditional=True):
+        """Creates a new field.
+
+        Args:
+            backup_name: The name used in the translation if no
+                translation is available.
+            field: The string representation of the property on the
+                ComicBook.
+            type: The FieldType of this field.
+            template: The string to use for the template builder. Pass
+                False if this field should not be used in the template
+                builder. Pass None if the template name is the same as
+                the field string.
+            exclude: A boolean if this field should be usable in
+                exclude rules.
+            conditional: A boolean if this field should be usable in a
+                conditional field.
+        """
         if template is None:
             template = field
-        self.name = localizer.get_field_name(field, backup_name)
+        #self.name = localizer.get_field_name(field, backup_name)
+        self.backup_name = backup_name
         self.field = field
         self.template = template
         self.type = type
         self.exclude = exclude
         self.conditional = conditional
 
-class TemplateItemCollection(list):
+class FieldList(list):
 
     def __init__(self, *args, **kwargs):
         self._exclude_rule_fields = None
-        return super(TemplateItemCollection, self).__init__(*args, **kwargs)
-        
-    def get_name_from_template(self, template):
-        for item in self.__iter__():
-            if item.template == template:
-                return item.name
-        raise KeyError
+        self._template_fields = None
+        return super(FieldList, self).__init__(*args, **kwargs)
 
     def get_by_field(self, field):
         for item in self.__iter__():
@@ -48,88 +70,167 @@ class TemplateItemCollection(list):
             self._exclude_rule_fields = l
         return self._exclude_rule_fields
 
+    def add(self, backup_name, field, type, template=None, exclude=True,
+            conditional=True):
+        """Adds a field to this field list.
+        Args:
+            backup_name: The name used in the translation if no
+                translation is available.
+            field: The string representation of the property on the
+                ComicBook.
+            type: The FieldType of this field.
+            template: The string to use for the template builder. Pass
+                False if this field should not be used in the template
+                builder. Pass None if the template name is the same as
+                the field string. Defaults to None.
+            exclude: A boolean if this field should be usable in
+                exclude rules. Defaults to True
+            conditional: A boolean if this field should be usable in a
+                conditional field. Defaults to True.
+        """
+        self.append(Field(backup_name, field, type, template, exclude,
+                          conditional))
+
+    def get_template_fields(self):
+        return [i for i in self if i.template != False]
+
+    def get_conditional_fields(self):
+        return [i for i in self if i.conditional != False and i.field != "Text"]
+
+    def get_conditional_then_else_fields(self):
+        return [i for i in self if i.conditional != False]
+
+    def get_exclude_fields(self):
+        return [i for i in self if i.exclude == True]
+
     
-
-
 #Build all the fields
-FIELDS = TemplateItemCollection()
+FIELDS = FieldList()
 
-FIELDS.append(TemplateItem("File Format", "FileFormat", "String", ""))
-FIELDS.append(TemplateItem("File Name", "FileName", "String", ""))
-FIELDS.append(TemplateItem("File Path", "FilePath", "String", ""))
+#############################   Date fields   #################################
+FIELDS.add("Added", "AddedTime", FieldType.DateTime, "Added")
+FIELDS.add("Published", "Published", FieldType.DateTime)
+FIELDS.add("Released", "ReleasedTime", FieldType.DateTime, "Released")
 
-FIELDS.append(TemplateItem("Added/Purchased", "AddedTime", FieldType.DateTime, "Added"))
-FIELDS.append(TemplateItem("Age Rating", "AgeRating", "String"))
-FIELDS.append(TemplateItem("Alternate Count", "AlternateCount", "Number"))
-FIELDS.append(TemplateItem("Alternate Number", "AlternateNumber", "Number"))
-FIELDS.append(TemplateItem("Alternate Series", "AlternateSeries", "MultipleValue"))
-FIELDS.append(TemplateItem("Black And White", "BlackAndWhite", "YesNo"))
-FIELDS.append(TemplateItem("Book Age", "BookAge", "String", "Age"))
-FIELDS.append(TemplateItem("Book Collection Status", "BookCollectionStatus", "String", "CollectionStatus"))
-FIELDS.append(TemplateItem("Book Condition", "BookCondition", "String", "Condition"))
-FIELDS.append(TemplateItem("Book Location", "BookLocation", "String"))
-FIELDS.append(TemplateItem("Book Notes", "BookNotes", "String", ""))
-FIELDS.append(TemplateItem("Book Owner", "BookOwner", "String", "Owner"))
-FIELDS.append(TemplateItem("Book Price", "BookPrice", "String", "Price"))
-FIELDS.append(TemplateItem("Book Store", "BookStore", "String", "Store"))
-FIELDS.append(TemplateItem("Characters", "Characters", "MultipleValue"))
-FIELDS.append(TemplateItem("Checked", "Checked", "Bool"))
-FIELDS.append(TemplateItem("Colorist", "Colorist", "MultipleValue"))
-FIELDS.append(TemplateItem("Community Rating", "CommunityRating", "Number"))
-FIELDS.append(TemplateItem("Conditional", "Conditional", "Conditional", exclude=False, conditional=False))
-FIELDS.append(TemplateItem("Count", "ShadowCount", "Number", "Count"))
-FIELDS.append(TemplateItem("Counter", "Counter", "Counter", exclude=False))
-FIELDS.append(TemplateItem("Custom Value", "CustomValue", "CustomValue"))
-FIELDS.append(TemplateItem("Cover Artist", "CoverArtist", "MultipleValue"))
-FIELDS.append(TemplateItem("Day", "Day", "Number"))
-FIELDS.append(TemplateItem("Editor", "Editor", "MultipleValue"))
-FIELDS.append(TemplateItem("First Letter", "FirstLetter", "FirstLetter", exclude=False))
-FIELDS.append(TemplateItem("Format", "ShadowFormat", "String", "Format"))
-FIELDS.append(TemplateItem("Genre", "Genre", "MultipleValue"))
-FIELDS.append(TemplateItem("Has Custom Values", "HasCustomValues", "Bool", ""))
-FIELDS.append(TemplateItem("Imprint", "Imprint", "String"))
-FIELDS.append(TemplateItem("Inker", "Inker", "MultipleValue"))
-FIELDS.append(TemplateItem("ISBN", "ISBN", "String"))
-FIELDS.append(TemplateItem("Language", "LanguageAsText", "String", "Language"))
-FIELDS.append(TemplateItem("Letterer", "Letterer", "MultipleValue"))
-FIELDS.append(TemplateItem("Locations", "Locations", "MultipleValue"))
-FIELDS.append(TemplateItem("Main Character Or Team", "MainCharacterOrTeam", "String"))
-FIELDS.append(TemplateItem("Manga", "Manga", "MangaYesNo"))
-FIELDS.append(TemplateItem("Month", "Month", "Month"))
-FIELDS.append(TemplateItem("Notes", "Notes", "String", ""))
-FIELDS.append(TemplateItem("Number", "ShadowNumber", "Number", "Number"))
-FIELDS.append(TemplateItem("Penciller", "Penciller", "MultipleValue"))
-FIELDS.append(TemplateItem("Published", "Published", FieldType.DateTime, ""))
-FIELDS.append(TemplateItem("Publisher", "Publisher", "String"))
-FIELDS.append(TemplateItem("Rating", "Rating", "Number"))
-FIELDS.append(TemplateItem("Read Percentage", "ReadPercentage", "ReadPercentage"))
-FIELDS.append(TemplateItem("Released", "ReleasedTime", FieldType.DateTime, "Released"))
-FIELDS.append(TemplateItem("Review", "Review", "String", ""))
-FIELDS.append(TemplateItem("Scan Information", "ScanInformation", "MultipleValue"))
-FIELDS.append(TemplateItem("Series", "ShadowSeries", "String", "Series"))
-FIELDS.append(TemplateItem("Series Complete", "SeriesComplete", "YesNo"))
-FIELDS.append(TemplateItem("Series Group", "SeriesGroup", "String"))
-FIELDS.append(TemplateItem("Series: First Number", "FirstNumber", "Number"))
-FIELDS.append(TemplateItem("Series: First Month", "FirstMonth", "Month"))
-FIELDS.append(TemplateItem("Series: First Year", "FirstYear", "Year"))
-FIELDS.append(TemplateItem("Series: Last Month", "LastMonth", "Month"))
-FIELDS.append(TemplateItem("Series: Last Number", "LastNumber", "Number"))
-FIELDS.append(TemplateItem("Series: Last Year", "LastYear", "Year"))
-FIELDS.append(TemplateItem("Series: Percentage Read", "SeriesReadPercentage", "ReadPercentage"))
-FIELDS.append(TemplateItem("Series: Running Time Years", "SeriesRunningTimeYears", "Number", ""))
-FIELDS.append(TemplateItem("Story Arc", "StoryArc", "String"))
-FIELDS.append(TemplateItem("Summary", "Summary", "String", ""))
-FIELDS.append(TemplateItem("Tags", "Tags", "MultipleValue"))
-FIELDS.append(TemplateItem("Teams", "Teams", "MultipleValue"))
-FIELDS.append(TemplateItem("Text", "Text", "Text", "", exclude=False, conditional=True))
-FIELDS.append(TemplateItem("Title", "ShadowTitle", "String", "Title"))
-FIELDS.append(TemplateItem("Volume", "ShadowVolume", "Number", "Volume"))
-FIELDS.append(TemplateItem("Web", "Web", "String", "Web"))
-FIELDS.append(TemplateItem("Week", "Week", "Number", "Week"))
-FIELDS.append(TemplateItem("Writer", "Writer", "MultipleValue"))
-FIELDS.append(TemplateItem("Year", "ShadowYear", "Year", "Year"))
+###########################    String fields ##################################
+FIELDS.add("Age Rating", "AgeRating", FieldType.String)
+FIELDS.add("Alternate Series", "AlternateSeries", FieldType.String)
+FIELDS.add("Book Age", "BookAge", FieldType.String, "Age")
+FIELDS.add("Book Collection Status", "BookCollectionStatus", FieldType.String, 
+           "CollectionStatus")
+FIELDS.add("Book Condition", "BookCondition", FieldType.String, "Condition")
+FIELDS.add("Book Location", "BookLocation", FieldType.String, "Location")
+FIELDS.add("Book Notes", "BookNotes", FieldType.String, False, conditional=False)
+FIELDS.add("Book Owner", "BookOwner", FieldType.String, "Owner")
+FIELDS.add("Book Store", "BookStore", FieldType.String, "Store")
+FIELDS.add("File Directory", "FileDirectory", FieldType.String, False, conditional=False)
+FIELDS.add("File Format", "FileFormat", FieldType.String, False, conditional=False)
+FIELDS.add("File Name", "FileName", FieldType.String, False, conditional=False)
+FIELDS.add("File Path", "FilePath", FieldType.String, False, conditional=False)
+FIELDS.add("Format", "ShadowFormat", FieldType.String, "Format")
+FIELDS.add("Imprint", "Imprint", FieldType.String)
+FIELDS.add("ISBN", "ISBN", FieldType.String)
+FIELDS.add("Language", "LanguageAsText", FieldType.String, "Language")
+FIELDS.add("Notes", "Notes", FieldType.String, False, conditional=False)
+FIELDS.add("Publisher", "Publisher", FieldType.String)
+FIELDS.add("Review", "Review", FieldType.String, False, conditional=False)
+FIELDS.add("Series", "ShadowSeries", FieldType.String, "Series")
+FIELDS.add("Series Group", "SeriesGroup", FieldType.String)
+FIELDS.add("Story Arc", "StoryArc", FieldType.String)
+FIELDS.add("Summary", "Summary", FieldType.String, False, conditional=False)
+FIELDS.add("Title", "ShadowTitle", FieldType.String, "Title")
+FIELDS.add("Web", "Web", FieldType.String, False, conditional=False)
 
-FIELDS.sort(key=lambda x: x.name)
+#######################  MultipleValue fields  ################################
+FIELDS.add("Characters", "Characters", FieldType.MultipleValue)
+FIELDS.add("Colorist", "Colorist", FieldType.MultipleValue)
+FIELDS.add("Cover Artist", "CoverArtist", FieldType.MultipleValue)
+FIELDS.add("Editor", "Editor", FieldType.MultipleValue)
+FIELDS.add("Genre", "Genre", FieldType.MultipleValue)
+FIELDS.add("Inker", "Inker", FieldType.MultipleValue)
+FIELDS.add("Letterer", "Letterer", FieldType.MultipleValue)
+FIELDS.add("Locations", "Locations", FieldType.MultipleValue)
+FIELDS.add("Main Character Or Team", "MainCharacterOrTeam", 
+           FieldType.MultipleValue)
+FIELDS.add("Penciller", "Penciller", FieldType.MultipleValue)
+FIELDS.add("Scan Information", "ScanInformation", FieldType.MultipleValue)
+FIELDS.add("Tags", "Tags", FieldType.MultipleValue)
+FIELDS.add("Teams", "Teams", FieldType.MultipleValue)
+FIELDS.add("Writer", "Writer", FieldType.MultipleValue)
+
+#########################   Number fields   ###################################
+FIELDS.add("Alternate Count", "AlternateCount", FieldType.Number)
+FIELDS.add("Alternate Number", "AlternateNumber", FieldType.Number)
+FIELDS.add("Book Price", "BookPrice", FieldType.Number, "Price")
+FIELDS.add("Community Rating", "CommunityRating", FieldType.Number)
+FIELDS.add("Count", "ShadowCount", FieldType.Number, "Count")
+FIELDS.add("Day", "Day", FieldType.Number)
+FIELDS.add("Number", "ShadowNumber", FieldType.Number, "Number")
+FIELDS.add("Rating", "Rating", FieldType.Number)
+FIELDS.add("Volume", "ShadowVolume", FieldType.Number, "Volume")
+FIELDS.add("Week", "Week", FieldType.Number)
+FIELDS.add("Series: First Number", "FirstNumber", FieldType.Number)
+FIELDS.add("Series: Last Number", "LastNumber", FieldType.Number)
+FIELDS.add("Series: Running Time Years", "SeriesRunningTimeYears", 
+           FieldType.Number, False, conditional=False)
+
+##########################    YesNo fields   ##################################
+FIELDS.add("Black And White", "BlackAndWhite", FieldType.YesNo)
+FIELDS.add("Series Complete", "SeriesComplete", FieldType.YesNo)
+
+#######################   MangaYesNo fields ###################################
+FIELDS.add("Manga", "Manga", FieldType.MangaYesNo)
+
+##############################  Month fields  #################################
+FIELDS.add("Month", "Month", FieldType.Month)
+FIELDS.add("Series: First Month", "FirstMonth", FieldType.Month)
+FIELDS.add("Series: Last Month", "LastMonth", FieldType.Month)
+
+##########################    Year fields #####################################
+FIELDS.add("Year", "ShadowYear", FieldType.Year, "Year")
+FIELDS.add("Series: First Year", "FirstYear", FieldType.Year)
+FIELDS.add("Series: Last Year", "LastYear", FieldType.Year)
+
+###########################  Boolean Fields  ##################################
+FIELDS.add("Checked", "Checked", FieldType.Boolean, False, conditional=False)
+FIELDS.add("File Is Missing", "FileIsMissing", FieldType.Boolean, False, conditional=False)
+FIELDS.add("Has Been Opened", "HasBeenOpened", FieldType.Boolean, False, conditional=False)
+FIELDS.add("Has Been Read", "HasBeenRead", FieldType.Boolean, False, conditional=False)
+FIELDS.add("Has Custom Values", "HasCustomValues", FieldType.Boolean, False, conditional=False)
+
+###########################  Special Fields  ##################################
+FIELDS.add("Conditional", "Conditional", FieldType.Conditional, exclude=False, 
+           conditional=False)
+FIELDS.add("Custom Value", "CustomValue", FieldType.CustomValue)
+FIELDS.add("Read Percentage", "ReadPercentage", FieldType.ReadPercentage)
+FIELDS.add("Series: Percentage Read", "SeriesReadPercentage", 
+           FieldType.ReadPercentage)
+FIELDS.add("Counter", "Counter", FieldType.Counter, exclude=False)
+FIELDS.add("First Letter", "FirstLetter", FieldType.FirstLetter, exclude=False)
+FIELDS.add("Text", "Text", FieldType.Text, False, exclude=False, conditional=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#FIELDS.sort(key=lambda x: x.name)
 
 # This contains the fields that are available to add into the template. 
 # Used for building the field selector list
