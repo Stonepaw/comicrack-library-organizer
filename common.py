@@ -40,10 +40,10 @@ class ExcludeStringOperators(object):
 
 
 class ExcludeNumberOperators(object):
-    Is = 0
-    Greater = 1
-    Smaller = 2
-    Range = 3
+    Is = "Is"
+    Greater = "Greater"
+    Smaller = "Smaller"
+    Range = "Range"
 
     @classmethod
     def get_list(cls):

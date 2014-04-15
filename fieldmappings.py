@@ -42,7 +42,7 @@ class Field(object):
         """
         if template is None:
             template = field
-        #self.name = localizer.get_field_name(field, backup_name)
+        self.name = backup_name
         self.backup_name = backup_name
         self.field = field
         self.template = template
@@ -103,111 +103,122 @@ class FieldList(list):
     def get_exclude_fields(self):
         return [i for i in self if i.exclude == True]
 
-    
+
 #Build all the fields
-FIELDS = FieldList()
+def create_fields():
+    fields = FieldList()
+    field_list = []
+    with open('fields.csv', 'r') as f:
+        field_list = f.readlines()
+    for line in field_list[1:]:
+        values = line.strip().split(',')
+        fields.append(Field(values[0], values[1], values[2], values[3], 
+                            values[4] == 'True', values[5] == 'True'))
+    return fields
+FIELDS = create_fields()
 
-#############################   Date fields   #################################
-FIELDS.add("Added", "AddedTime", FieldType.DateTime, "Added")
-FIELDS.add("Published", "Published", FieldType.DateTime)
-FIELDS.add("Released", "ReleasedTime", FieldType.DateTime, "Released")
 
-###########################    String fields ##################################
-FIELDS.add("Age Rating", "AgeRating", FieldType.String)
-FIELDS.add("Alternate Series", "AlternateSeries", FieldType.String)
-FIELDS.add("Book Age", "BookAge", FieldType.String, "Age")
-FIELDS.add("Book Collection Status", "BookCollectionStatus", FieldType.String, 
-           "CollectionStatus")
-FIELDS.add("Book Condition", "BookCondition", FieldType.String, "Condition")
-FIELDS.add("Book Location", "BookLocation", FieldType.String, "Location")
-FIELDS.add("Book Notes", "BookNotes", FieldType.String, False, conditional=False)
-FIELDS.add("Book Owner", "BookOwner", FieldType.String, "Owner")
-FIELDS.add("Book Store", "BookStore", FieldType.String, "Store")
-FIELDS.add("File Directory", "FileDirectory", FieldType.String, False, conditional=False)
-FIELDS.add("File Format", "FileFormat", FieldType.String, False, conditional=False)
-FIELDS.add("File Name", "FileName", FieldType.String, False, conditional=False)
-FIELDS.add("File Path", "FilePath", FieldType.String, False, conditional=False)
-FIELDS.add("Format", "ShadowFormat", FieldType.String, "Format")
-FIELDS.add("Imprint", "Imprint", FieldType.String)
-FIELDS.add("ISBN", "ISBN", FieldType.String)
-FIELDS.add("Language", "LanguageAsText", FieldType.String, "Language")
-FIELDS.add("Notes", "Notes", FieldType.String, False, conditional=False)
-FIELDS.add("Publisher", "Publisher", FieldType.String)
-FIELDS.add("Review", "Review", FieldType.String, False, conditional=False)
-FIELDS.add("Series", "ShadowSeries", FieldType.String, "Series")
-FIELDS.add("Series Group", "SeriesGroup", FieldType.String)
-FIELDS.add("Story Arc", "StoryArc", FieldType.String)
-FIELDS.add("Summary", "Summary", FieldType.String, False, conditional=False)
-FIELDS.add("Title", "ShadowTitle", FieldType.String, "Title")
-FIELDS.add("Web", "Web", FieldType.String, False, conditional=False)
+##############################   Date fields   #################################
+#FIELDS.add("Added", "AddedTime", FieldType.DateTime, "Added")
+#FIELDS.add("Published", "Published", FieldType.DateTime)
+#FIELDS.add("Released", "ReleasedTime", FieldType.DateTime, "Released")
 
-#######################  MultipleValue fields  ################################
-FIELDS.add("Characters", "Characters", FieldType.MultipleValue)
-FIELDS.add("Colorist", "Colorist", FieldType.MultipleValue)
-FIELDS.add("Cover Artist", "CoverArtist", FieldType.MultipleValue)
-FIELDS.add("Editor", "Editor", FieldType.MultipleValue)
-FIELDS.add("Genre", "Genre", FieldType.MultipleValue)
-FIELDS.add("Inker", "Inker", FieldType.MultipleValue)
-FIELDS.add("Letterer", "Letterer", FieldType.MultipleValue)
-FIELDS.add("Locations", "Locations", FieldType.MultipleValue)
-FIELDS.add("Main Character Or Team", "MainCharacterOrTeam", 
-           FieldType.MultipleValue)
-FIELDS.add("Penciller", "Penciller", FieldType.MultipleValue)
-FIELDS.add("Scan Information", "ScanInformation", FieldType.MultipleValue)
-FIELDS.add("Tags", "Tags", FieldType.MultipleValue)
-FIELDS.add("Teams", "Teams", FieldType.MultipleValue)
-FIELDS.add("Writer", "Writer", FieldType.MultipleValue)
+############################    String fields ##################################
+#FIELDS.add("Age Rating", "AgeRating", FieldType.String)
+#FIELDS.add("Alternate Series", "AlternateSeries", FieldType.String)
+#FIELDS.add("Book Age", "BookAge", FieldType.String, "Age")
+#FIELDS.add("Book Collection Status", "BookCollectionStatus", FieldType.String, 
+#           "CollectionStatus")
+#FIELDS.add("Book Condition", "BookCondition", FieldType.String, "Condition")
+#FIELDS.add("Book Location", "BookLocation", FieldType.String, "Location")
+#FIELDS.add("Book Notes", "BookNotes", FieldType.String, False, conditional=False)
+#FIELDS.add("Book Owner", "BookOwner", FieldType.String, "Owner")
+#FIELDS.add("Book Store", "BookStore", FieldType.String, "Store")
+#FIELDS.add("File Directory", "FileDirectory", FieldType.String, False, conditional=False)
+#FIELDS.add("File Format", "FileFormat", FieldType.String, False, conditional=False)
+#FIELDS.add("File Name", "FileName", FieldType.String, False, conditional=False)
+#FIELDS.add("File Path", "FilePath", FieldType.String, False, conditional=False)
+#FIELDS.add("Format", "ShadowFormat", FieldType.String, "Format")
+#FIELDS.add("Imprint", "Imprint", FieldType.String)
+#FIELDS.add("ISBN", "ISBN", FieldType.String)
+#FIELDS.add("Language", "LanguageAsText", FieldType.String, "Language")
+#FIELDS.add("Notes", "Notes", FieldType.String, False, conditional=False)
+#FIELDS.add("Publisher", "Publisher", FieldType.String)
+#FIELDS.add("Review", "Review", FieldType.String, False, conditional=False)
+#FIELDS.add("Series", "ShadowSeries", FieldType.String, "Series")
+#FIELDS.add("Series Group", "SeriesGroup", FieldType.String)
+#FIELDS.add("Story Arc", "StoryArc", FieldType.String)
+#FIELDS.add("Summary", "Summary", FieldType.String, False, conditional=False)
+#FIELDS.add("Title", "ShadowTitle", FieldType.String, "Title")
+#FIELDS.add("Web", "Web", FieldType.String, False, conditional=False)
 
-#########################   Number fields   ###################################
-FIELDS.add("Alternate Count", "AlternateCount", FieldType.Number)
-FIELDS.add("Alternate Number", "AlternateNumber", FieldType.Number)
-FIELDS.add("Book Price", "BookPrice", FieldType.Number, "Price")
-FIELDS.add("Community Rating", "CommunityRating", FieldType.Number)
-FIELDS.add("Count", "ShadowCount", FieldType.Number, "Count")
-FIELDS.add("Day", "Day", FieldType.Number)
-FIELDS.add("Number", "ShadowNumber", FieldType.Number, "Number")
-FIELDS.add("Rating", "Rating", FieldType.Number)
-FIELDS.add("Volume", "ShadowVolume", FieldType.Number, "Volume")
-FIELDS.add("Week", "Week", FieldType.Number)
-FIELDS.add("Series: First Number", "FirstNumber", FieldType.Number)
-FIELDS.add("Series: Last Number", "LastNumber", FieldType.Number)
-FIELDS.add("Series: Running Time Years", "SeriesRunningTimeYears", 
-           FieldType.Number, False, conditional=False)
+########################  MultipleValue fields  ################################
+#FIELDS.add("Characters", "Characters", FieldType.MultipleValue)
+#FIELDS.add("Colorist", "Colorist", FieldType.MultipleValue)
+#FIELDS.add("Cover Artist", "CoverArtist", FieldType.MultipleValue)
+#FIELDS.add("Editor", "Editor", FieldType.MultipleValue)
+#FIELDS.add("Genre", "Genre", FieldType.MultipleValue)
+#FIELDS.add("Inker", "Inker", FieldType.MultipleValue)
+#FIELDS.add("Letterer", "Letterer", FieldType.MultipleValue)
+#FIELDS.add("Locations", "Locations", FieldType.MultipleValue)
+#FIELDS.add("Main Character Or Team", "MainCharacterOrTeam", 
+#           FieldType.MultipleValue)
+#FIELDS.add("Penciller", "Penciller", FieldType.MultipleValue)
+#FIELDS.add("Scan Information", "ScanInformation", FieldType.MultipleValue)
+#FIELDS.add("Tags", "Tags", FieldType.MultipleValue)
+#FIELDS.add("Teams", "Teams", FieldType.MultipleValue)
+#FIELDS.add("Writer", "Writer", FieldType.MultipleValue)
 
-##########################    YesNo fields   ##################################
-FIELDS.add("Black And White", "BlackAndWhite", FieldType.YesNo)
-FIELDS.add("Series Complete", "SeriesComplete", FieldType.YesNo)
+##########################   Number fields   ###################################
+#FIELDS.add("Alternate Count", "AlternateCount", FieldType.Number)
+#FIELDS.add("Alternate Number", "AlternateNumber", FieldType.Number)
+#FIELDS.add("Book Price", "BookPrice", FieldType.Number, "Price")
+#FIELDS.add("Community Rating", "CommunityRating", FieldType.Number)
+#FIELDS.add("Count", "ShadowCount", FieldType.Number, "Count")
+#FIELDS.add("Day", "Day", FieldType.Number)
+#FIELDS.add("Number", "ShadowNumber", FieldType.Number, "Number")
+#FIELDS.add("Rating", "Rating", FieldType.Number)
+#FIELDS.add("Volume", "ShadowVolume", FieldType.Number, "Volume")
+#FIELDS.add("Week", "Week", FieldType.Number)
+#FIELDS.add("Series: First Number", "FirstNumber", FieldType.Number)
+#FIELDS.add("Series: Last Number", "LastNumber", FieldType.Number)
+#FIELDS.add("Series: Running Time Years", "SeriesRunningTimeYears", 
+#           FieldType.Number, False, conditional=False)
 
-#######################   MangaYesNo fields ###################################
-FIELDS.add("Manga", "Manga", FieldType.MangaYesNo)
+###########################    YesNo fields   ##################################
+#FIELDS.add("Black And White", "BlackAndWhite", FieldType.YesNo)
+#FIELDS.add("Series Complete", "SeriesComplete", FieldType.YesNo)
 
-##############################  Month fields  #################################
-FIELDS.add("Month", "Month", FieldType.Month)
-FIELDS.add("Series: First Month", "FirstMonth", FieldType.Month)
-FIELDS.add("Series: Last Month", "LastMonth", FieldType.Month)
+########################   MangaYesNo fields ###################################
+#FIELDS.add("Manga", "Manga", FieldType.MangaYesNo)
 
-##########################    Year fields #####################################
-FIELDS.add("Year", "ShadowYear", FieldType.Year, "Year")
-FIELDS.add("Series: First Year", "FirstYear", FieldType.Year)
-FIELDS.add("Series: Last Year", "LastYear", FieldType.Year)
+###############################  Month fields  #################################
+#FIELDS.add("Month", "Month", FieldType.Month)
+#FIELDS.add("Series: First Month", "FirstMonth", FieldType.Month)
+#FIELDS.add("Series: Last Month", "LastMonth", FieldType.Month)
 
-###########################  Boolean Fields  ##################################
-FIELDS.add("Checked", "Checked", FieldType.Boolean, False, conditional=False)
-FIELDS.add("File Is Missing", "FileIsMissing", FieldType.Boolean, False, conditional=False)
-FIELDS.add("Has Been Opened", "HasBeenOpened", FieldType.Boolean, False, conditional=False)
-FIELDS.add("Has Been Read", "HasBeenRead", FieldType.Boolean, False, conditional=False)
-FIELDS.add("Has Custom Values", "HasCustomValues", FieldType.Boolean, False, conditional=False)
+###########################    Year fields #####################################
+#FIELDS.add("Year", "ShadowYear", FieldType.Year, "Year")
+#FIELDS.add("Series: First Year", "FirstYear", FieldType.Year)
+#FIELDS.add("Series: Last Year", "LastYear", FieldType.Year)
 
-###########################  Special Fields  ##################################
-FIELDS.add("Conditional", "Conditional", FieldType.Conditional, exclude=False, 
-           conditional=False)
-FIELDS.add("Custom Value", "CustomValue", FieldType.CustomValue)
-FIELDS.add("Read Percentage", "ReadPercentage", FieldType.ReadPercentage)
-FIELDS.add("Series: Percentage Read", "SeriesReadPercentage", 
-           FieldType.ReadPercentage)
-FIELDS.add("Counter", "Counter", FieldType.Counter, exclude=False)
-FIELDS.add("First Letter", "FirstLetter", FieldType.FirstLetter, exclude=False)
-FIELDS.add("Text", "Text", FieldType.Text, False, exclude=False, conditional=True)
+############################  Boolean Fields  ##################################
+#FIELDS.add("Checked", "Checked", FieldType.Boolean, False, conditional=False)
+#FIELDS.add("File Is Missing", "FileIsMissing", FieldType.Boolean, False, conditional=False)
+#FIELDS.add("Has Been Opened", "HasBeenOpened", FieldType.Boolean, False, conditional=False)
+#FIELDS.add("Has Been Read", "HasBeenRead", FieldType.Boolean, False, conditional=False)
+#FIELDS.add("Has Custom Values", "HasCustomValues", FieldType.Boolean, False, conditional=False)
+
+############################  Special Fields  ##################################
+#FIELDS.add("Conditional", "Conditional", FieldType.Conditional, exclude=False, 
+#           conditional=False)
+#FIELDS.add("Custom Value", "CustomValue", FieldType.CustomValue)
+#FIELDS.add("Read Percentage", "ReadPercentage", FieldType.ReadPercentage)
+#FIELDS.add("Series: Percentage Read", "SeriesReadPercentage", 
+#           FieldType.ReadPercentage)
+#FIELDS.add("Counter", "Counter", FieldType.Counter, exclude=False)
+#FIELDS.add("First Letter", "FirstLetter", FieldType.FirstLetter, exclude=False)
+#FIELDS.add("Text", "Text", FieldType.Text, False, exclude=False, conditional=True)
 
 
 

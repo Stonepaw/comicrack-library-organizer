@@ -1,0 +1,78 @@
+Name,Field,Type,Template,Exclude Rules,Conditional
+Added,AddedTime,DateTime,Added,True,True
+Published,Published,DateTime,Published,True,True
+Released,ReleasedTime,DateTime,Released,True,True
+Age Rating,AgeRating,String,AgeRating,True,True
+Alternate Series,AlternateSeries,String,AlternateSeries,True,True
+Book Age,BookAge,String,BookAge,True,True
+Book Collection Status,BookCollectionStatus,String,CollectionStatus,True,True
+Book Condition,BookCondition,String,Condition,True,True
+Book Location,BookLocation,String,Location,True,True
+Book Notes,BookNotes,String,,True,False
+Book Owner,BookOwner,String,Owner,True,True
+Book Store,BookStore,String,Store,True,True
+File Directory,FileDirectory,String,,True,False
+File Format,FileFormat,String,,True,False
+File Name,FileName,String,,True,False
+File Path,FilePath,String,,True,False
+Format,Format,String,Format,True,True
+Imprint,Imprint,String,Imprint,True,True
+ISBN,ISBN,String,ISBN,True,True
+Language,LanguageAsText,String,Language,True,True
+Notes,Notes,String,,True,False
+Publisher,Publisher,String,Publisher,True,True
+Review,Review,String,,True,False
+Series,ShadowSeries,String,Series,True,True
+Series Group,SeriesGroup,String,SeriesGroup,True,True
+Story Arc,StoryArc,String,StoryArc,True,True
+Summary,Summary,String,,True,False
+Title,ShadowTitle,String,Title,True,True
+Web,Web,String,,True,False
+Characters,Characters,MultipleValue,Characters,True,True
+Colorist,Colorist,MultipleValue,Colorist,True,True
+Cover Artist,CoverArtist,MultipleValue,CoverArtist,True,True
+Editor,Editor,MultipleValue,Editor,True,True
+Genre,Genre,MultipleValue,Genre,True,True
+Inker,Inker,MultipleValue,Inker,True,True
+Letterer,Letterer,MultipleValue,Letterer,True,True
+Locations,Locations,MultipleValue,Locations,True,True
+Main Character Or Team,MainCharacterOrTeam,MultipleValue,MainCharacterOrTeam,True,True
+Penciller,Penciller,MultipleValue,Penciller,True,True
+Scan Information,ScanInformation,MultipleValue,ScanInformation,True,True
+Tags,Tags,MultipleValue,Tags,True,True
+Teams,Teams,MultipleValue,Teams,True,True
+Writer,Writer,MultipleValue,Writer,True,True
+Alternate Count,AlternateCount,Number,AlternateCount,True,True
+Alternate Number,AlternateNumber,Number,AlternateNumber,True,True
+Book Price,BookPrice,Number,Price,True,True
+Community Rating,CommunityRating,Number,CommunityRating,True,True
+Count,ShadowCount,Number,Count,True,True
+Day,Day,Number,Day,True,True
+Number,ShadowNumber,Number,Number,True,True
+Rating,Rating,Number,Rating,True,True
+Volume,ShadowVolume,Number,Volume,True,True
+Week,Week,Number,Week,True,True
+Series: First Number,FirstNumber,Number,FirstNumber,True,True
+Series: Last Number,LastNumber,Number,LastNumber,True,True
+Series: Running Time Years,SeriesRunningTimeYears,Number,SeriesRunningTimeYears,True,True
+Black And White,BlackAndWhite,YesNo,BlackAndWhite,True,True
+Series Complete,SeriesComplete,YesNo,SeriesComplete,True,True
+Manga,Manga,MangaYesNo,Manga,True,True
+Month,Month,Month,Month,True,True
+Series: First Month,FirstMonth,Month,FirstMonth,True,True
+Series: Last Month,LastMonth,Month,LastMonth,True,True
+Year,ShadowYear,Year,Year,True,True
+Series: First Year,FirstYear,Year,FirstYear,True,True
+Series: Last Year,LastYear,Year,LastYear,True,True
+Checked,Checked,Boolean,,True,False
+File Is Missing,FileIsMissing,Boolean,,True,False
+Has Been Opened,HasBeenOpened,Boolean,,True,False
+Has Been Read,HasBeenRead,Boolean,,True,False
+Has Custom Values,HasCustomValues,Boolean,,True,False
+Conditional,Conditional,Conditional,Conditional,False,False
+Custom Value,CustomValue,CustomValue,CustomValue,True,True
+Read Percentage,ReadPercentage,ReadPercentage,ReadPercentage,True,True
+Series: Percentage Read,SeriesReadPercentage,ReadPercentage,SeriesReadPercentage,True,True
+Counter,Counter,Counter,Counter,False,True
+First Letter,FirstLetter,FirstLetter,FirstLetter,False,True
+Text,Text,Text,Text,False,True

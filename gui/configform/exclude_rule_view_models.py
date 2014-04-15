@@ -162,7 +162,7 @@ class ExcludeRuleViewModel(ViewModelBase):
         #delete function in the view.
         self.parent = parent
         if not self.fields:
-            fields = FIELDS.exclude_rule_fields
+            fields = LOCALIZER.translated_field_list.exclude_rule_fields
             fields.sort(cmp=PythonLocale.strcoll, key=lambda f: f.name)
             ExcludeRuleViewModel.fields = fields
         self._exclude_rule = exclude_rule
@@ -186,7 +186,7 @@ class ExcludeRuleViewModel(ViewModelBase):
     @notify_property
     def SelectedField(self):
         try:
-            return FIELDS.get_by_field(self.Rule.field)
+            return LOCALIZER.translated_field_list.get_by_field(self.Rule.field)
         except KeyError:
             return None
 
