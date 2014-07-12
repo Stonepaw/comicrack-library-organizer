@@ -3,27 +3,33 @@ import clr
 clr.AddReference("IronPython.Modules")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.dll")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.Shell.dll")
+clr.AddReference("NLog")
 
 from IronPython.Modules import PythonLocale
 from Microsoft.WindowsAPICodePack.Dialogs import CommonOpenFileDialog, CommonFileDialogResult
+from NLog import LogManager
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Specialized import NotifyCollectionChangedAction
 
-from fieldmappings import FIELDS, library_organizer_fields, template_fields, Field
+from localizer import FIELDS
 from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
-from locommon import REQUIRED_ILLEGAL_CHARS
+from common import REQUIRED_ILLEGAL_CHARS
+from fields import Field
 from losettings import Profile
 from wpfutils import Command, notify_property, ViewModelBase
 
 
 PythonLocale.setlocale(PythonLocale.LC_ALL, "")
 
+
 class ConfigureFormViewModel(ViewModelBase):
+    logger = LogManager.GetLogger("ConfigureFormViewModel")
 
     def __init__(self, profiles, global_settings):
+        self.logger.Info("Initializing ConfigureFormViewModel")
         super(ConfigureFormViewModel, self).__init__()
         self.FileFolderViewModel = ConfigureFormFileFolderViewModel()
-        self.OptionsViewModel = ConfigureFormOptionsViewModel(global_settings)
+        #self.OptionsViewModel = ConfigureFormOptionsViewModel(global_settings)
         self.Profiles = ObservableCollection[Profile](profiles.values())
         self._profile = None
         self._profile_names = profiles.keys()
@@ -43,8 +49,8 @@ class ConfigureFormViewModel(ViewModelBase):
     @Profile.setter
     def Profile(self, value):
         self._profile = value
-        self.FileFolderViewModel.Profile = value
-        self.OptionsViewModel.Profile = value
+        #self.FileFolderViewModel.Profile = value
+        #self.OptionsViewModel.Profile = value
         self.OnPropertyChanged("BaseFolder")
     
     #BaseFolder
@@ -88,13 +94,16 @@ class ConfigureFormFileFolderViewModel(ViewModelBase):
     """
     Controls the Files/Folder template builder page of the configureform
     """
+    logger = LogManager.GetLogger("ConfigureFormFileFolderViewModel")
+
     def __init__(self):
+        self.logger.Info("Intializing ConfigureFormFileFolderViewModel") 
         super(ConfigureFormFileFolderViewModel, self).__init__()
         self._field_options = NumberInsertViewModel("Number")
         self.template_field_selectors = sorted(
-                [FIELDS.get_by_field(field) for field in template_fields], 
+                FIELDS.template_fields, 
                 key=lambda x: x.name, cmp=PythonLocale.strcoll)
-        self._selectedField = Field("", "", "", "")
+        self._selectedField = self.template_field_selectors[0]
         self.ConditionalViewModel = ConditionalInsertViewModel()
 
         #Commands
@@ -267,9 +276,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
         self._add_illegal_char_checked = False
 
         if self.empty_fields is None:
-            self.empty_fields = [FIELDS.get_by_field(field) 
-                for field in template_fields 
-                if field not in library_organizer_fields]
+            self.empty_fields = FIELDS.template_fields
 
             #Sorting with PythonLocale to fix sorting localized strings
             self.empty_fields.sort(key=lambda x: x.name, 

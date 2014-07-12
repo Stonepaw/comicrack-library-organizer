@@ -1,0 +1,8 @@
+2014-07-09 21:34:52.6527|INFO|Fields|Getting fields from csv
+2014-07-09 21:34:52.6957|INFO|Fields|Sucessfuly loaded fields info
+2014-07-09 21:34:54.5458|INFO|ConfigureForm|Initializing Configure Form
+2014-07-09 21:34:54.5518|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-09 21:34:54.5518|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-09 21:34:54.6628|INFO|ConfigureForm|Loading the configureform images
+2014-07-09 21:34:54.7698|INFO|ConfigureForm|Loading configure form xaml
+2014-07-09 21:34:56.3399|INFO|ConfigureForm|Setting up text highlighting

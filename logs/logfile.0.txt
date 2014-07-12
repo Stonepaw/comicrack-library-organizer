@@ -1,0 +1,82 @@
+2014-07-07 19:06:06.9321|INFO|Fields|Getting fields from csv
+2014-07-07 19:06:06.9981|ERROR|Fields|[Errno 2] Could not find file 'E:\Code Projects\library-organizer\branches\2.2\common\fields.csv'.: E:\Code Projects\library-organizer\branches\2.2\common\fields.csv
+2014-07-07 19:06:06.9981|ERROR|Fields|IronPython.Runtime.Types.PythonType
+2014-07-07 19:11:46.8476|INFO|Fields|Getting fields from csv
+2014-07-07 19:11:46.8956|ERROR|Fields|[Errno 2] Could not find file 'E:\Code Projects\library-organizer\branches\2.2\common\fields.csv'.: E:\Code Projects\library-organizer\branches\2.2\common\fields.csv
+2014-07-07 19:58:49.9470|INFO|Fields|Getting fields from csv
+2014-07-07 19:58:50.0160|ERROR|Fields|[Errno 2] Could not find file 'E:\Code Projects\library-organizer\branches\2.2\common\fields.csv'.: E:\Code Projects\library-organizer\branches\2.2\common\fields.csv
+2014-07-07 19:59:21.4268|INFO|Fields|Getting fields from csv
+2014-07-07 19:59:21.4688|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 19:59:32.8245|INFO|Fields|Getting fields from csv
+2014-07-07 19:59:32.8705|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:00:22.6993|INFO|Fields|Getting fields from csv
+2014-07-07 20:00:22.7424|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:01:06.0198|INFO|Fields|Getting fields from csv
+2014-07-07 20:01:06.0628|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:01:18.6425|INFO|Fields|Getting fields from csv
+2014-07-07 20:01:18.6735|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:01:55.6677|INFO|Fields|Getting fields from csv
+2014-07-07 20:01:55.7117|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:02:33.1828|INFO|Fields|Getting fields from csv
+2014-07-07 20:02:33.2258|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:02:48.5377|INFO|Fields|Getting fields from csv
+2014-07-07 20:02:48.5827|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:03:07.1508|INFO|Fields|Getting fields from csv
+2014-07-07 20:03:07.1948|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:03:30.5031|INFO|Fields|Getting fields from csv
+2014-07-07 20:03:30.5471|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:03:49.8072|INFO|Fields|Getting fields from csv
+2014-07-07 20:03:49.8502|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:03:55.0065|INFO|Fields|Getting fields from csv
+2014-07-07 20:03:55.0485|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:04:25.8833|INFO|Fields|Getting fields from csv
+2014-07-07 20:04:25.9303|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:04:51.0167|INFO|Fields|Getting fields from csv
+2014-07-07 20:04:51.0597|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:05:20.5834|INFO|Fields|Getting fields from csv
+2014-07-07 20:05:20.6264|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:06:00.3497|INFO|Fields|Getting fields from csv
+2014-07-07 20:06:00.3927|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:06:41.1820|INFO|Fields|Getting fields from csv
+2014-07-07 20:06:41.2250|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:07:02.2822|INFO|Fields|Getting fields from csv
+2014-07-07 20:07:02.3132|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:07:41.3574|INFO|Fields|Getting fields from csv
+2014-07-07 20:07:41.4014|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:09:16.1189|INFO|Fields|Getting fields from csv
+2014-07-07 20:09:16.1619|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:18:37.3210|INFO|Fields|Getting fields from csv
+2014-07-07 20:18:37.3290|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:18:39.0531|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 20:21:17.0571|INFO|Fields|Getting fields from csv
+2014-07-07 20:21:17.0781|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:21:18.8112|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 20:21:18.8112|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-07 20:21:18.8262|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-07 20:22:20.8977|INFO|Fields|Getting fields from csv
+2014-07-07 20:22:20.9087|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 20:22:22.6948|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 20:22:22.6948|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-07 20:22:22.7028|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-07 21:50:50.8525|INFO|Fields|Getting fields from csv
+2014-07-07 21:50:50.8895|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 21:52:16.5434|INFO|Fields|Getting fields from csv
+2014-07-07 21:52:16.5684|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 21:52:19.9646|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 21:52:19.9646|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-07 21:52:19.9816|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-07 21:53:46.1975|INFO|Fields|Getting fields from csv
+2014-07-07 21:53:46.2195|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 21:53:48.0696|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 21:53:48.0746|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-07 21:53:48.0746|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-07 21:54:04.5885|INFO|ConfigureForm|Loading the configureform images
+2014-07-07 21:54:04.6875|INFO|ConfigureForm|Loading configure form xaml
+2014-07-07 21:54:39.3945|INFO|Fields|Getting fields from csv
+2014-07-07 21:54:39.4165|INFO|Fields|Sucessfuly loaded fields info
+2014-07-07 21:54:41.2636|INFO|ConfigureForm|Initializing Configure Form
+2014-07-07 21:54:41.2706|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-07-07 21:54:41.2706|INFO|ConfigureFormFileFolderViewModel|Intializing ConfigureFormFileFolderViewModel
+2014-07-07 21:54:51.3552|INFO|ConfigureForm|Loading the configureform images
+2014-07-07 21:54:51.3952|INFO|ConfigureForm|Loading configure form xaml
+2014-07-07 21:54:53.0453|INFO|ConfigureForm|Setting up text highlighting

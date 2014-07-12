@@ -1,8 +1,10 @@
 from locommon import comic_fields, library_organizer_fields
 import clr
 
-from common import ExcludeBoolOperators, ExcludeDateOperators, ExcludeMangaYesNoOperators, ExcludeMangaYesNoOperators, ExcludeNumberOperators, ExcludeStringOperators, ExcludeYesNoOperators
-from fieldmappings import FIELDS
+from globals import ComicRack
+
+from common_old import ExcludeBoolOperators, ExcludeDateOperators, ExcludeMangaYesNoOperators, ExcludeMangaYesNoOperators, ExcludeNumberOperators, ExcludeStringOperators, ExcludeYesNoOperators
+from fields import FIELDS
 
 
 #Caching because these functions could be called in different modules.
@@ -275,7 +277,7 @@ class Localizer(object):
     _number_operators = None
     _yes_no_operators = None
     _manga_yes_no_operators = None
-    _field_names = None
+    _fields = None
 
     @property
     def all_any_operators(self):
@@ -398,7 +400,7 @@ class Localizer(object):
         return self._yes_no_operators
 
     @property
-    def translated_field_list(self):
+    def FIELDS(self):
         """Retrieves the translated field names from the built in 
         translations file and also the library organizer translation
         file.
@@ -406,10 +408,11 @@ class Localizer(object):
         Returns: A FieldList with a collection of Field object with the
             name property with the correct translated name.
         """
-        if self._field_names is None:
+        if self._fields is None:
             fields = FIELDS
             for f in fields:
-                f.name = get_field_name(f.field, f.backup_name)
-            Localizer._field_names = fields
-        return self._field_names
+                f.name = get_field_name(f.field, f.default_name)
+            Localizer._fields = fields
+        return self._fields
 
+LOCALIZER = Localizer()

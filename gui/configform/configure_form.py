@@ -3,8 +3,10 @@ clr.AddReference("IronPython.Wpf")
 clr.AddReference("PresentationFramework")
 clr.AddReference("PresentationCore")
 clr.AddReference("System.Windows.Forms")
+clr.AddReference("NLog")
 
 from IronPython.Modules import Wpf
+from NLog import LogManager
 from System import Uri
 from System.Diagnostics import Process, ProcessStartInfo
 from System.IO import FileInfo, Path
@@ -16,14 +18,19 @@ from System.Windows.Media.Imaging import BitmapImage
 from codeboxdecorations import LibraryOrganizerArgsDecoration, LibraryOrganizerNameDecoration, LibraryOrganizerPrefixSuffixDecoration
 from config_form_view_models import ConfigureFormViewModel
 from insert_view_models import InsertFieldTemplateSelector
-from locommon import SCRIPTDIRECTORY
+from common import SCRIPTDIRECTORY
+from globals import RUNNER
 from wpfutils import ComparisonConverter
 
-RUNNER = False
+logger = LogManager.GetLogger("ConfigureForm")
 
 class ConfigureForm(Window):
-    def __init__(self, profiles, global_settings):
+    """The code behind for the Configure form.
 
+    Most of the form is controled by viewmodels.
+    """
+    def __init__(self, profiles, global_settings):
+        logger.Info("Initializing Configure Form")
         # Release version will have a flatted directory structure
         if RUNNER:
             directory = Path.Combine(SCRIPTDIRECTORY, "resources\icons")
@@ -36,33 +43,42 @@ class ConfigureForm(Window):
         self.Resources.Add("InsertFieldTemplateSelector", 
                            InsertFieldTemplateSelector())
 
+
+        logger.Info("Loading the configureform images")
         """ Insert the images required into the resources. Images have to
         be inserted this way because of changing directory structure
         in dev and release """
-        self.Resources.Add("HomeImage", BitmapImage(
-                Uri(Path.Combine(directory, 'home_32.png'))))
-        self.Resources.Add("FolderImage", BitmapImage(
-                Uri(Path.Combine(directory, 'folder_32.png'))))
-        self.Resources.Add("FileImage", BitmapImage(
-                Uri(Path.Combine(directory, 'page_text_32.png'))))
-        self.Resources.Add("RulesImage", BitmapImage(
-                Uri(Path.Combine(directory, 'chart_32.png'))))
-        self.Resources.Add("OptionsImage", BitmapImage(
-                Uri(Path.Combine(directory, 'tools_32.png'))))
+        try:
+            self.Resources.Add("HomeImage", BitmapImage(
+                    Uri(Path.Combine(directory, 'home_32.png'))))
+            self.Resources.Add("FolderImage", BitmapImage(
+                    Uri(Path.Combine(directory, 'folder_32.png'))))
+            self.Resources.Add("FileImage", BitmapImage(
+                    Uri(Path.Combine(directory, 'page_text_32.png'))))
+            self.Resources.Add("RulesImage", BitmapImage(
+                    Uri(Path.Combine(directory, 'chart_32.png'))))
+            self.Resources.Add("OptionsImage", BitmapImage(
+                    Uri(Path.Combine(directory, 'tools_32.png'))))
+            b = BitmapImage()
+            b.BeginInit()
+            b.DecodePixelWidth = 16
+            b.UriSource = Uri(Path.Combine(directory, 'tools_32.png'))
+            b.EndInit()
 
-        b = BitmapImage()
-        b.BeginInit()
-        b.DecodePixelWidth = 16
-        b.UriSource = Uri(Path.Combine(directory, 'tools_32.png'))
-        b.EndInit()
-
-        self.Resources.Add("SmallOptionsImage", b)
-
+            self.Resources.Add("SmallOptionsImage", b)
+        except IOError, ex:
+            logger.Error(ex)
+            raise
         self.Resources.Add("ComparisonConverter", ComparisonConverter())
-        Wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName, 
-                                             'ConfigureFormNew.xaml'))
 
+        try:
+            logger.Info("Loading configure form xaml")
 
+            Wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName, 
+                                                 'ConfigureForm.xaml'))
+        except Exception, ex:
+            logger.Error(ex)
+            raise
 
         self.setup_text_highlighting();
 
@@ -70,6 +86,7 @@ class ConfigureForm(Window):
         """
         Setups up the text highlighting for the template text boxes
         """
+        logger.Info("Setting up text highlighting")
         names = LibraryOrganizerNameDecoration()
         names.Brush = SolidColorBrush(Colors.Blue)
         self.FileTemplateTextBox.Decorations.Add(names);

@@ -8,11 +8,14 @@ from System.ComponentModel import BackgroundWorker
 from IronPython.Modules import PythonLocale
 from System.Windows.Controls import DataTemplateSelector
 
-from fieldmappings import conditional_fields, conditional_then_else_fields, FIELDS, first_letter_fields
+
 import localizer
+from fieldmappings import conditional_fields, conditional_then_else_fields, first_letter_fields
+from localizer import LOCALIZER
 from locommon import date_formats, get_custom_value_keys
 from wpfutils import notify_property, NotifyPropertyChangedBase, ViewModelBase
 
+FIELDS = LOCALIZER.FIELDS
 
 class InsertViewModel(object):
     """
@@ -204,7 +207,7 @@ class YesNoInsertViewModel(InsertViewModel):
     """
     The insert view model for a YesNo field.
     """
-    YesNoOperators = SortedDictionary[str, str](localizer.get_yes_no_operators())
+    YesNoOperators = SortedDictionary[str, str](LOCALIZER.yes_no_operators)
 
     def __init__(self, field):
         self.SelectedYesNo = "Yes"
@@ -233,7 +236,7 @@ class MangaYesNoInsertViewModel(YesNoInsertViewModel):
     The insert view model for a MangaYesNo field.
     """
 
-    YesNoOperators = SortedDictionary[str, str](localizer.get_manga_yes_no_operators())
+    YesNoOperators = SortedDictionary[str, str](LOCALIZER.manga_yes_no_operators)
 
 
 class FirstLetterInsertViewModel(InsertViewModel):
@@ -302,10 +305,10 @@ class ConditionalInsertViewModel(ViewModelBase):
 
     def __init__(self):
         super(ConditionalInsertViewModel, self).__init__()
-        self.ConditionalFields = sorted([FIELDS.get_by_field(f) for f in conditional_fields],
+        self.ConditionalFields = sorted(FIELDS.conditional_fields,
                                         PythonLocale.strcoll,
                                         lambda x: x.name)
-        self.ConditionalThenElseFields = sorted([FIELDS.get_by_field(f) for f in conditional_then_else_fields],
+        self.ConditionalThenElseFields = sorted(FIELDS.conditional_then_else_fields,
                                         PythonLocale.strcoll,
                                         lambda x: x.name)
         self._selected_conditional_field = None
@@ -465,13 +468,12 @@ class CustomFieldInsertViewModel(InsertViewModel, NotifyPropertyChangedBase):
         self._selected_item = ""
 
         if self.custom_keys.Count == 0:
+            self._retrieving_custom_keys = True
             self.IsRetrievingCustomKeys = True
             b = BackgroundWorker()
             b.DoWork += self.retrieve_custom_values
             b.RunWorkerCompleted += self.retrieve_custom_values_completed
             b.RunWorkerAsync()
-            self._retrieving_custom_keys = True
-        
         else:
             self._selected_item = self.custom_keys[0]
             

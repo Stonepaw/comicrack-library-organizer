@@ -1,0 +1,2 @@
+RUNNER = False
+ComicRack = None
