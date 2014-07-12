@@ -1,0 +1,5 @@
+2014-07-07 18:51:41.2856|INFO|Fields|Getting fields from csv
+2014-07-07 18:51:41.3656|ERROR|Fields|[Errno 2] Could not find file 'E:\Code Projects\library-organizer\branches\2.2\common\fields.csv'.: E:\Code Projects\library-organizer\branches\2.2\common\fields.csv
+2014-07-07 18:56:52.2374|INFO|Fields|Getting fields from csv
+2014-07-07 18:56:52.2914|ERROR|Fields|[Errno 2] Could not find file 'E:\Code Projects\library-organizer\branches\2.2\common\fields.csv'.: E:\Code Projects\library-organizer\branches\2.2\common\fields.csv
+2014-07-07 18:56:52.2914|ERROR|Fields|IronPython.Runtime.Types.PythonType
