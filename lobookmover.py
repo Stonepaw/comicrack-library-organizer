@@ -28,7 +28,7 @@ import re
 
 import System
 
-from System import Func, Action, ArgumentException, ArgumentNullException, NotSupportedException
+from System import Func, Action, ArgumentException, ArgumentNullException, NotSupportedException, Single
 
 from System.Text import StringBuilder
 
@@ -1206,7 +1206,7 @@ class PathMaker(object):
                          "manga" : "Manga", "seriesComplete" : "SeriesComplete", "first" : "FirstLetter", "read" : "ReadPercentage",
                          "counter" : "Counter", "startmonth" : "StartMonth", "startmonth#" : "StartMonth", "colorist" : "Colorist", "coverartist" : "CoverArtist",
                          "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
-                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber"}
+                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber", "Rating" : "Rating", 'CommunityRating': 'CommunityRating', "Custom" : 'Custom'}
 
     template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
 
@@ -1481,6 +1481,9 @@ class PathMaker(object):
             elif field == "LastIssueNumber":
                 return self.insert_last_issue_number(args_match)
 
+            elif field == "Custom":
+                return self.insert_custom_value(args[0])
+
             elif type(getattr(self.book, field)) is System.DateTime:
                 if args:
                     return self.insert_formated_datetime(args[0], field)
@@ -1728,6 +1731,12 @@ class PathMaker(object):
             return date_time.ToString(time_format)
         return date_time.ToString()
 
+    def insert_custom_value(self, key):
+        r = self.book.GetCustomValue(key)
+        if r is None:
+            return ""
+        return r
+
     def insert_first_issue_number(self, padding):
         """
         padding is the padding used, can be none.
@@ -1969,7 +1978,7 @@ class PathMaker(object):
         except ValueError:
             return value
 
-        if type(value) == int:
+        if type(value) in (int, System.Single):
             value = str(value)
 
         if numberValue >= 0:

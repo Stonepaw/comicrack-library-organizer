@@ -639,3 +639,13 @@ def check_excluded_folders(book_path, profile):
         if path in book_path:
             return False
     return True
+
+
+def get_custom_value_keys():
+    """Retrieves a list of all the custom value keys in the library"""
+    keys = []
+    for book in ComicRack.App.GetLibraryBooks():
+        for pair in book.GetCustomValues():
+            if pair.Key not in keys:
+                keys.append(pair.Key)
+    return keys
