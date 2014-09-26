@@ -43,7 +43,7 @@ from locommon import Mode, ExcludeGroup, ExcludeRule, field_to_name, name_to_fie
 
 from loforms import NewIllegalCharacterDialog, GetProfileNameDialog
 
-from locommon import SCRIPTDIRECTORY, ICON, check_excluded_folders, check_metadata_rules
+from locommon import SCRIPTDIRECTORY, ICON, check_excluded_folders, check_metadata_rules, get_custom_value_keys
 
 import losettings
 
@@ -1602,6 +1602,16 @@ class ConfigureForm(Form):
         self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
+        self.Custom = InsertControlFirstLetter()
+        self.Custom.SetTemplate("Custom", "Custom")
+        self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
+        self.Custom.Location = Point(4, 280)
+        self.Custom.Tag = self.Custom.Location
+        self.Custom.Name = "Custom"
+        self.Custom.SetComboBoxItems(get_custom_value_keys())
+        self._text_insert_controls_list['custom'] = self.Custom
+        
+
         self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.Values))
         
         
@@ -1670,10 +1680,24 @@ class ConfigureForm(Form):
         self.Year.Tag = self.Year.Location
         self._number_insert_controls_list["year"] = self.Year
 
+        self.Rating = InsertControl()
+        self.Rating.SetTemplate("Rating", "Rating")
+        self.Rating.Name = "Rating"
+        self.Rating.Location = Point(4, 190)
+        self.Rating.Tag = self.Rating.Location
+        self._number_insert_controls_list['Rating'] = self.Rating
+
+        self.CommunityRating = InsertControl()
+        self.CommunityRating.SetTemplate("CommunityRating", "CommunityRating")
+        self.CommunityRating.Name = "Rating"
+        self.CommunityRating.Location =Point(248, 190)
+        self.CommunityRating.Tag = self.CommunityRating.Location
+        self._number_insert_controls_list['CommunityRating'] = self.CommunityRating
+
         number_insert_controls_label.Text = "Use a padding of 0 for automatic padding. This is based on the last issue of the series in the library. For example if the last issue number is #50 then the padding will be 2 for all issues in the series."
         number_insert_controls_label.AutoSize = True
         number_insert_controls_label.MaximumSize = Size(490, 0)
-        number_insert_controls_label.Location = Point(4, 190)
+        number_insert_controls_label.Location = Point(4, 235)
 
         self._number_insert_controls.Controls.Add(number_insert_controls_label)
         self._number_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._number_insert_controls_list.Values))
@@ -1962,10 +1986,11 @@ class ConfigureForm(Form):
         self.Read = InsertControlReadPercentage()
         self.Read.SetTemplate("read", "Read %")
         self.Read.SetLabels("Prefix", "", "Suffix", "Text", "Operator", "Percent")
-        self.Read.Location = Point(4, 450)
+        self.Read.Location = Point(4, 460)
         self.Read.Tag = self.Read.Location
         self.Read.Name = "Read Percentage"
         self._calculated_insert_controls_list["read percentage"] = self.Read
+
 
         # 
         # calculated_insert_controls_start_year_information

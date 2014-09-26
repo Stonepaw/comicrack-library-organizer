@@ -1,4 +1,4 @@
-﻿2.1.8
-Fix for non-integer values messing up the automatic padding system
+﻿2.1.11
+Added Rating, Community Rating and Custom Values
 
 

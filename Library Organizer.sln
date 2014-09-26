@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer", "Library Organizer.pyproj", "{C91C54BF-45ED-4964-B901-9059E4A512A7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C91C54BF-45ED-4964-B901-9059E4A512A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C91C54BF-45ED-4964-B901-9059E4A512A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
