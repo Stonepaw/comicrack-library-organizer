@@ -5,9 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>a498126d-58cc-4fe5-8b4d-34c92676d504</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Library_Organizer_2.2.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <StartupFile>Program.py</StartupFile>
+    <SearchPath>resources\dlls\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <InterpreterId>{80659ab7-4d53-4e0c-8588-a766116cbd46}</InterpreterId>
     <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
@@ -25,12 +24,15 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="Library_Organizer_2.2.py" />
+    <None Include="Program.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="{80659ab7-4d53-4e0c-8588-a766116cbd46}\2.7" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="dlls\" />
+    <Folder Include="resources\" />
+    <Folder Include="resources\dlls\" />
     <Folder Include="vs runner\" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +53,9 @@
     <Compile Include="vs runner\ComicRack.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dlls\Stonepaw.LibraryOrganizer.dll" />
+    <Content Include="profiles.dat" />
+    <Content Include="resources\dlls\CodeBoxControl.dll" />
     <Content Include="vs runner\sample data.dat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
