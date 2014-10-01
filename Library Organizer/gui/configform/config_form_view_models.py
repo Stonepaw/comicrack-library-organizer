@@ -49,7 +49,7 @@ class ConfigureFormViewModel(ViewModelBase):
     @Profile.setter
     def Profile(self, value):
         self._profile = value
-        self.FileFolderViewModel.Profile = value
+        #self.FileFolderViewModel.Profile = value
         #self.OptionsViewModel.Profile = value
         self.OnPropertyChanged("BaseFolder")
     

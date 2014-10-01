@@ -402,6 +402,11 @@
       <AssemblyName>PresentationCore.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationFramework</Name>
       <AssemblyName>PresentationFramework.dll</AssemblyName>
@@ -536,6 +541,11 @@
       <Name>PresentationFramework</Name>
       <AssemblyName>PresentationFramework.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationFramework</Name>
@@ -782,6 +792,11 @@
       <Name>Xceed.Wpf.Toolkit</Name>
       <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
       <HintPath>C:\repos\comicrack-library-organizer\resources\dlls\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+      <Name>Xceed.Wpf.Toolkit</Name>
+      <AssemblyName>Xceed.Wpf.Toolkit.dll</AssemblyName>
+      <HintPath>E:\Code Projects\library-organizer\Library Organizer\resources\dlls\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

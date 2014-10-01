@@ -24,7 +24,7 @@ class LibraryOrganizerNameDecoration(Decoration):
             if m is None:
                 break
             group = m.group('name')
-            if group and (group in self.fields or group.lstrip('!?') in self.fields):
+            if group and group in self.fields:
                 pairs.Add(Pair(m.start('name'), len(group)))
 
             text = "".join((text[:m.start()], " " * len(m.group()),
@@ -66,7 +66,7 @@ class LibraryOrganizerArgsDecoration(Decoration):
             if m is None:
                 break
             args = m.group('args')
-            if args and (m.group('name') in self.fields or m.group('name').lstrip("!?") in self.fields):
+            if args and m.group('name') in self.fields:
                 if args.startswith('('):
                     for arg in re.finditer("\(([^)]*)\)", args):
                         if arg:
