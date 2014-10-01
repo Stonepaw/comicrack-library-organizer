@@ -20,7 +20,7 @@ class ComicRack(object):
         always return the text.
         """
         return text
-
+    a
 class App(object):
     """This is a replacement for methods provided by ComicRack. 
     This allows developing the program in Visual Studio without running CR."""
