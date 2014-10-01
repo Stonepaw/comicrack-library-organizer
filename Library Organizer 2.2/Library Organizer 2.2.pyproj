@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>a498126d-58cc-4fe5-8b4d-34c92676d504</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Library_Organizer_2.2.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <InterpreterId>{80659ab7-4d53-4e0c-8588-a766116cbd46}</InterpreterId>
+    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <OutputPath>.</OutputPath>
+    <Name>Library Organizer 2.2</Name>
+    <RootNamespace>Library Organizer 2.2</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Library_Organizer_2.2.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{80659ab7-4d53-4e0c-8588-a766116cbd46}\2.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="vs runner\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ComicRack.Engine, Version=1.0.5354.22019, Culture=neutral, PublicKeyToken=b3ca110c99b4b731">
+      <Name>ComicRack.Engine</Name>
+      <AssemblyName>ComicRack.Engine.dll</AssemblyName>
+      <HintPath>C:\Program Files\ComicRack\ComicRack.Engine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="cYo.Common, Version=1.0.5354.22018, Culture=neutral, PublicKeyToken=b3ca110c99b4b731">
+      <Name>cYo.Common</Name>
+      <AssemblyName>cYo.Common.dll</AssemblyName>
+      <HintPath>C:\Program Files\ComicRack\cYo.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="vs runner\ComicRack.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="vs runner\sample data.dat" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>
