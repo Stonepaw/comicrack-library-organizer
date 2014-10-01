@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>
+    <Name>Default</Name>
+    <FolderTemplate>laksjdf;laskjf'</FolderTemplate>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <UseFileNaming>true</UseFileNaming>
+    <RemoveEmptyFolders>true</RemoveEmptyFolders>
+    <MoveFileless>false</MoveFileless>
+    <ExcludedFolders />
+    <ExclcudedEmptyFolders />
+  </Profile>
+</ArrayOfProfile>
