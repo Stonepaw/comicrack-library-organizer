@@ -1,11 +1,16 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer", "Library Organizer.pyproj", "{B0736317-71E5-4A9F-AD6A-750305D92178}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer Plugin", "Library Organizer\Library Organizer Plugin.pyproj", "{B0736317-71E5-4A9F-AD6A-750305D92178}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stonepaw.LibraryOrganizer.Controls", "Stonepaw.LibraryOrganizer.Controls\Stonepaw.LibraryOrganizer.Controls.csproj", "{FC5762EF-7CC7-49F9-8614-AAE370662752}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBoxControl", "CodeBoxControl\CodeBoxControl.csproj", "{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stonepaw.LibraryOrganizer", "Stonepaw.LibraryOrganizer\Stonepaw.LibraryOrganizer.csproj", "{92EDD1E9-FACC-482D-9871-D7310ED1E354}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Library Organizer 2.2", "Library Organizer 2.2\Library Organizer 2.2.pyproj", "{A498126D-58CC-4FE5-8B4D-34C92676D504}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stonepaw.LibraryOrganizer.Forms", "Stonepaw.LibraryOrganizer.Forms\Stonepaw.LibraryOrganizer.Forms.csproj", "{BF11B967-BE6D-4EAE-9877-84A877A51768}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +28,16 @@ Global
 		{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAFC1291-82F4-4A3A-B70F-111DBF2EC194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92EDD1E9-FACC-482D-9871-D7310ED1E354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92EDD1E9-FACC-482D-9871-D7310ED1E354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92EDD1E9-FACC-482D-9871-D7310ED1E354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92EDD1E9-FACC-482D-9871-D7310ED1E354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A498126D-58CC-4FE5-8B4D-34C92676D504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A498126D-58CC-4FE5-8B4D-34C92676D504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF11B967-BE6D-4EAE-9877-84A877A51768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF11B967-BE6D-4EAE-9877-84A877A51768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF11B967-BE6D-4EAE-9877-84A877A51768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF11B967-BE6D-4EAE-9877-84A877A51768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
