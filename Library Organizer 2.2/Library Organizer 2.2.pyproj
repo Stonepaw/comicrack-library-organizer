@@ -31,8 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dlls\" />
-    <Folder Include="gui\" />
-    <Folder Include="gui\configure form\" />
     <Folder Include="resources\" />
     <Folder Include="resources\dlls\" />
     <Folder Include="vs runner\" />
