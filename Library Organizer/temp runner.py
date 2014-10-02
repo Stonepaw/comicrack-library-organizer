@@ -35,7 +35,7 @@ if __name__ == '__main__':
         global_settings.load(Path.Combine(SCRIPTDIRECTORY,'globalsettings.dat'))
         #d = ConfigureForm(settings, lastused[0])
         #e = ExcludeRuleTest()
-        d = configure_form.ConfigureForm(profiles, global_settings)
+        d = configure_form.ConfigurationWindow(profiles, global_settings)
 
         Application().Run(d)
     except Exception, ex:

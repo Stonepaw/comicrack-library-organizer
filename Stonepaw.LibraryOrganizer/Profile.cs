@@ -24,9 +24,7 @@ namespace Stonepaw.LibraryOrganizer
         public List<string> ExcludedFolders = new List<string>();
         public List<string> ExclcudedEmptyFolders = new List<string>();
 
-        public Profile()
-        {
-        }
+        public Profile(){ }
 
         public Profile(string name, string version)
         {

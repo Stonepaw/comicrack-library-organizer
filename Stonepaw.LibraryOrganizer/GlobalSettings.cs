@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Stonepaw.LibraryOrganizer
 {
-    class GlobalSettings
+    public class GlobalSettings
     {
         public string Version;
         public List<string> LastUsedProfiles = new List<string>();

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>
+    <Version>2.2.0</Version>
+    <Name>Default</Name>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <UseFileNaming>true</UseFileNaming>
+    <RemoveEmptyFolders>true</RemoveEmptyFolders>
+    <MoveFileless>false</MoveFileless>
+    <ExcludedFolders />
+    <ExclcudedEmptyFolders />
+  </Profile>
+  <Profile>
+    <Version>2.2.0</Version>
+    <Name>New</Name>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <UseFileNaming>true</UseFileNaming>
+    <RemoveEmptyFolders>true</RemoveEmptyFolders>
+    <MoveFileless>false</MoveFileless>
+    <ExcludedFolders />
+    <ExclcudedEmptyFolders />
+  </Profile>
+</ArrayOfProfile>

@@ -15,19 +15,37 @@ class ComicRack(object):
 
     def Localize(self, resource, key, text):
         """The Localize function would normally lookup a translated string
-        from a resource via a key. The text variable would be returned if
+        from a resource via a key. The text argument would be returned if
         the key is not found in the resource. This mock function will
         always return the text.
         """
         return text
-    a
+
+
 class App(object):
     """This is a replacement for methods provided by ComicRack. 
     This allows developing the program in Visual Studio without running CR."""
     
-
     def GetComicFields(self):
-        return Dictionary[str, str]({"Tags " : "Tags","File Path " : "FilePath","Book Age " : "BookAge","Book Condition " : "BookCondition","Book Store " : "BookStore","Book Owner " : "BookOwner","Book Collection Status " : "BookCollectionStatus","Book Notes " : "BookNotes","Book Location " : "BookLocation","ISBN " : "ISBN","Title " : "Title","Series " : "Series","Number " : "Number","Alternate Series " : "AlternateSeries","Alternate Number " : "AlternateNumber","Story Arc " : "StoryArc","Series Group " : "SeriesGroup","Summary " : "Summary","Notes " : "Notes","Review " : "Review","Writer " : "Writer","Penciller " : "Penciller","Inker " : "Inker","Colorist " : "Colorist","Letterer " : "Letterer","Cover Artist " : "CoverArtist","Editor " : "Editor","Publisher " : "Publisher","Imprint " : "Imprint","Genre " : "Genre","Web " : "Web","Format " : "Format","Age Rating " : "AgeRating","Characters " : "Characters","Teams " : "Teams","Main Character Or Team " : "MainCharacterOrTeam","Locations " : "Locations","Scan Information " : "ScanInformation",})
+        return Dictionary[str, str]({
+            "Tags " : "Tags","File Path " : "FilePath","Book Age " : "BookAge",
+            "Book Condition " : "BookCondition","Book Store " : "BookStore",
+            "Book Owner " : "BookOwner",
+            "Book Collection Status " : "BookCollectionStatus",
+            "Book Notes " : "BookNotes","Book Location " : "BookLocation",
+            "ISBN " : "ISBN","Title " : "Title","Series " : "Series",
+            "Number " : "Number","Alternate Series " : "AlternateSeries",
+            "Alternate Number " : "AlternateNumber","Story Arc " : "StoryArc",
+            "Series Group " : "SeriesGroup","Summary " : "Summary",
+            "Notes" : "Notes","Review" : "Review","Writer" : "Writer",
+            "Penciller " : "Penciller","Inker" : "Inker",
+            "Colorist" : "Colorist","Letterer" : "Letterer",
+            "Cover Artist" : "CoverArtist","Editor" : "Editor",
+            "Publisher" : "Publisher","Imprint " : "Imprint","Genre" : "Genre",
+            "Web " : "Web","Format " : "Format","Age Rating " : "AgeRating",
+            "Characters " : "Characters","Teams " : "Teams",
+            "Main Character Or Team " : "MainCharacterOrTeam",
+            "Locations" : "Locations","Scan Information" : "ScanInformation",})
 
     def GetLibraryBooks(self):
         """ Mocks calling ComicRack's built in function to retrieve all

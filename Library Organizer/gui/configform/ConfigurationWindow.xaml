@@ -4,7 +4,8 @@
 	xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
     xmlns:c="clr-namespace:CodeBoxControl;assembly=CodeBoxControl"
     xmlns:wt="http://schemas.microsoft.com/wpf/2008/toolkit"
-	x:Name="ConfigureForm"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+	x:Name="ConfigurationForm"
 	Title="Library Organizer"
     Background="{x:Static SystemColors.ControlBrush}"
 	Width="640" Height="480" UseLayoutRounding="True">
@@ -25,11 +26,11 @@
         <DataTemplate x:Key="StringInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </WrapPanel>
@@ -37,15 +38,15 @@
         <DataTemplate x:Key="NumberInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Padding:</Label>
+                    <Label Content="Padding:"/>
                     <xctk:IntegerUpDown Value="{Binding Padding}" Minimum="0" VerticalAlignment="Center" />
                 </StackPanel>
             </WrapPanel>
@@ -53,19 +54,19 @@
         <DataTemplate x:Key="MultipleValueInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <CheckBox Margin="5, 0" VerticalAlignment="Center" x:Name="SelectMultipleValue" IsChecked="{Binding SelectWhichMultipleValue, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="{Binding SelectWhichText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
                 </CheckBox>
-                <CheckBox IsChecked="{Binding SelectOnceForEachSeries, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Margin="5, 0" VerticalAlignment="Center">Select once for every issue in the series</CheckBox>
-                <StackPanel Margin="5, 0" Visibility="{Binding ElementName=SelectMultipleValue, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Label>Seperator:</Label>
+                <CheckBox IsChecked="{Binding SelectOnceForEachSeries, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=SelectMultipleValue}" Margin="5, 0" VerticalAlignment="Center" Content="Select once for every issue in the series"/>
+                <StackPanel Margin="5, 0" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=SelectMultipleValue}" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Label Content="Seperator:"/>
                     <TextBox Width="50" VerticalAlignment="Center" Text="{Binding Seperator, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
             </WrapPanel>
@@ -73,28 +74,26 @@
         <DataTemplate x:Key="MonthInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
-                <CheckBox x:Name="UseMonthNames" VerticalAlignment="Center" Margin="5, 0" IsChecked="{Binding UseMonthNames}">Use month names</CheckBox>
+                <CheckBox x:Name="UseMonthNames" VerticalAlignment="Center" Margin="5, 0" IsChecked="{Binding UseMonthNames}" Content="Use month names"/>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsChecked, ElementName=UseMonthNames}" Value="False">
-                                    <DataTrigger.Setters>
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <Label>Padding:</Label>
+                    <Label Content="Padding:"/>
                     <xctk:IntegerUpDown Value="{Binding Padding, UpdateSourceTrigger=PropertyChanged}" Minimum="0" VerticalAlignment="Center" />
                 </StackPanel>
             </WrapPanel>
@@ -102,23 +101,23 @@
         <DataTemplate x:Key="CounterInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Padding:</Label>
+                    <Label Content="Padding:"/>
                     <xctk:IntegerUpDown Value="{Binding Padding, UpdateSourceTrigger=PropertyChanged}" Minimum="0" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Start:</Label>
+                    <Label Content="Start:"/>
                     <xctk:IntegerUpDown Value="{Binding Start, UpdateSourceTrigger=PropertyChanged}" Minimum="1" VerticalAlignment="Center" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Increment:</Label>
+                    <Label Content="Increment:"/>
                     <xctk:IntegerUpDown Value="{Binding Increment, UpdateSourceTrigger=PropertyChanged}" Minimum="1" VerticalAlignment="Center" />
                 </StackPanel>
             </WrapPanel>
@@ -126,32 +125,34 @@
         <DataTemplate x:Key="DateInsertFieldTemplate">
             <WrapPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Prefix:</Label>
+                    <Label Content="Prefix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Suffix:</Label>
+                    <Label Content="Suffix:"/>
                     <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
-                    <Label>Date Format:</Label>
+                    <Label Content="Date Format:"/>
                     <ComboBox x:Name="DateFormat"  Width="Auto" VerticalAlignment="Center" SelectedValue="{Binding SelectedDateFormat}" ItemsSource="{Binding DateFormats}" SelectedValuePath="Value" DisplayMemberPath="Key" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
                     <StackPanel.Style>
                         <Style>
-                            <Setter Property="StackPanel.Visibility" Value="Collapsed" />
+                            <Setter Property="UIElement.Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=DateFormat, Path=SelectedValue}" Value="Custom">
-                                    <Setter Property="StackPanel.Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding SelectedValue, ElementName=DateFormat}" Value="Custom">
+                                    <Setter Property="UIElement.Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </StackPanel.Style>
-                    <Label>Custom Date Format:</Label>
+                    <Label Content="Custom Date Format:"/>
                     <TextBox Width="100" VerticalAlignment="Center" Text="{Binding CustomDateFormat, UpdateSourceTrigger=PropertyChanged}" />
                     <Label>
-                        <Hyperlink NavigateUri="http://goo.gl/e2P0VF" RequestNavigate="navigate_uri">?</Hyperlink>
+                        <Hyperlink NavigateUri="http://goo.gl/e2P0VF" RequestNavigate="navigate_uri">
+                            <Run Text="?"/>
+                        </Hyperlink>
                     </Label>
                     <Label Content="{Binding CustomDateFormatPreview}" />
                 </StackPanel>
@@ -159,9 +160,9 @@
         </DataTemplate>
         <DataTemplate x:Key="YesNoInsertFieldTemplate">
             <WrapPanel>
-                <Label Margin="5, 0">Prefix:</Label>
+                <Label Margin="5, 0" Content="Prefix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="5, 0">Suffix:</Label>
+                <Label Margin="5, 0" Content="Suffix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" />
                 <ComboBox SelectedValue="{Binding SelectedYesNo}" ItemsSource="{Binding YesNoOperators}" SelectedValuePath="Key" DisplayMemberPath="Value" VerticalAlignment="Center" />
@@ -172,9 +173,9 @@
         </DataTemplate>
         <DataTemplate x:Key="FirstLetterInsertFieldTemplate">
             <WrapPanel>
-                <Label Margin="5, 0">Prefix:</Label>
+                <Label Margin="5, 0" Content="Prefix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="5, 0">Suffix:</Label>
+                <Label Margin="5, 0" Content="Suffix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" Content="Field:" />
                 <ComboBox SelectedValue="{Binding SelectedField}" ItemsSource="{Binding FirstLetterFields}" SelectedValuePath="field" DisplayMemberPath="name" VerticalAlignment="Center" />
@@ -182,13 +183,13 @@
         </DataTemplate>
         <DataTemplate x:Key="CustomValueInsertFieldTemplate">
             <WrapPanel>
-                <Label Margin="5, 0">Prefix:</Label>
+                <Label Margin="5, 0" Content="Prefix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="5, 0">Suffix:</Label>
+                <Label Margin="5, 0" Content="Suffix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Margin="5, 0" VerticalAlignment="Center" Content="Custom value key:">
                     <Label.Style>
-                        <Style TargetType="Label">
+                        <Style TargetType="{x:Type Label}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsRetrievingCustomKeys}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -199,7 +200,7 @@
                 </Label>
                 <ComboBox ItemsSource="{Binding custom_keys}" VerticalAlignment="Center" SelectedItem="{Binding SelectedItem}">
                     <ComboBox.Style>
-                        <Style TargetType="ComboBox">
+                        <Style TargetType="{x:Type ComboBox}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsRetrievingCustomKeys}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -214,14 +215,14 @@
         </DataTemplate>
         <DataTemplate x:Key="ReadPercentageInsertFieldTemplate">
             <WrapPanel>
-                <Label Margin="5, 0">Prefix:</Label>
+                <Label Margin="5, 0" Content="Prefix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="5, 0">Suffix:</Label>
+                <Label Margin="5, 0" Content="Suffix:"/>
                 <TextBox Width="30" VerticalAlignment="Center" Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Margin="5, 0" VerticalAlignment="Center">When read percentage</Label>
+                <Label Margin="5, 0" VerticalAlignment="Center" Content="When read percentage"/>
                 <ComboBox VerticalAlignment="Center" SelectedItem="{Binding Operator}" ItemsSource="{Binding ReadPercentageOperators}"  />
                 <xctk:IntegerUpDown Minimum="0" Maximum="100" Margin="5, 0" VerticalAlignment="Center" Value="{Binding Percent}" />
-                <Label VerticalAlignment="Center">% insert:</Label>
+                <Label VerticalAlignment="Center" Content="% insert:"/>
                 <TextBox Width="50" Text="{Binding TextToInsert, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
             </WrapPanel>
         </DataTemplate>
@@ -235,7 +236,7 @@
                         <Label Content="Overview" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </RadioButton>
-                <RadioButton x:Name="FilesButton" Style="{DynamicResource PageButtonStyle}" IsEnabled="{Binding IsChecked, ElementName=UseFileOrganization}" IsChecked="{Binding Path=FileFolderViewModel.FileVisible, Mode=OneWayToSource}">
+                <RadioButton x:Name="FilesButton" Style="{DynamicResource PageButtonStyle}" IsEnabled="{Binding IsChecked, ElementName=UseFileOrganization}" IsChecked="{Binding FileFolderViewModel.FileVisible, Mode=OneWayToSource}">
                     <StackPanel>
                         <Image Stretch="None" Margin="0,3,0,0" Source="{StaticResource FileImage}" />
                         <Label Content="Files" HorizontalAlignment="Center"/>
@@ -271,10 +272,9 @@
                 <Menu Grid.Column="2" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}">
                     <MenuItem Header="Profile Actions" VerticalAlignment="Center">
                         <MenuItem.Icon>
-                            <Image StretchDirection="DownOnly" VerticalAlignment="Center" Source="{StaticResource SmallOptionsImage}">
-                                  </Image>
+                            <Image StretchDirection="DownOnly" VerticalAlignment="Center" Source="{StaticResource SmallOptionsImage}"/>
                         </MenuItem.Icon>
-                        <MenuItem Header="New" Click="new_profile_clicked">
+                        <MenuItem Header="New" Click="_show_profile_inputbox">
                             <MenuItem.Icon>
                                 <Image Stretch="None">
                                     <!--<Image.Source>
@@ -336,9 +336,9 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <RadioButton x:Name="ModeMove" Content="Move" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Path=Profile.Mode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Move}" />
-                                <RadioButton x:Name="ModeCopy" Content="Copy" HorizontalAlignment="Left" Grid.Row="1" Margin="0,10" VerticalAlignment="Top" IsChecked="{Binding Path=Profile.Mode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Copy}"/>
-                                <RadioButton x:Name="ModeSimulate" Content="Simulate" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" IsChecked="{Binding Path=Profile.Mode, Converter={StaticResource ComparisonConverter}, ConverterParameter=Simulate}" />
+                                <RadioButton x:Name="ModeMove" Content="Move" VerticalAlignment="Top" HorizontalAlignment="Left" IsChecked="{Binding Profile.Mode, ConverterParameter=Move, Converter={StaticResource ComparisonConverter}}" />
+                                <RadioButton x:Name="ModeCopy" Content="Copy" HorizontalAlignment="Left" Grid.Row="1" Margin="0,10" VerticalAlignment="Top" IsChecked="{Binding Profile.Mode, ConverterParameter=Copy, Converter={StaticResource ComparisonConverter}}"/>
+                                <RadioButton x:Name="ModeSimulate" Content="Simulate" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" IsChecked="{Binding Profile.Mode, ConverterParameter=Simulate, Converter={StaticResource ComparisonConverter}}" />
                                 <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" IsEnabled="{Binding IsChecked, ElementName=ModeCopy}" IsChecked="{Binding Profile.CopyMode}">
                                     <TextBlock Text="Add copied book to library" TextWrapping="Wrap" />
                                 </CheckBox>
@@ -383,12 +383,12 @@
                 </TabItem>
                 <TabItem x:Name="TemplateBuilderTabPage" Visibility="Collapsed" Background="{x:Null}" DataContext="{Binding FileFolderViewModel}">
                     <TabItem.Style>
-                        <Style TargetType="TabItem">
+                        <Style TargetType="{x:Type TabItem}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=FilesButton, Path=IsChecked}" Value="True">
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=FilesButton}" Value="True">
                                     <Setter Property="IsSelected" Value="True" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding ElementName=FoldersButton, Path=IsChecked}" Value="True">
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=FoldersButton}" Value="True">
                                     <Setter Property="IsSelected" Value="True" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -404,32 +404,38 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <Label x:Name="FileStructureLabel" Visibility="{Binding ElementName=FilesButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">File Structure:</Label>
+                                <Label x:Name="FileStructureLabel" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=FilesButton}" Content="File Structure:"/>
                                 <c:CodeBox
-                                    x:Name="FileTemplateTextBox"
-                                    BindableSelectionStart="{Binding FileSelectionStart, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                    BindableSelectionLength="{Binding FileSelectionLength, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                    Height="Auto" 
-                                    TextWrapping="Wrap" 
-                                    MinHeight="60" 
-                                    MaxHeight="200" 
-                                    Visibility="{Binding ElementName=FilesButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" 
-                                    Text="{Binding Path=FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <Label x:Name="FolderStructureLabel" Visibility="{Binding ElementName=FoldersButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}">Folder Structure:</Label>
+									x:Name="FileTemplateTextBox"
+									BindableSelectionStart="{Binding FileSelectionStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									BindableSelectionLength="{Binding FileSelectionLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									Height="Auto" 
+									TextWrapping="Wrap" 
+									MinHeight="60" 
+									MaxHeight="200" 
+									Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=FilesButton}" 
+									Text="{Binding FileTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Label x:Name="FolderStructureLabel" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=FoldersButton}" Content="Folder Structure:"/>
                                 <c:CodeBox
-                                    BindableSelectionStart="{Binding FolderSelectionStart, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                    BindableSelectionLength="{Binding FolderSelectionLength, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                                    Height="Auto" 
-                                    TextWrapping="Wrap" 
-                                    MinHeight="60" 
-                                    MaxHeight="200" 
-                                    x:Name="FolderTemplateBox" 
-                                    Visibility="{Binding ElementName=FoldersButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" 
-                                    Text="{Binding Path=FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <Label x:Name="PreviewLabel">Preview:</Label>
-                                <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"></TextBlock>
+									BindableSelectionStart="{Binding FolderSelectionStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									BindableSelectionLength="{Binding FolderSelectionLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+									Height="Auto" 
+									TextWrapping="Wrap" 
+									MinHeight="60" 
+									MaxHeight="200" 
+									x:Name="FolderTemplateBox" 
+									Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=FoldersButton}" 
+									Text="{Binding FolderTemplate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <Label x:Name="PreviewLabel" Content="Preview:"/>
+                                <TextBlock x:Name="Preview" TextWrapping="Wrap" MinHeight="40"/>
                             </StackPanel>
                             <Grid Grid.Row="1" Margin="0, 10" FocusManager.IsFocusScope="True">
+                                <Grid.Resources>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Margin" Value="10, 0, 0, 0"  />
+                                        <Setter Property="Padding" Value="5, 1"  />
+                                    </Style>
+                                </Grid.Resources>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
@@ -440,24 +446,18 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="{x:Type Button}">
-                                        <Setter Property="Margin" Value="10, 0, 0, 0"  />
-                                        <Setter Property="Padding" Value="5, 1"  />
-                                    </Style>
-                                </Grid.Resources>
-                                <Label Grid.Column="0" Grid.Row="0">Field:</Label>
-                                <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" SelectedItem="{Binding SelectedField, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding Path=template_field_selectors}" DisplayMemberPath="name" SelectedValuePath="field"  />
-                                <Button Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Command="{Binding InsertFieldCommand}">Insert Field</Button>
-                                <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding ElementName=FoldersButton, Path=IsChecked, Converter={StaticResource BooleanToVisbilityConverter}}" Command="{Binding InsertFolderCommand}" >Insert Folder Seperator</Button>
-                                <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields" IsChecked="{Binding Profile.AutoSpaceFields}">Space inserted fields automatically</CheckBox>
+                                <Label Grid.Column="0" Grid.Row="0" Content="Field:"/>
+                                <ComboBox Grid.Column="1" Grid.Row="0" x:Name="TemplateFieldSelector" SelectedItem="{Binding SelectedField, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" MinWidth="75" Width="Auto" VerticalAlignment="Center" SelectedIndex="0" ItemsSource="{Binding template_field_selectors}" DisplayMemberPath="name" SelectedValuePath="field"  />
+                                <Button Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" Command="{Binding InsertFieldCommand}" Content="Insert Field"/>
+                                <Button Grid.Column="3" Grid.Row="0" VerticalAlignment="Center" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=FoldersButton}" Command="{Binding InsertFolderCommand}" Content="Insert Folder Seperator" />
+                                <CheckBox Margin="5" Grid.Row="1" Grid.ColumnSpan="4" x:Name="TemplateBuilderAutoSpaceFields" IsChecked="{Binding Profile.AutoSpaceFields}" Content="Space inserted fields automatically"/>
                             </Grid>
                             <GroupBox Grid.Row="2" Header="Options" FocusManager.IsFocusScope="True">
                                 <GroupBox.Style>
                                     <Style TargetType="{x:Type GroupBox}">
                                         <Setter Property="Visibility" Value="Visible" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue}" Value="Conditional">
+                                            <DataTrigger Binding="{Binding SelectedValue, ElementName=TemplateFieldSelector}" Value="Conditional">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -470,14 +470,14 @@
                                     <Style TargetType="{x:Type StackPanel}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding ElementName=TemplateFieldSelector, Path=SelectedValue}" Value="Conditional">
+                                            <DataTrigger Binding="{Binding SelectedValue, ElementName=TemplateFieldSelector}" Value="Conditional">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Style>
                                 <WrapPanel>
-                                    <Label VerticalAlignment="Center">If</Label>
+                                    <Label VerticalAlignment="Center" Content="If"/>
                                     <ToggleButton Content="!" VerticalAlignment="Center" Padding="5,1" IsChecked="{Binding Invert}" />
                                     <ComboBox VerticalAlignment="Center" SelectedItem="{Binding SelectedConditionalField}" ItemsSource="{Binding ConditionalFields}" DisplayMemberPath="name" SelectedValuePath="type" x:Name="ConditionalIfField" Margin="5, 0" />
                                     <ComboBox SelectedValue="{Binding SelectedConditionalOperator}" ItemsSource="{Binding ConditionalOperators}" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalAlignment="Center" Margin="5, 0" />
@@ -486,10 +486,10 @@
                                             <Style TargetType="{x:Type TextBox}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="String">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="String">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="MultipleValue">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="MultipleValue">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -501,16 +501,16 @@
                                             <Style TargetType="{x:Type xctk:IntegerUpDown}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="Number">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="Number">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="ReadPercentage">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="ReadPercentage">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="Year">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="Year">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="Month">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="Month">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -522,7 +522,7 @@
                                             <Style TargetType="{x:Type DatePicker}">
                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=ConditionalIfField, Path=SelectedValue}" Value="DateTime">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ConditionalIfField}" Value="DateTime">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -539,9 +539,9 @@
                                 </GroupBox>
                                 <StackPanel Orientation="Horizontal" Margin="0, 5, 0, 0" VerticalAlignment="Center">
                                     <CheckBox Content="Else insert" x:Name="ConditionalElse" VerticalAlignment="Center" IsChecked="{Binding UseElse}" />
-                                    <ComboBox VerticalAlignment="Center" ItemsSource="{Binding ConditionalThenElseFields}" DisplayMemberPath="name" SelectedValuePath="type" Visibility="{Binding IsChecked, ElementName=ConditionalElse, Converter={StaticResource BooleanToVisbilityConverter}}" SelectedItem="{Binding SelectedElseField}" Margin="5, 0" />
+                                    <ComboBox VerticalAlignment="Center" ItemsSource="{Binding ConditionalThenElseFields}" DisplayMemberPath="name" SelectedValuePath="type" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=ConditionalElse}" SelectedItem="{Binding SelectedElseField}" Margin="5, 0" />
                                 </StackPanel>
-                                <GroupBox Header="Options" Visibility="{Binding IsChecked, ElementName=ConditionalElse, Converter={StaticResource BooleanToVisbilityConverter}}">
+                                <GroupBox Header="Options" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=ConditionalElse}">
                                     <ContentControl Content="{Binding ElseFieldOptions}" ContentTemplateSelector="{DynamicResource InsertFieldTemplateSelector}" />
                                 </GroupBox>
                             </StackPanel>
@@ -569,7 +569,7 @@
                                     <ComboBox VerticalAlignment="Center" />
                                     <TextBlock Text="of the following rules" VerticalAlignment="Center" Margin="5, 0"/>
                                 </WrapPanel>
-                                
+
                             </Grid>
                         </TabItem>
                     </TabControl>
@@ -591,104 +591,102 @@
                                     <CheckBox Margin="0, 15, 0, 0" IsChecked="{Binding Profile.DontAskWhenMultiOne}">
                                         <TextBlock Text="If there is only one value in a multiple value field then insert it without asking." />
                                     </CheckBox>
-                                    <CheckBox x:Name="ReplaceEmptyFolders" Margin="0, 15, 0, 0" IsChecked="{Binding Profile.ReplaceEmptyFolders}">Replace empty folder names instead of removing empty folders</CheckBox>
-                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0" Visibility="{Binding IsChecked, ElementName=ReplaceEmptyFolders, Converter={StaticResource BooleanToVisbilityConverter}}">
-                                        <Label>Replace with</Label>
+                                    <CheckBox x:Name="ReplaceEmptyFolders" Margin="0, 15, 0, 0" IsChecked="{Binding Profile.ReplaceEmptyFolders}" Content="Replace empty folder names instead of removing empty folders"/>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0" Visibility="{Binding IsChecked, Converter={StaticResource BooleanToVisbilityConverter}, ElementName=ReplaceEmptyFolders}">
+                                        <Label Content="Replace with"/>
                                         <TextBox Width="200" VerticalAlignment="Center" Text="{Binding Profile.EmptyFolder}" />
                                     </StackPanel>
-                                    <Label Margin="0, 15, 0, 0">When a field is empty insert a substitute</Label>
+                                    <Label Margin="0, 15, 0, 0" Content="When a field is empty insert a substitute"/>
                                     <StackPanel Orientation="Horizontal" Margin="20, 0, 0, 0">
                                         <ComboBox ItemsSource="{Binding empty_fields}" DisplayMemberPath="name" SelectedValuePath="field" SelectedValue="{Binding SelectedEmptyField}" />
                                         <TextBox Width="200" Margin="5, 0" Text="{Binding EmptyFieldReplacement, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
-                                    <CheckBox Margin="0, 15, 0, 0" IsChecked="{Binding Profile.FailEmptyValues}">If any of the selected fields are empty then mark the operation as failed</CheckBox>
+                                    <CheckBox Margin="0, 15, 0, 0" IsChecked="{Binding Profile.FailEmptyValues}" Content="If any of the selected fields are empty then mark the operation as failed"/>
                                     <xctk:CheckListBox Height="100" Width="Auto" Margin="20, 2, 0, 0" ItemsSource="{Binding empty_fields}" DisplayMemberPath="name" ValueMemberPath="field" SelectedItemsOverride="{Binding SelectedFailedFields}" />
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
                         <TabItem Header="Global Options">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="10">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="CheckBox">
-                                                <Setter Property="Margin" Value="0, 15, 0, 0"/>
-                                            </Style>
-                                            <Style TargetType="StackPanel">
-                                                <Setter Property="Margin" Value="0, 15, 0, 0"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Label>Replace illegal character</Label>
-                                            <ComboBox VerticalAlignment="Center" ItemsSource="{Binding illegal_characters}" SelectedItem="{Binding SelectedIllegalCharacter}" />
-                                            <Label>with</Label>
-                                            <TextBox MinWidth="30" VerticalAlignment="Center" Text="{Binding IllegalCharacterReplacement, UpdateSourceTrigger=PropertyChanged}" />
-                                            <ToggleButton x:Name="AddIllegalCharacter" Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" IsChecked="{Binding AddIllegalCharacterIsChecked}" Click="add_illegal_character_clicked" />
-                                            <Popup StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding ElementName=AddIllegalCharacter, Path=IsChecked}" PlacementTarget="{Binding ElementName=AddIllegalCharacter}">
-                                                <Border Background="White" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Padding="5">
-                                                    <StackPanel Orientation="Horizontal" Margin="0">
-                                                        <TextBox Margin="0, 0, 5, 0" Width="20" MaxLength="1" x:Name="NewIllegalCharacter" >
-                                                            <TextBox.InputBindings>
-                                                                <KeyBinding Key="Enter" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
-                                                            </TextBox.InputBindings>
-                                                        </TextBox>
-                                                        <Button Content="Add" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </Popup>
-                                            <Button Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveIllegalCharacterCommand}" CommandParameter="{Binding SelectedIllegalCharacter}"/>
-                                        </StackPanel>
-                                        <CheckBox x:Name="GenerateLocalizedMonthNames">
-                                            Generate localized month names from system language
-                                        </CheckBox>
-                                        <StackPanel Orientation="Horizontal" Margin="20, 5, 0, 0">
-                                            <StackPanel.Style>
-                                                <Style TargetType="StackPanel">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=GenerateLocalizedMonthNames, Path=IsChecked}" Value="True">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </StackPanel.Style>
-                                            <ComboBox VerticalAlignment="Center" ItemsSource="{Binding months}" SelectedItem="{Binding SelectedMonth}"/>
-                                            <Label>is</Label>
-                                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="300" Text="{Binding MonthReplacement, UpdateSourceTrigger=PropertyChanged}" />
-                                        </StackPanel>
-
-                                        <CheckBox IsChecked="{Binding global_settings.remove_empty_folders}" x:Name="RemoveEmptyFolders">Remove empty folders</CheckBox>
-                                        <StackPanel Orientation="Horizontal" Margin="20, 2, 0, 0">
-                                            <Label>Do not remove these folders:</Label>
-                                            <Button IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}"  Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding AddExcludedFolderCommand}" />
-                                            <Button IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}" Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveExcludedFolderCommand}" CommandParameter="{Binding ElementName=ExcludedFolderList, Path=SelectedItem}"/>
-                                        </StackPanel>
-                                        <ListBox x:Name="ExcludedFolderList" IsEnabled="{Binding ElementName=RemoveEmptyFolders, Path=IsChecked}" Grid.Column="0" Grid.RowSpan="2" Margin="20, 0" Height="80" ItemsSource="{Binding excluded_empty_folders}" />
-
+                                <StackPanel Margin="10">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="{x:Type CheckBox}">
+                                            <Setter Property="Margin" Value="0, 15, 0, 0"/>
+                                        </Style>
+                                        <Style TargetType="{x:Type StackPanel}">
+                                            <Setter Property="Margin" Value="0, 15, 0, 0"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Replace illegal character"/>
+                                        <ComboBox VerticalAlignment="Center" ItemsSource="{Binding illegal_characters}" SelectedItem="{Binding SelectedIllegalCharacter}" />
+                                        <Label Content="with"/>
+                                        <TextBox MinWidth="30" VerticalAlignment="Center" Text="{Binding IllegalCharacterReplacement, UpdateSourceTrigger=PropertyChanged}" />
+                                        <ToggleButton x:Name="AddIllegalCharacter" Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" IsChecked="{Binding AddIllegalCharacterIsChecked}" Click="_add_illegal_character_clicked" />
+                                        <Popup StaysOpen="False" Placement="Bottom" PopupAnimation="Slide" VerticalOffset="5" IsOpen="{Binding IsChecked, ElementName=AddIllegalCharacter}" PlacementTarget="{Binding ElementName=AddIllegalCharacter}">
+                                            <Border Background="White" BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" BorderThickness="1" Padding="5">
+                                                <StackPanel Orientation="Horizontal" Margin="0">
+                                                    <TextBox Margin="0, 0, 5, 0" Width="20" MaxLength="1" x:Name="NewIllegalCharacter" >
+                                                        <TextBox.InputBindings>
+                                                            <KeyBinding Key="Enter" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
+                                                        </TextBox.InputBindings>
+                                                    </TextBox>
+                                                    <Button Content="Add" Command="{Binding AddIllegalCharacterCommand}" CommandParameter="{Binding Text, ElementName=NewIllegalCharacter}" />
+                                                </StackPanel>
+                                            </Border>
+                                        </Popup>
+                                        <Button Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveIllegalCharacterCommand}" CommandParameter="{Binding SelectedIllegalCharacter}"/>
                                     </StackPanel>
+                                    <CheckBox x:Name="GenerateLocalizedMonthNames" Content="Generate localized month names from system language"/>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 5, 0, 0">
+                                        <StackPanel.Style>
+                                            <Style TargetType="{x:Type StackPanel}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsChecked, ElementName=GenerateLocalizedMonthNames}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <ComboBox VerticalAlignment="Center" ItemsSource="{Binding months}" SelectedItem="{Binding SelectedMonth}"/>
+                                        <Label Content="is"/>
+                                        <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="300" Text="{Binding MonthReplacement, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+
+                                    <CheckBox IsChecked="{Binding global_settings.remove_empty_folders}" x:Name="RemoveEmptyFolders" Content="Remove empty folders"/>
+                                    <StackPanel Orientation="Horizontal" Margin="20, 2, 0, 0">
+                                        <Label Content="Do not remove these folders:"/>
+                                        <Button IsEnabled="{Binding IsChecked, ElementName=RemoveEmptyFolders}"  Content="+" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding AddExcludedFolderCommand}" />
+                                        <Button IsEnabled="{Binding IsChecked, ElementName=RemoveEmptyFolders}" Content="-" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4, 0" Margin="5, 0" Command="{Binding RemoveExcludedFolderCommand}" CommandParameter="{Binding SelectedItem, ElementName=ExcludedFolderList}"/>
+                                    </StackPanel>
+                                    <ListBox x:Name="ExcludedFolderList" IsEnabled="{Binding IsChecked, ElementName=RemoveEmptyFolders}" Grid.Column="0" Grid.RowSpan="2" Margin="20, 0" Height="80" ItemsSource="{Binding excluded_empty_folders}" />
+
+                                </StackPanel>
                             </ScrollViewer>
                         </TabItem>
                     </TabControl>
                 </TabItem>
             </TabControl>
         </DockPanel>
-        <Grid x:Name="ProfileNameInput" Visibility="{Binding IsInputVisible, Converter={StaticResource BooleanToVisbilityConverter}}" FocusManager.IsFocusScope="True">
+        <Grid x:Name="ProfileNameInput" Visibility="{Binding IsInputVisible, Converter={StaticResource BooleanToVisbilityConverter}}" FocusManager.IsFocusScope="True" d:IsHidden="True">
             <Grid Background="Black" Opacity="0.5"/>
             <Border 
-                MinWidth="250" 
-                BorderBrush="Black" 
-                Background="{x:Static SystemColors.ControlLightLightBrush}"
-                BorderThickness="1" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center">
+				MinWidth="250" 
+				BorderBrush="Black" 
+				Background="{x:Static SystemColors.ControlLightLightBrush}"
+				BorderThickness="1" 
+				HorizontalAlignment="Center" 
+				VerticalAlignment="Center">
                 <StackPanel>
                     <TextBlock Margin="5" Text="Profile Name"  />
                     <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="ProfileNameInputBox">
                         <TextBox.InputBindings>
-                            <KeyBinding Command="{Binding NewProfileCommand}" CommandParameter="{Binding ElementName=ProfileNameInputBox, Path=Text}" Key="Enter" />
+                            <KeyBinding Command="{Binding NewProfileCommand}" CommandParameter="{Binding Text, ElementName=ProfileNameInputBox}" Key="Enter" />
                         </TextBox.InputBindings>
                     </TextBox>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="ProfileNameInputYesButton" Margin="5" Content="Okay" Command="{Binding NewProfileCommand}" CommandParameter="{Binding ElementName=ProfileNameInputBox, Path=Text}" />
-                        <Button Margin="5" Content="Cancel" Click="close_inputbox" />
+                        <Button x:Name="ProfileNameInputYesButton" Margin="5" Content="Okay" Command="{Binding NewProfileCommand}" CommandParameter="{Binding Text, ElementName=ProfileNameInputBox}" />
+                        <Button Margin="5" Content="Cancel" Click="_close_profile_inputbox" />
                     </StackPanel>
                 </StackPanel>
             </Border>
