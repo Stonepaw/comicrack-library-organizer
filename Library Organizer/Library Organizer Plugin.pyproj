@@ -104,7 +104,7 @@
     <Compile Include="utils\ipypulldom.py" />
     <Compile Include="legacy\localizer.py" />
     <Compile Include="settings\losettings.py" />
-    <Compile Include="rulestest.py" />
+    <Compile Include="old\rulestest.py" />
     <Compile Include="tests\field_template_tests.py" />
     <Compile Include="utils\wpfutils.py" />
     <Compile Include="utils\xml2py.py" />
@@ -112,6 +112,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="common\fields.csv" />
+    <Content Include="notes\LocalizationNotes.txt" />
+    <Content Include="old\ConfigureFormold.xaml" />
     <Content Include="old\exclude_rule_test.xaml" />
     <Content Include="fields.csv" />
     <Content Include="profiles.dat" />
@@ -138,9 +140,6 @@
       <Publish>True</Publish>
     </Content>
     <Content Include="resources\dlls\CodeBoxControl.dll" />
-    <Content Include="ConfigureFormold.xaml">
-      <Publish>True</Publish>
-    </Content>
     <Content Include="gui\configform\ConfigurationWindow.xaml">
       <Publish>True</Publish>
     </Content>
@@ -168,7 +167,6 @@
     <Content Include="resources\libraryorganizerquick.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="LocalizationNotes.txt" />
     <Content Include="resources\lopackagelogo.png">
       <Publish>True</Publish>
     </Content>
@@ -182,11 +180,10 @@
     <Content Include="resources\icons\pencil_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="rulestest.xaml" />
+    <Content Include="old\rulestest.xaml" />
     <Content Include="resources\icons\save_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="TextFile1.rtf" />
     <Content Include="vs runner\sample data.dat" />
     <Content Include="notes\Template Fields Syntax.txt" />
     <Content Include="Thumbs.db" />
