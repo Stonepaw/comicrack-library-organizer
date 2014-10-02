@@ -11,10 +11,10 @@ from NLog import LogManager
 from System.Collections.ObjectModel import ObservableCollection
 from System.Collections.Specialized import NotifyCollectionChangedAction
 
-from localizer import FIELDS
-from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
 from common import REQUIRED_ILLEGAL_CHARS
 from fields import Field
+from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
+from localizer import FIELDS
 from losettings import Profile
 from wpfutils import Command, notify_property, ViewModelBase
 
@@ -22,17 +22,17 @@ from wpfutils import Command, notify_property, ViewModelBase
 PythonLocale.setlocale(PythonLocale.LC_ALL, "")
 
 
-class ConfigureFormViewModel(ViewModelBase):
+class ConfigurationWindowViewModel(ViewModelBase):
     logger = LogManager.GetLogger("ConfigureFormViewModel")
 
     def __init__(self, profiles, global_settings):
+
         self.logger.Info("Initializing ConfigureFormViewModel")
-        super(ConfigureFormViewModel, self).__init__()
-        self.FileFolderViewModel = ConfigureFormFileFolderViewModel()
+        super(ConfigurationWindowViewModel, self).__init__()
+        #self.FileFolderViewModel = ConfigureFormFileFolderViewModel()
         #self.OptionsViewModel = ConfigureFormOptionsViewModel(global_settings)
-        self.Profiles = ObservableCollection[Profile](profiles.values())
+        self.Profiles = profiles
         self._profile = None
-        self._profile_names = profiles.keys()
         self.Profile = self.Profiles[0]
         self._input_is_visible = False
 
