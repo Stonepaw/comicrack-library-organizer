@@ -59,3 +59,38 @@
 2014-10-01 22:48:02.8346|INFO|ConfigurationWindow|Initializing Configure Form
 2014-10-01 22:48:02.8346|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
 2014-10-01 22:48:02.9156|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:36:41.7705|INFO|Fields|Getting fields from csv
+2014-10-02 00:36:41.8825|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:36:46.7208|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:36:46.7258|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:36:47.1248|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:41:20.8005|INFO|Fields|Getting fields from csv
+2014-10-02 00:41:20.8655|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:41:27.0899|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:41:27.1059|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:41:27.3399|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:41:58.6387|INFO|Fields|Getting fields from csv
+2014-10-02 00:41:58.7317|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:42:05.9851|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:42:05.9971|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:42:06.4141|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:43:26.8177|INFO|Fields|Getting fields from csv
+2014-10-02 00:43:26.8677|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:43:32.1260|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:43:32.1730|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:43:32.4560|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:51:02.8018|INFO|Fields|Getting fields from csv
+2014-10-02 00:51:02.8998|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:51:07.7181|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:51:07.7261|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:51:08.0101|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:52:42.3355|INFO|Fields|Getting fields from csv
+2014-10-02 00:52:42.4075|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:52:47.3368|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:52:47.3488|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:52:47.5498|INFO|ConfigurationWindow|Loading configure form xaml
+2014-10-02 00:53:50.9724|INFO|Fields|Getting fields from csv
+2014-10-02 00:53:51.0384|INFO|Fields|Sucessfuly loaded fields info
+2014-10-02 00:53:55.2676|INFO|ConfigurationWindow|Initializing Configure Form
+2014-10-02 00:53:55.2756|INFO|ConfigureFormViewModel|Initializing ConfigureFormViewModel
+2014-10-02 00:53:55.4477|INFO|ConfigurationWindow|Loading configure form xaml

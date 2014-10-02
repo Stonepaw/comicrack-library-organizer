@@ -10,7 +10,11 @@ namespace Stonepaw.LibraryOrganizer
     public class Profile
     {
         public string Version;
-        public string Name;
+        public string Name
+        {
+            get;
+            set;
+        }
         public string FolderTemplate;
         public string BaseFolder;
         public string FileTemplate;
