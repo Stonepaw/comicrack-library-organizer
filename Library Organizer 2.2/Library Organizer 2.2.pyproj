@@ -6,7 +6,7 @@
     <ProjectGuid>a498126d-58cc-4fe5-8b4d-34c92676d504</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>Program.py</StartupFile>
-    <SearchPath>resources\dlls\</SearchPath>
+    <SearchPath>resources\dlls\;common\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <InterpreterId>{80659ab7-4d53-4e0c-8588-a766116cbd46}</InterpreterId>
     <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
@@ -30,7 +30,8 @@
     <InterpreterReference Include="{80659ab7-4d53-4e0c-8588-a766116cbd46}\2.7" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="dlls\" />
+    <Folder Include="common\" />
+    <Folder Include="gui\" />
     <Folder Include="resources\" />
     <Folder Include="resources\dlls\" />
     <Folder Include="vs runner\" />
@@ -50,10 +51,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="common\common.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="settings.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="vs runner\ComicRack.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dlls\Stonepaw.LibraryOrganizer.dll" />
     <Content Include="profiles.dat" />
     <Content Include="resources\dlls\CodeBoxControl.dll" />
     <Content Include="vs runner\sample data.dat" />
