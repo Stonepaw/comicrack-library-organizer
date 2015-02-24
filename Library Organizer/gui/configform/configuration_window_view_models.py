@@ -4,6 +4,7 @@ clr.AddReference("IronPython.Modules")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.dll")
 clr.AddReferenceToFile("Microsoft.WindowsAPICodePack.Shell.dll")
 clr.AddReference("NLog")
+clr.AddReference("Stonepaw.LibraryOrganizer")
 
 from IronPython.Modules import PythonLocale
 from Microsoft.WindowsAPICodePack.Dialogs import CommonOpenFileDialog, CommonFileDialogResult
@@ -15,7 +16,7 @@ from common import REQUIRED_ILLEGAL_CHARS
 from fields import Field
 from insert_view_models import ConditionalInsertViewModel, NumberInsertViewModel, SelectFieldTemplateFromType
 from localizer import FIELDS
-from losettings import Profile
+from Stonepaw.LibraryOrganizer import Profile
 from wpfutils import Command, notify_property, ViewModelBase
 
 
@@ -35,11 +36,13 @@ class ConfigurationWindowViewModel(ViewModelBase):
         self._profile = None
         self.Profile = self.Profiles[0]
         self._input_is_visible = False
+        self._new_profile_name = ""
+
 
         #Commands
         self.SelectBaseFolderCommand = Command(self.select_base_folder)
         self.NewProfileCommand = Command(self.add_new_profile, 
-                lambda x: x and x not in self._profile_names, True)
+                lambda x: x and x not in [p.Name for p in self.Profiles], True)
 
     #Profile
     @notify_property
@@ -62,6 +65,17 @@ class ConfigurationWindowViewModel(ViewModelBase):
     def BaseFolder(self, value):
         self._profile.BaseFolder = value
 
+    @notify_property
+    def NewProfileName(self):
+        return self._new_profile_name
+
+    @NewProfileName.setter
+    def NewProfileName(self, value):
+        if value in self._profile_names:
+            raise ValueError()
+        else:
+            self._new_profile_name = value
+
     #InputVisible
     @notify_property
     def IsInputVisible(self):
@@ -82,8 +96,7 @@ class ConfigurationWindowViewModel(ViewModelBase):
             self.BaseFolder = c.FileName
 
     def add_new_profile(self, name):
-        new_profile = Profile()
-        new_profile.Name = name
+        new_profile = Profile(name, VERSION)
         self.Profiles.Add(new_profile)
         self._profile_names.append(name)
         self.Profile = new_profile
@@ -332,7 +345,7 @@ class ConfigureFormOptionsViewModel(ViewModelBase):
     def Profile(self, value):
         self._profile = value
         self.OnPropertyChanged("EmptyFieldReplacement")
-        self.SelectedFailedFields = (ObservableCollection[Field]([FIELDS.get_by_field(field) 
+        self.SelectedFailedFields = (ObservableCollection[Field]([FIELDS.get_by_CR_field(field) 
                                        for field in self._profile.FailedFields]))
 
     # SelectedIllegalCharacter

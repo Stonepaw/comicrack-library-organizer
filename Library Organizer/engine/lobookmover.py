@@ -1339,6 +1339,7 @@ class PathMaker(object):
         result = ""
         conditional = False
         inversion = False
+
         inversion_args = ""
 
         name = match_groups["name"]
