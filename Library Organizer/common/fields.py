@@ -96,11 +96,23 @@ class FieldList(list):
         self._template_fields = None
         return super(FieldList, self).__init__(*args, **kwargs)
 
-    def get_by_field(self, field):
+    def get_by_CR_field(self, field):
         for item in self.__iter__():
             if item.field == field:
                 return item
         raise KeyError
+
+    def get_by_template(self,template):
+        for item in self.__iter__():
+            if item.template == template:
+                return item
+        raise KeyError
+
+    def get_by_default_name(self,name):
+            for item in self.__iter__():
+                if item.default_name == name:
+                    return item
+            raise KeyError
 
     @property
     def exclude_rule_fields(self):

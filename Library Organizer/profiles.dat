@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Profile>
-    <UseFolderOrganization>true</UseFolderOrganization>
-    <UseFileNaming>true</UseFileNaming>
     <RemoveEmptyFolders>true</RemoveEmptyFolders>
-    <MoveFileless>false</MoveFileless>
     <ExcludedFolders />
     <ExclcudedEmptyFolders />
     <Name>New2</Name>
+    <BaseFolder>D:\Users\Andrew\Documents\Visual Studio 2012\Settings</BaseFolder>
+    <UseFileNaming>true</UseFileNaming>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <AddCopiedBooksToLibrary>false</AddCopiedBooksToLibrary>
+    <CopyFilelessThumbnails>false</CopyFilelessThumbnails>
+    <Mode>Simulate</Mode>
   </Profile>
   <Profile>
-    <UseFolderOrganization>true</UseFolderOrganization>
-    <UseFileNaming>true</UseFileNaming>
     <RemoveEmptyFolders>true</RemoveEmptyFolders>
-    <MoveFileless>false</MoveFileless>
     <ExcludedFolders />
     <ExclcudedEmptyFolders />
     <Name>Default</Name>
+    <UseFileNaming>true</UseFileNaming>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <AddCopiedBooksToLibrary>false</AddCopiedBooksToLibrary>
+    <CopyFilelessThumbnails>false</CopyFilelessThumbnails>
+    <Mode>Move</Mode>
   </Profile>
   <Profile>
-    <UseFolderOrganization>true</UseFolderOrganization>
-    <UseFileNaming>true</UseFileNaming>
     <RemoveEmptyFolders>true</RemoveEmptyFolders>
-    <MoveFileless>false</MoveFileless>
     <ExcludedFolders />
     <ExclcudedEmptyFolders />
     <Name>New</Name>
+    <UseFileNaming>true</UseFileNaming>
+    <UseFolderOrganization>true</UseFolderOrganization>
+    <AddCopiedBooksToLibrary>false</AddCopiedBooksToLibrary>
+    <CopyFilelessThumbnails>false</CopyFilelessThumbnails>
+    <Mode>Move</Mode>
   </Profile>
 </ArrayOfProfile>

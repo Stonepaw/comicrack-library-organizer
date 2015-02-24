@@ -1,7 +1,8 @@
 """
 This module contains all the unittests for the path maker
 """
-
+import clr
+from System import Console
 
 from unittest import TestCase, TestSuite
 import unittest
@@ -14,7 +15,7 @@ from System.IO import File, Path
 from Stonepaw.LibraryOrganizer import Profile
 
 
-class TestTemplateFields(TestCase):
+class TestTemplateFields(object):
 
     def setUp(self):
         self.pathmaker = PathMaker()
@@ -27,7 +28,6 @@ class TestTemplateFields(TestCase):
         self.pathmaker.book = self.book
         p = Profile()
         self.pathmaker.profile = p
-        return super(TestTemplateFields, self).setUp()
 
 
     def test_series(self):
@@ -44,3 +44,7 @@ class TestTemplateFields(TestCase):
 
     #def tearDown(self):
     #    File.Delete(self.path)
+t = TestTemplateFields()
+t.setUp()
+t.test_firstLetter()
+Console.ReadLine()
