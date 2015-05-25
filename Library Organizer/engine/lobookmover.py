@@ -635,16 +635,23 @@ class BookMover(object):
 
         return None, full_path
 
-
     def find_duplicate_book(self, path):
-        """
-        Trys to find a book in the CR library via a path
-        """
-        for book in ComicRack.App.GetLibraryBooks():
-            if book.FilePath == path:
-                return book
-        return None
+            """This function tries to find a book in the ComicRack library that has
+            a specific path. This is used to find a duplicate book.
 
+            The function will match paths ignoring case.
+
+            Args: path: The path to find in the ComicRack library
+
+            Returns:
+                The ComicBook found or None if no corresponding path could be found
+            """
+            if path is None or not path:
+                return None
+            for book in ComicRack.App.GetLibraryBooks():
+                if String.Equals(book.FilePath,path,StringComparison.OrdinalIgnoreCase):            
+                    return book
+            return None
 
     def create_folder(self, folder_path, book):
         """Creates the folder path.
