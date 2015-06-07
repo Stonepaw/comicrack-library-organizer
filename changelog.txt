@@ -1,4 +1,9 @@
-﻿2.1.11
+﻿2.1.12
+BUG: Fixed not finding duplicates if file path had different captilizations
+BUG: Wrong version in configuration window
+BUG: SelectedIndex out of range error when no custom value defined in the library
+
+2.1.11
 Added Rating, Community Rating and Custom Values
 
 

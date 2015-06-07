@@ -41,7 +41,7 @@ from loduplicate import DuplicateForm
 
 from locommon import ICON, Mode
 
-from lobookmover import BookMover, UndoMover
+from bookmover import BookMover, UndoMover
 
 import loforms
 

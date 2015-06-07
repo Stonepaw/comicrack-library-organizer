@@ -48,10 +48,7 @@ from System.Windows import Visibility
 from System.Windows.Markup import XamlReader
 from System.Xml import XmlReader
 
-
-from lobookmover import Mode
-
-from locommon import SCRIPTDIRECTORY, ICON
+from locommon import SCRIPTDIRECTORY, ICON, Mode
 
 class DuplicateForm(object):
 	

@@ -18,10 +18,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
-
-
-
 import clr
 
 import System
@@ -49,9 +45,9 @@ import losettings
 
 from losettings import Profile
 
-from lobookmover import PathMaker
+from pathmaker import PathMaker
 
-VERSION = "2.1.8"
+VERSION = "2.1.12"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -60,7 +56,7 @@ failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Nu
 empty_substitution_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                           "Editor", "Format", "First Letter", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Number", "Penciller", "Publisher", 
                           "Rating", "Read Percentage", "Scan Information", "Series", "Series Complete", "Series Group", "Start Month", "Start Year", "Story Arc", "Tags", "Teams", "Title", "Volume", "Writer", "Year"])
-
+IMAGEPATH = SCRIPTDIRECTORY
 
 class ConfigureForm(Form):
 
@@ -234,18 +230,18 @@ class ConfigureForm(Form):
         #
         # Icons
         #
-        self._overview_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\home_32.png")
-        self._files_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\page_text_32.png")   
-        self._folders_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\folder_32.png")    
-        self._rules_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\chart_32.png")   
-        self._options_button.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\tools_32.png")
-        self._profile_action.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\tools_32.png")
-        self._profile_action_delete.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\close_16.png")
-        self._profile_action_new.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\add_16.png")
-        self._profile_action_rename.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\pencil_32.png")
-        self._profile_action_duplicate.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\save_32.png")
-        self._profile_action_import.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\arrow_down_16.png")
-        self._profile_action_export_menu.Image = Bitmap.FromFile(SCRIPTDIRECTORY + "\\blue_arrow_up_32.png")
+        self._overview_button.Image = Bitmap.FromFile(IMAGEPATH + "\\home_32.png")
+        self._files_button.Image = Bitmap.FromFile(IMAGEPATH + "\\page_text_32.png")   
+        self._folders_button.Image = Bitmap.FromFile(IMAGEPATH + "\\folder_32.png")    
+        self._rules_button.Image = Bitmap.FromFile(IMAGEPATH + "\\chart_32.png")   
+        self._options_button.Image = Bitmap.FromFile(IMAGEPATH + "\\tools_32.png")
+        self._profile_action.Image = Bitmap.FromFile(IMAGEPATH + "\\tools_32.png")
+        self._profile_action_delete.Image = Bitmap.FromFile(IMAGEPATH + "\\close_16.png")
+        self._profile_action_new.Image = Bitmap.FromFile(IMAGEPATH + "\\add_16.png")
+        self._profile_action_rename.Image = Bitmap.FromFile(IMAGEPATH + "\\pencil_32.png")
+        self._profile_action_duplicate.Image = Bitmap.FromFile(IMAGEPATH + "\\save_32.png")
+        self._profile_action_import.Image = Bitmap.FromFile(IMAGEPATH + "\\arrow_down_16.png")
+        self._profile_action_export_menu.Image = Bitmap.FromFile(IMAGEPATH + "\\blue_arrow_up_32.png")
         # 
         # MainForm
         # 
@@ -1027,7 +1023,7 @@ class ConfigureForm(Form):
         self._empty_substitution_value = System.Windows.Forms.TextBox()
         self._empty_substitution_label2 = System.Windows.Forms.Label()
         self._move_failed_empty = System.Windows.Forms.CheckBox()
-
+        self._different_extensions_are_duplicates = System.Windows.Forms.CheckBox()
         self._options_page.SuspendLayout()
         self._options_page_options_tab.SuspendLayout()
         self._options_page_empty_values_tab.SuspendLayout()
@@ -1057,6 +1053,7 @@ class ConfigureForm(Form):
         self._options_page_options_tab.Controls.Add(self._remove_empty_folders)
         self._options_page_options_tab.Controls.Add(self._insert_multiple_value_field_when_one)
         self._options_page_options_tab.Controls.Add(self._replace_multiple_spaces)
+        self._options_page_options_tab.Controls.Add(self._different_extensions_are_duplicates)
         self._options_page_options_tab.Location = System.Drawing.Point(4, 22)
         self._options_page_options_tab.Name = "options_page_options_tab"
         self._options_page_options_tab.Size = System.Drawing.Size(492, 394)
@@ -1088,21 +1085,30 @@ class ConfigureForm(Form):
         # replace_multiple_spaces
         # 
         self._replace_multiple_spaces.AutoSize = True
-        self._replace_multiple_spaces.Location = System.Drawing.Point(17, 28)
+        self._replace_multiple_spaces.Location = System.Drawing.Point(17, 18)
         self._replace_multiple_spaces.Name = "replace_multiple_spaces"
-        self._replace_multiple_spaces.Size = System.Drawing.Size(234, 17)
+        self._replace_multiple_spaces.Size = System.Drawing.Size(234, 24)
         self._replace_multiple_spaces.TabIndex = 0
         self._replace_multiple_spaces.Text = "Replace multiple spaces with a single space."
         self._replace_multiple_spaces.UseVisualStyleBackColor = True
         #
         # copy_read_percentage
         #
-        self._copy_read_percentage.Location = System.Drawing.Point(17, 63)
+        self._copy_read_percentage.Location = System.Drawing.Point(17, 73)
         self._copy_read_percentage.Size = System.Drawing.Size(411, 24)
         self._copy_read_percentage.Name = "copy_read_percentage"
         self._copy_read_percentage.Text = "When overwriting an existing file, copy the read percentage to the new file."
         self._copy_read_percentage.TabIndex = 1
         self._copy_read_percentage.UseVisualStyleBackColor = True
+        #
+        # duplicate_extensions_are_duplicates
+        #
+        self._different_extensions_are_duplicates.Location = System.Drawing.Point(17, 44)
+        self._different_extensions_are_duplicates.Size = System.Drawing.Size(411, 24)
+        self._different_extensions_are_duplicates.Name = "duplicate_extensions_are_duplicates"
+        self._different_extensions_are_duplicates.Text = "Count different extensions as duplicates."
+        self._different_extensions_are_duplicates.TabIndex = 1
+        self._different_extensions_are_duplicates.UseVisualStyleBackColor = True
         # 
         # insert_multiple_value_field_when_one
         # 
@@ -1602,14 +1608,15 @@ class ConfigureForm(Form):
         self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
-        self.Custom = InsertControlFirstLetter()
-        self.Custom.SetTemplate("Custom", "Custom")
-        self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
-        self.Custom.Location = Point(4, 280)
-        self.Custom.Tag = self.Custom.Location
-        self.Custom.Name = "Custom"
-        self.Custom.SetComboBoxItems(get_custom_value_keys())
-        self._text_insert_controls_list['custom'] = self.Custom
+        if get_custom_value_keys():
+            self.Custom = InsertControlFirstLetter()
+            self.Custom.SetTemplate("Custom", "Custom")
+            self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
+            self.Custom.Location = Point(4, 280)
+            self.Custom.Tag = self.Custom.Location
+            self.Custom.Name = "Custom"
+            self.Custom.SetComboBoxItems(get_custom_value_keys())
+            self._text_insert_controls_list['custom'] = self.Custom
         
 
         self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.Values))
@@ -2550,7 +2557,7 @@ class ConfigureForm(Form):
         self._failed_empty_checkbox.Checked = self.profile.FailEmptyValues
         self._move_failed_empty.Checked = self.profile.MoveFailed
         self._copy_read_percentage.Checked = self.profile.CopyReadPercentage
-
+        self._different_extensions_are_duplicates.Checked = self.profile.DifferentExtensionsAreDuplicates
         self._failed_empty_folder.Text = self.profile.FailedFolder
         self._empty_folder_name.Text = self.profile.EmptyFolder
 
@@ -2644,6 +2651,7 @@ class ConfigureForm(Form):
         self.profile.ExcludedEmptyFolder = list(self._empty_folder_exceptions_list.Items)
         self.profile.FailedFields = [name_to_field[item] for item in self._failed_empty_selection.CheckedItems]
         self.profile.ReplaceMultipleSpaces = self._replace_multiple_spaces.Checked
+        self.profile.DifferentExtensionsAreDuplicates = self._different_extensions_are_duplicates.Checked
         self.profile.DontAskWhenMultiOne = self._insert_multiple_value_field_when_one.Checked
         self.profile.RemoveEmptyFolder = self._remove_empty_folders.Checked
         self.profile.FailEmptyValues = self._failed_empty_checkbox.Checked
