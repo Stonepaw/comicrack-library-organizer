@@ -4,16 +4,16 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{c91c54bf-45ed-4964-b901-9059e4a512a7}</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectHome>
+    </ProjectHome>
     <StartupFile>Program.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>Engine\;GUI\;Tools\;.</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <IsWindowsApplication>True</IsWindowsApplication>
+    <IsWindowsApplication>False</IsWindowsApplication>
     <AssemblyName>Library Organizer</AssemblyName>
-    <Name>Library Organizer</Name>
+    <Name>Stonepaw.LibraryOrganizer.Plugin</Name>
     <RootNamespace>Library Organizer</RootNamespace>
-    <PublishUrl>C:\Users\Andrew\Documents\ComicRack Scripts stuff\Library Organizer-root\Release</PublishUrl>
+    <PublishUrl>file://D:\code projects 3\publish</PublishUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,10 +24,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="arrow.png">
-      <Publish>True</Publish>
-    </None>
-    <None Include="changelog.txt">
+    <None Include="GUI\arrow.png">
       <Publish>True</Publish>
     </None>
     <None Include="credits.txt">
@@ -36,19 +33,16 @@
     <None Include="libraryorganizer.py">
       <Publish>True</Publish>
     </None>
-    <None Include="lobookmover.py">
-      <Publish>True</Publish>
-    </None>
     <None Include="locommon.py">
       <Publish>True</Publish>
     </None>
     <None Include="loduplicate.py">
       <Publish>True</Publish>
     </None>
-    <None Include="loforms.py">
+    <None Include="GUI\loforms.py">
       <Publish>True</Publish>
     </None>
-    <None Include="lologger.py">
+    <None Include="Tools\lologger.py">
       <Publish>True</Publish>
     </None>
     <None Include="losettings.py">
@@ -57,7 +51,7 @@
     <None Include="losettingsx.dat">
       <Publish>False</Publish>
     </None>
-    <None Include="loworkerform.py">
+    <None Include="GUI\loworkerform.py">
       <Publish>True</Publish>
     </None>
     <None Include="Package.ini">
@@ -66,7 +60,7 @@
     <None Include="Program.py">
       <Publish>False</Publish>
     </None>
-    <None Include="pyevent.py">
+    <None Include="Tools\pyevent.py">
       <Publish>True</Publish>
     </None>
     <None Include="todo.txt">
@@ -74,36 +68,38 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="configformcontrols.py">
+    <Compile Include="Engine\bookmover.py" />
+    <Compile Include="Engine\pathmaker.py" />
+    <Compile Include="GUI\configformcontrols.py">
       <Publish>True</Publish>
     </Compile>
-    <Compile Include="configureform.py">
+    <Compile Include="GUI\configureform.py">
       <Publish>True</Publish>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="add_16.png">
+    <Content Include="GUI\add_16.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="arrow_down_16.png">
+    <Content Include="GUI\arrow_down_16.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="blue_arrow_up_32.png">
+    <Content Include="GUI\blue_arrow_up_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="chart_32.png">
+    <Content Include="GUI\chart_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="close_16.png">
+    <Content Include="GUI\close_16.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="DuplicateForm.xaml">
+    <Content Include="GUI\DuplicateForm.xaml">
       <Publish>True</Publish>
     </Content>
-    <Content Include="folder_32.png">
+    <Content Include="GUI\folder_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="home_32.png">
+    <Content Include="GUI\home_32.png">
       <Publish>True</Publish>
     </Content>
     <Content Include="libraryorganizer.ico">
@@ -118,17 +114,22 @@
     <Content Include="lopackagelogo.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="page_text_32.png">
+    <Content Include="GUI\page_text_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="pencil_32.png">
+    <Content Include="GUI\pencil_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="save_32.png">
+    <Content Include="GUI\save_32.png">
       <Publish>True</Publish>
     </Content>
-    <Content Include="tools_32.png">
+    <Content Include="GUI\tools_32.png">
       <Publish>True</Publish>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Engine\" />
+    <Folder Include="GUI\" />
+    <Folder Include="Tools\" />
   </ItemGroup>
 </Project>

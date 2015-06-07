@@ -107,6 +107,7 @@ class Profile:
         self.ReplaceMultipleSpaces = True
 
         self.CopyReadPercentage = True
+        self.DifferentExtensionsAreDuplicates = False
 
 
     def duplicate(self):

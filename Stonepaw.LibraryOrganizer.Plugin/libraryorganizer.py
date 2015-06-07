@@ -45,7 +45,8 @@ from loworkerform import ProfileSelector, WorkerForm, WorkerFormUndo
 import locommon
 from locommon import PROFILEFILE, UNDOFILE, UndoCollection
 
-import lobookmover
+import bookmover
+import pathmaker
 
 
 #@Name Library Organizer
@@ -59,7 +60,8 @@ def LibraryOrganizer(books):
 
             loworkerform.ComicRack = ComicRack
             locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
+            bookmover.ComicRack = ComicRack
+            pathmaker.ComicRack = ComicRack
             #Create the config form
             print "Creating config form"
             if show_config_form(profiles, lastused, books):
@@ -79,7 +81,8 @@ def ConfigureLibraryOrganizer(books):
         books = ComicRack.App.GetLibraryBooks()
     try:
         locommon.ComicRack = ComicRack
-        lobookmover.ComicRack = ComicRack
+        bookmover.ComicRack = ComicRack
+        pathmaker.ComicRack = ComicRack
         profiles, lastused = load_profiles(PROFILEFILE)
 
         show_config_form(profiles, lastused, books)
@@ -105,7 +108,8 @@ def LibraryOrganizerQuick(books):
         try:
             loworkerform.ComicRack = ComicRack
             locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
+            bookmover.ComicRack = ComicRack
+            pathmaker.ComicRack = ComicRack
             profiles, lastused = load_profiles(PROFILEFILE)
 
             if len(profiles) == 1 and profiles[profiles.keys()[0]].BaseFolder == "":
@@ -128,7 +132,8 @@ def LibraryOrganizerUndo(books):
         if File.Exists(UNDOFILE):
             loworkerform.ComicRack = ComicRack
             locommon.ComicRack = ComicRack
-            lobookmover.ComicRack = ComicRack
+            bookmover.ComicRack = ComicRack
+            pathmaker.ComicRack = ComicRack
             profiles, lastused = load_profiles(PROFILEFILE)
                 
             undo_collection = UndoCollection()

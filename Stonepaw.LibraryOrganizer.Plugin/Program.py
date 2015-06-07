@@ -28,10 +28,10 @@ from loworkerform import ProfileSelector
 SETTINGSFILE = "losettingsx.dat"
 
 try:
-    print "Loading test data"
-    f = FileStream("Sample.dat", FileMode.Open)
-    bf = BinaryFormatter()
-    books = bf.Deserialize(f)
+    #print "Loading test data"
+    #f = FileStream("Sample.dat", FileMode.Open)
+    #bf = BinaryFormatter()
+    #books = bf.Deserialize(f)
     print "Done loading sample data"
     print "Starting to load profiles"
     profiles, last_used_profiles = losettings.load_profiles(SETTINGSFILE)
@@ -43,8 +43,8 @@ try:
     selector.ShowDialog()
 
     print selector.get_profiles_to_use()
-
-    form = configureform.ConfigureForm(profiles, last_used_profiles[0], books)
+    configureform.IMAGEPATH += "\\GUI"
+    form = configureform.ConfigureForm(profiles, last_used_profiles[0], [])
     r = form.ShowDialog()
 
     if r != DialogResult.Cancel:
