@@ -1,0 +1,9 @@
+Senarios:
+Path to long, file, folder and both.
+Illegal characters
+
+
+
+Duplicates:
+Duplicates
+Duplicates with 

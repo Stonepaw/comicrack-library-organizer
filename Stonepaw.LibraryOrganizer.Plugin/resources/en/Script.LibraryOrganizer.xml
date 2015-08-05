@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TR xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Script.ComicVineScraper" CultureName="en">
+  <Texts>
+    <!-- Duplicates -->
+    <Text Key="DupHeader" Text="There is already a file with the same name in this location." Comment="There is already a file with the same name in this location."/>
+    <Text Key="DupSubHeading" Text="Click the file you want to keep" Comment="Click the file you want to keep" />
+    <Text Key="DupMoveReplace" Text="Move and Replace" Comment="Move and Replace" />
+    <Text Key="DupCopyReplace" Text="Copy and Replace" Comment="Copy and Replace" />
+    <Text Key="DupReplaceDescription" Text="Replace the file in the destination folder with the file you are moving" Comment="Replace the file in the destination folder with the file you are moving" />
+    <Text Key="DupCancelMove" Text="Don't Move" Comment="Don't Move" />
+    <Text Key="DupCancelCopy" Text="Don't Copy" Comment="Don't Copy" />
+    <Text Key="DupCancelDescription" Text="No files will be changed. Leave this file in the destination folder" Comment="No files will be changed. Leave this file in the destination folder" />
+    <Text Key="DupRenameMove" Text="Move, but keep both files" Comment="Move, but keep both files" />
+    <Text Key="DupRenameCopy" Text="Copy, but keep both files" Comment="Copy, but keep both files" />
+    <Text Key="DupRenameDescriptionMove" Text="The file you are moving will be renamed {0}" Comment="The file you are moving will be renamed {0}" />
+    <Text Key="DupRenameDescriptionCopy" Text="The file you are copying will be renamed {0}" Comment="The file you are copying will be renamed {0}" />
+	  <Text Key="DupAlwaysDo" Text="Do this for all conficts" Comment="Do this for all conficts" />
+  </Texts>
+</TR>

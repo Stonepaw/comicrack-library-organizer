@@ -1,7 +1,9 @@
 ﻿2.1.12
-BUG: Fixed not finding duplicates if file path had different captilizations
+BUG: Fixed not finding duplicates if file path had different capitalizations
 BUG: Wrong version in configuration window
 BUG: SelectedIndex out of range error when no custom value defined in the library
+
+CHANGE: Improved copying existing fields when in copy mode
 
 2.1.11
 Added Rating, Community Rating and Custom Values
