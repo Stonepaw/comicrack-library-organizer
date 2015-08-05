@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TR xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="comic-vine-scraper" CultureName="en">
+  <Texts>  
+  <Text Key="Name" Text="Comic Vine Scraper..." Comment="Comic Vine Scraper..."/>
+	<Text Key="Description" Text="Downloads details from the Comic Vine website into your comic books." Comment="Downloads details from the Comic Vine website into your comic books."/>
+  </Texts>
+</TR>

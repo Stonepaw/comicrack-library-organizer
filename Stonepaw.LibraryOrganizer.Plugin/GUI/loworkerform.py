@@ -161,7 +161,6 @@ class WorkerForm(Form):
 
 
     def ShowDuplicateForm(self, profile, newbook, oldbook, renamefile, count):
-
         if self._DuplicateForm == None:
             self._DuplicateForm = DuplicateForm(profile.Mode)
             helper = WindowInteropHelper(self._DuplicateForm.win)
