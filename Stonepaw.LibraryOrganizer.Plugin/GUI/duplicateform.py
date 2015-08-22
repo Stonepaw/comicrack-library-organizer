@@ -40,6 +40,7 @@ from System.Windows import Visibility, Window
 from System.Windows.Forms import DialogResult
 from System.Windows.Markup import XamlReader
 from System.Windows.Media.Imaging import BitmapImage
+from System.Windows.Controls import DataTemplateSelector
 from System.Xml import XmlReader
 
 from locommon import SCRIPTDIRECTORY, ICON, Mode
@@ -59,9 +60,12 @@ class DuplicateForm(Window):
 
         self.Resources.Add("Arrow", BitmapImage(
                     Uri(Path.Combine(ICONDIRECTORY, 'arrow.png'))))
-        
+        self.Resources.Add("ItemTypeSelector", DuplicateFormDataTemplateSelector())        
         self._action = None
-        self._load_text()
+        self._load_text
+
+        self._processing_book = None
+        self._existing_book = None
 
 
         #The the correct text based on what mode we are in
@@ -80,7 +84,7 @@ class DuplicateForm(Window):
         #    self.win.FindName("Subtitle").Content = "Click the file you want to keep (simulated, no files will be deleted or moved)"
 
         wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName, 
-                                                 'DuplicateForm.xaml'))
+                                                 'DuplicateFormNew.xaml'))
         self.DataContext = self
         icon = BitmapImage()
         icon.BeginInit()
@@ -99,21 +103,22 @@ class DuplicateForm(Window):
     def ReplaceClick(self, sender, e):
         self._action = DuplicateAction.Overwrite
         #Note: set to hide so that the dialog can be reopened.
-        self.win.Hide()
+        self.Hide()
 
     def CancelClick(self, sender, e):
         self._action = DuplicateAction.Cancel
-        self.win.Hide()
+        self.Hide()
 
     def RenameClick(self, sender, e):
         self._action = DuplicateAction.Rename
-        self.win.Hide()
+        self.Hide()
 
     def ShowForm(self, newbook, oldbook, renamefile, count):
         self._action = DuplicateAction.Cancel
-        self.SetupFields(newbook, oldbook, renamefile, count)
-
-        self.win.ShowDialog()
+        #self.SetupFields(newbook, oldbook, renamefile, count)
+        self._processing_book = newbook
+        self._existing_book = oldbook
+        self.ShowDialog()
         return DuplicateResult(self._action, self.win.FindName("DoAll").IsChecked)
 
 
@@ -245,3 +250,10 @@ class DuplicateAction(object):
     Overwrite = 1
     Cancel = 2
     Rename = 3
+
+class DuplicateFormDataTemplateSelector(DataTemplateSelector):
+    def SelectTemplate(self, item, container):
+        if type(item) is FileInfo:
+            return container.FindResource("FileInfoCommandButton")
+        else:
+            return container.FindResource("ComicBookCommandButton")
