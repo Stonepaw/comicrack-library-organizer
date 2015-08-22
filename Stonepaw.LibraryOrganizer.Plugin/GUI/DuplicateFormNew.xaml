@@ -13,7 +13,9 @@
         WindowStartupLocation="CenterOwner"
         WindowStyle="SingleBorderWindow"
         mc:Ignorable="d">
+
     <Window.Resources>
+        <!--  Region CommandButton  -->
         <!--  Hover Brushes  -->
         <!--  This stuff to make the buttons look right was borrowed from http://blog.codenaked.com/post/2011/03/31/WPF-and-Windows-7-Theme.aspx  -->
         <LinearGradientBrush x:Key="HoverBackgroundBrushKey" StartPoint="0,0" EndPoint="0,1">
@@ -83,39 +85,127 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <!--  EndRegion  -->
+        <SolidColorBrush x:Key="BlueText" Color="#FF0033B3" />
+        <DataTemplate x:Key="ComicBookCommandButton">
+            <Grid Width="315">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            Grid.ColumnSpan="3"
+                            Orientation="Vertical">
+                    <TextBlock HorizontalAlignment="Stretch"
+                               FontWeight="Bold"
+                               Padding="2"
+                               Text="{Binding FileNameWithExtension}"
+                               TextWrapping="Wrap" />
+                    <TextBlock FontSize="11"
+                               Foreground="{DynamicResource BlueText}"
+                               Text="{Binding FileDirectory}" />
+
+                </StackPanel>
+                <TextBlock Grid.Row="1"
+                           Grid.ColumnSpan="3"
+                           Margin="0,3"
+                           HorizontalAlignment="Stretch"
+                           Padding="2"
+                           Text="{Binding Caption}"
+                           TextWrapping="Wrap" />
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Label HorizontalAlignment="Left"
+                           Content="Size:"
+                           Foreground="{DynamicResource BlueText}"
+                           Padding="2" />
+                    <Label x:Name="NewFileSize"
+                           HorizontalAlignment="Stretch"
+                           Content="{Binding FileSizeAsText}"
+                           Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Row="2"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                    <Label HorizontalAlignment="Stretch"
+                           Content="{Binding PagesAsText}"
+                           Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Row="3"
+                            Grid.ColumnSpan="3"
+                            Orientation="Horizontal">
+                    <Label HorizontalAlignment="Left"
+                           Content="Added to Library:"
+                           Foreground="{DynamicResource BlueText}"
+                           Padding="2" />
+                    <Label x:Name="NewAddedDate"
+                           Height="20"
+                           HorizontalAlignment="Left"
+                           Content="{Binding AddedTimeAsText}"
+                           Padding="2" />
+                </StackPanel>
+                <StackPanel Grid.Row="4"
+                            Grid.ColumnSpan="3"
+                            Orientation="Horizontal">
+                    <Label HorizontalAlignment="Left"
+                           Content="Scan Information:"
+                           Foreground="{DynamicResource BlueText}"
+                           Padding="2" />
+                    <Label Height="20"
+                           HorizontalAlignment="Left"
+                           Content="{Binding ScanInformation}"
+                           Padding="2" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="FileInfoCommandButton">
+            <Label Content="lkasjdflksj" />
+        </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                    DockPanel.Dock="Bottom"
-                    Orientation="Horizontal">
-            <Button Name="Cancel"
-                    Width="75"
-                    Height="23"
-                    Margin="5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Click="CancelClick"
-                    Content="Cancel" />
-            <CheckBox Name="DoAll"
-                      Height="16"
-                      Margin="5"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Content="{Binding _texts[DupAlwaysDo]}" />
-        </StackPanel>
+        <Border DockPanel.Dock="Bottom">
+            <DockPanel Height="33"
+                       Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                       LastChildFill="False">
+                <Button x:Name="Cancel"
+                        Width="75"
+                        Height="23"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="CancelClick"
+                        Content="Cancel"
+                        DockPanel.Dock="Right" />
+                <CheckBox x:Name="DoAll"
+                          Height="16"
+                          Margin="5"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top"
+                          Content="{Binding _texts[DupAlwaysDo]}" />
+            </DockPanel>
+        </Border>
         <StackPanel Margin="12"
                     CanVerticallyScroll="True"
                     Orientation="Vertical">
             <Label Content="{Binding _texts[DupHeader],
-                                     FallbackValue='There is already a file with the same name in this location.'}"
+                                     FallbackValue=There is already a file with the same name in this location.}"
                    FontSize="16"
-                   Foreground="#FF0033B3"
+                   Foreground="{DynamicResource BlueText}"
                    Padding="5,0" />
             <Label Margin="0,0,0,5"
                    Content="{Binding _texts[DupSubHeading],
-                                     FallbackValue='Click the file you want to keep'}"
+                                     FallbackValue=Click the file you want to keep}"
                    Padding="5,2,5,0" />
             <Button x:Name="ReplaceButton"
+                    Margin="0,5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     HorizontalContentAlignment="Stretch"
@@ -123,6 +213,7 @@
                     Click="ReplaceClick"
                     Style="{StaticResource ResourceKey=BigButton}">
                 <StackPanel>
+
                     <!--<Grid Height="Auto" Width="Auto">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -146,115 +237,116 @@
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>-->
                     <StackPanel Grid.ColumnSpan="5" Orientation="Horizontal">
-                        <Image Name="Arrow1"
-                               Width="21"
+                        <Image Width="21"
                                Height="20"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Bottom"
-                               Source="C:\Users\Andrew\Documents\ComicRack Scripts stuff\Test WPF\WpfApplication1\arrow.png" />
-                        <Label Name="MoveHeader"
+                               Source="{DynamicResource Arrow}" />
+                        <Label x:Name="MoveHeader"
                                HorizontalAlignment="Left"
                                Content="Move and Replace"
                                FontSize="18"
-                               Foreground="#FF0033B3"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="0" />
                     </StackPanel>
-                    <Label Name="MoveText"
+                    <Label x:Name="MoveText"
                            Grid.Row="1"
                            Grid.Column="1"
                            Grid.ColumnSpan="4"
-                           Margin="15,0,0,0"
+                           Margin="22,0,0,0"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
                            Content="Replace the file in the destination folder with the file you are moving:"
-                           Foreground="Navy"
+                           Foreground="{DynamicResource BlueText}"
                            Padding="0" />
                     <StackPanel Orientation="Horizontal">
-                        <Image Name="NewCover"
+                        <Image x:Name="NewCover"
                                Width="100"
                                Height="120"
+                               Margin="5"
                                Stretch="Uniform" />
-                        <WrapPanel Width="300">
-                            <Label Grid.Row="1"
-                                   HorizontalAlignment="Left"
-                                   Content="Series:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewSeries"
-                                   HorizontalAlignment="Stretch"
-                                   Content="Series name is long"
-                                   Padding="2" />
-                            <Label Content="#:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewNumber"
-                                   HorizontalAlignment="Stretch"
-                                   Content="1"
-                                   Padding="2" />
-                            <Label Content="Volume:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewVolume"
-                                   VerticalAlignment="Stretch"
-                                   Content="Volume"
-                                   Padding="2" />
-                            <Label Content="Pages:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewPages"
-                                   Height="20"
-                                   HorizontalAlignment="Stretch"
-                                   Content="Series"
-                                   Padding="2" />
-                            <Label HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"
-                                   Content="Published Date:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewPublishedDate"
-                                   HorizontalAlignment="Stretch"
-                                   Content="Series"
-                                   Padding="2" />
-                            <Label HorizontalAlignment="Left"
-                                   Content="File size:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewFileSize"
-                                   HorizontalAlignment="Stretch"
-                                   Content="Series"
-                                   Padding="2" />
-                            <Label HorizontalAlignment="Left"
-                                   Content="Added to Library:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewAddedDate"
-                                   Height="20"
-                                   HorizontalAlignment="Left"
-                                   Content="Added to library"
-                                   Padding="2" />
-                            <Label HorizontalAlignment="Left"
-                                   Content="Scan Information:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <Label Name="NewScanInfo"
-                                   Height="20"
-                                   HorizontalAlignment="Left"
-                                   Content="Scan Information"
-                                   Padding="2" />
-                            <Label Height="Auto"
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Top"
-                                   Content="Path:"
-                                   Foreground="Navy"
-                                   Padding="2" />
-                            <TextBlock Name="NewPath"
-                                       Width="248"
-                                       FontSize="10"
+                        <ContentControl Margin="0,5"
+                                        Content="{Binding _processing_book}"
+                                        ContentTemplateSelector="{DynamicResource ItemTypeSelector}" />
+                        <!--<Grid Width="315">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="NewSeries"
+                                       Grid.ColumnSpan="3"
+                                       HorizontalAlignment="Stretch"
                                        Padding="2"
-                                       TextWrapping="Wrap">
-                                File Path
-                            </TextBlock>
-                        </WrapPanel>
+                                       Text="lkajsdfas  alskjdf alskjdf a laksjdf alskfj a sdlfkjas;lfkjaslkdfj aslkdf alskjf"
+                                       TextWrapping="Wrap" />
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <Label HorizontalAlignment="Left"
+                                       Content="Size:"
+                                       Foreground="{DynamicResource BlueText}"
+                                       Padding="2" />
+                                <Label x:Name="NewFileSize"
+                                       HorizontalAlignment="Stretch"
+                                       Content="Series"
+                                       Padding="2" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1"
+                                        Grid.Column="1"
+                                        Orientation="Horizontal">
+                                <Label Content="Pages:"
+                                       Foreground="{DynamicResource BlueText}"
+                                       Padding="2" />
+                                <Label x:Name="NewPages"
+                                       Height="20"
+                                       HorizontalAlignment="Stretch"
+                                       Content="Series"
+                                       Padding="2" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2"
+                                        Grid.ColumnSpan="2"
+                                        Orientation="Horizontal">
+                                <Label HorizontalAlignment="Left"
+                                       Content="Added to Library:"
+                                       Foreground="{DynamicResource BlueText}"
+                                       Padding="2" />
+                                <Label x:Name="NewAddedDate"
+                                       Height="20"
+                                       HorizontalAlignment="Left"
+                                       Content="02/06/2010"
+                                       Padding="2" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="3"
+                                        Grid.ColumnSpan="3"
+                                        Orientation="Horizontal">
+                                <Label HorizontalAlignment="Left"
+                                       Content="Scan Information:"
+                                       Foreground="{DynamicResource BlueText}"
+                                       Padding="2" />
+                                <Label x:Name="NewScanInfo"
+                                       Height="20"
+                                       HorizontalAlignment="Left"
+                                       Content="Scan Information"
+                                       Padding="2" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="4"
+                                        Grid.ColumnSpan="3"
+                                        Orientation="Horizontal">
+                                <TextBlock x:Name="NewPath"
+                                           Width="250"
+                                           Padding="2"
+                                           TextWrapping="Wrap"><Run Text="File Path" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>-->
                     </StackPanel>
                 </StackPanel>
             </Button>
@@ -264,12 +356,13 @@
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     Click="CancelClick"
+                    DataContext="{Binding _processing_book}"
                     Style="{StaticResource ResourceKey=BigButton}">
                 <Grid Width="Auto" Height="Auto">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="20" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="20" />
                         <RowDefinition Height="20" />
                         <RowDefinition Height="20" />
@@ -290,20 +383,20 @@
                     <StackPanel Grid.Row="0"
                                 Grid.ColumnSpan="5"
                                 Orientation="Horizontal">
-                        <Image Name="Arrow2"
+                        <Image x:Name="Arrow2"
                                Width="21"
                                Height="20"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Bottom"
                                Source="{DynamicResource Arrow}" />
-                        <Label Name="DontMoveHeader"
+                        <Label x:Name="DontMoveHeader"
                                HorizontalAlignment="Left"
                                Content="Don't Move"
                                FontSize="18"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="0" />
                     </StackPanel>
-                    <Label Name="DontMoveText"
+                    <Label x:Name="DontMoveText"
                            Grid.Row="1"
                            Grid.Column="1"
                            Grid.ColumnSpan="4"
@@ -311,9 +404,9 @@
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top"
                            Content="No files will be changed. Leave this file in the destination folder:"
-                           Foreground="Navy"
+                           Foreground="{DynamicResource BlueText}"
                            Padding="0" />
-                    <Image Name="OldCover"
+                    <Image x:Name="OldCover"
                            Grid.Row="2"
                            Grid.RowSpan="6"
                            Grid.Column="1"
@@ -324,26 +417,35 @@
                            VerticalAlignment="Center"
                            Stretch="Uniform" />
 
-                    <StackPanel Grid.Row="2"
-                                Grid.Column="2"
-                                Grid.ColumnSpan="3"
-                                Orientation="Horizontal">
-                        <Label Grid.Row="1"
+                    <Grid Grid.Row="2"
+                          Grid.Column="2"
+                          Grid.ColumnSpan="3"
+                          Width="220">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0"
                                HorizontalAlignment="Left"
                                Content="Series:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldSeries"
-                               HorizontalAlignment="Stretch"
-                               Padding="2" />
-                    </StackPanel>
+                        <TextBlock x:Name="OldSeries"
+                                   Grid.Column="1"
+                                   Padding="2"
+                                   Text="asldkjfalskdfj ;laksjdf  asl;kdfj asldkfj aslfkdj asdlkfj asfjk al;skdfj asldkdfjaslkfj ;alskdfj asl;kfj aslkfjdasl;kdfj as"
+                                   TextWrapping="Wrap" />
+                    </Grid>
                     <StackPanel Grid.Row="3"
                                 Grid.Column="2"
                                 Orientation="Horizontal">
                         <Label Content="Number:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldNumber"
+                        <Label x:Name="OldNumber"
                                HorizontalAlignment="Stretch"
                                Padding="2" />
                     </StackPanel>
@@ -351,9 +453,9 @@
                                 Grid.Column="3"
                                 Orientation="Horizontal">
                         <Label Content="Volume:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldVolume"
+                        <Label x:Name="OldVolume"
                                VerticalAlignment="Stretch"
                                Padding="2" />
                     </StackPanel>
@@ -361,9 +463,9 @@
                                 Grid.Column="4"
                                 Orientation="Horizontal">
                         <Label Content="Pages:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldPages"
+                        <Label x:Name="OldPages"
                                Height="20"
                                HorizontalAlignment="Stretch"
                                Padding="2" />
@@ -375,9 +477,9 @@
                         <Label HorizontalAlignment="Left"
                                VerticalAlignment="Top"
                                Content="Published Date:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldPublishedDate"
+                        <Label x:Name="OldPublishedDate"
                                HorizontalAlignment="Stretch"
                                Padding="2" />
                     </StackPanel>
@@ -386,9 +488,9 @@
                                 Orientation="Horizontal">
                         <Label HorizontalAlignment="Left"
                                Content="File size:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldFileSize"
+                        <Label x:Name="OldFileSize"
                                HorizontalAlignment="Stretch"
                                Padding="2" />
                     </StackPanel>
@@ -398,9 +500,9 @@
                                 Orientation="Horizontal">
                         <Label HorizontalAlignment="Left"
                                Content="Added to Library:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldAddedDate"
+                        <Label x:Name="OldAddedDate"
                                Height="20"
                                HorizontalAlignment="Left"
                                Padding="2" />
@@ -411,9 +513,9 @@
                                 Orientation="Horizontal">
                         <Label HorizontalAlignment="Left"
                                Content="Scan Information:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <Label Name="OldScanInfo"
+                        <Label x:Name="OldScanInfo"
                                Height="20"
                                HorizontalAlignment="Left"
                                Padding="2" />
@@ -427,9 +529,9 @@
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
                                Content="Path:"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="2" />
-                        <TextBlock Name="OldPath"
+                        <TextBlock x:Name="OldPath"
                                    Width="247"
                                    Height="59"
                                    HorizontalAlignment="Left"
@@ -454,28 +556,29 @@
                         <RowDefinition Height="39*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <Image Name="Arrow3"
+                        <Image x:Name="Arrow3"
                                Width="21"
                                Height="20"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Bottom"
                                Source="C:\Users\Andrew\Documents\ComicRack Scripts stuff\Test WPF\WpfApplication1\arrow.png" />
-                        <Label Name="RenameHeader"
+                        <Label x:Name="RenameHeader"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
+                               Background="{x:Null}"
                                Content="Move, but keep both files"
                                FontSize="18"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="0" />
                     </StackPanel>
-                    <TextBlock Name="RenameText"
+                    <TextBlock x:Name="RenameText"
                                Grid.Row="1"
                                Width="376"
                                Height="43"
                                Margin="10,0,0,0"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               Foreground="Navy"
+                               Foreground="{DynamicResource BlueText}"
                                Padding="0"
                                Text="The file you are moving will be renamed: "
                                TextWrapping="Wrap" />
