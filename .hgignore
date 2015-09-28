@@ -1,2 +1,5 @@
 syntax: glob
 publish/*
+libraryorganizer/logs
+Stonepaw.LibraryOrganizer/bin
+libraryorganizer/tests/logs
