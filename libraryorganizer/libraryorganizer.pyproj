@@ -4,14 +4,17 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{c91c54bf-45ed-4964-b901-9059e4a512a7}</ProjectGuid>
-    <StartupFile>testduplicatelauncher.py</StartupFile>
-    <SearchPath>Engine\;GUI\;.;tests\;C:\Program Files\ComicRack\;utils\;resources\;vs runner\</SearchPath>
+    <StartupFile>tests\testbookmover.py</StartupFile>
+    <SearchPath>Engine\;GUI\;.;C:\Program Files\ComicRack\;utils\;resources\;vs runner\;tests\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <IsWindowsApplication>False</IsWindowsApplication>
     <AssemblyName>Library Organizer</AssemblyName>
-    <Name>Stonepaw.LibraryOrganizer.Plugin</Name>
+    <Name>libraryorganizer</Name>
     <RootNamespace>Library Organizer</RootNamespace>
     <PublishUrl>file://D:\code projects 3\publish</PublishUrl>
+    <ProjectHome />
+    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <DebugStdLib>False</DebugStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,7 +37,7 @@
     <None Include="locommon.py">
       <Publish>True</Publish>
     </None>
-    <None Include="GUI\duplicateform.py">
+    <None Include="GUI\duplicatewindow.py">
       <Publish>True</Publish>
     </None>
     <None Include="GUI\loforms.py">
@@ -69,18 +72,16 @@
     <Compile Include="testduplicatelauncher.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Engine\bookmover.py" />
-    <Compile Include="Engine\pathmaker.py" />
+    <Compile Include="engine\bookmover.py" />
+    <Compile Include="engine\pathmaker.py" />
     <Compile Include="GUI\configformcontrols.py">
       <Publish>True</Publish>
     </Compile>
     <Compile Include="GUI\configureform.py">
       <Publish>True</Publish>
     </Compile>
+    <Compile Include="tests\testbookmover.py" />
     <Compile Include="tests\testrunner.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="tests\test_bookmover.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="resources\i18n.py">
@@ -92,11 +93,10 @@
     <Compile Include="utils\utils.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\wpfutils.py" />
     <Compile Include="vs runner\ComicRack.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="docs\move_flow.txt" />
-    <Content Include="docs\move_tests_planning.txt" />
     <Content Include="GUI\add_16.png">
       <Publish>True</Publish>
     </Content>
@@ -113,7 +113,7 @@
       <Publish>True</Publish>
     </Content>
     <Content Include="GUI\DuplicateForm.xaml" />
-    <Content Include="GUI\DuplicateFormNew.xaml">
+    <Content Include="GUI\DuplicateWindow.xaml">
       <Publish>True</Publish>
     </Content>
     <Content Include="GUI\folder_32.png">
@@ -148,13 +148,15 @@
     </Content>
     <Content Include="resources\en.zip" />
     <Content Include="resources\en\Script.LibraryOrganizer.xml" />
+    <Content Include="resources\ExtractLargeIconFromFile.dll" />
     <Content Include="resources\IronPython.Wpf.dll" />
+    <Content Include="resources\NLog.dll" />
+    <Content Include="resources\NLog.dll.nlog" />
     <Content Include="vs runner\sample data.dat" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Engine\" />
+    <Folder Include="engine\" />
     <Folder Include="GUI\" />
-    <Folder Include="docs\" />
     <Folder Include="resources\" />
     <Folder Include="resources\en\" />
     <Folder Include="tests\" />
@@ -166,6 +168,16 @@
       <Name>IEHost</Name>
       <AssemblyName>IEHost.dll</AssemblyName>
       <HintPath>C:\Windows\Microsoft.NET\Framework\v2.0.50727\IEHost.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <Name>mscorlib</Name>
+      <AssemblyName>mscorlib.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationCore.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationCore</Name>
@@ -242,6 +254,51 @@
       <AssemblyName>PresentationCore.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationCore</Name>
+      <AssemblyName>PresentationCore.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\PresentationFramework.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationFramework</Name>
       <AssemblyName>PresentationFramework.dll</AssemblyName>
@@ -317,6 +374,46 @@
       <AssemblyName>PresentationFramework.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationFramework.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Name>PresentationFramework</Name>
+      <AssemblyName>PresentationFramework.dll</AssemblyName>
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\PresentationFramework.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Classic, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Name>PresentationFramework.Classic</Name>
       <AssemblyName>PresentationFramework.Classic.dll</AssemblyName>
@@ -327,5 +424,12 @@
       <AssemblyName>WindowsBase.dll</AssemblyName>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\WindowsBase.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stonepaw.LibraryOrganizer\Stonepaw.LibraryOrganizer.csproj">
+      <Name>Stonepaw.LibraryOrganizer</Name>
+      <Project>{07b57b44-0bcd-4925-ac45-9d7700b24055}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

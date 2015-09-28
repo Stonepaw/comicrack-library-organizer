@@ -1,10 +1,12 @@
-"""
+﻿"""
 This module provides several classes that mock several methods provided by
 ComicRack so that the script can be run in Visual Studio.
 """
-
+import clr
+clr.AddReference("System.Drawing")
 import System
 from System.Collections.Generic import Dictionary
+from System.Drawing import SystemIcons, Bitmap
 from System.IO import FileStream, FileMode, FileInfo, Path
 from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
 
@@ -47,6 +49,11 @@ class App(object):
             "Main Character Or Team " : "MainCharacterOrTeam",
             "Locations" : "Locations","Scan Information" : "ScanInformation",})
 
+    def GetComicThumbnail(self, book, index):
+        """ Mocks returning a bitmap page image by using SystemIcons.Error. """
+        path = Path.Combine(Path.GetDirectoryName(__file__), "437px-Mystery_Men_Comics_L.jpg")
+        return Bitmap(path)
+
     def GetLibraryBooks(self):
         """ Mocks calling ComicRack's built in function to retrieve all
         the library books. It uses a file sample_data.dat which
@@ -56,5 +63,16 @@ class App(object):
             b = BinaryFormatter()
 
             return b.Deserialize(f)
+
+    def RemoveBook(self, book):
+        """Mocks the RemoveBook Method"""
+        pass
+
+class ComicBook(object):
+    """Mocks a ComicBook object"""
+    def __init__(self):
+        self.FilePath = ""
+        self.Caption = ""
+        self.FileDirectory = ""
 
 

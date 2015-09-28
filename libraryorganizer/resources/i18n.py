@@ -1,4 +1,4 @@
-""" This a modified version of cbanack's localizer utility in 
+﻿""" This a modified version of cbanack's localizer utility in 
 ComicVine Scraper. I have just tweaked it to remove functionality
 I don't need, add some functionality I do need and changed the zip utility 
 to one ComicRack already ships with.
@@ -16,10 +16,10 @@ from ICSharpCode.SharpZipLib.Zip import ZipFile, FastZip
 
 from locommon import SCRIPTDIRECTORY
 
-__i18n = None
+__I18N = None
 
 #So that different folders can be used when launching from visual studio
-resourcespath = SCRIPTDIRECTORY
+resourcespath = Path.GetDirectoryName(__file__)
 default_resource = "en.zip"
 
 def setup(comicrack):
@@ -29,9 +29,9 @@ def setup(comicrack):
     Args:
         comicrack: The ComicRack object passed from ComicRack to the script.
     """
-    global __i18n
-    __i18n = __i18n(comicrack)
-    __i18n._get_defaults()
+    global __I18N
+    __I18N = _i18n(comicrack)
+    __I18N._get_defaults()
 
 def get(key):
     """Retrieves a translation with a key or the default string if no
@@ -43,15 +43,15 @@ def get(key):
     Returns:
         The translated string or the English string if no translation is found.
     """
-    if __i18n is not None:
-        return __i18n.get(key)
+    if __I18N is not None:
+        return __I18N.get(key)
     else:
         raise "Localizer not initialized"
 
 #TODO: use comicrack built in method GetComicFields to retrive some comic field names.
 #Dictionary[str, str]({'Tags' : 'Tags', 'File Path' : 'FilePath', 'Book Age' : 'BookAge', 'Book Condition' : 'BookCondition', 'Book Store' : 'BookStore', 'Book Owner' : 'BookOwner', 'Book Collection Status' : 'BookCollectionStatus', 'Book Notes' : 'BookNotes', 'Book Location' : 'BookLocation', 'ISBN' : 'ISBN', 'Custom Values Store' : 'CustomValuesStore', 'Title' : 'Title', 'Series' : 'Series', 'Number' : 'Number', 'Alternate Series' : 'AlternateSeries', 'Alternate Number' : 'AlternateNumber', 'Story Arc' : 'StoryArc', 'Series Group' : 'SeriesGroup', 'Summary' : 'Summary', 'Notes' : 'Notes', 'Review' : 'Review', 'Writer' : 'Writer', 'Penciller' : 'Penciller', 'Inker' : 'Inker', 'Colorist' : 'Colorist', 'Letterer' : 'Letterer', 'Cover Artist' : 'CoverArtist', 'Editor' : 'Editor', 'Publisher' : 'Publisher', 'Imprint' : 'Imprint', 'Genre' : 'Genre', 'Web' : 'Web', 'Format' : 'Format', 'Age Rating' : 'AgeRating', 'Characters' : 'Characters', 'Teams' : 'Teams', 'Main Character Or Team' : 'MainCharacterOrTeam', 'Locations' : 'Locations', 'Scan Information' : 'ScanInformation'})
 
-class __i18n(object):
+class _i18n(object):
     """ A hidden class that implements the localize functions. Extremely based
     on cbanack's i18n utility in ComicVine Scraper.
     """
