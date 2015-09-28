@@ -2,8 +2,12 @@
 BUG: Fixed not finding duplicates if file path had different capitalizations
 BUG: Wrong version in configuration window
 BUG: SelectedIndex out of range error when no custom value defined in the library
+BUG: No longer copies multiplies times when a book can be copied under multiple profiles?????? Might have been intentional
 
-CHANGE: Improved copying existing fields when in copy mode
+CHANGE: Improved copying existing fields when in copy mode. More fields are copied, inlcuding custom fields?
+CHANGE: Duplicates window has been changed to reflect better information when the book isn't in the library
+
+
 
 2.1.11
 Added Rating, Community Rating and Custom Values

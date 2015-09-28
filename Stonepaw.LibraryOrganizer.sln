@@ -2,12 +2,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Stonepaw.LibraryOrganizer.Plugin", "Stonepaw.LibraryOrganizer.Plugin\Stonepaw.LibraryOrganizer.Plugin.pyproj", "{C91C54BF-45ED-4964-B901-9059E4A512A7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{464FE09E-5183-44A3-B01C-DBFEF11B824F}"
 	ProjectSection(SolutionItems) = preProject
 		changelog.txt = changelog.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stonepaw.LibraryOrganizer", "Stonepaw.LibraryOrganizer\Stonepaw.LibraryOrganizer.csproj", "{07B57B44-0BCD-4925-AC45-9D7700B24055}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{69D09E56-8F79-4F5F-AA7C-255B2B4D4558}"
+	ProjectSection(SolutionItems) = preProject
+		docs\move_flow.txt = docs\move_flow.txt
+		docs\move_tests_planning.txt = docs\move_tests_planning.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reference", "reference", "{545BD350-DFC0-48AB-951F-7F043F4D7167}"
+	ProjectSection(SolutionItems) = preProject
+		reference\copy dialog.png = reference\copy dialog.png
+	EndProjectSection
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "libraryorganizer", "libraryorganizer\libraryorganizer.pyproj", "{C91C54BF-45ED-4964-B901-9059E4A512A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +28,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07B57B44-0BCD-4925-AC45-9D7700B24055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B57B44-0BCD-4925-AC45-9D7700B24055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B57B44-0BCD-4925-AC45-9D7700B24055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B57B44-0BCD-4925-AC45-9D7700B24055}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C91C54BF-45ED-4964-B901-9059E4A512A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C91C54BF-45ED-4964-B901-9059E4A512A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{69D09E56-8F79-4F5F-AA7C-255B2B4D4558} = {464FE09E-5183-44A3-B01C-DBFEF11B824F}
+		{545BD350-DFC0-48AB-951F-7F043F4D7167} = {464FE09E-5183-44A3-B01C-DBFEF11B824F}
 	EndGlobalSection
 EndGlobal

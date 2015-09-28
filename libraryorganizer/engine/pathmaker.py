@@ -310,7 +310,7 @@ class PathMaker(object):
 
             elif field == "FirstLetter":
                 if len(args) == 0:
-                   return None
+                    return None
                 elif args[0] in name_to_field or args[0] in field_to_name:
                     return self.insert_first_letter(args[0])
 
