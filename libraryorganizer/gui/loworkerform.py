@@ -113,9 +113,8 @@ class WorkerForm(Form):
         books = e.Argument[0]
         profiles = e.Argument[1]        
         report = WorkerResult()
-        self.logger = Logger()
-        mover = BookMover(sender, self, self.logger)
-
+        self.logreporterLogger()
+        mover = BookMover(sender, self, self.logreporter
         
         result = mover.process_books(books, profiles)
         if result.failed_or_skipped:
@@ -169,12 +168,12 @@ class WorkerForm(Form):
 
 
     def show_report(self):
-        """Shows the report form with the available logger."""
+        """Shows the report form with the available logreporter"
         report = loforms.ReportForm()
-        report.LoadData(self.logger.ToArray())
+        report.LoadData(self.logreporterArray())
         r = report.ShowDialog()
         if r == DialogResult.Yes:
-            self.logger.SaveLog()
+            self.logreporterveLog()
         report.Dispose()
 
 
@@ -331,16 +330,16 @@ class ProfileSelector(Form):
 class ProfileSelectorControl(FlowLayoutPanel):
     
     def __init__(self, remove, profile_names, selected):
-        self._profile = ComboBox()
-        self._profile.Size = System.Drawing.Size(190, 21)
-        self._profile.DropDownStyle = ComboBoxStyle.DropDownList
-        self._profile.Items.AddRange(profile_names)
-        self._profile.Sorted = True
+        self._pr_current_profileComboBox()
+        self._pr_current_profileze = System.Drawing.Size(190, 21)
+        self._pr_current_profileopDownStyle = ComboBoxStyle.DropDownList
+        self._pr_current_profileems.AddRange(profile_names)
+        self._pr_current_profilerted = True
 
         if selected is not None:
-            self._profile.SelectedItem = selected
+            self._pr_current_profilelectedItem = selected
         else:
-            self._profile.SelectedIndex = 0
+            self._pr_current_profilelectedIndex = 0
 
         self._remove = Button()
         self._remove.Text = "-"
@@ -348,12 +347,11 @@ class ProfileSelectorControl(FlowLayoutPanel):
         self._remove.Click += remove
         self._remove.Tag = self
         self.AutoSize = True
-        self.Controls.Add(self._profile)
-        self.Controls.Add(self._remove)
+        self.Controls.Add(self._pr_current_profile        self.Controls.Add(self._remove)
         
     @property
     def SelectedItem(self):
-        return self._profile.SelectedItem
+        return self._pr_current_profilelectedItem
 
 
 
@@ -426,11 +424,10 @@ class WorkerFormUndo(WorkerForm):
     def WorkerDoWork(self, sender, e):
         undo_collection = e.Argument[0]
         profiles = e.Argument[1]
-        self.logger = Logger()
+        self.logreporterLogger()
         report = WorkerResult()
         
-        mover = UndoMover(sender, self, undo_collection, profiles, self.logger)
-        result = mover.process_books()        
+        mover = UndoMover(sender, self, undo_collection, profiles, self.logreporter        result = mover.process_books()        
 
         if result.failed_or_skipped:
             report.failed_or_skipped = result.failed_or_skipped

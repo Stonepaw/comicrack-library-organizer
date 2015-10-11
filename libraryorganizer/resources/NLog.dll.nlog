@@ -9,7 +9,7 @@
 
   <rules>
     <logger name="Simulate" level="Info" writeTo="simulate" final="true"/>
-    <logger name="*" minlevel="Info" writeTo="logfile,console" />
+    <logger name="*" minlevel="Trace" writeTo="logfile,console" />
 	
   </rules>
 </nlog>

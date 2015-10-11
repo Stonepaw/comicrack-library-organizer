@@ -4,9 +4,8 @@ ComicRack so that the script can be run in Visual Studio.
 """
 import clr
 clr.AddReference("System.Drawing")
-import System
 from System.Collections.Generic import Dictionary
-from System.Drawing import SystemIcons, Bitmap
+from System.Drawing import Bitmap
 from System.IO import FileStream, FileMode, FileInfo, Path
 from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
 
@@ -26,7 +25,7 @@ class ComicRack(object):
 
 class App(object):
     """This is a replacement for methods provided by ComicRack. 
-    This allows developing the program in Visual Studio without running CR."""
+    This allows developing the program in an IDE without running CR."""
     
     def GetComicFields(self):
         return Dictionary[str, str]({
@@ -50,7 +49,7 @@ class App(object):
             "Locations" : "Locations","Scan Information" : "ScanInformation",})
 
     def GetComicThumbnail(self, book, index):
-        """ Mocks returning a bitmap page image by using SystemIcons.Error. """
+        """ Mocks returning a bitmap page image using a free comic cover. """
         path = Path.Combine(Path.GetDirectoryName(__file__), "437px-Mystery_Men_Comics_L.jpg")
         return Bitmap(path)
 

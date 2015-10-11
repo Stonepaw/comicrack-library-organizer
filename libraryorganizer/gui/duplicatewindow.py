@@ -34,12 +34,12 @@ clr.AddReference("System.Xml")
 clr.AddReferenceToFile("ExtractLargeIconFromFile.dll")
 
 import wpf
-from System import Uri, UriKind, ArgumentException
+from System import Uri, UriKind, ArgumentException  # @UnresolvedImport
 from System.IO import Path, FileInfo
-from System.Windows import Window
-from System.Windows.Controls import DataTemplateSelector
-from System.Windows.Data import IValueConverter
-from System.Windows.Media.Imaging import BitmapImage
+from System.Windows import Window  # @UnresolvedImport
+from System.Windows.Controls import DataTemplateSelector  # @UnresolvedImport
+from System.Windows.Data import IValueConverter  # @UnresolvedImport
+from System.Windows.Media.Imaging import BitmapImage  # @UnresolvedImport
 
 from ExtractLargeIconFromFile import ShellEx
 
@@ -48,7 +48,7 @@ from locommon import SCRIPTDIRECTORY, ICON, Mode
 from wpfutils import NotifyPropertyChangedBase, notify_property, bitmap_to_bitmapimage
 
 ICONDIRECTORY = SCRIPTDIRECTORY
-
+ComicRack = None
 
 class DuplicateWindow(Window):
     """ A wpf window that mimics the windows 7 copy dialog that shows when
@@ -122,13 +122,15 @@ class DuplicateWindow(Window):
 
 
 class DuplicateWindowViewModel(NotifyPropertyChangedBase):
-    """The viewmodel for the DuplicateWindow.
+    """The ViewModel for the DuplicateWindow.
 
     This controls mostly the different text that can be displayed depending
     on the mode being used.
 
-    It also allows the DuplicateWindow to be resued easily by easily updating
+    It also allows the DuplicateWindow to be reused easily by easily updating
     the bindings for the different text and covers.
+    
+    Use setup() to change the ComicBook/FileInfo objects.
     """
     def __init__(self):
         super(DuplicateWindowViewModel, self).__init__()
@@ -254,7 +256,7 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
         """
         if count > 1:
             self.show_do_all = True
-            self.do_all_text = self._texts["DupAlwaysDo"] + " (%s)" % count
+            self.do_all_text = " ".join((self._texts["DupAlwaysDo"], count))
         else:
             self.show_do_all = False
         if mode == Mode.Copy:
