@@ -24,15 +24,34 @@ import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult
+from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult  # @UnresolvedImport
 
-class Logger():
+class MoveReporter(object):
     
     def __init__(self):
         self._log = []
         self._current_profile = ""
+        self._current_book = ""
         self.header = ""
         #TODO Store book in this instead of passing the path in ADD
+
+    def failed(self, message):
+        self._add_log_message(message, "Failed")
+    
+    def warn(self, message):
+        self._add_log_message(message, "Warning")
+    
+    def success(self, message):
+        self._add_log_message(message, "Success")
+        
+    def skip(self, message):
+        self._add_log_message(message, "Skipped")
+        
+    def success_simulated(self, message):
+        self._add_log_message(message, "Success (Simulated)")
+    
+    def _add_log_message(self, message, action):
+        self._log.append(self._current_profile, action, self._current_book, message)
 
     def Add(self, action, path, message = "", profile=""):
         if profile:
@@ -41,9 +60,19 @@ class Logger():
             self._log.append([self._current_profile, unicode(action), unicode(path), unicode(message)])
 
 
-    def SetProfile(self, profile):
+    def set_profile(self, profile):
         self._current_profile = profile
-
+        
+    @property
+    def current_book(self):
+        return self._current_book
+    
+    @current_book.setter
+    def current_book(self, book):
+        if book.FilePath:
+            self._current_book = book.FilePath
+        else:
+            self._current_book = book.Caption
 
     def ToArray(self):
         return self._log

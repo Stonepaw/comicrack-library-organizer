@@ -2,11 +2,20 @@
 BUG: Fixed not finding duplicates if file path had different capitalizations
 BUG: Wrong version in configuration window
 BUG: SelectedIndex out of range error when no custom value defined in the library
-BUG: No longer copies multiplies times when a book can be copied under multiple profiles?????? Might have been intentional
+BUG: Various errors where text in the final report may not be reported correctly
+Bug: Improved error handling in all moving code. This should cause a lot less errors in some cases.
 
-CHANGE: Improved copying existing fields when in copy mode. More fields are copied, inlcuding custom fields?
-CHANGE: Duplicates window has been changed to reflect better information when the book isn't in the library
 
+CHANGE: Improved copying existing fields when in copy mode. More fields are copied, including custom fields?
+CHANGE: Duplicates window has been overhauled to work more efficiently and show more information when the book isn't in the library
+Change: No longer copies a file multiple times when it can be used under several profiles. Just the last one is used.
+Change: Implemented better logging for most parts of the process. Logs are stored under %appdata%/cYo/ComicRack/Library Organizer/logs/
+
+New: Option to count different extensions as duplicates
+New: Duplicates window is now translatable (other windows to come)
+
+
+TODO: Add tag or custom value after successful move.
 
 
 2.1.11
