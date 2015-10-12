@@ -45,12 +45,11 @@ from pathmaker import PathMaker
 
 
 
-
+#TODO: Move duplicate into seperate class.
 
 
 ComicRack = None
 log = LogManager.GetLogger("BookMover")
-sim_logger = LogManager.GetLogger("Simulate")
 
 class MoveResult(object):
     """A class to report different statuses during a move operation"""
@@ -85,9 +84,9 @@ class ProfileReport(object):
     """
     #TODO: Move into MoveReport functions
     def __init__(self, total, name, mode):
-        self.success = 0
-        self.failed = 0
-        self.skipped = 0
+        self._success = 0
+        self._failed = 0
+        self._skipped = 0
         self._total = total
         self._name = name
         self._mode = mode
@@ -104,9 +103,9 @@ class ProfileReport(object):
             A string of the total success, failed, and skipped operations
         """
         if cancelled:
-            self.skipped = self._total - self.success - self.failed
-        return "%s:\nSuccessfully %s: %s\tSkipped: %s\tFailed: %s" % (self._name, ModeText.get_mode_past(self._mode), self.success,
-                                                                      self.skipped, self.failed)
+            self._skipped = self._total - self._success - self._failed
+        return "%s:\nSuccessfully %s: %s\tSkipped: %s\tFailed: %s" % (self._name, ModeText.get_mode_past(self._mode), self._success,
+                                                                      self._skipped, self._failed)
 
 
 class ModeText(object):
@@ -206,14 +205,14 @@ class BookMover(object):
         def handle_result(result):
             if result is MoveResult.Skipped:
                 self.failed_or_skipped = True
-                self.profile_reports[book.profile_index].skipped += 1
+                self.profile_reports[book.profile_index]._skipped += 1
                 
             elif result is MoveResult.Failed:
                 self.failed_or_skipped = True
-                self.profile_reports[book.profile_index].failed += 1
+                self.profile_reports[book.profile_index]._failed += 1
 
             elif result is MoveResult.Success:
-                self.profile_reports[book.profile_index].success += 1
+                self.profile_reports[book.profile_index]._success += 1
 
             self._worker.ReportProgress(int(round(progress)))
 
@@ -230,7 +229,7 @@ class BookMover(object):
             progress += progress_percent
 
             self.profile = profiles[book.profile_index]
-            self.report.SetProfile(self.profile.Name)
+            self.report.set_profile(self.profile.Name)
             log.Info("Starting to process {0} with destination {1}", self.report_book_name, book.path)
             result = self._process_book(book)
 
@@ -253,7 +252,7 @@ class BookMover(object):
             progress += progress_percent
 
             self.profile = profiles[book.profile_index]
-            self.report.SetProfile(self.profile.Name)
+            self.report.set_profile(self.profile.Name)
             self._set_book_name_for_report(book.book)
             result = self._process_duplicate_book(book)
             self._held_duplicate_count -= 1
@@ -290,11 +289,12 @@ class BookMover(object):
         #TODO inefficent. Try running through each book in each profile for the
         #Excludes first and then make the path....?
         for book in books:
-            path = ""
+            path = "" #TODO: Rename to current_path
             profile_index = None
             failed_fields = []
             #TODO : Remove
             self._set_book_name_for_report(book)
+            log.Info("Finding path for: {0}", self.report_book_name)
             self.report.current_book = book
 
             for index, profile in enumerate(profiles):
@@ -305,43 +305,33 @@ class BookMover(object):
                 result = self.create_book_path(book)
 
                 if result == MoveResult.Skipped:
-                    self.profile_reports[index].skipped += 1
-                    self.failed_or_skipped = True
                     continue
 
                 elif result == MoveResult.Failed:
-                    self.profile_reports[index].failed += 1
-                    self.failed_or_skipped = True
                     continue
 
                 else:
                     if path:
-                        # Only use the most recent path so mark the old one as
-                        # Skipped
-                        self.profile_reports[profile_index].skipped +=1
+                        # Only use the most recent path
                         self.report.skip("The book is moved by a later profile", 
                             profiles[profile_index].Name)
-                        self.failed_or_skipped = True
                     path = result
                     profile_index = index
                     failed_fields = self.pathmaker.failed_fields
 
             if path:
                 self.profile = profiles[profile_index]
-                self.report.SetProfile(self.profile.Name)
+                self.report.set_profile(self.profile.Name)
+                log.Info("Found {0} using profile {1}", path, profile.Name)
                 # Because the path can already be at location the final profile
                 # says the book may be moved with the wrong profile if this is
                 # checked earlier.
                 result = self._check_bookpath_same_as_newpath(book, Path.GetFileName(path), path)
                 if not result:
-                    self.profile_reports[profile_index].skipped += 1
+                    self.profile_reports[profile_index]._skipped += 1
                     self.failed_or_skipped = True
                 else:
                     books_to_move.append(BookToMove(book, path, profile_index, failed_fields))
-        print "Created paths are:"
-        for i in books_to_move:
-            print "%s:%s" % (i.book.FilePath, i.path)
-
         return books_to_move
 
     def _set_book_name_for_report(self, book):
@@ -573,7 +563,7 @@ class BookMover(object):
 
         if self.duplicate_action == DuplicateAction.Cancel:
             log.Info("User declined to overwrite or rename the "
-                             "book and it was skipped")
+                             "book and it was _skipped")
             self.report.Add(
                 "Skipped", self.report_book_name, "A file already exists "
                 "at: {0} and the user declined to overwrite it or rename "
@@ -794,9 +784,7 @@ class BookMover(object):
             not.
         """
         if new_full_path == book.FilePath:
-            self.report.Add("Skipped", 
-                self.report_book_name, 
-                "The book is already located at the calculated path")
+            self.report.skip("The book is already located at the calculated path")
             return True
 
         # In some cases the file path is the same but has different cases.
@@ -804,16 +792,15 @@ class BookMover(object):
         # still thinks that it is a duplicate.
         if new_full_path.lower() == book.FilePath.lower():
             #In that case, better rename it to the correct case
-            print "Renaming %s to %s to fix capitalization" % (book.FilePath,
-                                                               new_full_path)
+            log.Info("Renamed {0} to {1} to fix capitalization".format(book.FilePath,
+                                                               new_full_path))
             if self.profile.Mode == Mode.Simulate:
                 self.report.Add("Renaming", self.report_book_name, "to: " + new_full_path)
             else:
                 book.RenameFile(new_file_name)
                 self.report.Add("Renaming", self.report_book_name, 
                                 "to %s to fix capitalization" % new_full_path)
-            self.report.Add("Skipped", self.report_book_name, 
-                "The book is already located at the calculated path")
+            self.report.skip("The book is already located at the calculated path")
             return True
         return False
 
@@ -831,8 +818,7 @@ class BookMover(object):
         if result is None:
             log.Info("Skipped: The calculated path was too long and the user " 
                      "skipped shortening it")
-            self.report.Add("Skipped", self.report_book_name, 
-                "The calculated path was too long and the user skipped shortening it")
+            self.report.skip("The calculated path was too long and the user skipped shortening it")
             return MoveResult.Skipped
         return result
 
@@ -853,7 +839,7 @@ class BookMover(object):
         log.Trace("Trying to find the duplicate book in the library")
         path = path.lower()
         for book in ComicRack.App.GetLibraryBooks():
-            #Fix Issues #5: different capitalization in path names.
+            #Fix Issue #5: different capitalization in path names.
             if book.FilePath.lower() == path:
                 log.Info("Found a duplicate in the library")
                 return book
@@ -879,6 +865,7 @@ class BookMover(object):
         
         if self.profile.Mode == Mode.Simulate:
             if new_directory.FullName not in self._created_paths:
+                #TODO: check this
                 self.report.Add("Created Folder (Simulated)", new_directory.FullName)
                 self._created_paths.append(new_directory.FullName)
                 log.Info("Created Folder {0} (Simulated)", new_directory.FullName)
@@ -889,9 +876,7 @@ class BookMover(object):
             log.Info("Created folder(s) {0}", new_directory.FullName)
             return MoveResult.Success
         except IOException as ex:
-            self.report.Add("Failed to create folder", new_directory, 
-                ("Book %s  was not moved because an error occurred "
-                "creating the folder. The error was: %s" % (self.report_book_name, ex.Message)))
+            self.report.fail("Failed to create folder {0}: {1}".format(new_directory.FullName, ex.Message))
             log.Error("Failed to create folder {0}: {1}", 
                               new_directory.FullName, ex.Message)
             return MoveResult.Failed
@@ -971,19 +956,19 @@ class BookMover(object):
 #     def process_books(self):
 #         books, notfound = self.get_library_books()
 # 
-#         success = 0
-#         failed = 0
-#         skipped = 0
+#         _success = 0
+#         _failed = 0
+#         _skipped = 0
 #         count = 0
 # 
 #         for book in books + notfound:
 #             count += 1
 # 
 #             if self._worker.CancellationPending:
-#                 skipped = len(books) + len(notfound) - success - failed
-#                 self.report.Add("Canceled", str(skipped) + " files", "User cancelled the script")
-#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0 or skipped > 0)
-#                 #self.report.SetCountVariables(failed, skipped, success)
+#                 _skipped = len(books) + len(notfound) - _success - _failed
+#                 self.report.Add("Canceled", str(_skipped) + " files", "User cancelled the script")
+#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#                 #self.report.SetCountVariables(_failed, _skipped, _success)
 #                 return report
 # 
 #             result = self.process_book(book)
@@ -993,17 +978,17 @@ class BookMover(object):
 #                 continue
 # 
 #             elif result is MoveResult.Skipped:
-#                 skipped += 1
+#                 _skipped += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
 #             elif result is MoveResult.Failed:
-#                 failed += 1
+#                 _failed += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
 #             elif result is MoveResult.Success:
-#                 success += 1
+#                 _success += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
@@ -1011,40 +996,40 @@ class BookMover(object):
 #         for book in self._held_duplicate_books:
 # 
 #             if self._worker.CancellationPending:
-#                 skipped = len(books) + len(notfound) - success - failed
-#                 self.report.Add("Canceled", str(skipped) + " files", "User cancelled the script")
-#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0 or skipped > 0)
-#                 #self.report.SetCountVariables(failed, skipped, success)
+#                 _skipped = len(books) + len(notfound) - _success - _failed
+#                 self.report.Add("Canceled", str(_skipped) + " files", "User cancelled the script")
+#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#                 #self.report.SetCountVariables(_failed, _skipped, _success)
 #                 return report
 # 
 #             result = self.process_duplicate_book(book, self._held_duplicate_books[book])
 #             self._held_duplicate_count -= 1
 # 
 #             if result is MoveResult.Skipped:
-#                 skipped += 1
+#                 _skipped += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
 #             elif result is MoveResult.Failed:
-#                 failed += 1
+#                 _failed += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
 #             elif result is MoveResult.Success:
-#                 success += 1
+#                 _success += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
-#         report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (success, failed, skipped), failed > 0 or skipped > 0)
-#         #self.report.SetCountVariables(failed, skipped, success)
+#         report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#         #self.report.SetCountVariables(_failed, _skipped, _success)
 #         return report
 # 
 # 
 #     def MoveBooks(self):
 # 
-#         success = 0
-#         failed = 0
-#         skipped = 0
+#         _success = 0
+#         _failed = 0
+#         _skipped = 0
 #         count = 0
 #         #get a list of the books
 #         books, notfound = self.get_library_books()
@@ -1062,20 +1047,20 @@ class BookMover(object):
 # 
 #             if self._worker.CancellationPending:
 #                 #User pressed cancel
-#                 skipped = len(books) + len(notfound) - success - failed
+#                 _skipped = len(books) + len(notfound) - _success - _failed
 #                 self.report.Append("\n\nOperation cancelled by user.")
 #                 break
 # 
 #             if not File.Exists(oldfile):
 #                 self.report.Append("\n\nFailed to move\n%s\nbecause the file does not exist." % (oldfile))
-#                 failed += 1
+#                 _failed += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
 #         
 #             if path == oldfile:
 #                 self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated path." % (oldfile))
-#                 skipped += 1
+#                 _skipped += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
 # 
@@ -1098,13 +1083,13 @@ class BookMover(object):
 # 
 #             result = self.MoveBook(book, path)
 #             if result == MoveResult.Success:
-#                 success += 1
+#                 _success += 1
 #             
 #             elif result == MoveResult.Failed:
-#                 failed += 1
+#                 _failed += 1
 #             
 #             elif result == MoveResult.Skipped:
-#                 skipped += 1
+#                 _skipped += 1
 # 
 #             
 #             #If cleaning directories
@@ -1125,7 +1110,7 @@ class BookMover(object):
 # 
 #             if self._worker.CancellationPending:
 #                 #User pressed cancel
-#                 skipped = len(books) + len(notfound) - success - failed
+#                 _skipped = len(books) + len(notfound) - _success - _failed
 #                 self.report.Append("\n\nOperation cancelled by user.")
 #                 break
 # 
@@ -1143,13 +1128,13 @@ class BookMover(object):
 # 
 #             result = self.MoveBook(book, path)
 #             if result == MoveResult.Success:
-#                 success += 1
+#                 _success += 1
 #             
 #             elif result == MoveResult.Failed:
-#                 failed += 1
+#                 _failed += 1
 #             
 #             elif result == MoveResult.Skipped:
-#                 skipped += 1
+#                 _skipped += 1
 # 
 #             
 #             #If cleaning directories
@@ -1162,8 +1147,8 @@ class BookMover(object):
 #             self._worker.ReportProgress(count)
 # 
 #         #Return the report to the worker thread
-#         report = "Successfully moved: %s\nFailed to move: %s\nSkipped: %s" % (success, failed, skipped)
-#         return [failed + skipped, report, self.report.ToString()]
+#         report = "Successfully moved: %s\nFailed to move: %s\nSkipped: %s" % (_success, _failed, _skipped)
+#         return [_failed + _skipped, report, self.report.ToString()]
 # 
 # 
 #     def process_book(self, book):
@@ -1252,7 +1237,7 @@ class BookMover(object):
 #                 if len(rename_path) > 259:
 #                     result = self.form.Invoke(Func[str, object](self._get_smaller_path), System.Array[System.Object]([rename_path]))
 #                     if result is None:
-#                         self.report.Add("Skipped", self.report_book_name, "The path was too long and the user skipped shortening it")
+#                         self.report.Add("Skipped", self.report_book_name, "The path was too long and the user _skipped shortening it")
 #                         return MoveResult.Skipped
 # 
 #                     return self.process_duplicate_book(book, result)
