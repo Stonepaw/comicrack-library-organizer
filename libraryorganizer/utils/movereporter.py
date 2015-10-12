@@ -33,25 +33,34 @@ class MoveReporter(object):
         self._current_profile = ""
         self._current_book = ""
         self.header = ""
+        self._profile_reports = {}
         #TODO Store book in this instead of passing the path in ADD
 
-    def failed(self, message):
-        self._add_log_message(message, "Failed")
+    def fail(self, message):
+        self._add_log_message("Failed", message)
+        self._profile_reports[self._current_profile].failed()
     
     def warn(self, message):
-        self._add_log_message(message, "Warning")
+        self._add_log_message("Warning", message)
     
     def success(self, message):
-        self._add_log_message(message, "Success")
+        self._add_log_message("Success", message)
+        self._profile_reports[self._current_profile].success()
         
-    def skip(self, message):
-        self._add_log_message(message, "Skipped")
+    def skip(self, message, profile_name=""):
+        if not profile_name:
+            profile_name = self._current_profile
+        self._add_log_message("Skipped", message, profile_name)
+        self._profile_reports[profile_name].skipped()
         
     def success_simulated(self, message):
-        self._add_log_message(message, "Success (Simulated)")
+        self._add_log_message("Success (Simulated)", message)
+        self._profile_reports[self._current_profile].success()
     
-    def _add_log_message(self, message, action):
-        self._log.append(self._current_profile, action, self._current_book, message)
+    def _add_log_message(self, action, message, profile_name=""):
+        if not profile_name:
+            profile_name = self._current_profile
+        self._log.append(profile_name, action, self._current_book, message)
 
     def Add(self, action, path, message = "", profile=""):
         if profile:
@@ -61,7 +70,9 @@ class MoveReporter(object):
 
 
     def set_profile(self, profile):
-        self._current_profile = profile
+        self._current_profile = profile.Name
+        if profile not in self._profile_reports.keys():
+            self._profile_reports[profile.Name] = ProfileReport(profile.Name, profile.Mode)
         
     @property
     def current_book(self):
@@ -98,3 +109,40 @@ class MoveReporter(object):
 
     def add_header(self, header_text):
         self.header += header_text
+        
+class ProfileReport(object):
+    """Provides way to report on each profile's results for the move operation
+    """
+    #TODO: Move into MoveReport functions
+    def __init__(self, name, mode):
+        self._success = 0
+        self._failed = 0
+        self._skipped = 0
+        #self._total = total
+        self._name = name
+        self._mode = mode
+        
+    def failed(self):
+        self._failed += 1
+        
+    def success(self):
+        self._success += 1
+        
+    def skipped(self):
+        self._skipped += 1
+
+    def get_report(self, cancelled):
+        """Creates the report to display to the user of this profile's move
+        operation results
+
+        Args:
+            cancelled: A Boolean if the move process was cancelled, a different
+                report is created if true.
+
+        Returns:
+            A string of the total _success, _failed, and _skipped operations
+        """
+        if cancelled:
+            self._skipped = self._total - self._success - self._failed
+        return "%s:\nSuccessfully %s: %s\tSkipped: %s\tFailed: %s" % (self._name, ModeText.get_mode_past(self._mode), self._success,
+                                                                      self._skipped, self._failed)

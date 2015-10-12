@@ -60,7 +60,7 @@ class PathMaker(object):
         self._counter = None
         self.profile = profile
         self.failed_fields = []
-        self.failed = False
+        self._failed = False
 
         #Need to store the parent form so it can use the muilt select form
         self.form = parentform
@@ -72,7 +72,7 @@ class PathMaker(object):
         """
         self.book = book
 
-        self.failed = False
+        self._failed = False
         self.failed_fields = []
 
 
@@ -80,9 +80,9 @@ class PathMaker(object):
         #    for field in self.profile.FailedFields:
         #        if getattr(self.book, field) in ("", -1, MangaYesNo.Unknown, YesNo.Unknown):
         #            self.failed_fields.append(field)
-        #            self.failed = True
+        #            self._failed = True
             #
-            #if self.failed and not self.profile.MoveFailed:
+            #if self._failed and not self.profile.MoveFailed:
             #    return book.FileDirectory, book.FileNameWithExtension, True
 
         #Do filename first so that if MoveFailed is true the base folder is used correctly.
@@ -95,10 +95,10 @@ class PathMaker(object):
 
             folder_path = self.make_folder_path(folder_template)
 
-        if self.failed and not self.profile.MoveFailed:
+        if self._failed and not self.profile.MoveFailed:
             return book.FileDirectory, book.FileNameWithExtension, True
             
-        return folder_path, file_path, self.failed
+        return folder_path, file_path, self._failed
         
  
     def make_folder_path(self, template):
@@ -123,7 +123,7 @@ class PathMaker(object):
                 line = line.strip(".")
                 folder_path = Path.Combine(folder_path, line.strip())
         
-        if self.failed and self.profile.MoveFailed:
+        if self._failed and self.profile.MoveFailed:
             folder_path = Path.Combine(self.profile.FailedFolder, folder_path)
         else:
             folder_path = Path.Combine(self.profile.BaseFolder, folder_path)
@@ -279,7 +279,7 @@ class PathMaker(object):
             if self.profile.FailEmptyValues and field in self.profile.FailedFields:
                 if field not in self.failed_fields:
                     self.failed_fields.append(field)
-                self.failed = True
+                self._failed = True
 
             if field in self.profile.EmptyData and self.profile.EmptyData[field]:
                 return self.profile.EmptyData[field]

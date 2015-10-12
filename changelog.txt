@@ -16,7 +16,7 @@ New: Duplicates window is now translatable (other windows to come)
 
 
 TODO: Add tag or custom value after successful move.
-
+TODO: Undo move using custom value to store previous path. Add right click menu support. Keep undo last move script?
 
 2.1.11
 Added Rating, Community Rating and Custom Values
