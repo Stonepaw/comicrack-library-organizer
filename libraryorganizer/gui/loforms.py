@@ -1,4 +1,4 @@
-"""
+﻿"""
 loforms.py
 This file contains various dialogs and forms required by the Library Orgainizer
 
@@ -310,7 +310,6 @@ class MultiValueSelectionForm(Form):
             return False
 
 
-
 class MultiValueSelectionFormResult(object):
     
     def __init__(self, selection, every = False, folder = False, alwaysuse = False, dontask = False):
@@ -321,7 +320,6 @@ class MultiValueSelectionFormResult(object):
         self.AlwaysUseDontAsk = dontask
 
 
-
 class MultiValueSelectionFormArgs(object):
 
     def __init__(self, items, selecteditems, fieldtext, booktext, series):
@@ -330,7 +328,6 @@ class MultiValueSelectionFormArgs(object):
         self.BookText = booktext
         self.Series = series
         self.SelectedItems = selecteditems
-
 
 
 class GetProfileNameDialog(Form):
@@ -408,7 +405,6 @@ class GetProfileNameDialog(Form):
             self.DialogResult = DialogResult.None
 
 
-
 class NewIllegalCharacterDialog(Form):
 
     def __init__(self, chracters):
@@ -459,11 +455,10 @@ class NewIllegalCharacterDialog(Form):
         return self.TextBox.Text
 
 
-
 class PathTooLongForm(Form):
     def __init__(self, path):
         self.InitializeComponent()
-        self._Path.Text = path
+        self._path.Text = path
         self.CheckPathLength(None, None)
 
     def InitializeComponent(self):
@@ -471,7 +466,7 @@ class PathTooLongForm(Form):
         self._label = System.Windows.Forms.Label()
         self._Okay = System.Windows.Forms.Button()
         self._Cancel = System.Windows.Forms.Button()
-        self._Path = System.Windows.Forms.TextBox()
+        self._path = System.Windows.Forms.TextBox()
         self._ErrorLabel = System.Windows.Forms.Label()
         self._errorProvider = System.Windows.Forms.ErrorProvider(self._components)
         self._errorProvider.BeginInit()
@@ -507,12 +502,12 @@ class PathTooLongForm(Form):
         # 
         # Path
         # 
-        self._Path.Location = System.Drawing.Point(12, 28)
-        self._Path.Name = "Path"
-        self._Path.Size = System.Drawing.Size(500, 75)
-        self._Path.TabIndex = 0
-        self._Path.Multiline = True
-        self._Path.TextChanged += self.CheckPathLength
+        self._path.Location = System.Drawing.Point(12, 28)
+        self._path.Name = "Path"
+        self._path.Size = System.Drawing.Size(500, 75)
+        self._path.TabIndex = 0
+        self._path.Multiline = True
+        self._path.TextChanged += self.CheckPathLength
         #
         # ErrorLabel
         #
@@ -529,7 +524,7 @@ class PathTooLongForm(Form):
         self.AcceptButton = self._Okay
         self.CancelButton = self._Cancel
         self.ClientSize = System.Drawing.Size(550, 150)
-        self.Controls.Add(self._Path)
+        self.Controls.Add(self._path)
         self.Controls.Add(self._Cancel)
         self.Controls.Add(self._Okay)
         self.Controls.Add(self._label)
@@ -548,45 +543,41 @@ class PathTooLongForm(Form):
     def CheckPathLength(self, sender, e):
 
         try:
-
-            f = FileInfo(self._Path.Text)
+            f = FileInfo(self._path.Text)
 
         except PathTooLongException, ex:
-            
-            self._errorProvider.SetError(self._Path, "The entire path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length))
-            self._ErrorLabel.Text = "The entire path has to be less then 260 characters. Current path size is: " + str(self._Path.Text.Length)
+            self._errorProvider.SetError(self._path, "The entire path has to be less then 260 characters. Current path size is: " + str(self._path.Text.Length))
+            self._ErrorLabel.Text = "The entire path has to be less then 260 characters. Current path size is: " + str(self._path.Text.Length)
             self.DialogResult = DialogResult.None
             return
 
         except System.ArgumentException, ex:
-
-            self._errorProvider.SetError(self._Path, "The path cannot contain any of < > | * ? \" ")
+            self._errorProvider.SetError(self._path, "The path cannot contain any of < > | * ? \" ")
             self._ErrorLabel.Text = "The path cannot contain any of < > | * ? \" "
             self.DialogResult = DialogResult.None
             return
 
-        except System.NotSupportedException, ex:
-            
-            self._errorProvider.SetError(self._Path, "The path cannot contain a : ")
+        except System.NotSupportedException, ex:           
+            self._errorProvider.SetError(self._path, "The path cannot contain a : ")
             self._ErrorLabel.Text = "The path cannot contain a : "
             self.DialogResult = DialogResult.None
             return
 
         else:
             if len(f.DirectoryName) >= 248:
-
-                self._errorProvider.SetError(self._Path, "The folder path has to be less then 248 characters. Current directory size is: " + str(len(f.DirectoryName)))
+                self._errorProvider.SetError(self._path, "The folder path has to be less then 248 characters. Current directory size is: " + str(len(f.DirectoryName)))
                 self._ErrorLabel.Text = "The folder path has to be less then 248 characters. Current directory size is: " + str(len(f.DirectoryName))
                 self.DialogResult = DialogResult.None
                 return
             else:
-                self._errorProvider.SetError(self._Path, "")
+                self._errorProvider.SetError(self._path, "")
                 self._ErrorLabel.Text = ""
 
-    def OkayClick(self, sender, e):
-        
+    def OkayClick(self, sender, e):        
         self.CheckPathLength(sender, e)
 
+    def get_path(self):
+        return self._path.Text
 
 
 class ReportForm(Form):
@@ -633,10 +624,7 @@ class ReportForm(Form):
         self.DataGrid.AllowUserToResizeColumns = False
         self.DataGrid.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
         self.DataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells
-
-        
         self.Controls.Add(self.DataGrid)
-
         
         self.Okay = Button()
         self.Okay.Text = "OK"
@@ -661,7 +649,6 @@ class ReportForm(Form):
             if row.Cells[1].Value == "Failed":
                 row.DefaultCellStyle.ForeColor = System.Drawing.Color.Red
         
-
     def LoadData(self, data):
         """
         Data should be an array containing arrays of strings.

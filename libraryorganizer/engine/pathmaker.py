@@ -449,7 +449,6 @@ class PathMaker(object):
 
         return self.replace_illegal_characters(result)
 
-
     def insert_first_letter(self, field):
         """Gets the first letter of a field not counting articles.
 
@@ -459,17 +458,16 @@ class PathMaker(object):
         if field in name_to_field:
             field = name_to_field[field]
 
-        property = unicode(getattr(self.book, field))
+        field_text = unicode(getattr(self.book, field))
 
         result = ""
 
-        match_result = re.match(r"(?:(?:the|a|an|de|het|een|die|der|das|des|dem|der|ein|eines|einer|einen|la|le|l'|les|un|une|el|las|los|las|un|una|unos|unas|o|os|um|uma|uns|umas|en|et|il|lo|uno|gli)\s+)?(?P<letter>.).+", property, re.I)
+        match_result = re.match(r"(?:(?:the|a|an|de|het|een|die|der|das|des|dem|der|ein|eines|einer|einen|la|le|l'|les|un|une|el|las|los|las|un|una|unos|unas|o|os|um|uma|uns|umas|en|et|il|lo|uno|gli)\s+)?(?P<letter>.).+", field_text, re.I)
 
         if match_result:
             result = match_result.group("letter").capitalize()
 
         return self.replace_illegal_characters(result)
-
 
     def insert_counter(self, args):
         """Get the (padded) next number in a counter given a start and increment.

@@ -24,7 +24,7 @@ import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult
+from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult  # @UnresolvedImport
 
 class Logger():
     
