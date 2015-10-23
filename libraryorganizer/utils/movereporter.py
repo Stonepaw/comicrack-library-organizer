@@ -1,4 +1,4 @@
-"""
+﻿"""
 lologger.py
 
 Contains a class for logging what the bookmover does.
@@ -18,66 +18,93 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 import clr
-import System
-
 clr.AddReference("System.Windows.Forms")
+from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult  # @UnresolvedImport @IgnorePep8
 
-from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult  # @UnresolvedImport
 
 class MoveReporter(object):
-    
+
     def __init__(self):
         self._log = []
         self._current_profile = ""
         self._current_book = ""
         self.header = ""
         self._profile_reports = {}
-        #TODO Store book in this instead of passing the path in ADD
+        self.failed_or_skipped = False
+        # TODO Store book in this instead of passing the path in ADD
 
     def fail(self, message):
-        self._add_log_message("Failed", message)
+        self.log("Failed", message)
         self._profile_reports[self._current_profile].failed()
-    
+        self.failed_or_skipped = True
+
     def warn(self, message):
-        self._add_log_message("Warning", message)
-    
-    def success(self, message):
-        self._add_log_message("Success", message)
+        self.log("Warning", message)
+
+    def success(self, message=""):
+        if message:
+            self.log("Success", message)
         self._profile_reports[self._current_profile].success()
-        
+
     def skip(self, message, profile_name=""):
         if not profile_name:
             profile_name = self._current_profile
-        self._add_log_message("Skipped", message, profile_name)
+        self.log("Skipped", message, profile_name)
         self._profile_reports[profile_name].skipped()
-        
-    def success_simulated(self, message):
-        self._add_log_message("Success (Simulated)", message)
+        self.failed_or_skipped = True
+
+    def success_simulated(self, message, action=""):
+        if not action:
+            action = "Success (Simulated)"
+        self.log(action, message)
         self._profile_reports[self._current_profile].success()
-    
-    def _add_log_message(self, action, message, profile_name=""):
+
+    def log(self, action, message, profile_name=""):
         if not profile_name:
             profile_name = self._current_profile
-        self._log.append(profile_name, action, self._current_book, message)
+        self._log.append([profile_name, action, self._current_book, message])
 
-    def Add(self, action, path, message = "", profile=""):
+    def Add(self, action, path, message="", profile=""):
         if profile:
-            self._log.append([profile, unicode(action), unicode(path), unicode(message)])
+            self._log.append([profile, unicode(action), unicode(path),
+                              unicode(message)])
         else:
-            self._log.append([self._current_profile, unicode(action), unicode(path), unicode(message)])
-
+            self._log.append([self._current_profile, unicode(action),
+                              unicode(path), unicode(message)])
 
     def set_profile(self, profile):
+        """ Sets the current profile name.
+
+        Args:
+            profile: A profile object.
+        """
         self._current_profile = profile.Name
-        if profile not in self._profile_reports.keys():
-            self._profile_reports[profile.Name] = ProfileReport(profile.Name, profile.Mode)
-        
+
+    def create_profile_reports(self, profiles, count):
+        """ Creates the profile reports. Initialize this before calling
+        set_profile.
+
+        Args:
+            profiles: A list of Profiles.
+            count: The number of books that are being moved.
+        """
+        self._profile_reports = {profile.Name: ProfileReport(profile, count)
+                                 for profile in profiles}
+
+    def get_profile_reports(self, canceled=False):
+        """Gets the profile reports as list of strings.
+
+        Pass True to canceled to calculated the skipped count correctly when
+        the operation is canceled.
+        """
+        return [self._profile_reports[profile].get_report()
+                for profile in self._profile_reports]
+
     @property
     def current_book(self):
         return self._current_book
-    
+
     @current_book.setter
     def current_book(self, book):
         if book.FilePath:
@@ -109,25 +136,27 @@ class MoveReporter(object):
 
     def add_header(self, header_text):
         self.header += header_text
-        
+
+
 class ProfileReport(object):
     """Provides way to report on each profile's results for the move operation
     """
-    #TODO: Move into MoveReport functions
-    def __init__(self, name, mode):
+    # TODO: Move into MoveReport functions
+    def __init__(self, profile, count):
         self._success = 0
         self._failed = 0
         self._skipped = 0
-        #self._total = total
-        self._name = name
-        self._mode = mode
-        
+        self._total = count
+        self._profile = profile
+        self._name = profile.Name
+        self._mode = profile.Mode
+
     def failed(self):
         self._failed += 1
-        
+
     def success(self):
         self._success += 1
-        
+
     def skipped(self):
         self._skipped += 1
 
@@ -136,13 +165,14 @@ class ProfileReport(object):
         operation results
 
         Args:
-            cancelled: A Boolean if the move process was cancelled, a different
-                report is created if true.
+            cancelled: A Boolean if the move process was cancelled. If true
+                then the remaining books are counted as skipped.
 
         Returns:
-            A string of the total _success, _failed, and _skipped operations
+            A string of the total success, failed, and skipped operations
         """
         if cancelled:
             self._skipped = self._total - self._success - self._failed
-        return "%s:\nSuccessfully %s: %s\tSkipped: %s\tFailed: %s" % (self._name, ModeText.get_mode_past(self._mode), self._success,
-                                                                      self._skipped, self._failed)
+        report = "{0}:\nSuccess: {1}\tSkipped: {2}\tFailed: {3}".format(
+            self._name, self._success, self._skipped, self._failed)
+        return report

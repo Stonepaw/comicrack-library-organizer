@@ -90,6 +90,7 @@
     <Compile Include="tests\test_i18n.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="utils\movereporter.py" />
     <Compile Include="utils\utils.py">
       <SubType>Code</SubType>
     </Compile>

@@ -67,11 +67,12 @@ class App(object):
         """Mocks the RemoveBook Method"""
         pass
 
-class ComicBook(object):
-    """Mocks a ComicBook object"""
-    def __init__(self):
-        self.FilePath = ""
-        self.Caption = ""
-        self.FileDirectory = ""
+# class ComicBook(object):
+#     """Mocks a ComicBook object"""
+#     def __init__(self):
+#         self.FilePath = ""
+#         self.Caption = ""
+#         self.FileDirectory = ""
+#         self.Series = ""
 
 

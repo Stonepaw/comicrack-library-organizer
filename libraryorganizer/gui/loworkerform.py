@@ -113,8 +113,8 @@ class WorkerForm(Form):
         books = e.Argument[0]
         profiles = e.Argument[1]        
         report = WorkerResult()
-        self.logreporterLogger()
-        mover = BookMover(sender, self, self.logreporter
+        self.log = Logger()
+        mover = BookMover(sender, self, self.log)
         
         result = mover.process_books(books, profiles)
         if result.failed_or_skipped:

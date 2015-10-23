@@ -5,7 +5,6 @@ BUG: SelectedIndex out of range error when no custom value defined in the librar
 BUG: Various errors where text in the final report may not be reported correctly
 Bug: Improved error handling in all moving code. This should cause a lot less errors in some cases.
 
-
 CHANGE: Improved copying existing fields when in copy mode. More fields are copied, including custom fields?
 CHANGE: Duplicates window has been overhauled to work more efficiently and show more information when the book isn't in the library
 Change: No longer copies a file multiple times when it can be used under several profiles. Just the last one is used.
