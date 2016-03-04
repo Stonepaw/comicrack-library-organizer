@@ -8,7 +8,7 @@ import System
 from System.IO import File, Path, Directory, FileInfo, FileMode
 from System.Windows.Forms import DialogResult
 from bookandprofiletestcase import BookAndProfileTestCase
-from bookprocessor import BookProcessor, FilelessBookProcessor
+from bookprocessor import MoveBookProcessor, FilelessBookProcessor
 from common import BookToMove, MoveFailedException, MoveSkippedException, DuplicateExistsException, Mode
 from loforms import PathTooLongForm
 import comicracknlogtarget
@@ -17,7 +17,7 @@ import comicracknlogtarget
 class TestBookProcessor(BookAndProfileTestCase):
     def setUp(self):
         super(TestBookProcessor, self).setUp()
-        self.processor = BookProcessor(ComicRack())
+        self.processor = MoveBookProcessor(ComicRack())
         self.book.FilePath = self.book_path = self.create_temp_path("book.cbz")
         self.cleanup_file_paths = [self.book_path]
         File.Create(self.book_path).Close()

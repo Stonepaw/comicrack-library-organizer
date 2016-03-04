@@ -13,3 +13,4 @@ def UIThread(func):
     self.dispatcher.Invoke(action, self, *args)    
       
     return wrapper
+

@@ -45,105 +45,20 @@ class TestBookmoverBase(unittest.TestCase):
         print self.mover._report._log
 
 
-class TestBookMover(TestBookmoverBase):
-
-    def test_get_files_with_different_ext(self):
-        """ Test that the function picks up files with different ext."""
-        try:
-            f1 = create_path("test.cbt")
-            f2 = create_path("test.cbr")
-            File.Create(f1).Close()
-            File.Create(f2).Close()
-            a = self.mover._get_files_with_different_ext(
-                create_path("test.cbz"))
-
-        finally:
-            File.Delete(f1)
-            File.Delete(f2)
-        self.assertTrue(len(a) == 2)
-
-    def test_get_files_with_different_ext_empty(self):
-        """ Tests that the correct input is returns if there are no duplicates
-        with different extensions.
-        """
-        a = self.mover._get_files_with_different_ext(create_path("test.cbz"))
-        self.assertTrue(len(a) == 0)
-
-
 class TestBookMoverCreateDeleteFolders(TestBookmoverBase):
-
-    def test_create_folder_new(self):
-        """Tests that the folder creation works"""
-        d = DirectoryInfo(create_path("LOTEST"))
-        try:
-            self.assertEqual(self.mover._create_folder(d), MoveResult.Success)
-        finally:
-            d.Refresh()
-            self.assertTrue(d.Exists)
-            if d.Exists:
-                d.Delete()
 
     def test_create_folder_simulate(self):
         """Tests that the folder creation in simulate mode doesn't create a
         folder"""
         d = DirectoryInfo(create_path("LOTEST"))
         self.profile.Mode = Mode.Simulate
-        r = self.mover._create_folder(d)
+        r = self.mover._create_folder_simulated(d)
         self.assertEqual(r, MoveResult.Success)
         d.Refresh()
         self.assertFalse(d.Exists)
         print self.mover._report._log
         if d.Exists:
             d.Delete()
-
-    def test_delete_folder(self):
-        """Tests that the delete folder functions with a single empty folder"""
-        f1 = create_path("LOTEST")
-        self.profile.Mode = Mode.Move
-        d = DirectoryInfo(f1)
-        d.Create()
-        try:
-            self.mover._delete_empty_folders(d)
-            d.Refresh()
-            self.assertFalse(d.Exists)
-        finally:
-            if d.Exists:
-                d.Delete()
-
-    def test_delete_nested_folders(self):
-        """Tests deleting recursively empty folders """
-        f1 = create_path("LOTEST")
-        f2 = create_path("LOTEST\LOTEST2")
-        self.profile.Mode = Mode.Move
-        d = DirectoryInfo(f1)
-        d2 = DirectoryInfo(f2)
-        d2.Create()
-        try:
-            self.mover._delete_empty_folders(d2)
-            d2.Refresh()
-            d.Refresh()
-            self.assertFalse(d2.Exists)
-            self.assertFalse(d.Exists)
-
-        finally:
-            if d2.Exists:
-                d2.Delete()
-            if d.Exists:
-                d.Delete()
-
-    def test_delete_exlcuded_folder(self):
-        """Tests that an excluded folder will not be deleted"""
-        f1 = create_path("LOTEST")
-        self.profile.ExcludedEmptyFolder.append(f1)
-        d = DirectoryInfo(f1)
-        d.Create()
-        try:
-            self.mover._delete_empty_folders(d)
-            d.Refresh()
-            self.assertTrue(d.Exists)
-        finally:
-            if d.Exists:
-                d.Delete()
 
 
 class TestProcessDuplicates(TestBookmoverBase):
@@ -355,6 +270,31 @@ class TestDuplicateHandler(TestBookmoverBase):
             self.action = action
             self.always_do_action = always_do_action
 
+
+class TestCreateFilelessImage(TestBookmoverBase):
+
+    def create_fileless(self, format):
+        path = create_path("lotestimg." + format)
+        r = None
+        try:
+            r = self.mover._save_fileless_image(self.book, path, Mode.Move)
+        finally:
+            File.Delete(path)
+        return r
+
+    def test_create_fileless_jpg(self):
+        self.assertEquals(self.create_fileless("jpg"), MoveResult.Success)
+
+    def test_create_fileless_png(self):
+        self.assertEquals(self.create_fileless("png"), MoveResult.Success)
+
+    def test_create_fileless_bmp(self):
+        self.assertEquals(self.create_fileless("bmp"), MoveResult.Success)
+
+    def test_create_fileless_simulate(self):
+        path = create_path("lotestimg.jpg")
+        self.mover._save_fileless_image(self.book, path, Mode.Simulate)
+        self.assertFalse(File.Exists(path))
 
 def create_path(f):
     return Path.Combine(Path.GetTempPath(), f)

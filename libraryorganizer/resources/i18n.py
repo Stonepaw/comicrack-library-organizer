@@ -46,7 +46,7 @@ def get(key):
     if __I18N is not None:
         return __I18N.get(key)
     else:
-        raise "Localizer not initialized"
+        raise RuntimeError("Localizer not initialized")
 
 #TODO: use comicrack built in method GetComicFields to retrive some comic field names.
 #Dictionary[str, str]({'Tags' : 'Tags', 'File Path' : 'FilePath', 'Book Age' : 'BookAge', 'Book Condition' : 'BookCondition', 'Book Store' : 'BookStore', 'Book Owner' : 'BookOwner', 'Book Collection Status' : 'BookCollectionStatus', 'Book Notes' : 'BookNotes', 'Book Location' : 'BookLocation', 'ISBN' : 'ISBN', 'Custom Values Store' : 'CustomValuesStore', 'Title' : 'Title', 'Series' : 'Series', 'Number' : 'Number', 'Alternate Series' : 'AlternateSeries', 'Alternate Number' : 'AlternateNumber', 'Story Arc' : 'StoryArc', 'Series Group' : 'SeriesGroup', 'Summary' : 'Summary', 'Notes' : 'Notes', 'Review' : 'Review', 'Writer' : 'Writer', 'Penciller' : 'Penciller', 'Inker' : 'Inker', 'Colorist' : 'Colorist', 'Letterer' : 'Letterer', 'Cover Artist' : 'CoverArtist', 'Editor' : 'Editor', 'Publisher' : 'Publisher', 'Imprint' : 'Imprint', 'Genre' : 'Genre', 'Web' : 'Web', 'Format' : 'Format', 'Age Rating' : 'AgeRating', 'Characters' : 'Characters', 'Teams' : 'Teams', 'Main Character Or Team' : 'MainCharacterOrTeam', 'Locations' : 'Locations', 'Scan Information' : 'ScanInformation'})

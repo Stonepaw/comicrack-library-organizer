@@ -21,26 +21,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import clr
+
 clr.AddReference("Microsoft.VisualBasic")
 clr.AddReference("System.Drawing")
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("NLog.dll")
 from Microsoft.VisualBasic import FileIO
-from System import ArgumentException, ArgumentNullException, NotSupportedException, UnauthorizedAccessException, OperationCanceledException  # @UnresolvedImport
-from System.Drawing.Imaging import ImageFormat
-from System.IO import Path, File, FileInfo, DirectoryInfo, IOException, PathTooLongException, DirectoryNotFoundException
+from System import ArgumentException, ArgumentNullException, NotSupportedException, UnauthorizedAccessException, \
+    OperationCanceledException  # @UnresolvedImport
+from System.IO import Path, File, FileInfo, DirectoryInfo, IOException, PathTooLongException
 from System.Runtime.InteropServices import ExternalException
 from System.Security import SecurityException
 from System.Windows.Forms import DialogResult  # @UnresolvedImport
-
 import re
-
 from NLog import LogManager
 from duplicatewindow import DuplicateAction, DuplicateWindow
 from locommon import Mode, check_metadata_rules, check_excluded_folders, UndoCollection
 from loforms import PathTooLongForm
 from pathmaker import PathMaker
 from movereporter import MoveReporter
+from fileutils import get_files_with_different_ext, delete_empty_folders, create_folder
 
 ComicRack = None
 log = LogManager.GetLogger("BookMover")
@@ -58,6 +58,7 @@ class BookToMove(object):
     """A wrapper class for a ComicBook object to provide more information
     during a move operation
     """
+
     def __init__(self, book, path, profile_index, failed_fields):
         self.book = book
         self.path = path
@@ -68,14 +69,12 @@ class BookToMove(object):
 
 
 class BookMoverResult(object):
-
     def __init__(self, report_text, failed_or_skipped):
         self.report_text = report_text
         self.failed_or_skipped = failed_or_skipped
 
 
 class ModeText(object):
-
     @staticmethod
     def get_mode_text(mode):
         if mode == Mode.Move:
@@ -108,11 +107,20 @@ class ModeText(object):
             return "moved (simulated)"
 
 
+class MoveSkippedException(Exception):
+    pass
+
+
+class MoveFailedException(Exception):
+    pass
+
+
 class BookMover(object):
     """The class that manages and moves comics based on a profiles
 
     Use process_books as the entry point to pass books and start moving books
     """
+
     def __init__(self, worker, form, reporter):
         # Various variables needed to report progress and ask questions
         self._worker = worker
@@ -140,8 +148,8 @@ class BookMover(object):
         self._progress_increment = 1.0
         self._progress = 0.0
 
-        self._duplicate_handler = DuplicateHandler(self._report,
-                                                   self._sim_moved_books)
+        self._duplicate_handler = DuplicateHandler(
+            self._report, self._sim_moved_books)
 
     def _get_canceled_report(self):
         header_text = "\n\n".join([profile_report.get_report(True)
@@ -201,16 +209,21 @@ class BookMover(object):
 
             log.Info("\nStarting to process {0} with destination {1}",
                      self._report.current_book, book.path)
+            try:
+                result = self._process_book(book)
+            except MoveSkippedException as ex:
+                self._report.skip(ex.message)
+                log.Info("Skipped {0}", ex.message)
+            except MoveFailedException as ex:
+                self._report.fail(ex.message)
+            else:
+                if result == MoveResult.Success:
+                    self._report.success()
 
-            result = self._process_book(book)
-
-            if result == MoveResult.Success:
-                self._report.success()
-
-            elif result == MoveResult.Duplicate:
-                self._held_duplicate_books.append(book)
-                self._held_duplicate_count += 1
-                continue
+                elif result == MoveResult.Duplicate:
+                    self._held_duplicate_books.append(book)
+                    self._held_duplicate_count += 1
+                    continue
 
             count += 1
             self._increase_progress()
@@ -224,13 +237,16 @@ class BookMover(object):
 
             log.Info("\nStarting to process {0} with a duplicate at {1}",
                      self._report.current_book, book.path)
-
-            result = self._process_duplicate_book(book)
-            self._held_duplicate_count -= 1
-
-            if result == MoveResult.Success:
+            try:
+                result = self._process_duplicate_book(book)
+            except MoveSkippedException as ex:
+                self._report.skip(ex.message)
+                log.Info("Skipped {0}", ex.message)
+            except MoveFailedException as ex:
+                self._report.fail(ex.message)
+            else:
                 self._report.success()
-
+            self._held_duplicate_count -= 1
             count += 1
             self._increase_progress()
 
@@ -256,7 +272,7 @@ class BookMover(object):
         log.Info("\nFinding paths for all the books using {0} profiles",
                  len(profiles))
         books_to_move = []
-        books_profiles = {}  # Storing key: book, value: profile to use
+        books_profiles = {}  # Storing key = book, value = profile to use
 
         # Find profiles.
         for book in books:
@@ -297,12 +313,6 @@ class BookMover(object):
 
         return books_to_move
 
-    def _set_book_name_for_report(self, book):
-        if book.FilePath:
-            self.report_book_name = book.FilePath
-        else:
-            self.report_book_name = book.Caption
-
     def _create_book_path(self, book):
         """Creates the new path and checks it for some problems.
         Returns the path or a MoveResult.Failed if something goes wrong.
@@ -313,7 +323,7 @@ class BookMover(object):
         # Check if a fileless book should have a path made
         if not book.FilePath:
             if not self.profile.MoveFileless:
-                log.Info("Skipping because fileless images are not being "
+                log.Info("Skipping fileless book because images are not being "
                          "created")
                 self._report.skip("Fileless images are not being created")
                 return MoveResult.Skipped
@@ -336,7 +346,7 @@ class BookMover(object):
             if not self.profile.MoveFailed:
                 self._report.fail(
                     "{0} {1} empty."
-                    .format(
+                        .format(
                         ",".join(self._pathmaker.failed_fields),
                         "is" if len(self._pathmaker.failed_fields) == 1
                         else "are")
@@ -379,111 +389,105 @@ class BookMover(object):
         log.Trace("Starting _process_book for {0} with destination {1}",
                   self._report.current_book, new_path)
 
-        # Catch some errors by using FileInfo on the new_path.
-        # Do it here rather then while actually moving the book so that the
-        # Simulate function works correctly.
-        try:
-            dest_info = FileInfo(new_path)
-        except (PathTooLongException):
-            # The Path is too long or something else is wrong
-            # ask the user to shorten it.
-            log.Info("{0} is too long. Asking the user to shorten it",
-                     new_path)
-            result = self._get_fixed_path(new_path)
-            if result == MoveResult.Skipped:
-                log.Info("The user declined to shorten the path. Skipping")
-                return result
-            log.Info("Got {0} as a fixed path", result)
-            book_to_move.path = result
-            return self._process_book(book_to_move)
-
-        except (ArgumentNullException, ArgumentException,
-                NotSupportedException) as ex:
-            # Something wrong with the path that can't be fixed
-            log.Error("The new path {0} is invalid and can't be fixed."
-                      " The error is: {1}", new_path, ex.Message)
-            self._report.fail("The path {0} is not valid".format(new_path))
-            return MoveResult.Failed
-
-        except (UnauthorizedAccessException, SecurityException) as ex:
-            log.Error("Cannot access the path {0}. The error is: {1}",
-                      new_path, ex.Message)
-            self._report.fail("Cannot access the path {0}".format(new_path))
-            return MoveResult.Failed
-
-        if self._book_already_at_dest(book, Path.GetFileName(new_path),
-                                      new_path):
-            return MoveResult.Skipped
+        dest_info = self._check_destination(book_to_move)
 
         # Checking before the move operation even though it would be better
         # caught there as an error because otherwise a duplicate could be found
         # even though the book can't be moved.
         if book.FilePath and not File.Exists(book.FilePath):
-            log.Info("Failed to move {0} because the file does not exist",
-                     self._report.current_book)
-            self._report.fail("The file does not exist")
-            return MoveResult.Failed
+            raise MoveFailedException("The file does not exist")
 
-        # Check if the file is a Duplicate also check MovedBooks for
-        # simulate mode
-        if dest_info.Exists or new_path in self._sim_moved_books:
-            log.Info("A duplicate was found at the destination, holding"
-                     " to ask user")
+        if self._check_for_duplicates(book_to_move):
             return MoveResult.Duplicate
-
-        # Test for duplicates with different extensions
-        if self.profile.DifferentExtensionsAreDuplicates:
-            files = self._get_files_with_different_ext(new_path)
-            if files:
-                book_to_move.duplicate_ext_files = files
-                book_to_move.duplicate_different_extension = True
-                log.Info("A duplicate with a different extension was "
-                         "found at the destination. Holding to ask the user")
-                return MoveResult.Duplicate
 
         # Create here because needed for cleaning directories later
         old_folder = DirectoryInfo(book.FileDirectory)
         new_folder = dest_info.Directory
 
-        result = self._move_book(book, new_path)
+        try:
+            book_file_info = FileInfo(book.FilePath)
+        except (ArgumentException, ArgumentNullException) as ex:
+            # The file name is empty, contains only white spaces, or contains
+            # invalid characters.
+            if self.profile.MoveFileless:
+                return self._save_fileless_image(book, new_path)
+            else:
+                raise MoveFailedException(ex.Messsage)
+
+        if self.profile.Mode == Mode.Simulate:
+            return self._move_book_simulated(book, book_file_info, new_path)
+
+        # Create the Folder first
+        create_folder(dest_info.Directory)
+        try:
+            result = self._move_book(book, new_path)
+        except MoveFailedException:
+            # If the move operation fails we don't want to leave random folders
+            delete_empty_folders(new_folder, self.profile.ExcludedEmptyFolder)
+            raise
 
         # Try to remove the old folders if they are empty
         if self.profile.RemoveEmptyFolder and self.profile.Mode == Mode.Move:
-            if old_folder.Exists:
-                self._delete_empty_folders(old_folder)
-            # If the move operation fails we don't want to leave random folders
-            self._delete_empty_folders(new_folder)
+            delete_empty_folders(old_folder, self.profile.ExcludedEmptyFolder)
 
-        if book_to_move.failed_fields and result == MoveResult.Success:
+        if book_to_move.failed_fields:
             self._report.fail(
                 "{0} {1} empty. {2} to {3}".format(
                     ",".join(self._pathmaker.failed_fields),
                     "is" if len(self._pathmaker.failed_fields) == 1 else "are",
-                    ModeText.get_mode_past(self.profile.Mode),# TODO: get rid of this?
+                    ModeText.get_mode_past(self.profile.Mode),  # TODO: get rid of this?
                     new_path)
-                )
+            )
             return MoveResult.Failed
 
         return result
 
-    def _get_files_with_different_ext(self, full_path):
-        """Looks for files in the same directory of the file with the same name
-        but different extensions.
+    def _check_destination(self, book_to_move):
+        """ Checks the destination for problems
+
+        This method checks the following:
+            * Path is too long - Asks the user to fix
+            * The Path is invalid
+            * Unauthorized Location
+            * Book is already at the location
 
         Args:
-            full_path: The full path of the file.
+            book_to_move: The BookToMoveObject of the current book
 
         Returns:
-            A list or System.Array containing any FileInfo objects that were
-            found, possiblys empty.
+            A FileInfo object of the new_path
+
+        Raises:
+            MoveFailedException: If an error in the path cannot be fixed
+            MoveSkippedException: If the book is already at the location
         """
-        log.Trace("Starting to find files with different extensions.")
-        d = DirectoryInfo(Path.GetDirectoryName(full_path))
-        if d.Exists:
-            file_name = Path.GetFileNameWithoutExtension(full_path)
-            files = d.GetFiles(file_name + ".*")
-            return files
-        return []
+        book = book_to_move.book
+        new_path = book_to_move.path
+        try:
+            dest_info = FileInfo(new_path)
+        except PathTooLongException:
+            # The Path is too long or something else is wrong
+            # ask the user to shorten it.
+            log.Info("{0} is too long. Asking the user to shorten it",
+                     new_path)
+            new_path = self._get_shorter_path(new_path)
+            log.Info("Got {0} as a fixed path", new_path)
+            book_to_move.path = new_path
+            return self._check_destination(book_to_move)
+
+        except (ArgumentNullException, ArgumentException,
+                NotSupportedException) as ex:
+            raise MoveFailedException(
+                "The new path {0} is invalid and can't be fixed. "
+                "The error is: {1}".format(new_path, ex.Message)
+            )
+
+        except (UnauthorizedAccessException, SecurityException) as ex:
+            raise MoveFailedException(
+                "Cannot access the path {0}: {1}".format(new_path, ex.Message)
+            )
+        self._check_book_already_at_dest(book, new_path)
+        return dest_info
 
     def _process_duplicate_book(self, processing_book):
         """ Process a duplicate book by asking the user what to do.
@@ -501,6 +505,10 @@ class BookMover(object):
                 MoveResult.Success if the function succeeds in moving the book.
                 MoveResult.Skipped if the user cancels moving this book
                 MoveResult.Failed if an error occurs while processing the book.
+
+        Raises:
+                MoveSkippedException
+                MoveFailedException
         """
         log.Trace("Starting _process_duplicate_book with {0}",
                   self._report.current_book)
@@ -508,10 +516,8 @@ class BookMover(object):
         result = self._duplicate_handler.handle_duplicate_book(
             processing_book, self.profile, self._held_duplicate_count)
 
-        if result == DuplicateAction.Cancel:
-            return MoveResult.Skipped
-        elif result == MoveResult.Failed:
-            return result
+        if result == DuplicateAction.Overwrite and self.profile.Mode == Mode.Simulate:
+            return MoveResult.Success
 
         processing_book.duplicate_different_extension = False
         processing_book.duplicate_ext_files = []
@@ -521,114 +527,198 @@ class BookMover(object):
         else:
             return result
 
-    def _move_book(self, book, new_path):
-        """Moves or copies the ComicBook to the new path.
+    def _check_for_duplicates(self, book_to_move):
+        """ Checks if a duplicate exists by checking the file path
 
-        Directory paths are created if required and IO errors are caught and
-        handled gracefully.
+        If the profile option DifferentExtensionsAreDuplicates is set
+        then other files in the directory are checked for similar file names.
+        The book_to_move object is modified with the correct information in this
+        case.
 
         Args:
-            book: The ComicBook object to move/copy.
-            new_path: The path to move the book too.
+            book_to_move: The BookToMove object for the current book
 
         Returns:
-            MoveResult.Success if the operation succeeds.
-            MoveResult.Failed if the operation fails.
+            MoveResult.Duplicate if a duplicate exists
+            False otherwise
+
         """
-        log.Trace("Starting _move_book")
+        if File.Exists(book_to_move.path) or book_to_move.path in self._sim_moved_books:
+            log.Info("A duplicate was found at the destination, holding"
+                     " to ask user")
+            return MoveResult.Duplicate
+
+        # Test for duplicates with different extensions
+        if self.profile.DifferentExtensionsAreDuplicates:
+            files = get_files_with_different_ext(book_to_move.path)
+            if files:
+                book_to_move.duplicate_ext_files = files
+                book_to_move.duplicate_different_extension = True
+                log.Info("A duplicate with a different extension was "
+                         "found at the destination. Holding to ask the user")
+                return MoveResult.Duplicate
+        return False
+
+    def _do_mode_operation(self, book, new_path):
+        """ Determines which operation to do based on the
+          profile mode.
+
+        Args:
+            book: The book to move.
+            new_path: The full path of the destination
+
+        Returns:
+            MoveResult.Success if no errors occur
+
+        Raises:
+            MoveFailedException
+
+        """
+        log.Trace("Starting _do_mode_operation")
+        mode = self.profile.Mode
         try:
             book_file_info = FileInfo(book.FilePath)
         except (ArgumentException, ArgumentNullException) as ex:
             # The file name is empty, contains only white spaces, or contains
             # invalid characters.
             if self.profile.MoveFileless:
-                return self._save_fileless_image(book, new_path)
+                return self._save_fileless_image(book, new_path, mode)
             else:
-                log.Error("Failed to move {0}: {1}", self.report_book_name,
-                          ex.Message)
-                self._report.fail(ex.Message)
-                return MoveResult.Failed
+                raise MoveFailedException(ex.Messsage)
+
         except (SecurityException, UnauthorizedAccessException) as ex:
-            log.Error("Can't access {0}: {1}", self.report_book_name,
-                      ex.Message)
-            self._report.fail(ex.Message)
-            return MoveResult.Failed
+            raise MoveFailedException(ex.Messsage)
 
+        self._create_folder(FileInfo(new_path).Directory, mode)
+
+        if mode == Mode.Simulate:
+            return self._move_book_simulated(book, book_file_info, new_path)
+        elif mode == Mode.Copy:
+            return self._copy_book(book_file_info, new_path, book)
+        elif mode == Mode.Move:
+            return self._move_book(book_file_info, new_path, book)
+
+    def _move_book(self, book_file_info, new_path, book):
         try:
-            if self.profile.Mode == Mode.Move:
-                book_file_info.MoveTo(new_path)
-                book.SetCustomValue("lo_previous_path", book.FilePath)
-                log.Info("Moved {0} to {1} successfully.",
-                         self.report_book_name, new_path)
-                book.FilePath = new_path
+            book_file_info.MoveTo(new_path)
+            log.Info("Moved {0} to {1} successfully.",
+                     self.report_book_name, new_path)
+        except (UnauthorizedAccessException, SecurityException, IOException) as ex:
+            raise MoveFailedException(ex.Message)
 
-            elif self.profile.Mode == Mode.Simulate:
-                log.Info("Moved (simulated) {0} to {1} successfully",
-                         self.report_book_name, new_path)
-                self._report.success_simulated("moved (simulated) to {0}"
-                                               .format(new_path))
-                self._sim_moved_books.append(new_path)
+        # TODO: Implement adding tag or custom value when successfully moved
 
-            elif self.profile.Mode == Mode.Copy:
-                book_file_info.CopyTo(new_path)
-                log.Info("Copied {0} to {1} successfully.",
-                         self.report_book_name, new_path)
-                if self.profile.CopyMode:
-                    newbook = ComicRack.App.AddNewBook(False)
-                    newbook.FilePath = new_path
-                    CopyData(book, newbook)
-                    log.Info("Copied the data from the original book to the "
-                             " copy and added it to the library.")
-            return MoveResult.Success
+        book.SetCustomValue("lo_previous_path", book.FilePath)
+        book.FilePath = new_path
+        return MoveResult.Success
 
-        except DirectoryNotFoundException:
-            if (self._create_folder(FileInfo(new_path).Directory) ==
-               MoveResult.Success):
-                return self._move_book(book, new_path)
-            return MoveResult.Failed
-
+    def _copy_book(self, book_file_info, new_path, book):
+        log.Trace("Starting copy_book")
+        try:
+            book_file_info.CopyTo(new_path)
         except (UnauthorizedAccessException, SecurityException,
-                IOException) as ex:
-            log.Error("Failed {0} : {1}", self.report_book_name, ex.Message)
-            self._report.fail(ex.Messsage)
-            return MoveResult.Failed
+                IOException) as e:
+            pass
+        if self.profile.CopyMode:
+            new_book = ComicRack.App.AddNewBook(False)
+            new_book.FilePath = new_path
+            CopyData(book, new_book)
+            log.Info("Copied the data from the original book to the "
+                     " copy and added it to the library.")
+        return MoveResult.Success
 
-    def _save_fileless_image(self, book, path):
+    def _move_book_simulated(self, book, book_file_info, new_path):
+        self._create_folder_simulated(FileInfo(new_path).Directory)
+        log.Info("Moved (simulated) {0} to {1} successfully",
+                 self.report_book_name, new_path)
+
+        self._report.success_simulated("moved (simulated) to {0}"
+                                       .format(new_path))
+        self._sim_moved_books.append(new_path)
+        return MoveResult.Success
+
+    def _create_folder(self, destination_directory, mode):
+        """ Creates a folder if required.
+
+        If the mode is Mode.Simulate then the folder isn't actually
+        created in the file system
+
+        Args:
+            destination_directory: A DirectoryInfo Object of the destination path
+            mode: The profile mode.
+
+        Raises: MoveFailedException if the folder cannot be created.
+
+        """
+        if mode == Mode.Simulate:
+            return self._create_folder_simulated(destination_directory)
+        try:
+            create_folder(destination_directory)
+        except (IOException, UnauthorizedAccessException,
+                ArgumentException, NotSupportedException) as e:
+            raise MoveFailedException(
+                "Failed to create folder {0}: {1}"
+                    .format(destination_directory.FullName, e.Message))
+
+    def _create_folder_simulated(self, new_directory):
+        """Creates the directory tree (Simulated).
+
+        If the profile mode is simulate it doesn't create any folders, instead
+        it saves the folders that would need to be created to _created_paths
+
+        Args:
+            new_directory: A DirectoryInfo object of the folder that is needed.
+        """
+        log.Trace("Starting create folder: {0}", new_directory.FullName)
+        if new_directory.Exists:
+            log.Info("Folder already exists")
+            return
+
+        if new_directory.FullName not in self._created_paths:
+            self._report.log("Created Folder (Simulated)",
+                             new_directory.FullName)
+            self._created_paths.append(new_directory.FullName)
+            log.Info("Created Folder (Simulated) {0}",
+                     new_directory.FullName)
+        else:
+            log.Info("Folder {0} has already been created (simulated)",
+                     new_directory.FullName)
+
+    def _save_fileless_image(self, book, path, mode):
         """Creates and saves the fileless image to file.
 
         Args:
             book: The ComicBook from which to save the image from.
             path: The fully qualified path to save the image to.
+            mode: The profile mode to use
 
         Returns:
             MoveResult.Success or MoveResult.Failed
+
+        Raises:
+            MoveFailedException: If the fileless image couldn't be created.
         """
         log.Trace("Starting _save_fileless_image with {0}", path)
-        if self.profile.Mode == Mode.Simulate:
+
+        if mode == Mode.Simulate:
             log.Info("Simulated creating image {0}", path)
             self._report.success_simulated("Created image {0}".format(path))
             self._sim_moved_books.append(path)
             return MoveResult.Success
         try:
-            image = ComicRack.App.GetComicThumbnail(book, 0)
-            if self.profile.FilelessFormat == ".jpg":
-                img_format = ImageFormat.Jpeg
-            elif self.profile.FilelessFormat == ".png":
-                img_format = ImageFormat.Png
-            elif self.profile.FilelessFormat == ".bmp":
-                img_format = ImageFormat.Bmp
-            image.Save(path, img_format)
-            return MoveResult.Success
+            ComicRack.App.GetComicThumbnail(book, 0).Save(path)
+            log.Info("Created fileless image at: {0}", path)
         except (ArgumentNullException, ExternalException) as ex:
-            log.Error("Unable to save fileless image {0}: {1}", path,
-                      ex.Message)
-            self._report.fail("Failed to create the fileless image {0}: {1}"
-                              .format(path, ex.Message))
-            return MoveResult.Failed
+            raise MoveFailedException("Failed to create the fileless image "
+                                      "{0}: {1}".format(path, ex.Message))
+        else:
+            return MoveResult.Success
 
     def _book_should_be_moved(self, book):
         """Checks the excluded folders and metadata rules to see if the book
         should be moved.
+
+        Handles reporting the skip to the report if the book should be skipped
 
         Args:
             book: The ComicBook object to check with.
@@ -636,7 +726,7 @@ class BookMover(object):
             True if the book should be moved. False otherwise
         """
         if not check_excluded_folders(book.FilePath, self.profile):
-            log.Info("Skipped because the book is located in an excluded path.")
+            log.Info("Skipped because the book is located in an excluded path")
             self._report.skip("The book is located in an excluded path")
             return False
 
@@ -647,122 +737,60 @@ class BookMover(object):
             return False
         return True
 
-    def _book_already_at_dest(self, book, new_file_name, new_full_path):
+    def _check_book_already_at_dest(self, book, new_full_path):
         """Checks if the book is already at the correct location
 
         Have to do several checks because some strange things can happen
-        if the capitalizations are different.
+        if the capitalization is different.
+
+        If the book is the same but with different capitalization then rename
+        the file to the correct capitalization.
+
+        #FIXME: Error handling for rename.
 
         Args:
             book: The ComicBook object to move.
-            new_file_name: The new file name for the book.
             new_full_path: The new fully qualified path for the book.
 
-        Returns:
-            True if the book is already where it should be or False if it is
-            not.
+        Raises:
+            MoveSkippedException: if the book doesn't need to be moved.
         """
         if new_full_path == book.FilePath:
-            self._report.skip("The book is already located at the calculated "
-                              "path")
-            return True
+            raise MoveSkippedException("The book is already located at the "
+                                       "calculated path")
 
         # In some cases the file path is the same but has different cases.
         # The FileInfo object doesn't catch this but the File.Move function
         # still thinks that it is a duplicate.
         if new_full_path.lower() == book.FilePath.lower():
             # In that case, better rename it to the correct case
-            log.Info("Renamed {0} to {1} to fix capitalization"
-                     .format(book.FilePath, new_full_path))
             if self.profile.Mode != Mode.Simulate:
+                new_file_name = Path.GetFileName(new_full_path)
                 book.RenameFile(new_file_name)
-            self._report.log("Renaming",
-                             "to {0} to fix capitalization"
+                log.Info("Renamed {0} to {1} to fix capitalization"
+                         .format(book.FilePath, new_full_path))
+            self._report.log("Renamed", "to {0} to fix capitalization"
                              .format(new_full_path))
-            self._report.skip("The book is already located at the calculated "
-                              "path")
-            return True
-        return False
+            raise MoveSkippedException("The book is already located at the "
+                                       "calculated path")
 
     def _get_shorter_path(self, long_path):
-        """Asks the user to fix the path by invoking a dialog.
+        """Asks the user to fix the too long path by invoking a dialog.
 
         Args:
             long_path: The fully qualified path to check as a string.
 
         Returns:
-            MoveResult.Skipped if the user doesn't want to rename the path.
-            The shortened, correct path otherwise.
+            The shortened, correct path.
+
+        Raises:
+            MoveSkippedException if the user cancels fixing the path.
         """
         with PathTooLongForm(long_path) as p:
             if p.ShowDialog() == DialogResult.OK:
                 return p.get_path()
-        log.Info("Skipped: The calculated path was too long and the user "
-                 "skipped shortening it")
-        self._report.skip("The calculated path was too long and the user "
-                          "skipped shortening it")
-        return MoveResult.Skipped
-
-    def _create_folder(self, new_directory):
-        """Creates the directory tree.
-
-        If the profile mode is simulate it doesn't create any folders, instead
-        it saves the folders that would need to be created to _created_paths
-
-        Args:
-            new_directory: A DirectoryInfo object of the folder that is needed.
-
-        Returns:
-            MoveResult.Succes if the creation succeeded or was not needed.
-            MoveResult.Failed if something went wrong.
-        """
-        log.Trace("Creating folders {0}", new_directory.FullName)
-        if new_directory.Exists:
-            return MoveResult.Success
-
-        if self.profile.Mode == Mode.Simulate:
-            if new_directory.FullName not in self._created_paths:
-                self._report.log("Created Folder (Simulated)",
-                                 new_directory.FullName)
-                self._created_paths.append(new_directory.FullName)
-                log.Info("Created Folder (Simulated) {0}",
-                         new_directory.FullName)
-            return MoveResult.Success
-        try:
-            new_directory.Create()
-            new_directory.Refresh()
-            log.Info("Created folder {0}", new_directory.FullName)
-            return MoveResult.Success
-        except IOException as ex:
-            self._report.fail("Failed to create folder {0}: {1}"
-                              .format(new_directory.FullName, ex.Message))
-            log.Error("Failed to create folder {0}: {1}",
-                      new_directory.FullName, ex.Message)
-            return MoveResult.Failed
-
-    def _delete_empty_folders(self, directory):
-        """Recursively deletes directories until an non-empty directory is
-        found or the directory is in the excluded list.
-
-        Args:
-            directory: A DirectoryInfo object which starts at the first folder
-                to remove.
-        """
-        log.Trace("Starting to delete empty folders.")
-        directory.Refresh()
-        if not directory.Exists:
-            return
-        # Only delete if no file or folder and not in folder never to delete
-        if directory.FullName not in self.profile.ExcludedEmptyFolder:
-            try:
-                parent = directory.Parent
-                directory.Delete()
-                log.Info("Deleted empty folder {0}", directory.FullName)
-                self._delete_empty_folders(parent)
-            except (UnauthorizedAccessException, DirectoryNotFoundException,
-                    IOException, SecurityException) as ex:
-                log.Warn("Unable to delete {0}: {1}", directory.FullName,
-                         ex.Message)
+        raise MoveSkippedException("The calculated path was too long and the "
+                                   "user skipped shortening it")
 
 
 class DuplicateHandler(object):
@@ -793,10 +821,10 @@ class DuplicateHandler(object):
         base = path[:-len(extension)]
         base = re.sub(" \([0-9]\)$", "", base)
         i = 0
-        while (True):
+        while True:
             i += 1
             newpath = "{0} ({1}){2}".format(base, i + 1, extension)
-            # For simulated mode we check _moved_books
+            # For simulated mode we check _simulated_moved_books
             if newpath in self._moved_books or File.Exists(newpath):
                 continue
             else:
@@ -812,6 +840,9 @@ class DuplicateHandler(object):
 
         Returns: MoveResult.Success if it succeeds or MoveResult.Failed if it
             fails
+
+        Raises:
+            MoveFailedException if the duplicate cannot be deleted.
         """
         self._log.Trace("Trying to delete {0}", path)
         try:
@@ -822,11 +853,8 @@ class DuplicateHandler(object):
             return MoveResult.Success
         except (IOException, OperationCanceledException, SecurityException,
                 UnauthorizedAccessException) as ex:
-            self._log.Error("Skipped. Could not delete existing duplicate {0}: {1}",
-                            path, ex.Message)
-            self._reporter.fail("Could not delete the existing duplicate {0} : {1}"
-                                .format(path, ex.Message))
-            return MoveResult.Failed
+            raise MoveFailedException("Could not delete the existing duplicate"
+                                      "{0} : {1}".format(path, ex.Message))
 
     def _find_book_in_library(self, path):
         """Tries to find a ComicBook in the ComicRack library by checking the
@@ -867,11 +895,13 @@ class DuplicateHandler(object):
                 duplicate form.
 
         Returns:
-                MoveResult.Failed if an error occurs while processing the book.
-                DuplicateAction.Cancel if the user cancels moving the book.
                 DuplicateAction.Rename if the user chooses to rename the book.
                 DuplicateAction.Overwrite if the user chooses to overwrite the
                     book.
+
+        Raises:
+                MoveSkippedException: If the user skips the duplicates.
+                MoveFailedExceptions: If the duplicate cannot be deleted.
         """
         book = processing_book.book
         move_path = processing_book.path
@@ -897,7 +927,7 @@ class DuplicateHandler(object):
             rename_path = self._create_rename_path(move_path)
 
         if (not self.always_do_duplicate_action or
-           processing_book.duplicate_different_extension):
+                processing_book.duplicate_different_extension):
 
             if self._duplicate_window is None:
                 self._duplicate_window = DuplicateWindow()
@@ -913,12 +943,9 @@ class DuplicateHandler(object):
             self.always_do_duplicate_action = result.always_do_action
 
         if self.duplicate_action == DuplicateAction.Cancel:
-            self._log.Info("User declined to overwrite or rename the "
-                           "book and it was _skipped")
-            self._reporter.skip(
+            raise MoveSkippedException(
                 "A file already exists at: {0} and the user declined to "
-                " or rename it".format(dup_path))
-            return DuplicateAction.Cancel
+                "overwrite or rename it".format(dup_path))
 
         elif self.duplicate_action == DuplicateAction.Rename:
             self._log.Info("User chose to rename the processing ComicBook")
@@ -943,14 +970,12 @@ class DuplicateHandler(object):
                 self._moved_books.append(move_path)
 
             else:
-                if not self._delete_duplicate(dup_path):
-                    return MoveResult.Failed
-
+                self._delete_duplicate(dup_path)
                 if book.FilePath and type(existing_book) is not FileInfo:
                     ComicRack.App.RemoveBook(existing_book)
-                    self._log.Info(
-                        "Removed the duplicate book from the library")
+                    self._log.Info("Removed the duplicate book from the library")
             return DuplicateAction.Overwrite
+
 
 # class UndoMover(BookMover):
 #
@@ -979,7 +1004,8 @@ class DuplicateHandler(object):
 #             if self._worker.CancellationPending:
 #                 _skipped = len(books) + len(notfound) - _success - _failed
 #                 self.report.Add("Canceled", str(_skipped) + " files", "User cancelled the script")
-#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success,
+#  _failed, _skipped), _failed > 0 or _skipped > 0)
 #                 #self.report.SetCountVariables(_failed, _skipped, _success)
 #                 return report
 #
@@ -1010,7 +1036,8 @@ class DuplicateHandler(object):
 #             if self._worker.CancellationPending:
 #                 _skipped = len(books) + len(notfound) - _success - _failed
 #                 self.report.Add("Canceled", str(_skipped) + " files", "User cancelled the script")
-#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#                 report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success,
+#  _failed, _skipped), _failed > 0 or _skipped > 0)
 #                 #self.report.SetCountVariables(_failed, _skipped, _success)
 #                 return report
 #
@@ -1032,7 +1059,8 @@ class DuplicateHandler(object):
 #                 self._worker.ReportProgress(count)
 #                 continue
 #
-#         report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success, _failed, _skipped), _failed > 0 or _skipped > 0)
+#         report = BookMoverResult("Successfully moved: %s\tFailed to move: %s\tSkipped: %s\n\n" % (_success,
+# _failed, _skipped), _failed > 0 or _skipped > 0)
 #         #self.report.SetCountVariables(_failed, _skipped, _success)
 #         return report
 #
@@ -1071,7 +1099,8 @@ class DuplicateHandler(object):
 #
 #
 #             if path == oldfile:
-#                 self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated path." % (oldfile))
+#                 self.report.Append("\n\nSkipped moving book\n%s\nbecause it is already located at the calculated
+# path." % (oldfile))
 #                 _skipped += 1
 #                 self._worker.ReportProgress(count)
 #                 continue
@@ -1233,7 +1262,9 @@ class DuplicateHandler(object):
 #             rename_filename = Path.GetFileName(rename_path)
 #
 #             if not self.always_do_duplicate_action:
-#                 result = self.form.Invoke(Func[type(self.profile), type(book), type(oldbook), str, int, DuplicateResult](self.form.ShowDuplicateForm), System.Array[object]([self.profile, book, oldbook, rename_filename, self._held_duplicate_count]))
+#                 result = self.form.Invoke(Func[type(self.profile), type(book), type(oldbook), str, int,
+# DuplicateResult](self.form.ShowDuplicateForm), System.Array[object]([self.profile, book, oldbook, rename_filename,
+# self._held_duplicate_count]))
 #
 #                 self.duplicate_action = result.action
 #
@@ -1241,15 +1272,18 @@ class DuplicateHandler(object):
 #                     self.always_do_duplicate_action = True
 #
 #             if self.duplicate_action is DuplicateAction.Cancel:
-#                 self.report.Add("Skipped", self.report_book_name, "A file already exists at: " + undo_path + " and the user declined to overwrite it")
+#                 self.report.Add("Skipped", self.report_book_name, "A file already exists at: " + undo_path + " and
+# the user declined to overwrite it")
 #                 return MoveResult.Skipped
 #
 #             elif self.duplicate_action is DuplicateAction.Rename:
 #                 #Check if the created path is too long
 #                 if len(rename_path) > 259:
-#                     result = self.form.Invoke(Func[str, object](self._get_smaller_path), System.Array[System.Object]([rename_path]))
+#                     result = self.form.Invoke(Func[str, object](self._get_smaller_path), System.Array[
+# System.Object]([rename_path]))
 #                     if result is None:
-#                         self.report.Add("Skipped", self.report_book_name, "The path was too long and the user _skipped shortening it")
+#                         self.report.Add("Skipped", self.report_book_name, "The path was too long and the user
+# _skipped shortening it")
 #                         return MoveResult.Skipped
 #
 #                     return self.process_duplicate_book(book, result)
@@ -1260,10 +1294,12 @@ class DuplicateHandler(object):
 #                 try:
 #                     if self.profile.CopyReadPercentage and type(oldbook) is not FileInfo:
 #                         book.LastPageRead = oldbook.LastPageRead
-#                     FileIO.FileSystem.DeleteFile(undo_path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+#                     FileIO.FileSystem.DeleteFile(undo_path, FileIO.UIOption.OnlyErrorDialogs,
+# FileIO.RecycleOption.SendToRecycleBin)
 #
 #                 except Exception, ex:
-#                     self.report.Add("Failed", self.report_book_name, "Failed to overwrite " + undo_path + ". The error was: " + str(ex))
+#                     self.report.Add("Failed", self.report_book_name, "Failed to overwrite " + undo_path + ". The
+# error was: " + str(ex))
 #                     return MoveResult.Failed
 #
 #                 #Since we are only working with images there is no need to
@@ -1369,14 +1405,17 @@ class DuplicateHandler(object):
 #                 renamefilename = FileInfo(renamepath).Name
 #
 #                 #Ask the user:
-#                 result = self.form.Invoke(Func[type(dupbook), type(oldbook), str, int, list](self.form.ShowDuplicateForm), System.Array[object]([dupbook, oldbook, renamefilename, len(self._held_duplicate_books)]))
+#                 result = self.form.Invoke(Func[type(dupbook), type(oldbook), str, int,
+# list](self.form.ShowDuplicateForm), System.Array[object]([dupbook, oldbook, renamefilename,
+# len(self._held_duplicate_books)]))
 #                 self.Action = result[0]
 #                 if result[1] == True:
 #                     #User checked always do this opperation
 #                     self.AlwaysDoAction = True
 #
 #             if self.Action == DuplicateResult.Cancel:
-#                 self.report.Append("\n\nSkipped moving\n%s\nbecause a file already exists at\n%s\nand the user declined to overwrite it." % (oldpath, path))
+#                 self.report.Append("\n\nSkipped moving\n%s\nbecause a file already exists at\n%s\nand the user
+# declined to overwrite it." % (oldpath, path))
 #                 return MoveResult.Skipped
 #
 #             elif self.Action == DuplicateResult.Rename:
@@ -1385,10 +1424,12 @@ class DuplicateHandler(object):
 #             elif self.Action == DuplicateResult.Overwrite:
 #
 #                 try:
-#                     FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+#                     FileIO.FileSystem.DeleteFile(path, FileIO.UIOption.OnlyErrorDialogs,
+# FileIO.RecycleOption.SendToRecycleBin)
 #                     #File.Delete(path)
 #                 except Exception, ex:
-#                     self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not moved." % (path, ex, oldpath))
+#                     self.report.Append("\n\nFailed to delete\n%s. The error was: %s. File\n%s\nwas not moved." % (
+# path, ex, oldpath))
 #                     return MoveResult.Failed
 #
 #                 #if the book is in the library, delete it
@@ -1411,7 +1452,8 @@ class DuplicateHandler(object):
 #             print path
 #             return MoveResult.Failed
 #         except Exception, ex:
-#             self.report.Append("\n\nFailed to move\n%s\nbecause an error occured. The error was: %s. The book was not moved." % (book.FilePath, ex))
+#             self.report.Append("\n\nFailed to move\n%s\nbecause an error occured. The error was: %s. The book was
+# not moved." % (book.FilePath, ex))
 #             return MoveResult.Failed
 
 

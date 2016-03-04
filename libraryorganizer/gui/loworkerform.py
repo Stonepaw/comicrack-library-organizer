@@ -19,51 +19,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
 import clr
 import System
 import System.Drawing
+
+import loforms
+
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("PresentationFramework")
 clr.AddReference("PresentationCore")
 from System.Windows.Interop import WindowInteropHelper
-
 import System.IO
-from System.IO import StreamWriter, TextWriter
-
 import System.Windows.Forms
-
 from System.Drawing import *
-from System.Windows.Forms import *
+from System.Windows.Forms import Form, FlowLayoutPanel, PictureBox, MessageBox
 
-import loduplicate
-from loduplicate import DuplicateForm
-
+# import duplicate
+# from duplicate import DuplicateForm
 from locommon import ICON, Mode
+from bookmanager import BookManager
 
-from bookmover import BookMover, UndoMover
-
-import loforms
-
-from lologger import Logger
 
 class WorkerForm(Form):
+    # TODO: Try showing the cover of the book?
 
-
-    def __init__(self, books, profiles):
+    def __init__(self, books, profiles, comicrack):
+        super(WorkerForm, self).__init__()
         self.InitializeComponent()
         self.books = books
         self.profiles = profiles
-        #The percentage to raise to progress bar of one book.
-        self.percentage = 1.0/len(books)/len(profiles)*100
-        self.progress = 0.0
-        self._DuplicateForm = None
-        loduplicate.ComicRack = ComicRack
-        
+        self._comicrack = comicrack
 
     def InitializeComponent(self):
         self._progress = System.Windows.Forms.ProgressBar()
-        self._Worker = System.ComponentModel.BackgroundWorker()
+        self._worker = System.ComponentModel.BackgroundWorker()
         self._Cancel = System.Windows.Forms.Button()
         self.SuspendLayout()
         # 
@@ -85,17 +74,25 @@ class WorkerForm(Form):
         # 
         # Worker
         # 
-        self._Worker.WorkerReportsProgress = True
-        self._Worker.WorkerSupportsCancellation = True
-        self._Worker.DoWork += self.WorkerDoWork
-        self._Worker.ProgressChanged += self.WorkerProgressChanged
-        self._Worker.RunWorkerCompleted += self.WorkerRunWorkerCompleted
-        # 
+        self._worker.WorkerReportsProgress = True
+        self._worker.WorkerSupportsCancellation = True
+        self._worker.DoWork += self.WorkerDoWork
+        self._worker.ProgressChanged += self.WorkerProgressChanged
+        self._worker.RunWorkerCompleted += self.WorkerRunWorkerCompleted
+        #
+        # ComicImage
+        #
+        #
+        self._comic_image = PictureBox()
+        self._comic_image.Size = System.Drawing.Size(100, 100)
+        self._comic_image.Location = System.Drawing.Point(5, 75)
+        # self._comic_image.
         # WorkerForm
         # 
-        self.ClientSize = System.Drawing.Size(350, 55)
+        self.ClientSize = System.Drawing.Size(350, 350)
         self.Controls.Add(self._progress)
         self.Controls.Add(self._Cancel)
+        self.Controls.Add(self._comic_image)
         self.CancelButton = self._Cancel
         self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         self.MaximizeBox = False
@@ -108,36 +105,46 @@ class WorkerForm(Form):
         self.Shown += self.WorkerFormLoad
         self.ResumeLayout(False)
 
-
     def WorkerDoWork(self, sender, e):
         books = e.Argument[0]
-        profiles = e.Argument[1]        
+        profiles = e.Argument[1]
         report = WorkerResult()
-        self.log = Logger()
-        mover = BookMover(sender, self, self.log)
-        
+        mover = BookManager(self._comicrack, sender)
+
         result = mover.process_books(books, profiles)
         if result.failed_or_skipped:
-            report.failed_or_skipped = result.failed_or_skipped
+            report.failed_or_skipped = True
 
-        report.report_text = result.report_text
+        report.report_text = result.get_report()
 
         for profile in profiles:
             if profile.Mode == Mode.Simulate:
                 report.show_report = True
+                break
 
         e.Result = report
 
-
     def WorkerProgressChanged(self, sender, e):
+        """ Occurs when progress is reported to be changed
+
+        Args:
+            sender:
+            e: Should have the Value as the progress percentage
+
+        Returns:
+
+        """
+
         self._progress.Value = e.ProgressPercentage
 
-
     def WorkerRunWorkerCompleted(self, sender, e):
-        #print "Thread completed"
+        # print "Thread completed"
         if not e.Error:
             if e.Result.failed_or_skipped or e.Result.show_report:
-                result = MessageBox.Show(e.Result.report_text + "\n\nWould you like to see a detailed report of the failed or skipped files?", "View full report?", MessageBoxButtons.YesNo)
+                result = MessageBox.Show(
+                    e.Result.report_text + "\n\nWould you like to see a detailed report of the failed or skipped "
+                                           "files?",
+                    "View full report?", MessageBoxButtons.YesNo)
                 if result == DialogResult.Yes:
                     self.show_report()
             else:
@@ -147,29 +154,25 @@ class WorkerForm(Form):
             MessageBox.Show(str(e.Error))
         self.Close()
 
-
     def WorkerFormLoad(self, sender, e):
-        self._Worker.RunWorkerAsync([self.books, self.profiles])
+        self._worker.RunWorkerAsync([self.books, self.profiles])
 
-    
     def WorkerFormFormClosing(self, sender, e):
-        if self._Worker.IsBusy:
-            if self._Worker.CancellationPending == False:
-                self._Worker.CancelAsync()
+        if self._worker.IsBusy:
+            if not self._worker.CancellationPending:
+                self._worker.CancelAsync()
             self.DialogResult = DialogResult.None
 
-
-    def ShowDuplicateForm(self, profile, newbook, oldbook, renamefile, count):
-        if self._DuplicateForm == None:
-            self._DuplicateForm = DuplicateForm(profile.Mode)
-            helper = WindowInteropHelper(self._DuplicateForm.win)
-            helper.Owner = self.Handle
-        return self._DuplicateForm.ShowForm(newbook, oldbook, renamefile, count)
-
+    # def ShowDuplicateForm(self, profile, newbook, oldbook, renamefile, count):
+    #     if self._DuplicateForm == None:
+    #         self._DuplicateForm = DuplicateForm(profile.Mode)
+    #         helper = WindowInteropHelper(self._DuplicateForm.win)
+    #         helper.Owner = self.Handle
+    #     return self._DuplicateForm.ShowForm(newbook, oldbook, renamefile, count)
 
     def show_report(self):
-        """Shows the report form with the available logreporter"
-        report = loforms.ReportForm()
+        """Shows the report form with the available logreporter"""
+        report = ReportForm()
         report.LoadData(self.logreporterArray())
         r = report.ShowDialog()
         if r == DialogResult.Yes:
@@ -177,16 +180,12 @@ class WorkerForm(Form):
         report.Dispose()
 
 
-
 class ProfileSelector(Form):
-
-
     def __init__(self, profile_names, selected_profiles):
         self._profile_names = System.Array[str](profile_names)
         self._selected_profiles = selected_profiles
         self.initialize_component()
 
-    
     def initialize_component(self):
         self._label1 = System.Windows.Forms.Label()
         self._first_profile = System.Windows.Forms.ComboBox()
@@ -310,36 +309,31 @@ class ProfileSelector(Form):
         self.ResumeLayout(False)
         self.PerformLayout()
 
-
     def add_click(self, sender, e, selected=None):
         c = ProfileSelectorControl(self.remove, self._profile_names, selected)
         self._profile_container.Controls.Add(c)
-        
-        
+
     def remove(self, sender, e):
         c = sender.Tag
         self._profile_container.Controls.Remove(c)
         c.Dispose()
 
-
     def get_profiles_to_use(self):
         return [control.SelectedItem for control in self._profile_container.Controls]
-        
-        
-        
+
+
 class ProfileSelectorControl(FlowLayoutPanel):
-    
     def __init__(self, remove, profile_names, selected):
-        self._pr_current_profileComboBox()
-        self._pr_current_profileze = System.Drawing.Size(190, 21)
-        self._pr_current_profileopDownStyle = ComboBoxStyle.DropDownList
-        self._pr_current_profileems.AddRange(profile_names)
-        self._pr_current_profilerted = True
+        self._pr_current_profile = ComboBox()
+        self._pr_current_profile.Size = System.Drawing.Size(190, 21)
+        self._pr_current_profile.DropDownStyle = ComboBoxStyle.DropDownList
+        self._pr_current_profile.Items.AddRange(profile_names)
+        self._pr_current_profile.Sorted = True
 
         if selected is not None:
-            self._pr_current_profilelectedItem = selected
+            self._pr_current_profil.SelectedItem = selected
         else:
-            self._pr_current_profilelectedIndex = 0
+            self._pr_current_profil.SelectedIndex = 0
 
         self._remove = Button()
         self._remove.Text = "-"
@@ -347,28 +341,26 @@ class ProfileSelectorControl(FlowLayoutPanel):
         self._remove.Click += remove
         self._remove.Tag = self
         self.AutoSize = True
-        self.Controls.Add(self._pr_current_profile        self.Controls.Add(self._remove)
-        
+        self.Controls.Add(self._pr_current_profile)
+        self.Controls.Add(self._remove)
+
     @property
     def SelectedItem(self):
-        return self._pr_current_profilelectedItem
-
+        return self._pr_current_profile.SelectedItem
 
 
 class WorkerResult(object):
-    
     def __init__(self):
         self.failed_or_skipped = False
         self.report_text = ""
         self.show_report = False
 
 
-        
 class ReportForm(Form):
     def __init__(self, text):
         self.InitializeComponent()
         self._report.Text = text
-    
+
     def InitializeComponent(self):
         self._button1 = System.Windows.Forms.Button()
         self._report = System.Windows.Forms.RichTextBox()
@@ -387,7 +379,8 @@ class ReportForm(Form):
         # 
         # report
         # 
-        self._report.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._report.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | \
+                              System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
         self._report.Location = System.Drawing.Point(12, 12)
         self._report.Name = "report"
         self._report.ReadOnly = True
@@ -410,24 +403,23 @@ class ReportForm(Form):
         self.ResumeLayout(False)
 
 
-
 class WorkerFormUndo(WorkerForm):
     """
     Can use pretty much all the code from the WorkerForm. Just have to override a couple of things
     """
-    
-    def __init__(self, undo_collection, profiles):
-        super(WorkerFormUndo,self).__init__(undo_collection, profiles)
-        self.Text = "Undoing last move..."
 
+    def __init__(self, undo_collection, profiles, comicrack):
+        super(WorkerFormUndo, self).__init__(undo_collection, profiles, comicrack)
+        self.Text = "Undoing last move..."
 
     def WorkerDoWork(self, sender, e):
         undo_collection = e.Argument[0]
         profiles = e.Argument[1]
         self.logreporterLogger()
         report = WorkerResult()
-        
-        mover = UndoMover(sender, self, undo_collection, profiles, self.logreporter        result = mover.process_books()        
+
+        mover = UndoMover(sender, self, undo_collection, profiles, self.log)
+        result = mover.process_books()
 
         if result.failed_or_skipped:
             report.failed_or_skipped = result.failed_or_skipped
