@@ -15,7 +15,7 @@ from System.IO import Path, File, IOException, FileInfo
 clr.AddReference("NLog.dll")
 from NLog import LogManager
 # Local
-from bookprocessor import BookProcessor, FilelessBookProcessor, SimulatedBookProcessor
+from bookprocessor import MoveBookProcessor, FilelessBookProcessor, SimulatedBookProcessor, CopyBookProcessor
 from common import BookToMove, Mode, MoveFailedException, MoveSkippedException, DuplicateExistsException
 from locommon import check_excluded_folders, check_metadata_rules
 from pathmaker import PathMaker
@@ -39,7 +39,8 @@ class BookManager(object):
         self._report = MoveReporter()
 
         # Different Processors
-        self._book_processor = BookProcessor(comicrack)
+        self._move_book_processor = MoveBookProcessor(comicrack)
+        self._copy_book_processor = CopyBookProcessor(comicrack)
         self._fileless_book_processor = FilelessBookProcessor(comicrack)
         self._simulate_book_processor = SimulatedBookProcessor(comicrack, self._report)
 
@@ -90,9 +91,8 @@ class BookManager(object):
     def _process_book(self, book_to_move, profile):
 
         self._set_book_and_profile(book_to_move, profile)
-        processor = self._get_processor(book_to_move.book, profile.Mode)
         try:
-            processor.process_book(book_to_move, profile)
+            self._get_processor(book_to_move.book, profile.Mode).process_book(book_to_move, profile)
         except MoveFailedException as e:
             self._report.fail(e.message)
             _log.Error("Failed: {0}", e.message)
@@ -246,8 +246,12 @@ class BookManager(object):
             return self._simulate_book_processor
         elif not book.FilePath:
             return self._fileless_book_processor
+        elif mode == Mode.Move:
+            return self._move_book_processor
+        elif mode == Mode.Copy:
+            return self._copy_book_processor
         else:
-            return self._book_processor
+            raise MoveFailedException("Unknown Mode")
 
     def _increase_progress(self, book_to_move, profile_mode):
         """Increases the progress percentage and reports to the worker form,
