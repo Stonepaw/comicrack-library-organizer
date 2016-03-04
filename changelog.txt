@@ -1,5 +1,6 @@
 ﻿2.1.12
-BUG: Fixed not finding duplicates if file path had different capitalizations
+BUG: Fixed not finding duplicates if file path had different capitalization
+BUG: Fixed mis-identifing if a file was a duplicate when the source and destination paths are the same but have different capitalization
 BUG: Wrong version in configuration window
 BUG: SelectedIndex out of range error when no custom value defined in the library
 BUG: Various errors where text in the final report may not be reported correctly
@@ -10,9 +11,10 @@ CHANGE: Duplicates window has been overhauled to work more efficiently and show 
 Change: No longer copies a file multiple times when it can be used under several profiles. Just the last one is used.
 Change: Implemented better logging for most parts of the process. Logs are stored under %appdata%/cYo/ComicRack/Library Organizer/logs/
 
+
 New: Option to count different extensions as duplicates
 New: Duplicates window is now translatable (other windows to come)
-
+New: Saving fileless
 
 TODO: Add tag or custom value after successful move.
 TODO: Undo move using custom value to store previous path. Add right click menu support. Keep undo last move script?

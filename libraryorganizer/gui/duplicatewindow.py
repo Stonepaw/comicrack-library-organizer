@@ -40,15 +40,13 @@ from System.Windows import Window  # @UnresolvedImport
 from System.Windows.Controls import DataTemplateSelector  # @UnresolvedImport
 from System.Windows.Data import IValueConverter  # @UnresolvedImport
 from System.Windows.Media.Imaging import BitmapImage  # @UnresolvedImport
-
 from ExtractLargeIconFromFile import ShellEx
-
 import i18n
 from locommon import SCRIPTDIRECTORY, ICON, Mode
 from wpfutils import NotifyPropertyChangedBase, notify_property, bitmap_to_bitmapimage
 
 ICONDIRECTORY = SCRIPTDIRECTORY
-ComicRack = None
+
 
 class DuplicateWindow(Window):
     """ A wpf window that mimics the windows 7 copy dialog that shows when
@@ -60,23 +58,23 @@ class DuplicateWindow(Window):
 
         ShowDialog Returns a DuplicateResult
     """
-    
-    def __init__(self):
-        """Initializes the DuplicateWindow"""
 
+    def __init__(self, comicrack):
+        """Initializes the DuplicateWindow"""
+        self._comicrack = comicrack
         # Load resources since I can't seem to get relative paths to work in xaml
         self.Resources.Add("Arrow", BitmapImage(
-                    Uri(Path.Combine(ICONDIRECTORY, 'arrow.png'))))
+            Uri(Path.Combine(ICONDIRECTORY, 'arrow.png'))))
         self.Resources.Add("ItemTypeSelector", DuplicateFormDataTemplateSelector())
         self.Resources.Add("ByteToMBConverter", BytesToMBConverter())
-        
+
         self._action = None
-        self._view_model = DuplicateWindowViewModel()
-        wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName, 
-                                                 'DuplicateWindow.xaml'))
+        self._view_model = DuplicateWindowViewModel(comicrack)
+        wpf.LoadComponent(self, Path.Combine(FileInfo(__file__).DirectoryName,
+                                             'DuplicateWindow.xaml'))
         self.DataContext = self._view_model
 
-        #Set the Icon
+        # Set the Icon
         icon = BitmapImage()
         icon.BeginInit()
         icon.UriSource = Uri(ICON, UriKind.Absolute)
@@ -108,7 +106,7 @@ class DuplicateWindow(Window):
             count: The number of duplicates left to process.
 
         """
-        self._action = DuplicateAction.Cancel # Default
+        self._action = DuplicateAction.Cancel  # Default
         self._view_model.setup(processing_book, existing_book, rename_path, mode, count)
         super(DuplicateWindow, self).ShowDialog()
         return DuplicateResult(self._action, self._view_model.always_do_action)
@@ -132,7 +130,8 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
     
     Use setup() to change the ComicBook/FileInfo objects.
     """
-    def __init__(self):
+
+    def __init__(self, comicrack):
         super(DuplicateWindowViewModel, self).__init__()
         self._load_text()
         self._rename_text = ""
@@ -146,8 +145,9 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
         self._processing_cover = None
         self._rename_header = ""
         self.always_do_action = False
-    
-    #region properties
+        self._comicrack = comicrack
+
+    # region properties
     @notify_property
     def rename_text(self):
         return self._rename_text
@@ -228,7 +228,7 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
     def processing_cover(self, value):
         self._processing_cover = value
 
-    #endregion
+    # endregion
 
     def setup(self, processing_book, existing_book, rename_path, mode, count):
         """ Setups up the various properites of the view model depending on what
@@ -256,7 +256,7 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
         """
         if count > 1:
             self.show_do_all = True
-            self.do_all_text = " ".join((self._texts["DupAlwaysDo"], count))
+            self.do_all_text = " ".join((self._texts["DupAlwaysDo"], str(count)))
         else:
             self.show_do_all = False
         if mode == Mode.Copy:
@@ -269,7 +269,7 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
             self.cancel_text = self._texts["DupCancelMove"]
             self.replace_header = self._texts["DupMoveReplace"]
             self.rename_header = self._texts["DupRenameMove"]
-        
+
     def _reset_images(self):
         """Loads the new cover images or icon thumbnails depending on the 
         filetype.
@@ -277,19 +277,19 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
         if type(self._existing_book) == FileInfo:
             try:
                 icon = ShellEx.GetBitmapFromFilePath(
-                    self._existing_book.FullName,ShellEx.IconSizeEnum.LargeIcon48)
+                    self._existing_book.FullName, ShellEx.IconSizeEnum.LargeIcon48)
             except ArgumentException:
                 self.existing_cover = None
             else:
                 self.existing_cover = bitmap_to_bitmapimage(icon)
         else:
             self.existing_cover = bitmap_to_bitmapimage(
-                ComicRack.App.GetComicThumbnail(
+                self._comicrack.App.GetComicThumbnail(
                     self._existing_book, self._existing_book.PreferredFrontCover))
 
         self.processing_cover = bitmap_to_bitmapimage(
-            ComicRack.App.GetComicThumbnail(
-                self._processing_book, 
+            self._comicrack.App.GetComicThumbnail(
+                self._processing_book,
                 self._processing_book.PreferredFrontCover))
 
     def _load_text(self):
@@ -308,11 +308,10 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
                 "DupRenameDescriptionCopy",
                 "DupAlwaysDo")
 
-        self._texts = {key:i18n.get(key) for key in keys}
+        self._texts = {key: i18n.get(key) for key in keys}
 
 
 class DuplicateResult(object):
-
     def __init__(self, action, always_do_action):
         self.action = action
         self.always_do_action = always_do_action
@@ -328,6 +327,7 @@ class DuplicateFormDataTemplateSelector(DataTemplateSelector):
     """ This class is used to select the correct display in the wpf Window 
     depending if the book type is a ComicBook or FileInfo.
     """
+
     def SelectTemplate(self, item, container):
         if type(item) == FileInfo:
             return container.FindResource("FileInfoCommandButton")
@@ -337,11 +337,12 @@ class DuplicateFormDataTemplateSelector(DataTemplateSelector):
 
 class BytesToMBConverter(IValueConverter):
     """ Returns a pretty string from a size in bytes"""
+
     def Convert(self, value, targetType, parameter, culture):
         if value >= 1048576:
-            return "{0:.2f} MB".format(float(value)/1024/1024.0)
-        elif value >=1024:
-            return "{0:.2f} KB".format(float(value)/1024.0)
+            return "{0:.2f} MB".format(float(value) / 1024 / 1024.0)
+        elif value >= 1024:
+            return "{0:.2f} KB".format(float(value) / 1024.0)
         else:
             return "{0:.2f} bytes".format(float(value))
 

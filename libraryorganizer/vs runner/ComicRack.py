@@ -9,6 +9,9 @@ from System.Drawing import Bitmap
 from System.IO import FileStream, FileMode, FileInfo, Path
 from System.Runtime.Serialization.Formatters.Binary import BinaryFormatter
 
+clr.AddReference('ComicRack.Engine')
+from cYo.Projects.ComicRack.Engine import ComicBook
+
 class ComicRack(object):
     
     def __init__(self):
@@ -66,6 +69,17 @@ class App(object):
     def RemoveBook(self, book):
         """Mocks the RemoveBook Method"""
         pass
+
+    def AddNewBook(self, *args):
+        """ Mocks the AddNewBook method
+
+        Args:
+            *args:
+
+        Returns: An Empty ComicBook object.
+
+        """
+        return ComicBook()
 
 # class ComicBook(object):
 #     """Mocks a ComicBook object"""

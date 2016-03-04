@@ -2,14 +2,22 @@
 <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" throwExceptions="true">
   <targets>
-    <target name="logfile" xsi:type="File" fileName="logs/log.txt" archiveOldFileOnStartup="true"  keepFileOpen="false" />
+    <target name="logfile" xsi:type="File" fileName="logs/lastrunlog.txt"
+            archiveFileName="logs/log.{#}.txt"
+            archiveNumbering="DateAndSequence"
+            archiveAboveSize="1000"
+            archiveDateFormat="yyyyMMdd"
+            archiveOldFileOnStartup="true"
+            maxArchiveFiles="15"
+            Layout="${level:uppercase=true}|${message}"
+            keepFileOpen="false" />
 	<target name="simulate" xsi:type="File" fileName="logs/simulate.txt" archiveEvery="Day" keepFileOpen="false"/>
 	<target name="console" xsi:type="Console" Layout="${level:uppercase=true}|${message}" />
   </targets>
 
   <rules>
     <logger name="Simulate" level="Info" writeTo="simulate" final="true"/>
-    <logger name="*" minlevel="Trace" writeTo="logfile,console" />
+    <logger name="*" minlevel="Trace" writeTo="logfile" />
 	
   </rules>
 </nlog>

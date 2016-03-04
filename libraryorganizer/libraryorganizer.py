@@ -48,6 +48,10 @@ from locommon import PROFILEFILE, UNDOFILE, UndoCollection
 import bookmover
 import pathmaker
 
+import comicracknlogtarget
+from System.IO import Directory
+
+Directory.SetCurrentDirectory(locommon.SCRIPTDIRECTORY)
 
 #@Name Library Organizer
 #@Hook Books
@@ -121,6 +125,7 @@ def LibraryOrganizerQuick(books):
         except Exception, ex:
             print "The following error occured"
             print Exception
+            print ex
             MessageBox.Show(str(ex))
       
               

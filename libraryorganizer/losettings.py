@@ -29,6 +29,7 @@ import clr
 import System
 
 clr.AddReference("System.Xml")
+clr.AddReference("System.Windows.Forms")
 
 from System import Convert
 from System.IO import File, StreamReader, StreamWriter
@@ -92,7 +93,6 @@ class Profile:
         
         self.ExcludeMode = "Do not"
         
-
         self.FailEmptyValues = False
         self.MoveFailed = False
         self.FailedFolder = ""
@@ -108,6 +108,10 @@ class Profile:
 
         self.CopyReadPercentage = True
         self.DifferentExtensionsAreDuplicates = False
+
+        # On success options
+        self.SuccessTags = []
+        self.SuccessCustomValues = {}
 
 
     def duplicate(self):

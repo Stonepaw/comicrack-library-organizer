@@ -1,10 +1,5 @@
 ﻿"""
-lologger.py
-
-Contains a class for logging what the bookmover does.
-
-
-Copyright 2010-2012 Stonepaw
+Copyright 2016 Stonepaw
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import clr
+
 clr.AddReference("System.Windows.Forms")
-from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult  # @UnresolvedImport @IgnorePep8
+from System.Windows.Forms import MessageBox, SaveFileDialog, DialogResult
 
 
 class MoveReporter(object):
@@ -32,22 +28,57 @@ class MoveReporter(object):
         self.header = ""
         self._profile_reports = {}
         self.failed_or_skipped = False
+        self.cancelled = False
+
         # TODO Store book in this instead of passing the path in ADD
 
     def fail(self, message):
+        """ Logs a failed message with the currently set profile and book
+
+        Args:
+            message:
+
+        """
         self.log("Failed", message)
         self._profile_reports[self._current_profile].failed()
         self.failed_or_skipped = True
 
     def warn(self, message):
+        """ Logs a warning message with the currently set profile and book
+
+        Args:
+            message:
+
+        Returns:
+
+        """
         self.log("Warning", message)
 
     def success(self, message=""):
+        """ Logs a success message for currently set profile and book
+
+        Args:
+            message:
+
+        Returns:
+
+        """
         if message:
             self.log("Success", message)
         self._profile_reports[self._current_profile].success()
 
     def skip(self, message, profile_name=""):
+        """ Logs a skip message for currently set book and currently set profile.
+
+        Optionally allows reporting for a specific profile.
+
+        Args:
+            message:
+            profile_name:
+
+        Returns:
+
+        """
         if not profile_name:
             profile_name = self._current_profile
         self.log("Skipped", message, profile_name)
@@ -58,7 +89,7 @@ class MoveReporter(object):
         if not action:
             action = "Success (Simulated)"
         self.log(action, message)
-        self._profile_reports[self._current_profile].success()
+        # self._profile_reports[self._current_profile].success()
 
     def log(self, action, message, profile_name=""):
         if not profile_name:
@@ -89,8 +120,7 @@ class MoveReporter(object):
             profiles: A list of Profiles.
             count: The number of books that are being moved.
         """
-        self._profile_reports = {profile.Name: ProfileReport(profile, count)
-                                 for profile in profiles}
+        self._profile_reports = {profile.Name: ProfileReport(profile, count) for profile in profiles}
 
     def get_profile_reports(self, canceled=False):
         """Gets the profile reports as list of strings.
@@ -98,7 +128,7 @@ class MoveReporter(object):
         Pass True to canceled to calculated the skipped count correctly when
         the operation is canceled.
         """
-        return [self._profile_reports[profile].get_report()
+        return [self._profile_reports[profile].get_report(canceled)
                 for profile in self._profile_reports]
 
     @property
@@ -116,7 +146,7 @@ class MoveReporter(object):
         return self._log
 
     def Clear(self):
-        del(self._log[:])
+        del (self._log[:])
 
     def SaveLog(self):
         try:
@@ -137,10 +167,14 @@ class MoveReporter(object):
     def add_header(self, header_text):
         self.header += header_text
 
+    def get_report(self):
+        return "\n\n".join(self.get_profile_reports(self.cancelled))
+
 
 class ProfileReport(object):
     """Provides way to report on each profile's results for the move operation
     """
+
     # TODO: Move into MoveReport functions
     def __init__(self, profile, count):
         self._success = 0

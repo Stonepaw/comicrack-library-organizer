@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Profiles LastUsed="D,e,f,a,u,l,t">
+<Profiles LastUsed="Default">
   <Profile Name="Default" Version="2.1">
     <FolderTemplate>{&lt;publisher&gt;}\{&lt;imprint&gt;}\{&lt;series&gt;}{ (&lt;startyear&gt;{ &lt;format&gt;})}</FolderTemplate>
     <BaseFolder>D:\Users\Andrew\Desktop</BaseFolder>
