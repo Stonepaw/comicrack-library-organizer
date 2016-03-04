@@ -19,14 +19,12 @@ from NLog import LogManager
 from common import BookToMove, MoveSkippedException, MoveFailedException, Mode, DuplicateExistsException
 from fileutils import create_folder, get_files_with_different_ext, delete_empty_folders
 from loforms import PathTooLongForm
-from comicbook_utils import convert_tags_to_list
+from comicbook_utils import convert_tags_to_list, copy_data_to_new_book
 
 _log = LogManager.GetLogger("BookProcessor")
 
 
-class BookProcessor(object):
-    """ Processes a book that should be moved or copied to a new path."""
-
+class BaseBookProcessor(object):
     process_text = "Beginning to {0} {1}.\nDestination: {2}"
 
     def __init__(self, comicrack):
@@ -71,6 +69,10 @@ class BookProcessor(object):
             # Clean up created empty folders
             delete_empty_folders(destination_file.Directory, profile.ExcludedEmptyFolder)
             raise
+
+        # On success add tags and custom values
+        self._add_tag_on_success(book, profile)
+        self._add_custom_value_on_success(book, profile)
 
         if book_to_move.failed_fields:
             raise MoveFailedException(
@@ -203,7 +205,7 @@ class BookProcessor(object):
         return source_file
 
     def _do_operation(self, book, source_file, destination_file, profile):
-        """ Does the move/copy operation. Assumes all the paths are valid
+        """ The operation for this processor. Override in subclasses
         Args:
             book (ComicBook): The book to move
             source_file (FileInfo): The source file FileInfo
@@ -214,65 +216,6 @@ class BookProcessor(object):
             MoveFailedException: If the copy or move operations fails.
         """
         _log.Debug("Starting _do_operation")
-        if profile.Mode == Mode.Move:
-            original_directory = source_file.Directory
-            self._move_book(book, source_file, destination_file.FullName)
-            if profile.RemoveEmptyFolder:
-                _log.Info("Trying to remove the source folder if empty")
-                self._clean_up_empty_folders(original_directory, profile.ExcludedEmptyFolder)
-        elif profile.Mode == Mode.Copy:
-            self._copy_book(book, source_file, destination_file.FullName, profile.CopyMode)
-        else:
-            raise MoveFailedException("Unknown Mode")
-
-    def _move_book(self, book, source, destination_path):
-        """ Moves the source book to the destination file path and updates the ComicBook's FilePath
-
-        Additionally adds the lo_previous_path custom value to the book for use in the undo move script
-
-        Args:
-            book (ComicBook): The book to move
-            source (FileInfo): The FileInfo of the source book
-            destination_path (str): The fully qualified destination path
-
-        Raises:
-            MoveFailedException if the move fails
-        """
-        _log.Info("Starting to move")
-        try:
-            source.MoveTo(destination_path)
-        except (IOException, SecurityException, UnauthorizedAccessException) as e:
-            raise MoveFailedException(e.Message)
-        else:
-            _log.Info("Successfully moved to {0}", destination_path)
-            book.SetCustomValue("lo_previous_path", book.FilePath)
-            book.FilePath = destination_path
-
-    def _copy_book(self, book, source, destination_path, copy_mode):
-        """ Copies the book to the destination
-
-        Args:
-            book (ComicBook):
-            source (FileInfo):
-            destination_path (str):
-            copy_mode (Bool): If true, adds the copied book to the library.
-
-        Raises: MoveFailedException if the copy fails.
-
-        """
-        _log.Info("Starting copy")
-        try:
-            source.CopyTo(destination_path)
-        except (IOException, SecurityException, UnauthorizedAccessException) as e:
-            raise MoveFailedException(e.Message)
-        else:
-            _log.Info("Successfully copied the book to {0}", destination_path)
-            if copy_mode:
-                new_book = self._comic_rack.App.AddNewBook(False)
-                new_book.FilePath = destination_path
-                copy_data_to_new_book(book, new_book)
-                _log.Info("Copied the data from the original book to the copy and added it to the library.")
-                new_book.SetCustomValue("lo_copied", "Copied {0} from {1}".format(DateTime.Now, source.FullName))
 
     def _create_folder(self, destination_directory):
         """ Creates a folder if required.
@@ -328,22 +271,116 @@ class BookProcessor(object):
             tags.sort()
             book.Tags = ", ".join(tags)
 
-    def _add_custom_value_on_success(self, profile):
-        #for key in profile.SuccessCustomValues
-        pass
+    def _add_custom_value_on_success(self, book, profile):
+        for key in profile.SuccessCustomValues:
+            book.SetCustomValue(key, profile.SuccessCustomValues[key])
 
 
-class FilelessBookProcessor(BookProcessor):
+class MoveBookProcessor(BaseBookProcessor):
+    """ Processes a book that should be moved or copied to a new path."""
+
+    process_text = "Beginning to move {1}.\nDestination: {2}"
+
+    def _do_operation(self, book, source_file, destination_file, profile):
+        """ Does the move operation. Assumes all the paths are valid
+        Args:
+            book (ComicBook): The book to move
+            source_file (FileInfo): The source file FileInfo
+            destination_file (FileInfo): The destination FileInfo
+            profile (Profile): The profile to use
+
+        Raises:
+            MoveFailedException: If the copy or move operations fails.
+        """
+        _log.Debug("Starting _do_operation")
+        original_directory = source_file.Directory
+        self._move_book(book, source_file, destination_file.FullName)
+        if profile.RemoveEmptyFolder:
+            _log.Info("Trying to remove the source folder if empty")
+            self._clean_up_empty_folders(original_directory, profile.ExcludedEmptyFolder)
+
+    def _move_book(self, book, source, destination_path):
+        """ Moves the source book to the destination file path and updates the ComicBook's FilePath
+
+        Additionally adds the lo_previous_path custom value to the book for use in the undo move script
+
+        Args:
+            book (ComicBook): The book to move
+            source (FileInfo): The FileInfo of the source book
+            destination_path (str): The fully qualified destination path
+
+        Raises:
+            MoveFailedException if the move fails
+        """
+        _log.Info("Starting to move")
+        try:
+            source.MoveTo(destination_path)
+        except (IOException, SecurityException, UnauthorizedAccessException) as e:
+            raise MoveFailedException(e.Message)
+        else:
+            _log.Info("Successfully moved to {0}", destination_path)
+            book.SetCustomValue("lo_previous_path", book.FilePath)
+            book.FilePath = destination_path
+
+
+class CopyBookProcessor(BaseBookProcessor):
+    """ Processes a book that should be moved or copied to a new path."""
+
+    process_text = "Beginning to copy {1}.\nDestination: {2}"
+
+    def _do_operation(self, book, source_file, destination_file, profile):
+        """ Does the move operation. Assumes all the paths are valid
+        Args:
+            book (ComicBook): The book to move
+            source_file (FileInfo): The source file FileInfo
+            destination_file (FileInfo): The destination FileInfo
+            profile (Profile): The profile to use
+
+        Raises:
+            MoveFailedException: If the copy or move operations fails.
+        """
+        _log.Debug("Starting _do_operation")
+        self._copy_book(book,source_file,destination_file, profile.CopyMode)
+
+    def _copy_book(self, book, source, destination_path, copy_mode):
+        """ Copies the book to the destination
+
+        Args:
+            book (ComicBook):
+            source (FileInfo):
+            destination_path (str):
+            copy_mode (Bool): If true, adds the copied book to the library.
+
+        Raises: MoveFailedException if the copy fails.
+
+        """
+        _log.Info("Starting copy")
+        try:
+            source.CopyTo(destination_path)
+        except (IOException, SecurityException, UnauthorizedAccessException) as e:
+            raise MoveFailedException(e.Message)
+        else:
+            _log.Info("Successfully copied the book to {0}", destination_path)
+            if copy_mode:
+                new_book = self._comic_rack.App.AddNewBook(False)
+                new_book.FilePath = destination_path
+                copy_data_to_new_book(book, new_book)
+                _log.Info("Copied the data from the original book to the copy and added it to the library.")
+                new_book.SetCustomValue("lo_copied", "Copied {0} from {1}".format(DateTime.Now, source.FullName))
+
+
+class FilelessBookProcessor(BaseBookProcessor):
     """ A subclass of BookProcessor designed to handle fileless books."""
 
     process_text = "Beginning to save custom thumbnail of {0} to destination {1}"
 
-    def process_book(self, book_to_move, profile):
+    def process_book(self, book_to_move, profile, ignore_duplicates=False):
         """ Overrides process_book so that the file can be skipped right away if fileless are not being created
 
         Args:
             book_to_move (BookToMove):
             profile (Profile):
+            ignore_duplicates:
 
         Raises:
             MoveSkippedException
@@ -355,7 +392,7 @@ class FilelessBookProcessor(BookProcessor):
                 "{0} is a fileless book and images are not being created".format(
                     self._get_book_text(book_to_move.book)))
 
-        return super(FilelessBookProcessor, self).process_book(book_to_move, profile)
+        return super(FilelessBookProcessor, self).process_book(book_to_move, profile, ignore_duplicates)
 
     def _do_operation(self, book, source_file, destination_file, profile):
         """ Runs the save fileless image methods
@@ -392,7 +429,7 @@ class FilelessBookProcessor(BookProcessor):
             raise MoveFailedException("Failed to create the fileless image {0}: {1}".format(path, e.Message))
 
 
-class SimulatedBookProcessor(BookProcessor):
+class SimulatedBookProcessor(BaseBookProcessor):
     process_text = "Beginning to (simulate) process {0} with destination {1}"
 
     def __init__(self, comicrack, reporter):
@@ -402,11 +439,11 @@ class SimulatedBookProcessor(BookProcessor):
         self.moved_books = []
 
     def _clean_up_empty_folders(self, directory, excluded_folders):
+        """Overrides so that nothing is deleted"""
         pass
 
     def _move_book(self, book, source, destination_path):
         _log.Info("Moved (simulated) {0} to {1} successfully", self._get_book_text(book), destination_path)
-
         self._reporter.success_simulated("moved (simulated) to {0}".format(destination_path))
         self.moved_books.append(destination_path)
 
@@ -475,16 +512,11 @@ class SimulatedBookProcessor(BookProcessor):
         self._reporter.success_simulated("Created image {0}".format(path))
         self.moved_books.append(path)
 
+    def _add_custom_value_on_success(self, book, profile):
+        return
 
-def copy_data_to_new_book(book, new_book):
-    """This helper function copies all relevant metadata from a book to another book.
+    def _add_tag_on_success(self, book, profile):
+        return
 
-    Args:
-        book (ComicBook): The ComicBook to copy from.
-        new_book (ComicBook): The ComicBook to copy to.
-    """
-    new_book.SetInfo(book, False, False)  # This copies most fields
-    new_book.CustomValuesStore = book.CustomValuesStore
-    new_book.SeriesComplete = book.SeriesComplete  # Not copied by SetInfo
-    new_book.Rating = book.Rating  # Not copied by SetInfo
-    new_book.CustomThumbnailKey = book.CustomThumbnailKey
+
+
