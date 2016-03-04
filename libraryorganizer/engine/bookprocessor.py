@@ -272,6 +272,11 @@ class BaseBookProcessor(object):
             book.Tags = ", ".join(tags)
 
     def _add_custom_value_on_success(self, book, profile):
+        """ Adds the success custom values to the book
+        Args:
+            book:
+            profile:
+        """
         for key in profile.SuccessCustomValues:
             book.SetCustomValue(key, profile.SuccessCustomValues[key])
 
