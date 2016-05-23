@@ -1,14 +1,19 @@
+import clr
+
 from System.IO import File, FileInfo
 
 import i18n
 from ComicRack import ComicRack
 from bookandprofiletestcase import BookAndProfileTestCase
-from common import MoveFailedException, BookToMove, MoveSkippedException
+from common import MoveFailedException, BookToMove, MoveSkippedException, Mode
 from duplicatehandler import DuplicateHandler
 from movereporter import MoveReporter
 
 i18n.setup(ComicRack())
 from duplicatewindow import DuplicateResult, DuplicateAction
+
+clr.AddReference('ComicRack.Engine')
+from cYo.Projects.ComicRack.Engine import ComicBook
 
 
 class TestDuplicateHandler(BookAndProfileTestCase):
@@ -44,7 +49,7 @@ class TestDuplicateHandler(BookAndProfileTestCase):
 
     def test__delete_duplicate_file_in_use(self):
         """ This tests that the duplicate delete code works as expected in a
-        normal usage."""
+        normal usage when the duplicate cannot be deleted."""
         dup_path = self.create_temp_path("test duplicate.txt")
         f1 = File.Create(dup_path)
         self.cleanup_file_paths.append(dup_path)
@@ -54,10 +59,10 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         f1.Close()
 
     def test__find_book_in_library(self):
-        """ Tests that finding a real book in the library returns the book if on exists
+        """ Tests that finding a real book in the library returns the book if one exists
         and return None if it does not.
 
-        Tests that if there is a slight capitialization difference, the existing books is
+        Tests that if there is a slight capitalization difference, the existing books is
         still returned.
 
         """
@@ -68,8 +73,53 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         self.assertIsNone(self.handler._find_book_in_library(
             'G:\\Comics\\DC Comics\\Adventure Comics (2009 Series)\\Adventure Comics Vol.2009 #19 (October, 2009).cbz'))
 
-    def test_handle_duplicate_book(self):
-        self.fail()
+    def test_handle_duplicate_book_user_chooses_overwrite(self):
+        """ Verifies that the duplicate handler removes the destination book
+        when the user chooses to overwrite. DuplicateAction.Overwrite should be
+        returned.
+
+        """
+        # Mock that the user choose overwrite.
+        def overwrite(*args):
+            return DuplicateResult(DuplicateAction.Overwrite, False)
+
+        self.handler._ask_user = overwrite
+
+        destination = self._create_temp_file("handleduplicate.cbz")
+        result = self.handler.handle_duplicate_book(BookToMove(self.book, destination, 1, []), self.profile, 1)
+        self.assertEqual(result, DuplicateAction.Overwrite)
+        self.assertFalse(File.Exists(destination))
+
+    def test_handle_duplicate_book_user_chooses_cancel(self):
+        """ Tests the the duplicate handler raises MoveSkippedException when the
+         user chooses to cancel the duplicate
+        """
+        # Mock that the user choose cancel.
+        def cancel(*args):
+            return DuplicateResult(DuplicateAction.Cancel, False)
+
+        self.handler._ask_user = cancel
+
+        destination = self._create_temp_file("handleduplicate.cbz")
+        with(self.assertRaises(MoveSkippedException)):
+            self.handler.handle_duplicate_book(BookToMove(self.book, destination, 1, []), self.profile, 1)
+        self.assertTrue(File.Exists(destination))
+
+    def test_handle_duplicate_book_user_chooses_rename(self):
+        """ Tests the the duplicate handler sets the BookToMove path to the rename
+         path when the user chooses to rename the duplicate
+        """
+        # Mock that the user choose rename.
+        def rename(*args):
+            return DuplicateResult(DuplicateAction.Rename, False)
+
+        self.handler._ask_user = rename
+        destination = self._create_temp_file("handleduplicate.cbz")
+        booktomove = BookToMove(self.book, destination, 1, [])
+        result = self.handler.handle_duplicate_book(booktomove, self.profile, 1)
+        self.assertEquals(result, DuplicateAction.Rename)
+        self.assertTrue(File.Exists(destination))
+        self.assertEquals(booktomove.path, self._create_temp_file("handleduplicate (1).cbz"))
 
     def test__process_different_extension_books_all_overwrite(self):
         def return_overwrite(*args):
@@ -89,23 +139,19 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         self.assertFalse(File.Exists(f1))
         self.assertFalse(File.Exists(f2))
 
-    def test__do_action(self):
-        self.fail()
-
-    def test__overwrite(self):
-        self.fail()
-
-    def test__overwrite_simulated(self):
-        self.fail()
-
-    def test__ask_user(self):
-        self.fail()
-
-    def test_copy_read_percentage_on_delete(self):
-        self.fail()
-
-    def test_remove_book_from_library(self):
-        self.fail()
+    def test__overwrite_copy_read_percentage(self):
+        """ Tests that coping the read percentage works as expected
+        when overwriting a book.
+        """
+        path = self._create_temp_file("overwrite.cbz")
+        c = ComicBook()
+        c.PageCount = 10
+        c.LastPageRead = 10
+        self.book.FilePath = self._create_temp_file("overwrite2.cbz")
+        self.book.PageCount = 10
+        self.handler._overwrite(self.book, path, c, Mode.Move, True)
+        self.assertFalse(File.Exists(path))
+        self.assertEqual(self.book.LastPageRead, 10)
 
     def test__cancelled(self):
         with (self.assertRaises(MoveSkippedException)):
