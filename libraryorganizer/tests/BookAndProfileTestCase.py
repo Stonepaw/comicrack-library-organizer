@@ -26,3 +26,18 @@ class BookAndProfileTestCase(TestCase):
 
     def create_temp_path(self, f):
         return Path.Combine(Path.GetTempPath(), f)
+
+    def _create_temp_file(self, filename):
+        """ Creates a file in the windows temporary file location, adds it to a list that
+        is automatically cleaned up on tearDown.
+
+        Args:
+            filename: The desired filename that is created in temp file. Can include folders.
+
+        Returns: The full file path.
+
+        """
+        file_path = self.create_temp_path(filename)
+        File.Create(file_path).Close()
+        self.cleanup_file_paths.append(file_path)
+        return file_path

@@ -109,6 +109,8 @@ class Profile:
         self.CopyReadPercentage = True
         self.DifferentExtensionsAreDuplicates = False
 
+        self.RenameWhenDifferentCapitalization = True
+
         # On success options
         self.SuccessTags = []
         self.SuccessCustomValues = {}

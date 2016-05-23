@@ -1,6 +1,7 @@
 import clr
 
 from ComicRack import ComicRack
+from movereporter import MoveReporter
 
 clr.AddReference("System.IO")
 clr.AddReference("System.Windows.Forms")
@@ -8,10 +9,80 @@ import System
 from System.IO import File, Path, Directory, FileInfo, FileMode
 from System.Windows.Forms import DialogResult
 from bookandprofiletestcase import BookAndProfileTestCase
-from bookprocessor import MoveBookProcessor, FilelessBookProcessor
+from bookprocessor import MoveBookProcessor, FilelessBookProcessor, BaseBookProcessor, SimulatedBookProcessor
 from common import BookToMove, MoveFailedException, MoveSkippedException, DuplicateExistsException, Mode
 from loforms import PathTooLongForm
-import comicracknlogtarget
+clr.AddReference("NLog.dll")
+from NLog import LogManager
+
+class TestBaseBookProcessor(BookAndProfileTestCase):
+    def setUp(self):
+        super(TestBaseBookProcessor, self).setUp()
+        self.processor = BaseBookProcessor(ComicRack())
+
+    # _check_destination
+    def test_check_file_invalid(self):
+        """ Ensures that if an invalid file path is used, a MovedFailedException occurs.
+        """
+        print "Testing file_invalid with colons"
+        with self.assertRaises(MoveFailedException):
+            # Colon in middle
+            self.processor._check_file("C:\\oew&:", False)
+
+    def test_check_source_already_at_location(self):
+        """ Checked that MoveSkipped is raised when file is at destination
+        """
+        print "Testing file already at location"
+        with self.assertRaises(MoveSkippedException):
+            self.book.FilePath = self._create_temp_file("LOalreadyexists.cbz")
+            self.processor._check_source(self.book, self.book.FilePath, True)
+
+    def test_source_book_already_at_destination_different_capitalization(self):
+        """ Tests that if a book is already at the correct location with different capitalization.
+        MoveSkipped should be raised.
+        """
+        file_location = self._create_temp_file("lodifferentcaptializationrename.cbz")
+        capitalized_path = file_location.replace("lo", "LO")
+        self.book.FilePath = file_location
+        with self.assertRaises(MoveSkippedException):
+            self.processor._check_source(self.book, capitalized_path, True)
+        self.assertEqual(self.book.FilePath, capitalized_path)
+        self.assertEquals(Directory.GetFiles(Path.GetDirectoryName(capitalized_path),
+                                                 Path.GetFileName(capitalized_path))[0], capitalized_path)
+
+    def test_source_book_already_at_destination_different_capitalization_no_rename(self):
+        """ Tests that if a book is already at the correct location with different capitalization and is not renamed when
+        false is passed in.
+        MoveSkipped should be raised.
+        """
+        file_location = self._create_temp_file("lodifferentcaptializationrename2.cbz")
+        capitalized_path = file_location.replace("lo", "LO")
+        self.book.FilePath = file_location
+        with self.assertRaises(MoveSkippedException):
+            self.processor._check_source(self.book, capitalized_path, False)
+        self.assertEqual(self.book.FilePath, file_location)
+        self.assertEquals(Directory.GetFiles(Path.GetDirectoryName(capitalized_path),
+                                                 Path.GetFileName(capitalized_path))[0], file_location)
+
+    def test_check_source_not_exist(self):
+        """  Checks that MoveFailed is raised when source file doesn't exits
+        """
+        with self.assertRaises(MoveFailedException) as e:
+            self.book.FilePath = self.create_temp_path("LOdoesnotexist.cbz")
+            self.processor._check_source(self.book, self.create_temp_path("lonull.cbz"), True)
+
+    def test_add_custom_value_on_success(self):
+        self.processor._add_custom_values_to_book(self.book, {"1" : "2", "3" : "4"})
+        self.assertEquals(self.book.GetCustomValue("1"), "2")
+        self.assertEquals(self.book.GetCustomValue("3"), "4")
+
+    def test_add_tag_on_success(self):
+        """ Checks that adding tags works correctly and sorts the tag list
+        """
+        self.book.Tags = "NEW TAG"
+        self.processor._add_tag_on_success(self.book, ["BOOK", "ADDED"])
+        self.assertEquals(self.book.Tags, "ADDED, BOOK, NEW TAG")
+
 
 
 class TestBookProcessor(BookAndProfileTestCase):
@@ -98,13 +169,7 @@ class TestBookProcessor(BookAndProfileTestCase):
         with self.assertRaises(MoveSkippedException):
             self.processor.process_book(BookToMove(self.book, new_path, 1, []), self.profile)
 
-    def test_source_book_already_at_destination_different_capitalization(self):
-        new_path = self.book_path.replace("book", "BOOK")
-        self.cleanup_file_paths.append(new_path)
-        with self.assertRaises(MoveSkippedException):
-            self.processor.process_book(BookToMove(self.book, new_path, 1, []), self.profile)
-        self.assertEqual(self.book.FilePath, new_path)
-        self.assertTrue(File.Exists(new_path))
+
 
     def test_destination_book_already_exists(self):
         new_path = self.create_temp_path("book2.cbz")
@@ -323,6 +388,8 @@ class TestBookProcessor(BookAndProfileTestCase):
         self.assertTrue(File.Exists(new_path))
         self.cleanup_file_paths.append(self.book.FilePath)
 
+class TestMoveBookProcessor(BookAndProfileTestCase):
+    pass
 
 class TestFilelessBookProcessor(BookAndProfileTestCase):
     def setUp(self):
@@ -389,8 +456,40 @@ class TestFilelessBookProcessor(BookAndProfileTestCase):
         self.assertFalse(Directory.Exists(new_path_folder))
 
 
-class TestSimulateBookProcessor(BookAndProfileTestCase):
+class TestSimulatedBookProcessor(BookAndProfileTestCase):
 
-    def __init__(self):
-        super(TestSimulateBookProcessor, self).__init__()
+    def setUp(self):
+        super(TestSimulatedBookProcessor, self).setUp()
         self.profile.Mode = Mode.Simulate
+        self.processor = SimulatedBookProcessor(ComicRack(), MoveReporter())
+
+    def test_simple_move(self):
+        file_path = self._create_temp_file("Testsimulatesimplemove.cbz")
+        new_path = self.create_temp_path("shouldnotbecreated.cbz")
+        self.book.FilePath = file_path
+        self.processor.process_book(BookToMove(self.book, new_path, 0, []), self.profile)
+        self.assertEquals(self.book.FilePath, file_path)
+        self.assertFalse(File.Exists(new_path))
+
+    def test_tags_are_not_added(self):
+        file_path = self._create_temp_file("Testsimulatesimplemove2.cbz")
+        new_path = self.create_temp_path("shouldnotbecreated2.cbz")
+        self.book.FilePath = file_path
+        self.book.Tags = "Tags"
+        self.profile.SuccessTags = ["Sucess"]
+        self.processor.process_book(BookToMove(self.book, new_path, 0, []), self.profile)
+        self.assertEquals(self.book.FilePath, file_path)
+        self.assertFalse(File.Exists(new_path))
+        self.assertEqual(self.book.Tags, "Tags")
+
+    def test_custom_values_not_added(self):
+        file_path = self._create_temp_file("Testsimulatesimplemove2.cbz")
+        new_path = self.create_temp_path("shouldnotbecreated2.cbz")
+        self.book.FilePath = file_path
+        self.profile.SuccessCustomValues = {"Success": "Custom"}
+        self.processor.process_book(BookToMove(self.book, new_path, 0, []), self.profile)
+        self.assertEquals(self.book.FilePath, file_path)
+        self.assertFalse(File.Exists(new_path))
+        self.assertEquals(self.book.GetCustomValue("Success"), None)
+
+

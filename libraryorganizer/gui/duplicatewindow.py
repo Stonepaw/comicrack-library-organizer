@@ -231,7 +231,7 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
     # endregion
 
     def setup(self, processing_book, existing_book, rename_path, mode, count):
-        """ Setups up the various properites of the view model depending on what
+        """ Setups up the various properties of the view model depending on what
         mode is being used.
 
         Args:
@@ -340,7 +340,7 @@ class BytesToMBConverter(IValueConverter):
 
     def Convert(self, value, targetType, parameter, culture):
         if value >= 1048576:
-            return "{0:.2f} MB".format(float(value) / 1024 / 1024.0)
+            return "{0:.2f} MB".format(float(value) / 1024.0 / 1024.0)
         elif value >= 1024:
             return "{0:.2f} KB".format(float(value) / 1024.0)
         else:

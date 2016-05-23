@@ -4,9 +4,10 @@ import clr
 clr.AddReference("System")
 clr.AddReference("System.IO")
 clr.AddReference("System.Windows.Forms")
+import System
 from System import ArgumentException, ArgumentNullException, NotSupportedException, UnauthorizedAccessException, \
     DateTime
-from System.IO import IOException, FileInfo, PathTooLongException
+from System.IO import IOException, FileInfo, PathTooLongException, Path
 from System.Runtime.InteropServices import ExternalException
 from System.Security import SecurityException
 from System.Windows.Forms import DialogResult
@@ -25,6 +26,17 @@ _log = LogManager.GetLogger("BookProcessor")
 
 
 class BaseBookProcessor(object):
+    """
+    The base book processor. Needs to be overriden and do_process implemented.
+
+    This class contains basic functionality and structure for moving a comicbook
+    The entry point is process_book which throws MoveFailedExeption or MoveSkippedException if the operation fails and
+    DuplicateException if there is a duplicate.
+
+    Common functionality such as checking the source and destination files, folder creation and delation,
+    and duplicate detection are implemented in this base class.
+
+    """
     process_text = "Beginning to {0} {1}.\nDestination: {2}"
 
     def __init__(self, comicrack):
@@ -54,7 +66,7 @@ class BaseBookProcessor(object):
 
         # Check source and destinations
         destination_file = self._check_destination(new_path)
-        source_file = self._check_source(book, new_path)
+        source_file = self._check_source(book, new_path, profile.RenameWhenDifferentCapitalization)
 
         # Check duplicates
         if not ignore_duplicates:
@@ -71,8 +83,8 @@ class BaseBookProcessor(object):
             raise
 
         # On success add tags and custom values
-        self._add_tag_on_success(book, profile)
-        self._add_custom_value_on_success(book, profile)
+        self._add_tag_on_success(book, profile.SuccessTags)
+        self._add_custom_values_to_book(book, profile.SuccessCustomValues)
 
         if book_to_move.failed_fields:
             raise MoveFailedException(
@@ -153,8 +165,8 @@ class BaseBookProcessor(object):
         _log.Debug("Starting _check_file")
         try:
             file_object = FileInfo(file_path)
-        except ArgumentException as e:
-            raise MoveFailedException("Destination path invalid: " + e.Message)
+        except (ArgumentException, NotSupportedException) as e:
+            raise MoveFailedException("The path invalid: " + e.Message)
         except (UnauthorizedAccessException, SecurityException) as e:
             raise MoveFailedException("Unable to access destination path: " + e.Message)
         except PathTooLongException as e:
@@ -165,7 +177,7 @@ class BaseBookProcessor(object):
                 raise MoveFailedException("The file path is too long".format(file_path))
         return file_object
 
-    def _check_source(self, book, destination_path):
+    def _check_source(self, book, destination_path, rename):
         """ Checks the source file to verify there isn't any unrecoverable issues
 
         Creates a FileInfo Object from the source_path and checks if:
@@ -176,6 +188,8 @@ class BaseBookProcessor(object):
         Args:
             book (ComicBook): The ComicBook to check
             destination_path (str): The full file path of the destination file
+            rename (bool): Sets if the file should be renamed if the file is in the
+                correct location but has a slightly different capitalization.
 
         Returns (FileInfo): The FileInfo object referring to the source file.
 
@@ -186,6 +200,8 @@ class BaseBookProcessor(object):
         """
         source_path = book.FilePath
         _log.Info("Checking the source path for errors")
+
+        # Exactly the same path. Check this before any other thing
         if source_path == destination_path:
             raise MoveSkippedException("The file is already at the correct location")
 
@@ -196,10 +212,13 @@ class BaseBookProcessor(object):
 
         if source_path.lower() == destination_path.lower():  # Different capitalization
             # We rename the file to the correct
-            _log.Info("The book is already at the correct location but with different capitalization. Trying to rename")
-            self._move_book(book, source_file, destination_path)
-            raise MoveSkippedException(
-                "The file is already at the correct location but was renamed to fix the capitalization")
+            _log.Info("The book is already at the correct location but with different capitalization.")
+
+            if rename:
+                self._rename_book(book, Path.GetFileNameWithoutExtension(destination_path))
+                raise MoveSkippedException(
+                    "The file is already at the correct location but was renamed to fix the capitalization")
+            raise MoveSkippedException("The file is already at the correct location and was not renamed")
 
         _log.Info("No errors")
         return source_file
@@ -216,6 +235,7 @@ class BaseBookProcessor(object):
             MoveFailedException: If the copy or move operations fails.
         """
         _log.Debug("Starting _do_operation")
+        raise NotImplemented()
 
     def _create_folder(self, destination_directory):
         """ Creates a folder if required.
@@ -244,6 +264,7 @@ class BaseBookProcessor(object):
         Raises:
             MoveSkippedException if the user cancels fixing the path.
         """
+        # TODO:This is done on the worker thread because it seems to work well enough. This may be something to change.
         _log.Debug("Starting _get_shorter_path")
         with PathTooLongForm(long_path) as p:
             if p.ShowDialog() == DialogResult.OK:
@@ -258,27 +279,46 @@ class BaseBookProcessor(object):
         _log.Debug("Starting _clean_up_empty_folders")
         delete_empty_folders(directory, excluded_folders)
 
-    def _add_tag_on_success(self, book, profile):
-        """  Adds the success tags to the book.
+    def _add_tag_on_success(self, book, tags_to_add):
+        """  Adds the success tags to the book by converting the current
+        tags to a list, extending the list, sorting it and converting it
+        to a csv string.
         Args:
             book: The ComicBook to add the tags too
-            profile: The profile being used
+            tags: A list of tags to add.
 
         """
-        if profile.SuccessTags:
+        if tags_to_add:
             tags = convert_tags_to_list(book.Tags)
-            tags.extend(profile.SuccessTags)
+            tags.extend(tags_to_add)
             tags.sort()
             book.Tags = ", ".join(tags)
 
-    def _add_custom_value_on_success(self, book, profile):
+    def _add_custom_values_to_book(self, book, custom_values):
         """ Adds the success custom values to the book
         Args:
             book:
-            profile:
+            custom_values:
         """
-        for key in profile.SuccessCustomValues:
-            book.SetCustomValue(key, profile.SuccessCustomValues[key])
+        for key in custom_values:
+            book.SetCustomValue(key, custom_values[key])
+
+    def _rename_book(self, book, destination_name):
+        """ Renames a book to fix capitalization by moving it to the location.tmp
+        and then remvoing it to the correct capitalization.
+
+        Args:
+            book: The book to rename
+            destination_name: the destination with the correct capitalization.
+
+        Raises: MoveFailedException if unable to rename
+
+        """
+        _log.Info("Renaming the book")
+        if book.RenameFile(destination_name + ".tmp") and book.RenameFile(destination_name):
+            _log.Info("Successfully renamed to fix the capitalization")
+        else:
+            raise MoveFailedException("Unable to rename")
 
 
 class MoveBookProcessor(BaseBookProcessor):
@@ -324,7 +364,7 @@ class MoveBookProcessor(BaseBookProcessor):
             raise MoveFailedException(e.Message)
         else:
             _log.Info("Successfully moved to {0}", destination_path)
-            book.SetCustomValue("lo_previous_path", book.FilePath)
+            self._add_custom_values_to_book(book, {"lo_previous_path" : book.FilePath})
             book.FilePath = destination_path
 
 
@@ -345,7 +385,7 @@ class CopyBookProcessor(BaseBookProcessor):
             MoveFailedException: If the copy or move operations fails.
         """
         _log.Debug("Starting _do_operation")
-        self._copy_book(book,source_file,destination_file, profile.CopyMode)
+        self._copy_book(book, source_file, destination_file, profile.CopyMode)
 
     def _copy_book(self, book, source, destination_path, copy_mode):
         """ Copies the book to the destination
@@ -371,7 +411,8 @@ class CopyBookProcessor(BaseBookProcessor):
                 new_book.FilePath = destination_path
                 copy_data_to_new_book(book, new_book)
                 _log.Info("Copied the data from the original book to the copy and added it to the library.")
-                new_book.SetCustomValue("lo_copied", "Copied {0} from {1}".format(DateTime.Now, source.FullName))
+                self._add_custom_values_to_book(
+                    new_book, {"lo_copied" : "Copied {0} from {1}".format(DateTime.Now, source.FullName)})
 
 
 class FilelessBookProcessor(BaseBookProcessor):
@@ -434,7 +475,7 @@ class FilelessBookProcessor(BaseBookProcessor):
             raise MoveFailedException("Failed to create the fileless image {0}: {1}".format(path, e.Message))
 
 
-class SimulatedBookProcessor(BaseBookProcessor):
+class SimulatedBookProcessor(MoveBookProcessor):
     process_text = "Beginning to (simulate) process {0} with destination {1}"
 
     def __init__(self, comicrack, reporter):
@@ -452,7 +493,7 @@ class SimulatedBookProcessor(BaseBookProcessor):
         self._reporter.success_simulated("moved (simulated) to {0}".format(destination_path))
         self.moved_books.append(destination_path)
 
-    def _check_source(self, source_path, destination_path):
+    def _check_source(self, source_path, destination_path, rename):
         """ Checks the source path for errors.
 
         Args:
@@ -469,7 +510,7 @@ class SimulatedBookProcessor(BaseBookProcessor):
         """
         if not source_path:
             return None
-        return super(SimulatedBookProcessor, self)._check_source(source_path, destination_path)
+        return super(SimulatedBookProcessor, self)._check_source(source_path, destination_path, rename)
 
     def _check_for_duplicates(self, destination_file, book, check_different_extensions):
         if destination_file.FullName in self.moved_books:
@@ -517,11 +558,23 @@ class SimulatedBookProcessor(BaseBookProcessor):
         self._reporter.success_simulated("Created image {0}".format(path))
         self.moved_books.append(path)
 
-    def _add_custom_value_on_success(self, book, profile):
+    def _add_custom_values_to_book(self, book, profile):
+        """ Overrides so that tags aren't added in simulate mode
+        """
         return
 
     def _add_tag_on_success(self, book, profile):
+        """ Overrides so that tags aren't added in simulate mode
+        """
         return
 
+    def _rename_book(self, book, destination_name):
+        """ Overrides the base book process so the files are not renamed.
+        Args:
+            book:
+            destination_name:
 
-
+        Returns:
+        """
+        _log.Info("File renamed from {0} to {1} (Simulated)".format(book.FilePath, destination_name))
+        return
