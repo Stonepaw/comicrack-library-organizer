@@ -114,6 +114,10 @@ class DuplicateHandler(object):
         If the user chooses to Cancel then the MoveSkippedException is raised to notify the reporter that the book
         is skipped.
 
+        This class will not actually move the source book to the destination either after
+        renaming or overwriting. It will instead simply prepare the action by setting the
+        rename path or deleting the destination. The actual move is done from the book processor
+
         Args:
             book_to_move (BookToMove): The BookToMove object with a duplicate to deal with.
             profile (Profile): The profile being used.
@@ -261,9 +265,9 @@ class DuplicateHandler(object):
         elif action == DuplicateAction.Rename:
             # Simply set the book_to_move_path as the new path and let the BookManager move the book
             self._rename(book_to_move, rename_path)
-        elif self.duplicate_action == DuplicateAction.Overwrite:
-            self._overwrite(book_to_move.book, book_to_move.path, duplicate_book, profile.mode,
-                                   profile.CopyReadPercentage)
+        elif action == DuplicateAction.Overwrite:
+            self._overwrite(book_to_move.book, book_to_move.path, duplicate_book, profile.Mode,
+                            profile.CopyReadPercentage)
         return action
 
     def _cancelled(self, book_to_move):
@@ -298,12 +302,16 @@ class DuplicateHandler(object):
 
         If the mode is Simulate then the book isn't actually deleted.
 
+        If copy_read_percentage is True and the book is not fileless then the copy percentage
+        will be copied from the duplicate book into the moving book. This is done by setting
+        the LastPageRead value as ReadPercentage is read only.
+
         Args:
             book: The ComicBook object of the book being moved.
             duplicate_path: The string path the book is being moved to.
             duplicate_book: The ComicBook or FileInfo object of the book that already exists.
             mode: The profile mode for this operation
-            copy_read_percent: Boolean if the read percentage should be copied from the existing book before
+            copy_read_percent: bool Sets if the read percentage should be copied from the existing book before
                 it is removed from the library.
 
         Returns:
