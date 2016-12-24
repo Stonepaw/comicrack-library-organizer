@@ -1,0 +1,4 @@
+VERSION = "!DEV!"
+MAJOR_NUMBER = VERSION.split(".")[0]
+MINOR_NUMBER = VERSION.split(".")[1]
+MAINTENANCE_NUMBER = VERSION.split(".")[2]

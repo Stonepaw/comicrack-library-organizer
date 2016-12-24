@@ -18,17 +18,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
-
 import clr
 
 import System
 
-import pyevent
+from lib import pyevent
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, Button, Panel, Label, AutoSizeMode, NumericUpDown, CheckBox, ComboBox, ComboBoxStyle, BorderStyle, BindingSource
+from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, Button, Panel, Label, AutoSizeMode, NumericUpDown, CheckBox, ComboBox, ComboBoxStyle, \
+    BindingSource
                                  
 from System.Drawing import Size, Point, ContentAlignment
 

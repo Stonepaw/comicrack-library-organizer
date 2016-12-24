@@ -25,7 +25,9 @@ limitations under the License.
 """
 import clr
 
-clr.AddReference("IronPython.Wpf")
+from common import DuplicateAction, DuplicateResult
+
+clr.AddReferenceToFileAndPath("C:\\Program Files (x86)\\IronPython 2.7\\DLLs\\IronPython.Wpf")
 clr.AddReference("PresentationCore")
 clr.AddReference("PresentationFramework")
 clr.AddReference("System.Drawing")
@@ -309,18 +311,6 @@ class DuplicateWindowViewModel(NotifyPropertyChangedBase):
                 "DupAlwaysDo")
 
         self._texts = {key: i18n.get(key) for key in keys}
-
-
-class DuplicateResult(object):
-    def __init__(self, action, always_do_action):
-        self.action = action
-        self.always_do_action = always_do_action
-
-
-class DuplicateAction(object):
-    Overwrite = 1
-    Cancel = 2
-    Rename = 3
 
 
 class DuplicateFormDataTemplateSelector(DataTemplateSelector):

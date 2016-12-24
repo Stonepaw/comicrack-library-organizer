@@ -5,9 +5,10 @@ from System.IO import File, FileInfo
 import i18n
 from ComicRack import ComicRack
 from bookandprofiletestcase import BookAndProfileTestCase
-from common import MoveFailedException, BookToMove, MoveSkippedException, Mode
+from common import MoveFailedException, BookToMove, MoveSkippedException, Mode, DuplicateAction, DuplicateResult
 from duplicatehandler import DuplicateHandler
 from movereporter import MoveReporter
+import stdoutnlogtarget
 
 i18n.setup(ComicRack())
 from duplicatewindow import DuplicateResult, DuplicateAction
@@ -79,6 +80,7 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         returned.
 
         """
+
         # Mock that the user choose overwrite.
         def overwrite(*args):
             return DuplicateResult(DuplicateAction.Overwrite, False)
@@ -94,6 +96,7 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         """ Tests the the duplicate handler raises MoveSkippedException when the
          user chooses to cancel the duplicate
         """
+
         # Mock that the user choose cancel.
         def cancel(*args):
             return DuplicateResult(DuplicateAction.Cancel, False)
@@ -109,6 +112,7 @@ class TestDuplicateHandler(BookAndProfileTestCase):
         """ Tests the the duplicate handler sets the BookToMove path to the rename
          path when the user chooses to rename the duplicate
         """
+
         # Mock that the user choose rename.
         def rename(*args):
             return DuplicateResult(DuplicateAction.Rename, False)

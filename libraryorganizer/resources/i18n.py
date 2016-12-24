@@ -11,7 +11,7 @@ clr.AddReference("System.Xml.Linq")
 from System.IO import Path, StreamReader
 from System.Xml.Linq import XElement
 
-clr.AddReference("ICSharpCode.SharpZipLib")
+clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ICSharpCode.SharpZipLib.dll")
 from ICSharpCode.SharpZipLib.Zip import ZipFile, FastZip
 
 from locommon import SCRIPTDIRECTORY
@@ -93,7 +93,7 @@ class _i18n(object):
         if xelement is None:
             raise "Could not load default translations"
         entries = xelement.Element("Texts").Elements("Text")
-        return {entry.Attribute("Key").Value : entry.Attribute("Text").Value 
+        return {entry.Attribute("Key").Value : entry.Attribute("Text").Value
                 for entry in entries}
 
     def get(self, key, resource="Script.LibraryOranizer"):

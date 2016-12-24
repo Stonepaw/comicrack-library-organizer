@@ -48,7 +48,7 @@ from locommon import PROFILEFILE, UNDOFILE, UndoCollection
 import bookmover
 import pathmaker
 
-import comicracknlogtarget
+import stdoutnlogtarget
 from System.IO import Directory
 
 Directory.SetCurrentDirectory(locommon.SCRIPTDIRECTORY)

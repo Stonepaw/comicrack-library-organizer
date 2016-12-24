@@ -20,22 +20,15 @@ limitations under the License.
 
 import clr
 
-import System
-
 clr.AddReference("System.Windows.Forms")
 clr.AddReference("System.Drawing")
-
-import System.Drawing
-import System.Windows.Forms
 
 from System.Drawing import *
 from System.Windows.Forms import *
 
-import pyevent
-
 from configformcontrols import *
 
-from locommon import Mode, ExcludeGroup, ExcludeRule, field_to_name, name_to_field
+from locommon import Mode, ExcludeGroup, field_to_name, name_to_field
 
 from loforms import NewIllegalCharacterDialog, GetProfileNameDialog
 
@@ -46,8 +39,9 @@ import losettings
 from losettings import Profile
 
 from pathmaker import PathMaker
+import resources
 
-VERSION = "2.1.12"
+VERSION = resources.VERSION
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 

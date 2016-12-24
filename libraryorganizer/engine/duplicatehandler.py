@@ -9,7 +9,7 @@ from System import UnauthorizedAccessException, OperationCanceledException
 from System.Security import SecurityException
 from System.IO import File, Path, IOException, FileInfo
 
-from common import MoveFailedException, MoveSkippedException, Mode
+from common import MoveFailedException, MoveSkippedException, Mode, DuplicateAction
 from duplicatewindow import DuplicateAction, DuplicateWindow
 
 clr.AddReference("Nlog")
