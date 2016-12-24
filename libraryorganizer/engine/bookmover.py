@@ -35,7 +35,8 @@ from System.Security import SecurityException
 from System.Windows.Forms import DialogResult  # @UnresolvedImport
 import re
 from NLog import LogManager
-from duplicatewindow import DuplicateAction, DuplicateWindow
+from duplicatewindow import DuplicateWindow
+from common import DuplicateAction
 from locommon import Mode, check_metadata_rules, check_excluded_folders, UndoCollection
 from loforms import PathTooLongForm
 from pathmaker import PathMaker

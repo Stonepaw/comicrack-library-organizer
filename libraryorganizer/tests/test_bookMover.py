@@ -5,7 +5,9 @@ clr.AddReference("System.IO")
 import bookmover
 from bookmover import BookMover
 from ComicRack import ComicRack
-clr.AddReference('ComicRack.Engine')
+clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\ComicRack.Engine.dll")
+clr.AddReferenceToFileAndPath("C:\\Program Files\\ComicRack\\cYo.Common.dll")
+clr.AddReferenceToFileAndPath("C:\\Program Files (x86)\\IronPython 2.7\\DLLs\\IronPython.Wpf.dll")
 from cYo.Projects.ComicRack.Engine import ComicBook  # @UnresolvedImport
 from locommon import Mode
 from losettings import Profile
@@ -94,3 +96,7 @@ class TestBookMover(TestCase):
 
     def test__get_shorter_path(self):
         self.fail()
+
+    def test__path(self):
+        import sys
+        print sys.path

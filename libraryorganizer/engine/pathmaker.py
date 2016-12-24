@@ -35,25 +35,37 @@ from locommon import get_earliest_book, name_to_field, field_to_name, get_last_b
 class PathMaker(object):
     """A class to create directory and file paths from the passed book.
     
-    Some of the functions are based on functions in wadegiles's guided rename script. (c) wadegiles. Most have been heavily modified.
+    Some of the functions are based on functions in wadegiles's guided rename script. (c) wadegiles. Most have been
+    heavily modified.
     """
 
-    template_to_field = {"series" : "ShadowSeries", "number" : "ShadowNumber", "count" : "ShadowCount", "Day" : "Day", "ReleasedDate": "ReleasedTime",
-                         "AddedDate" : "AddedTime", "EndYear" : "EndYear", "EndMonth" : "EndMonth", "EndMonth#" : "EndMonth",
-                         "month" : "Month", "month#" : "Month", "year" : "ShadowYear", "imprint" : "Imprint", "publisher" : "Publisher",
-                         "altSeries" : "AlternateSeries", "altNumber" : "AlternateNumber", "altCount" : "AlternateCount",
-                         "volume" : "ShadowVolume", "title" : "ShadowTitle", "ageRating" : "AgeRating", "language" : "LanguageAsText",
-                         "format" : "ShadowFormat", "startyear" : "StartYear", "writer" : "Writer", "tags" : "Tags", "genre" : "Genre",
-                         "characters" : "Characters", "altSeries" : "AlternateSeries", "teams" : "Teams", "scaninfo" : "ScanInformation",
-                         "manga" : "Manga", "seriesComplete" : "SeriesComplete", "first" : "FirstLetter", "read" : "ReadPercentage",
-                         "counter" : "Counter", "startmonth" : "StartMonth", "startmonth#" : "StartMonth", "colorist" : "Colorist", "coverartist" : "CoverArtist",
-                         "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
-                         "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber", "Rating" : "Rating", 'CommunityRating': 'CommunityRating', "Custom" : 'Custom'}
+    template_to_field = {"series": "ShadowSeries", "number": "ShadowNumber", "count": "ShadowCount", "Day": "Day",
+                         "ReleasedDate": "ReleasedTime",
+                         "AddedDate": "AddedTime", "EndYear": "EndYear", "EndMonth": "EndMonth",
+                         "EndMonth#": "EndMonth",
+                         "month": "Month", "month#": "Month", "year": "ShadowYear", "imprint": "Imprint",
+                         "publisher": "Publisher",
+                         "altSeries": "AlternateSeries", "altNumber": "AlternateNumber", "altCount": "AlternateCount",
+                         "volume": "ShadowVolume", "title": "ShadowTitle", "ageRating": "AgeRating",
+                         "language": "LanguageAsText",
+                         "format": "ShadowFormat", "startyear": "StartYear", "writer": "Writer", "tags": "Tags",
+                         "genre": "Genre",
+                         "characters": "Characters", "altSeries": "AlternateSeries", "teams": "Teams",
+                         "scaninfo": "ScanInformation",
+                         "manga": "Manga", "seriesComplete": "SeriesComplete", "first": "FirstLetter",
+                         "read": "ReadPercentage",
+                         "counter": "Counter", "startmonth": "StartMonth", "startmonth#": "StartMonth",
+                         "colorist": "Colorist", "coverartist": "CoverArtist",
+                         "editor": "Editor", "inker": "Inker", "letterer": "Letterer", "locations": "Locations",
+                         "penciller": "Penciller", "storyarc": "StoryArc",
+                         "seriesgroup": "SeriesGroup", "maincharacter": "MainCharacterOrTeam",
+                         "firstissuenumber": "FirstIssueNumber", "lastissuenumber": "LastIssueNumber",
+                         "Rating": "Rating", 'CommunityRating': 'CommunityRating', "Custom": 'Custom'}
 
-    template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
+    template_regex = re.compile(
+        "{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
 
     yes_no_fields = ["Manga", "SeriesComplete"]
-
 
     def __init__(self, parentform, profile):
 
@@ -62,9 +74,8 @@ class PathMaker(object):
         self.failed_fields = []
         self._failed = False
 
-        #Need to store the parent form so it can use the muilt select form
+        # Need to store the parent form so it can use the muilt select form
         self.form = parentform
-
 
     def make_path(self, book, folder_template, file_template):
         """Creates a path from a book with the given folder and file templates.
@@ -75,73 +86,68 @@ class PathMaker(object):
         self._failed = False
         self.failed_fields = []
 
-
-        #if self.profile.FailEmptyValues:
+        # if self.profile.FailEmptyValues:
         #    for field in self.profile.FailedFields:
         #        if getattr(self.book, field) in ("", -1, MangaYesNo.Unknown, YesNo.Unknown):
         #            self.failed_fields.append(field)
         #            self._failed = True
-            #
-            #if self._failed and not self.profile.MoveFailed:
-            #    return book.FileDirectory, book.FileNameWithExtension, True
+        #
+        # if self._failed and not self.profile.MoveFailed:
+        #    return book.FileDirectory, book.FileNameWithExtension, True
 
-        #Do filename first so that if MoveFailed is true the base folder is used correctly.
+        # Do filename first so that if MoveFailed is true the base folder is used correctly.
         file_path = self.book.FileNameWithExtension
         if self.profile.UseFileName:
             file_path = self.make_file_name(file_template)
 
         folder_path = book.FileDirectory
         if self.profile.UseFolder:
-
             folder_path = self.make_folder_path(folder_template)
 
         if self._failed and not self.profile.MoveFailed:
             return book.FileDirectory, book.FileNameWithExtension, True
-            
+
         return folder_path, file_path, self._failed
-        
- 
+
     def make_folder_path(self, template):
-        
+
         folder_path = ""
 
         template = template.strip()
         template = template.strip("\\")
 
         if template:
- 
+
             rough_path = self.insert_fields_into_template(template)
-            
-            #Split into seperate directories for fixing empty paths and other problems.
+
+            # Split into seperate directories for fixing empty paths and other problems.
             lines = rough_path.split("\\")
-            
+
             for line in lines:
                 if not line.strip():
                     line = self.profile.EmptyFolder
                 line = self.replace_illegal_characters(line)
-                #Fix for illegal periods at the end of folder names
+                # Fix for illegal periods at the end of folder names
                 line = line.strip(".")
                 folder_path = Path.Combine(folder_path, line.strip())
-        
+
         if self._failed and self.profile.MoveFailed:
             folder_path = Path.Combine(self.profile.FailedFolder, folder_path)
         else:
             folder_path = Path.Combine(self.profile.BaseFolder, folder_path)
-
 
         if self.profile.ReplaceMultipleSpaces:
             folder_path = re.sub("\s\s+", " ", folder_path)
 
         return folder_path
 
-    
     def make_file_name(self, template):
         """Creates file name with the template.
 
         template->The template to use.
         Returns->The created file name with extension and a bool if any values were empty.
         """
-     
+
         file_name = self.insert_fields_into_template(template)
         file_name = file_name.strip()
         file_name = self.replace_illegal_characters(file_name)
@@ -149,20 +155,17 @@ class PathMaker(object):
         if not file_name:
             return ""
 
-
         extension = self.profile.FilelessFormat
 
         if self.book.FilePath:
             extension = FileInfo(self.book.FilePath).Extension
 
-        #replace occurences of multiple spaces with a single space.
+        # replace occurences of multiple spaces with a single space.
         if self.profile.ReplaceMultipleSpaces:
             file_name = re.sub("\s\s+", " ", file_name)
 
-
         return file_name + extension
 
-    
     def insert_fields_into_template(self, template):
         """Replaces fields in the template with the correct field text."""
         self.invalid = 0
@@ -175,7 +178,6 @@ class PathMaker(object):
 
         return template
 
-
     def insert_field(self, match):
         """Replaces a regex match with the correct text. Returns the original match if something is not valid."""
         match_groups = match.groupdict()
@@ -187,24 +189,24 @@ class PathMaker(object):
         name = match_groups["name"]
         args = match_groups["args"]
 
-        #Inversions
+        # Inversions
         if name.startswith("!"):
             inversion = True
             name = name.lstrip("!")
-            #Inversions can optionally have args.
+            # Inversions can optionally have args.
             if args:
-                #Get the last arg and removing from the other args
+                # Get the last arg and removing from the other args
                 r = re.search("(\([^(]*\))$", args)
                 if r is not None:
                     args = args[:-len(r.group(0))]
                     inversion_args = r.group(0)[1:-1]
 
-        #Conditionals
+        # Conditionals
         if name.startswith("?"):
             conditional = True
             name = name.lstrip("?")
             if args:
-                #Get the last arg and removing from the other args
+                # Get the last arg and removing from the other args
                 r = re.search("(\([^(]*\))$", args)
                 if r is None:
                     self.invalid += 1
@@ -215,66 +217,62 @@ class PathMaker(object):
                 self.invalid += 1
                 return match.group(0)
 
-        #Checking template names
+        # Checking template names
         if name in self.template_to_field:
             field = self.template_to_field[name]
         else:
             self.invalid += 1
             return match.group(0)
 
-
-
-        #Get the fields
+        # Get the fields
         result = self.get_field_text(field, name, args)
-        
-        #Invalid field result (possibly wrong number of arguments)
+
+        # Invalid field result (possibly wrong number of arguments)
         if result is None:
             self.invalid += 1
             return match.group(0)
 
-        #Conditionals
+        # Conditionals
         if conditional:
-            #Regex conditional
+            # Regex conditional
             if conditional_args.startswith("!"):
                 if conditional_args[1:] == "":
                     return ""
-                #Insert prefix and suffix if there is a match.
+                # Insert prefix and suffix if there is a match.
                 if re.match(conditional_args[1:], result) is not None:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
             else:
-                #Text argument. Insert if matching the result
+                # Text argument. Insert if matching the result
                 if result == conditional_args:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
 
-        #Inversions
+        # Inversions
         if inversion:
             if not inversion_args:
-                #No args so only insert the prefix and suffix if the result is empty
+                # No args so only insert the prefix and suffix if the result is empty
                 if not result:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
 
             elif inversion_args.startswith("!"):
-                #Regex so only insert the prefix and suffix if there is no matches
+                # Regex so only insert the prefix and suffix if there is no matches
                 if re.match(inversion_args[1:], result) is None:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
             else:
-                #Text to match to. Only insert if the result doesn't match the arg
+                # Text to match to. Only insert if the result doesn't match the arg
                 if result != inversion_args:
                     return match_groups["prefix"] + match_groups["postfix"]
                 else:
                     return ""
 
-
-
-        #Empty results
+        # Empty results
         if not result:
             if self.profile.FailEmptyValues and field in self.profile.FailedFields:
                 if field not in self.failed_fields:
@@ -286,9 +284,7 @@ class PathMaker(object):
             else:
                 return ""
 
-
         return match_groups["prefix"] + result + match_groups["postfix"]
-    
 
     def get_field_text(self, field, template_name, args_match):
         """Gets the text of a field or operation.
@@ -332,7 +328,7 @@ class PathMaker(object):
                 else:
                     return self.insert_formated_datetime("", field)
 
-            #Yes/no fields can have 1 or 2 args
+            # Yes/no fields can have 1 or 2 args
             elif field in self.yes_no_fields and 0 < len(args) < 3:
                 return self.insert_yes_no_field(field, args)
 
@@ -351,7 +347,6 @@ class PathMaker(object):
             print ex
             return None
 
-
     def insert_text_field(self, field, template_name):
         """Get the string of any field and stips it of any illegal characters.
 
@@ -369,7 +364,6 @@ class PathMaker(object):
 
         return self.replace_illegal_characters(unicode(text))
 
-    
     def insert_number_field(self, field, padding):
         """Get the padded value of a number field. Replaces illegal character in the number field.
 
@@ -391,7 +385,6 @@ class PathMaker(object):
 
         return self.replace_illegal_characters(self.pad(number, padding))
 
-
     def insert_yes_no_field(self, field, args):
         """Gets a value using a yes/no field.
 
@@ -400,7 +393,6 @@ class PathMaker(object):
               First item should be a string of what text to insert when the value is Yes.
               Second item (optional) should be a ! or null. ! means the text is inserted when the value is No.
         Returns the user text or an empty string."""
-              
 
         text = args[0]
 
@@ -420,7 +412,6 @@ class PathMaker(object):
             result = text
 
         return self.replace_illegal_characters(result)
-
 
     def insert_read_percentage(self, args):
         """Get a value from the book's readpercentage.
@@ -462,7 +453,10 @@ class PathMaker(object):
 
         result = ""
 
-        match_result = re.match(r"(?:(?:the|a|an|de|het|een|die|der|das|des|dem|der|ein|eines|einer|einen|la|le|l'|les|un|une|el|las|los|las|un|una|unos|unas|o|os|um|uma|uns|umas|en|et|il|lo|uno|gli)\s+)?(?P<letter>.).+", field_text, re.I)
+        match_result = re.match(
+            r"(?:(?:the|a|an|de|het|een|die|der|das|des|dem|der|ein|eines|einer|einen|la|le|l'|les|un|une|el|las|los"
+            r"|las|un|una|unos|unas|o|os|um|uma|uns|umas|en|et|il|lo|uno|gli)\s+)?(?P<letter>.).+",
+            field_text, re.I)
 
         if match_result:
             result = match_result.group("letter").capitalize()
@@ -500,7 +494,6 @@ class PathMaker(object):
 
         return result
 
-
     def insert_month_as_name(self):
         """Get the month name from a month number."""
         month_number = self.book.Month
@@ -510,13 +503,13 @@ class PathMaker(object):
 
         return ""
 
-
     def insert_start_value(self, field, args, template_name):
         """Get the value for StartYear or StartMonth.
         
         field->The name of the field to get.
         args->args is padding for the startmonth as number. Can be null.
-        template_name->The name of the field as entered in the template. This is for keeping startmonth and startmonth# seperate.
+        template_name->The name of the field as entered in the template. This is for keeping startmonth and
+        startmonth# seperate.
 
         returns the string of the field or an empty string.
         """
@@ -526,7 +519,6 @@ class PathMaker(object):
 
         elif field in ("StartMonth", "EndMonth"):
             return self.insert_start_month(args, template_name, field == "EndMonth")
-
 
     def insert_start_year(self, end=False):
         """Gets the start year of the earliest book in the series of the current issue."""
@@ -539,7 +531,6 @@ class PathMaker(object):
             return ""
 
         return self.replace_illegal_characters(unicode(year))
-
 
     def insert_start_month(self, args, template_name, end=False):
         """Gets the start month of from the earliest issues in the series.
@@ -582,24 +573,22 @@ class PathMaker(object):
         padding is the padding used, can be none.
         """
         number = get_earliest_book(self.book).ShadowNumber
-        
+
         if padding is not None and padding.isdigit():
             return self.replace_illegal_characters(self.pad(number, int(padding)))
         else:
             return self.replace_illegal_characters(number)
-
 
     def insert_last_issue_number(self, padding):
         """
         padding is the padding used, can be none.
         """
         number = get_last_book(self.book).ShadowNumber
-        
+
         if padding is not None and padding.isdigit():
             return self.replace_illegal_characters(self.pad(number, int(padding)))
         else:
             return self.replace_illegal_characters(number)
-
 
     def insert_multi_value_field(self, field, args):
         """Gets the value from a multiple value field.
@@ -621,39 +610,35 @@ class PathMaker(object):
         else:
             return None
 
-
     def insert_multi_value_issue(self, field, seperator):
         """
         Finds which values to use in a multiple value field per issue. Asks the user which values to use and offers
-        options to save that selection for following issues. Checks the stored selections and only asks the user if required.
+        options to save that selection for following issues. Checks the stored selections and only asks the user if
+        required.
 
         field->The string name of the field to use.
         seperator->The string to seperate every value with.
         Returns a string of the values or an empty string if no values are found or selected.
         """
 
-        #field_dict stores the alwaysused collections and also the selected values for each issue used.
+        # field_dict stores the alwaysused collections and also the selected values for each issue used.
         try:
             field_dict = getattr(self, field)
         except AttributeError:
             field_dict = {}
             setattr(self, field, field_dict)
 
-
         index = self.book.Publisher + self.book.ShadowSeries + str(self.book.ShadowVolume) + self.book.ShadowNumber
         booktext = self.book.ShadowSeries + " vol. " + str(self.book.ShadowVolume) + " #" + self.book.ShadowNumber
 
-
         if index in field_dict:
-            #This particular issue has already been done.
+            # This particular issue has already been done.
             result = field_dict[index]
             return self.make_multi_value_issue_string(result.Selection, seperator, result.Folder)
-
 
         if not getattr(self.book, field).strip():
             field_dict[index] = MultiValueSelectionFormResult([])
             return ""
-
 
         try:
             always_used_values = getattr(self, field + "AlwaysUse")
@@ -661,36 +646,37 @@ class PathMaker(object):
             always_used_values = []
             setattr(self, field + "AlwaysUse", always_used_values)
 
-
         values = [item.strip() for item in getattr(self.book, field).split(",")]
-
 
         if len(values) == 1 and self.profile.DontAskWhenMultiOne:
             return self.replace_illegal_characters(values[0])
 
-
         selected_values = []
 
-        #Find which items are set to always use
+        # Find which items are set to always use
         for list_of_always_used_values in sorted(always_used_values, key=len, reverse=True):
             count = 0
             for value in list_of_always_used_values:
                 if value in values:
-                    count +=1
+                    count += 1
 
             if count == len(list_of_always_used_values):
 
                 if list_of_always_used_values.do_not_ask:
-                    return self.make_multi_value_issue_string(list_of_always_used_values, seperator, list_of_always_used_values.use_folder_seperator)
+                    return self.make_multi_value_issue_string(list_of_always_used_values, seperator,
+                                                              list_of_always_used_values.use_folder_seperator)
 
                 selected_values = list_of_always_used_values[:]
                 break
 
         if self.form.InvokeRequired:
-            result = self.form.Invoke(Func[MultiValueSelectionFormArgs, MultiValueSelectionFormResult](self.show_multi_value_selection_form), System.Array[object]([MultiValueSelectionFormArgs(values, selected_values, field, booktext, False)]))
+            result = self.form.Invoke(
+                Func[MultiValueSelectionFormArgs, MultiValueSelectionFormResult](self.show_multi_value_selection_form),
+                System.Array[object]([MultiValueSelectionFormArgs(values, selected_values, field, booktext, False)]))
 
         else:
-            result = self.show_multi_value_selection_form(MultiValueSelectionFormArgs(values, selected_values, field, booktext, False))
+            result = self.show_multi_value_selection_form(
+                MultiValueSelectionFormArgs(values, selected_values, field, booktext, False))
 
         field_dict[index] = result
 
@@ -698,74 +684,71 @@ class PathMaker(object):
             return ""
 
         if result.AlwaysUse:
-            always_used_values.append(MultiValueAlwaysUsedValues(result.AlwaysUseDontAsk, result.Folder, result.Selection))
-        
+            always_used_values.append(
+                MultiValueAlwaysUsedValues(result.AlwaysUseDontAsk, result.Folder, result.Selection))
+
         return self.make_multi_value_issue_string(result.Selection, seperator, result.Folder)
 
-
     def make_multi_value_issue_string(self, values, seperator, usefolder):
-        #When folders are being used we need to make sure there are no "\" characters in any of the values or it will mess up the folders. 
+        # When folders are being used we need to make sure there are no "\" characters in any of the values or it
+        # will mess up the folders.
         if usefolder:
             seperator = self.replace_illegal_characters(seperator)
             seperator += "\\"
             values = [self.replace_illegal_characters(value) for value in values]
 
-        
             return seperator.join(values)
 
         return self.replace_illegal_characters(seperator.join(values))
 
-
     def insert_multi_value_series(self, field, seperator):
         """
         Finding a multiple value field via a series operation will find all the possible multiple values of the field
-        from every issue of the series in the library. The user can then pick which values to use and those chosen values will
+        from every issue of the series in the library. The user can then pick which values to use and those chosen
+        values will
         be used for every issue encountered.
 
-        The user can choose to use every chossen value for the every issue in the series, even if the issue doesn't have that value.
+        The user can choose to use every chossen value for the every issue in the series, even if the issue doesn't
+        have that value.
         Or the user can choose to only use the value if it is in the issue.
         
         field->The string name of the field to use.
         seperator->The string to seperate every value with
         """
 
-        #Chosen values for series are stored in the field_dict.
+        # Chosen values for series are stored in the field_dict.
         try:
             field_dict = getattr(self, field)
         except AttributeError:
             field_dict = {}
             setattr(self, field, field_dict)
 
-
         index = self.book.Publisher + self.book.ShadowSeries + str(self.book.ShadowVolume)
-        booktext = self.book.ShadowSeries + " vol. " + str(self.book.ShadowVolume) 
+        booktext = self.book.ShadowSeries + " vol. " + str(self.book.ShadowVolume)
 
-
-        #See if this series has been done before:
+        # See if this series has been done before:
         if index in field_dict:
             return self.make_multi_value_series_string(field_dict[index], seperator, field)
 
-
-
         values = self.get_all_multi_values_from_series(field)
-
 
         if not values:
             field_dict[index] = MultiValueSelectionFormResult([])
             return ""
 
-
-        #Since this can be shown from the configform...
+        # Since this can be shown from the configform...
         if self.form.InvokeRequired:
-            result = self.form.Invoke(Func[MultiValueSelectionFormArgs, MultiValueSelectionFormResult](self.show_multi_value_selection_form), System.Array[object]([MultiValueSelectionFormArgs(values, [], field, booktext, True)]))
+            result = self.form.Invoke(
+                Func[MultiValueSelectionFormArgs, MultiValueSelectionFormResult](self.show_multi_value_selection_form),
+                System.Array[object]([MultiValueSelectionFormArgs(values, [], field, booktext, True)]))
 
         else:
-            result = self.show_multi_value_selection_form(MultiValueSelectionFormArgs(values, [], field, booktext, True))
+            result = self.show_multi_value_selection_form(
+                MultiValueSelectionFormArgs(values, [], field, booktext, True))
 
         field_dict[index] = result
 
         return self.make_multi_value_series_string(result, seperator, field)
-
 
     def make_multi_value_series_string(self, selection_result, seperator, field):
         """
@@ -776,7 +759,7 @@ class PathMaker(object):
         field is the correct name of the field to find from the book
         """
 
-        #If using folder sperator we need to make sure that there are no "\" characters in any of the fields.
+        # If using folder sperator we need to make sure that there are no "\" characters in any of the fields.
         if selection_result.Folder:
             seperator = self.replace_illegal_characters(seperator)
             seperator += "\\"
@@ -786,20 +769,19 @@ class PathMaker(object):
             values = [value.strip() for value in getattr(self.book, field).split(",")]
             selection = selection_result.Selection
 
-        #Using every issue
+        # Using every issue
         if selection_result.EveryIssue:
             result = seperator.join(selection)
 
-        #Not using every issue so just use the ones the particular issue has.
+        # Not using every issue so just use the ones the particular issue has.
         else:
             items_to_use = [item for item in selection if item in values]
             result = seperator.join(items_to_use)
-        
+
         if selection_result.Folder:
             return result
 
         return self.replace_illegal_characters(result)
-
 
     def replace_illegal_characters(self, text):
         """Replaces illegal path characters in a string and retures the cleaned string."""
@@ -808,9 +790,8 @@ class PathMaker(object):
 
         return text
 
-    
     def pad(self, value, padding):
-        #value as string, padding as int
+        # value as string, padding as int
         remainder = ""
 
         try:
@@ -822,28 +803,26 @@ class PathMaker(object):
             value = str(value)
 
         if numberValue >= 0:
-            #To make sure that the item is padded correctly when a decimal such as 7.1
+            # To make sure that the item is padded correctly when a decimal such as 7.1
             if value.Contains("."):
                 value, remainder = value.split(".")
                 remainder = "." + remainder
             return value.PadLeft(padding, '0') + remainder
         else:
             value = value[1:]
-            #To make sure that the item is padded correctly when a decimal such as 7.1
+            # To make sure that the item is padded correctly when a decimal such as 7.1
             if value.Contains("."):
                 value, remainder = value.split(".")
                 remainder = "." + remainder
             value = value.PadLeft(padding, '0')
             return '-' + value + remainder
 
-    
     def show_multi_value_selection_form(self, args):
         form = MultiValueSelectionForm(args)
         form.ShowDialog()
         result = form.GetResults()
         form.Dispose()
         return result
-
 
     def get_all_multi_values_from_series(self, field):
         """
@@ -853,17 +832,17 @@ class PathMaker(object):
         Returns a list of the values.
         """
         allbooks = ComicRack.App.GetLibraryBooks()
-        #using a set to avoid duplicate entries
+        # using a set to avoid duplicate entries
         results = set()
         for book in allbooks:
-            if book.ShadowSeries == self.book.ShadowSeries and book.ShadowVolume == self.book.ShadowVolume and book.Publisher == self.book.Publisher:
+            if book.ShadowSeries == self.book.ShadowSeries and book.ShadowVolume == self.book.ShadowVolume and \
+                            book.Publisher == self.book.Publisher:
                 results.update([value.strip() for value in getattr(book, field).split(",") if value.strip()])
 
         return list(results)
 
 
 class MultiValueAlwaysUsedValues(list):
-
     def __init__(self, do_not_ask=False, folder=False, values=None):
         self.do_not_ask = do_not_ask
         self.use_folder_seperator = folder

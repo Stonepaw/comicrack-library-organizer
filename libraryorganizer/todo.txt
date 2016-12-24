@@ -3,3 +3,5 @@ Investigate Error thrown when folder is not empty. Should fail gracefully with a
 Add tracking for moving fileless images (via custom value in comicbook)
 
 Bug when file does not exist reported on every profile.
+
+Display moving file image in worker form

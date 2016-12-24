@@ -31,3 +31,15 @@ class BookToMove(object):
         self.failed_fields = failed_fields
         self.duplicate_different_extension = False
         self.duplicate_ext_files = []
+
+
+class DuplicateAction(object):
+    Overwrite = 1
+    Cancel = 2
+    Rename = 3
+
+
+class DuplicateResult(object):
+    def __init__(self, action, always_do_action):
+        self.action = action
+        self.always_do_action = always_do_action
