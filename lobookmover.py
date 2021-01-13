@@ -1431,7 +1431,6 @@ class PathMaker(object):
                     return ""
 
 
-
         #Empty results
         if not result:
             if self.profile.FailEmptyValues and field in self.profile.FailedFields:

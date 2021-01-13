@@ -1612,10 +1612,9 @@ class ConfigureForm(Form):
         self.Custom.SetComboBoxItems(get_custom_value_keys())
         self._text_insert_controls_list['custom'] = self.Custom
         self.Custom.Enabled = True if len(custom_value_keys) > 0 else False
-        
 
         self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.Values))
-        
+
         
     def create_number_insert_controls(self):
         
