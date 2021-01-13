@@ -51,7 +51,7 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
-VERSION = "2.1.8"
+VERSION = "2.1.12"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -1602,6 +1602,7 @@ class ConfigureForm(Form):
         self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
+        custom_value_keys = get_custom_value_keys()
         self.Custom = InsertControlFirstLetter()
         self.Custom.SetTemplate("Custom", "Custom")
         self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
@@ -1610,10 +1611,10 @@ class ConfigureForm(Form):
         self.Custom.Name = "Custom"
         self.Custom.SetComboBoxItems(get_custom_value_keys())
         self._text_insert_controls_list['custom'] = self.Custom
-        
+        self.Custom.Enabled = True if len(custom_value_keys) > 0 else False
 
         self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.Values))
-        
+
         
     def create_number_insert_controls(self):
         

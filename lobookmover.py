@@ -1208,7 +1208,7 @@ class PathMaker(object):
                          "editor" : "Editor", "inker" : "Inker", "letterer" : "Letterer", "locations" : "Locations", "penciller" : "Penciller", "storyarc" : "StoryArc",
                          "seriesgroup" : "SeriesGroup", "maincharacter" : "MainCharacterOrTeam", "firstissuenumber" : "FirstIssueNumber", "lastissuenumber" : "LastIssueNumber", "Rating" : "Rating", 'CommunityRating': 'CommunityRating', "Custom" : 'Custom'}
 
-    template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^)]*\))*)>(?P<postfix>[^{}]*)}")
+    template_regex = re.compile("{(?P<prefix>[^{}<]*)<(?P<name>[^\d\s(>]*)(?P<args>\d*|(?:\([^){}]*\))*)>(?P<postfix>[^{}]*)}")
 
     yes_no_fields = ["Manga", "SeriesComplete"]
 
@@ -1431,7 +1431,6 @@ class PathMaker(object):
                     return ""
 
 
-
         #Empty results
         if not result:
             if self.profile.FailEmptyValues and field in self.profile.FailedFields:
@@ -1482,6 +1481,8 @@ class PathMaker(object):
                 return self.insert_last_issue_number(args_match)
 
             elif field == "Custom":
+                if len(args) == 0:
+                    return None
                 return self.insert_custom_value(args[0])
 
             elif type(getattr(self.book, field)) is System.DateTime:

@@ -531,7 +531,7 @@ class InsertControlFirstLetter(InsertControl):
 
         self.ComboBox.Items.Clear()
         self.ComboBox.Items.AddRange(System.Array[System.String](items))
-        self.ComboBox.SelectedIndex = 0
+        self.ComboBox.SelectedIndex = 0 if len(items) > 0 else -1
 
 
     def GetTemplateText(self, space):

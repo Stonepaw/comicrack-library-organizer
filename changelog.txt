@@ -1,4 +1,14 @@
-﻿2.1.11
+﻿2.1.12
+
+New:
+Support field definitions in args, primarily for conditionals
+
+Fixed:
+Out of range error when no custom field are defined
+Out of range error when typing a custom field template
+Incorrect version in configure form
+
+2.1.11
 Added Rating, Community Rating and Custom Values
 
 
