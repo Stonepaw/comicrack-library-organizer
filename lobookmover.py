@@ -1482,6 +1482,8 @@ class PathMaker(object):
                 return self.insert_last_issue_number(args_match)
 
             elif field == "Custom":
+                if len(args) == 0:
+                    return None
                 return self.insert_custom_value(args[0])
 
             elif type(getattr(self.book, field)) is System.DateTime:
