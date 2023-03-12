@@ -783,7 +783,7 @@ class MetadataExcludeGroupControl(Panel):
         self._rules_container.Controls.Add(rule)
 
 
-    def add_group(self, sender, e, rule_group):
+    def add_group(self, sender, e, rule_group=None):
         """Adds a new metadata exclude group control to this group"""
         group = MetadataExcludeGroupControl(self.remove_rule, rule_group)
 
