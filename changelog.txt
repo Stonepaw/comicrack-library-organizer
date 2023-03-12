@@ -1,4 +1,10 @@
-﻿2.1.12
+﻿2.1.13
+
+Fixed:
+Copy day field when adding a copied book to the library
+Fixed issue when adding nested groups. Thanks @maforget
+
+2.1.12
 
 New:
 Support field definitions in args, primarily for conditionals
