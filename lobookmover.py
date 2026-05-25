@@ -404,6 +404,9 @@ class BookMover(object):
 
         #Duplicate
         if File.Exists(full_path) or full_path in self.MovedBooks:
+            result = self.skip_if_same_existing_file(book, full_path)
+            if result is not None:
+                return result
             return MoveResult.Duplicate
 
         #Create here because needed for cleaning directories later
@@ -450,6 +453,9 @@ class BookMover(object):
 
         #Since the duplicate is checked for last in the orginal process_book function there is no need to check for path errors.
         if File.Exists(full_path) or full_path in self.MovedBooks:
+            result = self.skip_if_same_existing_file(book, full_path)
+            if result is not None:
+                return result
 
             #Find the existing book if it occurs in the library
             oldbook = self.find_duplicate_book(full_path)
@@ -500,7 +506,9 @@ class BookMover(object):
                     else:
                         if self.profile.CopyReadPercentage and type(oldbook) is not FileInfo:
                             book.LastPageRead = oldbook.LastPageRead
-                        FileIO.FileSystem.DeleteFile(full_path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+                        result = self.replace_existing_file(book, full_path)
+                        if result is not MoveResult.Success:
+                            return result
 
                 except Exception, ex:
                     self.logger.Add("Failed", self.report_book_name, "Failed to overwrite " + full_path + ". The error was: " + str(ex))
@@ -510,7 +518,7 @@ class BookMover(object):
                 if book.FilePath and type(oldbook) is not FileInfo:
                         ComicRack.App.RemoveBook(oldbook)
 
-                return self.process_duplicate_book(book_to_move)
+                return MoveResult.Success
 
         old_folder_path = book.FileDirectory
         
@@ -606,9 +614,9 @@ class BookMover(object):
     def check_path_problems(self, book, file_name, full_path):
 
 
-        if full_path == book.FilePath:
-            self.logger.Add("Skipped", self.report_book_name, "The book is already located at the calculated path")
-            return MoveResult.Skipped
+        result = self.skip_if_same_existing_file(book, full_path)
+        if result is not None:
+            return result
 
         #In some cases the filepath is the same but has different cases. The FileInfo object dosn't catch this but the File.Move function
         #Thinks that it is a duplicate.
@@ -622,6 +630,61 @@ class BookMover(object):
             return MoveResult.Skipped
 
         return None
+
+
+    def normalize_path_for_compare(self, path):
+        try:
+            return Path.GetFullPath(path).rstrip("\\/").lower()
+        except:
+            return str(path).rstrip("\\/").lower()
+
+
+    def paths_reference_same_existing_file(self, source_path, full_path):
+        """
+        Detects an already-organized file even when the same storage is reached
+        through different path spellings, such as a symlinked base folder and a
+        UNC path. This is intentionally conservative: if both existing files have
+        the same size and write time, skipping is safer than deleting the
+        destination before trying a move.
+        """
+        try:
+            if not source_path or not full_path:
+                return False
+
+            if self.normalize_path_for_compare(source_path) == self.normalize_path_for_compare(full_path):
+                return True
+
+            if not File.Exists(source_path) or not File.Exists(full_path):
+                return False
+
+            source = FileInfo(source_path)
+            destination = FileInfo(full_path)
+
+            return source.Length == destination.Length and source.LastWriteTimeUtc == destination.LastWriteTimeUtc
+
+        except:
+            return False
+
+
+    def skip_if_same_existing_file(self, book, full_path):
+        if not book.FilePath:
+            return None
+
+        if not self.paths_reference_same_existing_file(book.FilePath, full_path):
+            return None
+
+        old_path = book.FilePath
+
+        if self.profile.Mode == Mode.Simulate:
+            self.logger.Add("Skipped", self.report_book_name, "The book is already located at the calculated path")
+            return MoveResult.Skipped
+
+        if self.normalize_path_for_compare(old_path) != self.normalize_path_for_compare(full_path):
+            book.FilePath = full_path
+            self.logger.Add("Updated path", old_path, "to: " + full_path)
+
+        self.logger.Add("Skipped", self.report_book_name, "The book is already located at the calculated path")
+        return MoveResult.Skipped
 
 
     def check_path_to_long(self, book, full_path):
@@ -687,6 +750,61 @@ class BookMover(object):
 
             else:
                 return newpath
+
+
+    def create_backup_path(self, path):
+        extension = Path.GetExtension(path)
+        if extension:
+            base = path[:-len(extension)]
+        else:
+            base = path
+
+        for i in range(100):
+            suffix = ".LibraryOrganizerBackup"
+            if i > 0:
+                suffix += "." + str(i + 1)
+
+            backup_path = base + suffix + extension
+
+            if not File.Exists(backup_path):
+                return backup_path
+
+        return self.create_rename_path(path)
+
+
+    def replace_existing_file(self, book, full_path):
+        backup_path = self.create_backup_path(full_path)
+
+        try:
+            File.Move(full_path, backup_path)
+        except Exception, ex:
+            self.logger.Add("Failed", self.report_book_name, "Failed to prepare overwrite backup for " + full_path + ". The error was: " + str(ex))
+            return MoveResult.Failed
+
+        if book.FilePath:
+            result = self.move_book(book, full_path)
+        else:
+            result = self.create_fileless_image(book, full_path)
+
+        if result is MoveResult.Success:
+            try:
+                FileIO.FileSystem.DeleteFile(backup_path, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.SendToRecycleBin)
+            except Exception, ex:
+                self.logger.Add("Warning", backup_path, "The duplicate was replaced, but the backup could not be deleted. The error was: " + str(ex))
+
+            return result
+
+        try:
+            if not File.Exists(full_path):
+                File.Move(backup_path, full_path)
+                self.logger.Add("Restored", full_path, "The original destination file was restored after the move failed")
+            else:
+                self.logger.Add("Restore skipped", backup_path, "The move failed, but a file exists at the destination. The overwrite backup was left in place")
+
+        except Exception, ex:
+            self.logger.Add("Failed", full_path, "Move failed and the original destination could not be restored from " + backup_path + ". The error was: " + str(ex))
+
+        return result
 
     
     def remove_empty_folders(self, directory):
