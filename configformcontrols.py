@@ -149,6 +149,22 @@ class InsertControl(FlowLayoutPanel):
         self.LabelPanel.Height = self.PrefixLabel.Height
         self.LabelPanel.Width = self.LabelPanel.PreferredSize.Width
         self.ResumeLayout()
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        """Re-apply scaled metrics using the Configure form as DPI source."""
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.SuspendLayout()
+        self.Prefix.Size = lodpi.textbox_size(scale=scale, owner=owner)
+        self.Postfix.Size = lodpi.textbox_size(scale=scale, owner=owner)
+        btn = lodpi.scaled_size(66, 23, scale, owner)
+        self.InsertButton.Size = btn
+        self.InsertButton.MinimumSize = btn
+        self.LabelPanel.Height = lodpi.scale_int(17, scale, owner)
+        self.ResumeLayout()
+        self.RefreshLabelLayout()
         
 
     def GetPrefixText(self):
@@ -191,6 +207,15 @@ class InsertControlNumber(InsertControl):
         self.Controls.Add(self.Pad)
 
         self.Width = self.PreferredSize.Width
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.Pad.Size = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT, scale, owner)
+        self.RefreshLabelLayout()
         
 
     def SetLabels(self, prefix_text, button_text, postfix_text, padding_text):
@@ -280,6 +305,19 @@ class InsertControlMultipleValue(InsertControl):
 
         self.Controls.Add(self.Seperator)
         self.Controls.Add(self.Check)
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.SuspendLayout()
+        self.Prefix.Width = lodpi.scale_int(62, scale, owner)
+        self.Postfix.Width = lodpi.scale_int(62, scale, owner)
+        self.Seperator.Size = lodpi.scaled_size(24, lodpi.TEXTBOX_HEIGHT, scale, owner)
+        self.ResumeLayout()
+        self.RefreshLabelLayout()
         
     def SetLabels(self, prefix_label, button_label, postfix_label, sperator_label, checkbox_label):
         
@@ -367,6 +405,15 @@ class InsertControlYesNo(InsertControl):
         self.Controls.Add(self.TextBox)
         self.Controls.Add(self.Invert)
         self.Width = self.PreferredSize.Width
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.TextBox.Size = lodpi.textbox_size(scale=scale, owner=owner)
+        self.RefreshLabelLayout()
         
         
     def SetTextBoxText(self, text):
@@ -454,6 +501,16 @@ class InsertControlReadPercentage(InsertControl):
 
         self.Width = self.PreferredSize.Width
 
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.TextBox.Size = lodpi.textbox_size(scale=scale, owner=owner)
+        self.Operator.Width = lodpi.scale_int(80, scale, owner)
+        self.RefreshLabelLayout()
+
 
     def SetLabels(self, prefix_label, button_label, postfix_label, text_label, operator_label, percentage_label):
         
@@ -533,6 +590,15 @@ class InsertControlFirstLetter(InsertControl):
         self.Controls.Add(self.ComboBox)
         self.Width = self.PreferredSize.Width
 
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.ComboBox.Width = lodpi.scale_int(100, scale, owner)
+        self.RefreshLabelLayout()
+
 
     def SetLabels(self, prefix_label, button_label, postfix_label, combobox_label):
         InsertControl.SetLabels(self,prefix_label, button_label, postfix_label)
@@ -609,6 +675,18 @@ class InsertControlCounter(InsertControl):
         self.Controls.Add(self.Increment)
         self.Controls.Add(self.Pad)
 
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        num = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT, scale, owner)
+        self.Start.Size = num
+        self.Increment.Size = num
+        self.Pad.Size = num
+        self.RefreshLabelLayout()
+
     def SetLabels(self, prefix_label, button_label, postfix_label, start_label, increment_label, padding_label):
         InsertControl.SetLabels(self, prefix_label, button_label, postfix_label)
 
@@ -669,6 +747,15 @@ class InsertControlDateTime(InsertControl):
         
         self.Controls.Add(self.ComboBox)
         self.Width = self.PreferredSize.Width
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        InsertControl.apply_hidpi_metrics(self, owner, scale)
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        self.ComboBox.Width = lodpi.scale_int(100, scale, owner)
+        self.RefreshLabelLayout()
 
 
     def SetLabels(self, prefix_label, button_label, postfix_label, combobox_label):
@@ -836,6 +923,31 @@ class MetadataExcludeGroupControl(Panel):
 
         return ExcludeGroup(self._operator.SelectedItem, rules)
 
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        w = lodpi.scale_int(451, scale, owner)
+        self.Width = w
+        self.MinimumSize = Size(w, lodpi.scale_int(70, scale, owner))
+        rc_w = lodpi.scale_int(458, scale, owner)
+        self._rules_container.Width = rc_w
+        self._rules_container.MinimumSize = Size(rc_w, lodpi.scale_int(30, scale, owner))
+        lodpi.layout_row(
+            [self._label1, self._operator, self._label2],
+            3, 2, owner, 8, scale=scale)
+        margin = lodpi.scale_int(3, scale, owner)
+        row_y = lodpi.scale_int(2, scale, owner)
+        self._remove.Location = Point(w - self._remove.Width - margin, row_y)
+        self._add_rule.Location = Point(
+            self._remove.Left - self._add_rule.Width - margin, row_y)
+        self._add_group.Location = Point(
+            self._add_rule.Left - self._add_group.Width - margin, row_y)
+        for child in self._rules_container.Controls:
+            if hasattr(child, "apply_hidpi_metrics"):
+                child.apply_hidpi_metrics(owner, scale)
+
 
     
 class MetadataExcludeRuleControl(FlowLayoutPanel):
@@ -904,6 +1016,19 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         self.Controls.Add(self._value_textbox)
         self.Controls.Add(self._value_combobox)
         self.Controls.Add(self._remove)
+
+    def apply_hidpi_metrics(self, owner=None, scale=None):
+        if scale is None:
+            scale = lodpi.get_scale(owner)
+        if scale <= 1.01:
+            return
+        w = lodpi.scale_int(451, scale, owner)
+        self.Width = w
+        self._field.Width = lodpi.scale_int(121, scale, owner)
+        self._operator.Width = lodpi.scale_int(110, scale, owner)
+        val_w = lodpi.scale_int(175, scale, owner)
+        self._value_textbox.Width = val_w
+        self._value_combobox.Width = val_w
         
 
     def set_fields(self, rule):

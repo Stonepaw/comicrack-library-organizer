@@ -1,4 +1,19 @@
-﻿2.1.15
+﻿2.1.18
+
+Fixed:
+Options tab Add/Remove: layout uses TabControl DisplayRectangle (not stale TabPage height); AutoSize buttons for full "Remove" label; clamp list/button column to visible area; tighter reflow when vertical space is tight.
+
+2.1.17
+
+Fixed:
+Options tab HiDPI: scale inner tab pages with shell; fit empty-folder list height; anchor Add/Remove beside list so buttons are not clipped at 150%.
+
+2.1.16
+
+Fixed:
+Complete HiDPI remediation from code review: Rules page relayout (folder list, metadata header, exclude rule/group widths); Empty values tab vertical flow; Yes-No and Calculated insert tabs use measured single-column stack; column split from PreferredSize at 200%; insert control metrics applied from form owner; cached scale per relayout pass. See docs/HiDPI-remediation.md.
+
+2.1.15
 
 Fixed:
 Options tab HiDPI rows chain vertically after checkboxes (no overlap at 200% scale).

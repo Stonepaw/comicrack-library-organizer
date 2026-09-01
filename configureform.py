@@ -53,7 +53,7 @@ from lobookmover import PathMaker
 
 import lodpi
 
-VERSION = "2.1.15"
+VERSION = "2.1.18"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -1388,6 +1388,7 @@ class ConfigureForm(Form):
 
         self.load_options_page_settings()
 
+        self.ensure_options_resize_hooks()
         self.relayout_options_page()
 
         self._options_page_empty_values_tab.ResumeLayout()        
@@ -1420,9 +1421,9 @@ class ConfigureForm(Form):
         self._insert_controls.Controls.Add(self._multiple_value_insert_controls)
         self._insert_controls.Controls.Add(self._calculated_insert_controls)
         self._insert_controls.Controls.Add(self._search_insert_controls)
-        insert_top = lodpi.scale_int(128)
-        insert_width = lodpi.scale_int(498)
-        insert_height = lodpi.scale_int(290)
+        insert_top = lodpi.scale_int(128, owner=self)
+        insert_width = lodpi.scale_int(498, owner=self)
+        insert_height = lodpi.scale_int(290, owner=self)
         self._insert_controls.Location = System.Drawing.Point(0, insert_top)
         self._insert_controls.Name = "insert_controls"
         self._insert_controls.SelectedIndex = 0
@@ -2075,8 +2076,31 @@ class ConfigureForm(Form):
         if lodpi.needs_hidpi_layout(self):
             self.apply_hidpi_form_metrics()
         self.ensure_files_folders_resize_hooks()
+        self.ensure_options_resize_hooks()
+        self.relayout_all_hidpi()
+
+    def relayout_all_hidpi(self):
+        """Single entry point for all HiDPI relayout passes (one scale lookup)."""
+        if not lodpi.needs_hidpi_layout(self):
+            return
         self.relayout_insert_control_grids()
         self.relayout_options_page()
+        self.relayout_rules_page()
+
+    def _options_tab_content_size(self):
+        """Usable area inside the Options TabControl (matches selected tab page coords)."""
+        bounds = self._options_page.DisplayRectangle
+        return bounds.Width, bounds.Height
+
+    def ensure_options_resize_hooks(self):
+        if getattr(self, "_options_resize_hooks", False):
+            return
+        self._options_page.Resize += self.options_page_resize
+        self._options_resize_hooks = True
+
+    def options_page_resize(self, sender, e):
+        if lodpi.needs_hidpi_layout(self) and hasattr(self, "_options_page_options_tab"):
+            self.relayout_options_page()
 
     def relayout_options_page(self):
         """Reflow Options / Empty values tabs — inline rows use fixed X at 96 DPI."""
@@ -2085,10 +2109,13 @@ class ConfigureForm(Form):
         if not hasattr(self, "_options_page_options_tab"):
             return
 
-        s = lambda v: lodpi.scale_int(v, owner=self)
-        gap = s(10)
+        scale = lodpi.get_scale(self)
+        s = lambda v: lodpi.scale_int(v, scale=scale, owner=self)
+        gap = s(6)
         left = s(17)
-        tab_w = self._options_page_options_tab.ClientSize.Width
+        tab_w, tab_h = self._options_tab_content_size()
+        for tab in (self._options_page_options_tab, self._options_page_empty_values_tab):
+            tab.AutoScroll = True
 
         # --- Options tab ---
         y = s(28)
@@ -2102,7 +2129,7 @@ class ConfigureForm(Form):
         row_gap = s(8)
         lodpi.layout_row(
             [self._month_label1, self._month_number, self._month_label2, self._month_name],
-            left, y, self, row_gap, True)
+            left, y, self, row_gap, True, scale=scale)
         self._month_number.Width = s(44)
         self._month_name.Width = s(150)
         y = max(self._month_name.Bottom, self._month_label1.Bottom,
@@ -2112,7 +2139,7 @@ class ConfigureForm(Form):
             [self._illegal_character_label1, self._illegal_character_selector,
              self._illegal_character_label2, self._illegal_character_replacement,
              self._add_illegal_character, self._remove_illegal_character],
-            left, y, self, row_gap, True)
+            left, y, self, row_gap, True, scale=scale)
         self._illegal_character_selector.Width = s(44)
         self._illegal_character_replacement.Width = s(44)
         y = max(self._illegal_character_label1.Bottom, self._add_illegal_character.Bottom) + gap
@@ -2123,69 +2150,225 @@ class ConfigureForm(Form):
 
         self._remove_empty_folders_label.AutoSize = True
         self._remove_empty_folders_label.Location = Point(s(36), y)
-        y = self._remove_empty_folders_label.Bottom + s(8)
+        y = self._remove_empty_folders_label.Bottom + s(6)
 
-        list_w = min(s(411), tab_w - left - s(70))
-        self._empty_folder_exceptions_list.Size = Size(list_w, s(134))
+        bottom_margin = s(6)
+        for btn in (self._add_empty_folder_exception, self._remove_empty_folder_exception):
+            btn.AutoSize = True
+            btn.MinimumSize = Size(s(57), s(23))
+        btn_h = max(self._add_empty_folder_exception.Height, self._remove_empty_folder_exception.Height, s(23))
+        btn_w = max(self._add_empty_folder_exception.Width, self._remove_empty_folder_exception.Width, s(75))
+        btn_gap = s(8)
+        btn_col_w = btn_w + s(12)
+        list_w = max(s(120), tab_w - left - btn_col_w)
+        avail_h = tab_h - y - bottom_margin
+        if avail_h < btn_h * 2 + btn_gap + s(24):
+            gap = s(4)
+            y = s(20)
+            for chk in (self._replace_multiple_spaces, self._copy_read_percentage,
+                        self._insert_multiple_value_field_when_one):
+                chk.Location = Point(left, y)
+                y = chk.Bottom + gap
+            y += s(2)
+            lodpi.layout_row(
+                [self._month_label1, self._month_number, self._month_label2, self._month_name],
+                left, y, self, s(6), True, scale=scale)
+            y = max(self._month_name.Bottom, self._month_label1.Bottom,
+                    self._month_number.Bottom) + gap
+            lodpi.layout_row(
+                [self._illegal_character_label1, self._illegal_character_selector,
+                 self._illegal_character_label2, self._illegal_character_replacement,
+                 self._add_illegal_character, self._remove_illegal_character],
+                left, y, self, s(6), True, scale=scale)
+            y = max(self._illegal_character_label1.Bottom, self._add_illegal_character.Bottom) + gap
+            self._remove_empty_folders.Location = Point(left, y)
+            y = self._remove_empty_folders.Bottom + s(4)
+            self._remove_empty_folders_label.Location = Point(s(36), y)
+            y = self._remove_empty_folders_label.Bottom + s(6)
+            avail_h = tab_h - y - bottom_margin
+
+        list_h = min(s(134), max(s(48), avail_h))
+        self._empty_folder_exceptions_list.Size = Size(list_w, list_h)
         self._empty_folder_exceptions_list.Location = Point(left, y)
-        btn_x = left + list_w + s(8)
-        self._add_empty_folder_exception.Location = Point(btn_x, y + s(29))
-        self._remove_empty_folder_exception.Location = Point(btn_x, y + s(80))
+        btn_x = min(left + list_w + s(8), tab_w - btn_w - s(4))
+        add_y = y + s(4)
+        remove_y = y + list_h - btn_h - s(4)
+        if remove_y < add_y + btn_h + btn_gap:
+            remove_y = add_y + btn_h + btn_gap
+        if remove_y + btn_h > tab_h - bottom_margin:
+            remove_y = tab_h - bottom_margin - btn_h
+            list_h = max(s(48), remove_y - y - s(4))
+            self._empty_folder_exceptions_list.Size = Size(list_w, list_h)
+        self._add_empty_folder_exception.Location = Point(btn_x, add_y)
+        self._remove_empty_folder_exception.Location = Point(btn_x, remove_y)
 
-        # --- Empty values tab ---
+        # --- Empty values tab (vertical flow) ---
         if hasattr(self, "_empty_folder_name_label"):
             ev_left = s(8)
+            ev_gap = s(8)
+            ev_y = s(16)
+
             lodpi.layout_row(
                 [self._empty_folder_name_label, self._empty_folder_name],
-                ev_left, 16, self, 8)
+                ev_left, ev_y, self, 8, scale=scale)
             self._empty_folder_name.Width = s(274)
+            ev_y = max(self._empty_folder_name.Bottom, self._empty_folder_name_label.Bottom) + ev_gap
 
             self._empty_substitution_label.AutoSize = True
-            self._empty_substitution_label.Location = Point(ev_left, s(97))
+            self._empty_substitution_label.Location = Point(ev_left, ev_y)
+            ev_y = self._empty_substitution_label.Bottom + ev_gap
 
             lodpi.layout_row(
                 [self._empty_substitution_label1, self._empty_substitution_field,
                  self._empty_substitution_label2, self._empty_substitution_value],
-                ev_left, 115, self, 8)
+                ev_left, ev_y, self, 8, True, scale=scale)
             self._empty_substitution_field.Width = s(140)
             self._empty_substitution_value.Width = s(150)
+            ev_y = max(
+                self._empty_substitution_label1.Bottom,
+                self._empty_substitution_value.Bottom) + ev_gap
 
             self._failed_empty_checkbox.AutoSize = True
-            self._failed_empty_checkbox.Location = Point(ev_left, s(182))
+            self._failed_empty_checkbox.Location = Point(ev_left, ev_y)
+            ev_y = self._failed_empty_checkbox.Bottom + ev_gap
 
             self._failed_empty_selection.Size = Size(s(232), s(109))
-            self._failed_empty_selection.Location = Point(s(26), s(219))
+            self._failed_empty_selection.Location = Point(s(26), ev_y)
+            ev_y = self._failed_empty_selection.Bottom + ev_gap
 
             self._move_failed_empty.AutoSize = True
-            self._move_failed_empty.Location = Point(s(26), s(334))
+            self._move_failed_empty.Location = Point(s(26), ev_y)
+            ev_y = self._move_failed_empty.Bottom + ev_gap
 
             self._failed_empty_folder.Width = s(377)
             lodpi.layout_row(
                 [self._failed_empty_folder, self._failed_empty_browse],
-                s(26), 355, self, 8)
+                s(26), ev_y, self, 8, True, scale=scale)
 
-    def _apply_insert_control_layout(self, control):
+    def relayout_rules_page(self):
+        """Reflow Rules page lists and metadata exclude controls at HiDPI."""
+        if not lodpi.needs_hidpi_layout(self):
+            return
+        if not hasattr(self, "_metadata_rules_page"):
+            return
+
+        scale = lodpi.get_scale(self)
+        s = lambda v: lodpi.scale_int(v, scale=scale, owner=self)
+
+        if hasattr(self, "_excluded_folders_list"):
+            left = s(8)
+            list_w = s(389)
+            list_h = s(355)
+            self._excluded_folders_list.Size = Size(list_w, list_h)
+            self._excluded_folders_list.Location = Point(left, s(26))
+            btn_x = left + list_w + s(8)
+            self._add_excluded_folder.Location = Point(btn_x, s(26))
+            self._remove_excluded_folder.Location = Point(btn_x, s(62))
+
+        if hasattr(self, "_metadata_rules_container"):
+            page_w = self._metadata_rules_page.ClientSize.Width
+            self._metadata_rules_container.Location = Point(0, s(49))
+            self._metadata_rules_container.Size = Size(page_w, s(345))
+            lodpi.layout_row(
+                [self._metadata_rules_mode, self._metadata_rules_label1,
+                 self._metadata_rules_operator, self._metadata_rules_label2],
+                s(8), s(12), self, s(8), scale=scale)
+            margin = s(8)
+            row_y = s(11)
+            self._metadata_rules_add_rule.Location = Point(
+                page_w - self._metadata_rules_add_rule.Width - margin, row_y)
+            self._metadata_rules_add_group.Location = Point(
+                self._metadata_rules_add_rule.Left - self._metadata_rules_add_group.Width - margin,
+                row_y)
+            for control in self._metadata_rules_container.Controls:
+                if hasattr(control, "apply_hidpi_metrics"):
+                    control.apply_hidpi_metrics(self, scale)
+
+    def _apply_insert_control_layout(self, control, scale=None, narrow_width=None, wide_width=None):
         baseline = control.Tag
         if baseline is None or not isinstance(baseline, Point):
             return
         wide = isinstance(control, InsertControlMultipleValue)
-        control.Location = lodpi.scale_insert_point(baseline, wide, self)
-        if hasattr(control, "RefreshLabelLayout"):
+        control.Location = lodpi.scale_insert_point(
+            baseline, wide, self, scale, narrow_width, wide_width)
+        if hasattr(control, "apply_hidpi_metrics"):
+            control.apply_hidpi_metrics(self, scale)
+        elif hasattr(control, "RefreshLabelLayout"):
             control.RefreshLabelLayout()
 
     def relayout_insert_control_grids(self):
-        """Re-space two-column insert field grids so wide rows do not overlap at HiDPI."""
+        """Re-space insert field grids; measure column widths and stack single-column tabs."""
         if not lodpi.needs_hidpi_layout(self):
             return
-        for control in self._insert_controls_dict.itervalues():
-            self._apply_insert_control_layout(control)
+        scale = lodpi.get_scale(self)
+        all_controls = self._insert_controls_dict.itervalues()
+        narrow_w, wide_w = lodpi.measure_column_widths(all_controls, self, scale)
+
+        for control in all_controls:
+            if hasattr(control, "apply_hidpi_metrics"):
+                control.apply_hidpi_metrics(self, scale)
+
+        two_column_lists = (
+            "_text_insert_controls_list",
+            "_number_insert_controls_list",
+            "_multiple_value_insert_controls_list",
+        )
+        for list_name in two_column_lists:
+            d = getattr(self, list_name, None)
+            if d:
+                lodpi.relayout_two_column_grid(
+                    d.itervalues(), self, scale, narrow_w, wide_w)
+
+        single_column_lists = (
+            "_yes_no_insert_controls_list",
+            "_calculated_insert_controls_list",
+        )
+        for list_name in single_column_lists:
+            d = getattr(self, list_name, None)
+            if d:
+                lodpi.relayout_single_column(d.itervalues(), self, scale)
+
+        if hasattr(self, "_yes_no_insert_controls_instructions"):
+            yes_bottom = 0
+            for c in self._yes_no_insert_controls_list.itervalues():
+                yes_bottom = max(yes_bottom, c.Bottom)
+            if yes_bottom > 0:
+                self._yes_no_insert_controls_instructions.Location = System.Drawing.Point(
+                    lodpi.scale_int(3, scale, self),
+                    yes_bottom + lodpi.scale_int(16, scale, self))
+            self._yes_no_insert_controls_instructions.Size = System.Drawing.Size(
+                lodpi.scale_int(490, scale, self),
+                lodpi.scale_int(113, scale, self))
+
         if hasattr(self, "_multiple_value_insert_controls_instructions"):
             self._multiple_value_insert_controls_instructions.Location = System.Drawing.Point(
-                lodpi.scale_int(0, owner=self),
-                lodpi.scale_int(345, owner=self))
+                lodpi.scale_int(0, scale, self),
+                lodpi.scale_int(345, scale, self))
             self._multiple_value_insert_controls_instructions.Size = System.Drawing.Size(
-                lodpi.scale_int(470, owner=self),
-                lodpi.scale_int(82, owner=self))
+                lodpi.scale_int(470, scale, self),
+                lodpi.scale_int(82, scale, self))
+
+        if hasattr(self, "_calculated_insert_controls_start_year_information"):
+            col1 = lodpi.scale_int(lodpi.BASE_COL1, scale, self)
+            info_x = col1 + lodpi.scale_int(narrow_w, scale, self) + lodpi.scale_int(16, scale, self)
+            self._calculated_insert_controls_start_year_information.Location = System.Drawing.Point(
+                info_x, lodpi.scale_int(10, scale, self))
+            self._calculated_insert_controls_start_year_information.Size = System.Drawing.Size(
+                lodpi.scale_int(253, scale, self),
+                lodpi.scale_int(50, scale, self))
+
+        if hasattr(self, "_search_insert_controls_name"):
+            lodpi.layout_row(
+                [self._search_insert_controls_label, self._search_insert_controls_name],
+                lodpi.scale_int(6, scale, self), lodpi.scale_int(6, scale, self),
+                self, lodpi.scale_int(8, scale, self), True, scale=scale)
+            self._search_insert_controls_name.Width = lodpi.scale_int(435, scale, self)
+            if hasattr(self, "_search_insert_controls_layoutpanel"):
+                self._search_insert_controls_layoutpanel.Location = System.Drawing.Point(
+                    0, lodpi.scale_int(32, scale, self))
+                self._search_insert_controls_layoutpanel.Size = System.Drawing.Size(
+                    lodpi.scale_int(493, scale, self),
+                    lodpi.scale_int(229, scale, self))
 
     def ensure_files_folders_resize_hooks(self):
         if getattr(self, "_files_folders_resize_hooks", False):
@@ -2206,6 +2389,9 @@ class ConfigureForm(Form):
         self._okay.Location = System.Drawing.Point(lodpi.scale_int(474, owner=self), lodpi.scale_int(433, owner=self))
         self._cancel.Location = System.Drawing.Point(lodpi.scale_int(555, owner=self), lodpi.scale_int(433, owner=self))
         self._space_automatically.Location = System.Drawing.Point(lodpi.scale_int(5, owner=self), lodpi.scale_int(107, owner=self))
+        if hasattr(self, "_options_page_options_tab"):
+            for tab in (self._options_page_options_tab, self._options_page_empty_values_tab):
+                tab.AutoScroll = True
 
     def layout_insert_controls_on_page(self, page):
         """Fit the shared insert tab control inside the files/folders panel."""
@@ -2289,10 +2475,12 @@ class ConfigureForm(Form):
         elif sender.Tag is self._rules_page:
             if self._rules_page.Controls.Count == 0:
                 self.create_rules_page()
+            self.relayout_rules_page()
 
         elif sender.Tag is self._options_page:
             if self._options_page.Controls.Count == 0:
                 self.create_options_page()
+            self.relayout_options_page()
 
         for control in self._toolstrip.Items:
             if type(control) is System.Windows.Forms.ToolStripButton:
@@ -2455,8 +2643,7 @@ class ConfigureForm(Form):
         if e.TabPage is self._search_insert_controls:
             self._search_insert_controls_layoutpanel.Controls.Clear()
 
-            for control in self._insert_controls_dict.itervalues():
-                self._apply_insert_control_layout(control)
+            self.relayout_insert_control_grids()
 
             self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.values()))
             self._number_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._number_insert_controls_list.values()))
@@ -2506,6 +2693,9 @@ class ConfigureForm(Form):
             if self._calculated_insert_controls.Controls.Count== 0:
                 self.create_calculated_insert_controls()
             self._calculated_insert_controls.Controls.Clear()
+
+        if lodpi.needs_hidpi_layout(self):
+            self.relayout_insert_control_grids()
 
         self._insert_controls.ResumeLayout()
 
@@ -2596,6 +2786,8 @@ class ConfigureForm(Form):
         rule = MetadataExcludeRuleControl(self.remove_metadata_rule, exclude_rule)
         self._metadata_rules_container.Controls.Add(rule)
         self._metadata_rules_container.ScrollControlIntoView(rule)
+        if lodpi.needs_hidpi_layout(self):
+            rule.apply_hidpi_metrics(self)
 
 
     def add_metadata_rule_group(self, sender, e, exclude_rule_group=None):
@@ -2603,6 +2795,8 @@ class ConfigureForm(Form):
         group = MetadataExcludeGroupControl(self.remove_metadata_rule, exclude_rule_group)
         self._metadata_rules_container.Controls.Add(group)
         self._metadata_rules_container.ScrollControlIntoView(group)
+        if lodpi.needs_hidpi_layout(self):
+            group.apply_hidpi_metrics(self)
 
 
     def remove_metadata_rule(self, sender, e):
@@ -2724,6 +2918,8 @@ class ConfigureForm(Form):
         #Listboxes
         self._excluded_folders_list.Items.Clear()
         self._excluded_folders_list.Items.AddRange(System.Array[System.String](self.profile.ExcludeFolders))
+
+        self.relayout_rules_page()
 
 
     def load_options_page_settings(self):
