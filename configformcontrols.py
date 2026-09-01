@@ -307,6 +307,19 @@ class InsertControlMultipleValue(InsertControl):
         self.LabelPanel.Width = self.PreferredSize.Width
         
         self.ResumeLayout()
+        self.RefreshLabelLayout()
+
+    def RefreshLabelLayout(self):
+        if not hasattr(self, "PrefixLabel"):
+            return
+        self.SuspendLayout()
+        InsertControl.RefreshLabelLayout(self)
+        if hasattr(self, "SeperatorLabel"):
+            self.SeperatorLabel.Location = Point(self.Seperator.Location.X + self.Seperator.Width/2 - self.SeperatorLabel.Width/2, 0)
+        if hasattr(self, "CheckboxLabel"):
+            self.CheckboxLabel.Location = Point(self.Check.Location.X + self.Check.Width/2 - self.CheckboxLabel.Width/2, 0)
+        self.LabelPanel.Width = max(self.PreferredSize.Width, self.LabelPanel.PreferredSize.Width)
+        self.ResumeLayout()
 
     def GetSeperatorText(self):
         return self.Seperator.Text
