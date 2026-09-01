@@ -1,4 +1,10 @@
-﻿2.1.14
+﻿2.1.15
+
+Fixed:
+Options tab HiDPI rows chain vertically after checkboxes (no overlap at 200% scale).
+Restore insert control labels after Search tab via RefreshLabelLayout; ignore non-Point control tags.
+
+2.1.14
 
 Fixed:
 HiDPI layout on Configure form at 125%–200% Windows display scale (ComicRack Community Edition and other hosts): scale dialog shell, anchor Files/Folders insert tab control, widen template fields, reflow two-column insert grids and Options/Empty values inline rows.

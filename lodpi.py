@@ -89,15 +89,24 @@ def scale_insert_point(baseline, wide=False, owner=None):
     return Point(new_x, new_y)
 
 
-def layout_row(controls, start_x, y, owner=None, gap=8):
-    """Place controls left-to-right; avoids fixed-X overlap when fonts grow at HiDPI."""
+def layout_row(controls, start_x, y, owner=None, gap=8, coords_scaled=False):
+    """Place controls left-to-right; avoids fixed-X overlap when fonts grow at HiDPI.
+
+    coords_scaled: when True, start_x, y, and gap are already in device pixels (for vertical flow chains).
+    """
     scale = get_scale(owner)
     if scale <= 1.01:
         return
-    x = scale_int(start_x, scale, owner)
-    row_y = scale_int(y, scale, owner)
-    g = scale_int(gap, scale, owner)
-    nudge = scale_int(2, scale, owner)
+    if coords_scaled:
+        x = start_x
+        row_y = y
+        g = gap
+        nudge = max(1, int(round(2 * scale)))
+    else:
+        x = scale_int(start_x, scale, owner)
+        row_y = scale_int(y, scale, owner)
+        g = scale_int(gap, scale, owner)
+        nudge = scale_int(2, scale, owner)
     for control in controls:
         type_name = control.GetType().Name
         cy = row_y

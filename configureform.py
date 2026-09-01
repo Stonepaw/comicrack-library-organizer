@@ -53,7 +53,7 @@ from lobookmover import PathMaker
 
 import lodpi
 
-VERSION = "2.1.14"
+VERSION = "2.1.15"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -2099,18 +2099,20 @@ class ConfigureForm(Form):
             y = chk.Bottom + gap
 
         y += s(4)
+        row_gap = s(8)
         lodpi.layout_row(
             [self._month_label1, self._month_number, self._month_label2, self._month_name],
-            left, 140, self, 8)
+            left, y, self, row_gap, True)
         self._month_number.Width = s(44)
         self._month_name.Width = s(150)
-        y = max(self._month_name.Bottom, self._month_label1.Bottom) + gap
+        y = max(self._month_name.Bottom, self._month_label1.Bottom,
+                self._month_number.Bottom) + gap
 
         lodpi.layout_row(
             [self._illegal_character_label1, self._illegal_character_selector,
              self._illegal_character_label2, self._illegal_character_replacement,
              self._add_illegal_character, self._remove_illegal_character],
-            left, 171, self, 8)
+            left, y, self, row_gap, True)
         self._illegal_character_selector.Width = s(44)
         self._illegal_character_replacement.Width = s(44)
         y = max(self._illegal_character_label1.Bottom, self._add_illegal_character.Bottom) + gap
@@ -2162,18 +2164,21 @@ class ConfigureForm(Form):
                 [self._failed_empty_folder, self._failed_empty_browse],
                 s(26), 355, self, 8)
 
+    def _apply_insert_control_layout(self, control):
+        baseline = control.Tag
+        if baseline is None or not isinstance(baseline, Point):
+            return
+        wide = isinstance(control, InsertControlMultipleValue)
+        control.Location = lodpi.scale_insert_point(baseline, wide, self)
+        if hasattr(control, "RefreshLabelLayout"):
+            control.RefreshLabelLayout()
+
     def relayout_insert_control_grids(self):
         """Re-space two-column insert field grids so wide rows do not overlap at HiDPI."""
         if not lodpi.needs_hidpi_layout(self):
             return
         for control in self._insert_controls_dict.itervalues():
-            baseline = control.Tag
-            if baseline is None:
-                continue
-            wide = isinstance(control, InsertControlMultipleValue)
-            control.Location = lodpi.scale_insert_point(baseline, wide, self)
-            if hasattr(control, "RefreshLabelLayout"):
-                control.RefreshLabelLayout()
+            self._apply_insert_control_layout(control)
         if hasattr(self, "_multiple_value_insert_controls_instructions"):
             self._multiple_value_insert_controls_instructions.Location = System.Drawing.Point(
                 lodpi.scale_int(0, owner=self),
@@ -2451,8 +2456,7 @@ class ConfigureForm(Form):
             self._search_insert_controls_layoutpanel.Controls.Clear()
 
             for control in self._insert_controls_dict.itervalues():
-                wide = isinstance(control, InsertControlMultipleValue)
-                control.Location = lodpi.scale_insert_point(control.Tag, wide, self)
+                self._apply_insert_control_layout(control)
 
             self._text_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._text_insert_controls_list.values()))
             self._number_insert_controls.Controls.AddRange(System.Array[System.Windows.Forms.Control](self._number_insert_controls_list.values()))
