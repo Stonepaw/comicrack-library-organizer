@@ -34,6 +34,8 @@ from System.Drawing import Size, Point, ContentAlignment
 
 from locommon import ExcludeGroup, ExcludeRule
 
+import lodpi
+
 
 
 class InsertControl(FlowLayoutPanel):
@@ -61,22 +63,22 @@ class InsertControl(FlowLayoutPanel):
         SpacingFix.Size = Size(0,0)
         SpacingFix.Margin = Padding(0)
 
-        self.Prefix.Size = Size(58, 22)
+        self.Prefix.Size = lodpi.textbox_size()
         self.Prefix.TabIndex = 0
         self.Prefix.Margin = Padding(3, 0, 3, 0)
 
-        self.InsertButton.Size = Size(66, 23)
-        self.InsertButton.MinimumSize = Size(66, 23)
+        self.InsertButton.Size = lodpi.scaled_size(66, 23)
+        self.InsertButton.MinimumSize = lodpi.scaled_size(66, 23)
         self.InsertButton.AutoSize = True
         self.InsertButton.Click += self.ButtonClick
         self.InsertButton.TabIndex = 1
         self.InsertButton.Margin = Padding(3, 0, 3, 0)
 
-        self.Postfix.Size = Size(58, 22)
+        self.Postfix.Size = lodpi.textbox_size()
         self.Postfix.TabIndex = 2
         self.Postfix.Margin = Padding(3, 0, 3, 0)
         
-        self.LabelPanel.Height = 17
+        self.LabelPanel.Height = lodpi.scale_int(17)
         self.LabelPanel.Margin = Padding(0, 0, 0, 0)
 
         self.Controls.Add(self.LabelPanel)
@@ -133,6 +135,20 @@ class InsertControl(FlowLayoutPanel):
         self.LabelPanel.Height = self.PrefixLabel.Height
         
         self.ResumeLayout()
+        self.RefreshLabelLayout()
+        
+
+    def RefreshLabelLayout(self):
+        """Re-center column labels after control sizes change (HiDPI)."""
+        if not hasattr(self, "PrefixLabel"):
+            return
+        self.SuspendLayout()
+        self.PrefixLabel.Location = Point(self.Prefix.Location.X + self.Prefix.Width/2 - self.PrefixLabel.Width/2, 0)
+        self.ButtonLabel.Location = Point(self.InsertButton.Location.X + self.InsertButton.Width/2 - self.ButtonLabel.Width/2, 0)
+        self.PostfixLabel.Location = Point(self.Postfix.Location.X + self.Postfix.Width/2 - self.PostfixLabel.Width/2, 0)
+        self.LabelPanel.Height = self.PrefixLabel.Height
+        self.LabelPanel.Width = self.LabelPanel.PreferredSize.Width
+        self.ResumeLayout()
         
 
     def GetPrefixText(self):
@@ -168,7 +184,7 @@ class InsertControlNumber(InsertControl):
         InsertControl.__init__(self)
         
         self.Pad = NumericUpDown()
-        self.Pad.Size = Size(34, 22)
+        self.Pad.Size = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT)
         self.Pad.TabIndex = 3
         self.Pad.Margin = Padding(3, 0, 3, 0)
         
@@ -249,11 +265,11 @@ class InsertControlMultipleValue(InsertControl):
     def __init__(self):
         InsertControl.__init__(self)
 
-        self.Prefix.Width = 50
-        self.Postfix.Width = 50
+        self.Prefix.Width = lodpi.scale_int(62)
+        self.Postfix.Width = lodpi.scale_int(62)
 
         self.Seperator = TextBox()
-        self.Seperator.Size = Size(20, 22)
+        self.Seperator.Size = lodpi.scaled_size(24, lodpi.TEXTBOX_HEIGHT)
         self.Seperator.TabIndex = 3
         self.Seperator.Margin = Padding(3, 0, 3, 0)
 
@@ -332,7 +348,7 @@ class InsertControlYesNo(InsertControl):
         self.Invert.AutoSize = True
         
         self.TextBox = TextBox()
-        self.TextBox.Size = Size(58, 22)
+        self.TextBox.Size = lodpi.textbox_size()
         self.TextBox.TabIndex = 3
         self.TextBox.Margin = Padding(3, 0, 3, 0)
         self.Controls.Add(self.TextBox)
@@ -396,7 +412,7 @@ class InsertControlReadPercentage(InsertControl):
         InsertControl.__init__(self)
 
         self.TextBox = TextBox()
-        self.TextBox.Size = Size(58, 22)
+        self.TextBox.Size = lodpi.textbox_size()
         self.TextBox.TabIndex = 3
         self.TextBox.Margin = Padding(3, 0, 3, 0)
         
@@ -405,7 +421,7 @@ class InsertControlReadPercentage(InsertControl):
         self.Operator.Items.AddRange(System.Array[System.String](["equal to", "greater than", "less than"]))
         self.Operator.DropDownStyle = ComboBoxStyle.DropDownList
         self.Operator.SelectedItem = "greater than"
-        self.Operator.Width = 80
+        self.Operator.Width = lodpi.scale_int(80)
         self.Operator.Margin = Padding(3, 0, 3, 0)
 
         self.Percentage = NumericUpDown()
@@ -498,7 +514,7 @@ class InsertControlFirstLetter(InsertControl):
 
         self.ComboBox = ComboBox()
         self.ComboBox.DropDownStyle = ComboBoxStyle.DropDownList
-        self.ComboBox.Width = 100
+        self.ComboBox.Width = lodpi.scale_int(100)
         self.ComboBox.Margin = Padding(3, 0, 3, 0)
         
         self.Controls.Add(self.ComboBox)
@@ -556,21 +572,21 @@ class InsertControlCounter(InsertControl):
         InsertControl.__init__(self)
 
         self.Start = NumericUpDown()
-        self.Start.Size = Size(34, 22)
+        self.Start.Size = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT)
         self.Start.TabIndex = 3
         self.Start.Increment = 1
         self.Start.Value = 1
         self.Start.Margin = Padding(3, 0, 3, 0)
 
         self.Increment = NumericUpDown()
-        self.Increment.Size = Size(34, 22)
+        self.Increment.Size = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT)
         self.Increment.TabIndex = 4
         self.Increment.Increment = 1
         self.Increment.Value = 1
         self.Increment.Margin = Padding(3, 0, 3, 0)
 
         self.Pad = NumericUpDown()
-        self.Pad.Size = Size(34, 22)
+        self.Pad.Size = lodpi.scaled_size(lodpi.NUMERIC_WIDTH, lodpi.TEXTBOX_HEIGHT)
         self.Pad.TabIndex = 5
         self.Pad.Increment = 1
         self.Pad.Value = 0
@@ -634,7 +650,7 @@ class InsertControlDateTime(InsertControl):
         self.ComboBox = ComboBox()
         self.ComboBox.DropDownStyle = ComboBoxStyle.DropDownList
         self.SetComboBoxItems()
-        self.ComboBox.Width = 100
+        self.ComboBox.Width = lodpi.scale_int(100)
         self.ComboBox.Margin = Padding(3, 0, 3, 0)
         
         

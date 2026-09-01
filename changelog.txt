@@ -1,4 +1,9 @@
-﻿2.1.13
+﻿2.1.14-hidpi (ChrisFab16 fork)
+
+Fixed:
+HiDPI layout on Configure form Files/Folders tabs — insert tab control anchored to panel, wider prefix/postfix fields, form shell scaled at load (125%–200% displays).
+
+2.1.13
 
 Fixed:
 Copy day field when adding a copied book to the library

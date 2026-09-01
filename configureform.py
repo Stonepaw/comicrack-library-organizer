@@ -51,7 +51,9 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
-VERSION = "2.1.13"
+import lodpi
+
+VERSION = "2.1.14-hidpi"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
                 "Editor", "Format", "Genre", "Imprint", "Inker", "Language", "Letterer", "Locations", "Main Character Or Team", "Manga", "Month", "Notes", "Number", "Penciller", "Publisher", 
@@ -117,6 +119,8 @@ class ConfigureForm(Form):
         self.path_maker = PathMaker(self, self.profile)
 
         self.adjust_combo_box_drop_down_width(self._profile_selector.ComboBox)
+
+        self.Load += self.configure_form_load
 
 
     def initialize_component(self):
@@ -1414,10 +1418,14 @@ class ConfigureForm(Form):
         self._insert_controls.Controls.Add(self._multiple_value_insert_controls)
         self._insert_controls.Controls.Add(self._calculated_insert_controls)
         self._insert_controls.Controls.Add(self._search_insert_controls)
-        self._insert_controls.Location = System.Drawing.Point(-1, 131)
+        insert_top = lodpi.scale_int(128)
+        insert_width = lodpi.scale_int(498)
+        insert_height = lodpi.scale_int(290)
+        self._insert_controls.Location = System.Drawing.Point(0, insert_top)
         self._insert_controls.Name = "insert_controls"
         self._insert_controls.SelectedIndex = 0
-        self._insert_controls.Size = System.Drawing.Size(503, 289)
+        self._insert_controls.Size = System.Drawing.Size(insert_width, insert_height)
+        self._insert_controls.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
         self._insert_controls.TabIndex = 6
         self._insert_controls.Selecting += self.insert_controls_selecting
         self._insert_controls.Selected += self.insert_controls_selected
@@ -2055,6 +2063,61 @@ class ConfigureForm(Form):
 
         self._search_insert_controls.ResumeLayout()
         self._insert_controls.ResumeLayout()
+
+
+    def configure_form_load(self, sender, e):
+        if lodpi.needs_hidpi_layout():
+            self.apply_hidpi_form_metrics()
+        self.ensure_files_folders_resize_hooks()
+
+    def ensure_files_folders_resize_hooks(self):
+        if getattr(self, "_files_folders_resize_hooks", False):
+            return
+        self._files_page.Resize += self.files_folders_page_resize
+        self._folders_page.Resize += self.files_folders_page_resize
+        self._files_folders_resize_hooks = True
+
+    def apply_hidpi_form_metrics(self):
+        """Scale fixed shell metrics that were authored at 96 DPI."""
+        self.AutoSize = False
+        self.ClientSize = System.Drawing.Size(lodpi.scale_int(639), lodpi.scale_int(462))
+        content_size = System.Drawing.Size(lodpi.scale_int(500), lodpi.scale_int(420))
+        for panel in (self._files_page, self._folders_page, self._overview_page):
+            panel.Size = content_size
+        self._rules_page.Size = content_size
+        self._options_page.Size = content_size
+        self._okay.Location = System.Drawing.Point(lodpi.scale_int(474), lodpi.scale_int(433))
+        self._cancel.Location = System.Drawing.Point(lodpi.scale_int(555), lodpi.scale_int(433))
+        self._space_automatically.Location = System.Drawing.Point(lodpi.scale_int(5), lodpi.scale_int(107))
+
+    def layout_insert_controls_on_page(self, page):
+        """Fit the shared insert tab control inside the files/folders panel."""
+        if page is None or self._insert_controls.Parent is not page:
+            return
+        margin = lodpi.scale_int(4)
+        top_y = self._space_automatically.Bottom + margin
+        minimum_top = lodpi.scale_int(128)
+        if top_y < minimum_top:
+            top_y = minimum_top
+        self._insert_controls.Location = System.Drawing.Point(0, top_y)
+        self._layout_insert_controls_bounds(page)
+
+    def _layout_insert_controls_bounds(self, page):
+        top = self._insert_controls.Top
+        width = page.ClientSize.Width
+        height = page.ClientSize.Height - top
+        minimum_width = lodpi.scale_int(200)
+        minimum_height = lodpi.scale_int(120)
+        if width < minimum_width:
+            width = minimum_width
+        if height < minimum_height:
+            height = minimum_height
+        self._insert_controls.Size = System.Drawing.Size(width, height)
+
+    def files_folders_page_resize(self, sender, e):
+        if self._insert_controls.Parent is sender and sender.Visible:
+            self._layout_insert_controls_bounds(sender)
+
     
           
     def change_page(self, sender, e):
@@ -2094,6 +2157,8 @@ class ConfigureForm(Form):
             self._folders_page.Controls.Add(self._insert_controls)
             self._folders_page.Controls.Add(self._space_automatically)
             self._folders_page.Controls.Add(self._preview_book_selector)
+            self.layout_insert_controls_on_page(self._folders_page)
+
         elif sender.Tag is self._files_page:
             if self._files_page.Controls.Count == 0:
                 self.create_files_page()
@@ -2102,6 +2167,7 @@ class ConfigureForm(Form):
             self._files_page.Controls.Add(self._insert_controls)
             self._files_page.Controls.Add(self._space_automatically)
             self._files_page.Controls.Add(self._preview_book_selector)
+            self.layout_insert_controls_on_page(self._files_page)
 
         elif sender.Tag is self._rules_page:
             if self._rules_page.Controls.Count == 0:
