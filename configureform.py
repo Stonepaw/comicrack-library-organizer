@@ -45,6 +45,8 @@ from loforms import NewIllegalCharacterDialog, GetProfileNameDialog
 
 from locommon import SCRIPTDIRECTORY, ICON, check_excluded_folders, check_metadata_rules, get_custom_value_keys
 
+from locommon import ThemeMe, get_toolstrip_renderer
+
 import losettings
 
 from losettings import Profile
@@ -323,7 +325,7 @@ class ConfigureForm(Form):
         self._toolstrip.Location = System.Drawing.Point(0, 0)
         self._toolstrip.Name = "toolstrip"
         self._toolstrip.Padding = System.Windows.Forms.Padding(10)
-        self._toolstrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System
+        self._toolstrip.Renderer = get_toolstrip_renderer()
         self._toolstrip.ShowItemToolTips = False
         self._toolstrip.Size = System.Drawing.Size(130, 462)
         self._toolstrip.TabIndex = 0
@@ -2121,6 +2123,7 @@ class ConfigureForm(Form):
         sender.Tag.Visible = True
         
         self.update_template_text()
+        ThemeMe(self)
 
         self.ResumeLayout()
         
@@ -2216,6 +2219,7 @@ class ConfigureForm(Form):
     def add_illegal_character(self, sender, e):
         """Adds a new character replacement into the form and profile"""
         dialog = NewIllegalCharacterDialog(self.profile.IllegalCharacters.keys())
+        ThemeMe(dialog)
 
         result = dialog.ShowDialog()
 
@@ -2324,6 +2328,7 @@ class ConfigureForm(Form):
                 self.create_calculated_insert_controls()
             self._calculated_insert_controls.Controls.Clear()
 
+        ThemeMe(self)
         self._insert_controls.ResumeLayout()
 
 
@@ -2789,6 +2794,7 @@ class ConfigureForm(Form):
 
         Returns the new name or None if the user canceled the dialog"""
         profile_name_dialog = GetProfileNameDialog(self.profiles.keys(), label_text, existing_name)
+        ThemeMe(profile_name_dialog)
 
         dialog_result = profile_name_dialog.ShowDialog()
 

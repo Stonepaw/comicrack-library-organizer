@@ -137,6 +137,7 @@ def LibraryOrganizerUndo(books):
 
             if len(undo_collection) > 0:
                 undo_form = WorkerFormUndo(undo_collection, profiles)
+                locommon.ThemeMe(undo_form)
                 undo_form.ShowDialog()
                 undo_form.Dispose()
                 File.Delete(UNDOFILE)
@@ -164,6 +165,7 @@ def show_config_form(profiles, lastused, books):
     Returns True if the user press Okay.
     Returns False if the user pressed cancel."""
     configform = ConfigureForm(profiles, lastused[0], books)
+    locommon.ThemeMe(configform)
     result = configform.ShowDialog()
     configform.save_profile()
     configform.Dispose()
@@ -177,6 +179,7 @@ def show_worker_form(profiles, lastused, books):
     """Gets the profile(s) to use and shows the worker form."""
     if len(profiles) > 1:
         profile_selector = ProfileSelector(profiles.keys(), lastused)
+        locommon.ThemeMe(profile_selector)
         result = profile_selector.ShowDialog()
         if result == DialogResult.Cancel:
             profile_selector.Dispose()
@@ -188,4 +191,5 @@ def show_worker_form(profiles, lastused, books):
     profiles_to_use = [profiles[name] for name in lastused]
 
     worker_form = WorkerForm(books, profiles_to_use)
+    locommon.ThemeMe(worker_form)
     worker_form.ShowDialog()

@@ -39,7 +39,7 @@ from System.Windows.Forms import *
 import loduplicate
 from loduplicate import DuplicateForm
 
-from locommon import ICON, Mode
+from locommon import ICON, Mode, ThemeMe
 
 from lobookmover import BookMover, UndoMover
 
@@ -173,6 +173,7 @@ class WorkerForm(Form):
         """Shows the report form with the available logger."""
         report = loforms.ReportForm()
         report.LoadData(self.logger.ToArray())
+        ThemeMe(report)
         r = report.ShowDialog()
         if r == DialogResult.Yes:
             self.logger.SaveLog()

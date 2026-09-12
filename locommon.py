@@ -649,3 +649,25 @@ def get_custom_value_keys():
             if pair.Key not in keys:
                 keys.append(pair.Key)
     return keys
+
+def ThemeMe(control):
+    """Applies the current theme applied to ComicRack
+    
+    Requires version 0.9.182
+    """
+    if ComicRack.App.ProductVersion >= '0.9.182':
+        ComicRack.Theme.ApplyTheme(control)
+
+def get_toolstrip_renderer():
+    """Returns a ToolStripRenderer depending of CR versions.
+    
+    Higher or equal than 0.9.182, will use Theme.ToolStripRenderer
+    Else it will use the ToolStripSystemRenderer
+    
+    Not even sure why we are even changing this (for backwards compatibility). 
+    It would have used the same if we didn't change this or left RenderMode eq. ManagerRenderMode
+    """
+    if ComicRack.App.ProductVersion >= '0.9.182':
+        return ComicRack.Theme.ToolStripRenderer # The ToolStripRenderer will return a system renderer when Dark Mode is disabled
+    else:
+        return System.Windows.Forms.ToolStripSystemRenderer()

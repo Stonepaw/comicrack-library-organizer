@@ -709,6 +709,7 @@ class BookMover(object):
     def get_smaller_path(self, path):
 
         p = PathTooLongForm(path)
+        locommon.ThemeMe(p)
         r = p.ShowDialog()
 
         if r != DialogResult.OK:
