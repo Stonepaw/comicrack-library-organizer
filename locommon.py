@@ -305,7 +305,7 @@ class ExcludeRule(object):
             return self.calculate_book_should_be_moved(book, self.get_start_field_data(book, field), self.value)
 
         else:
-            return self.calculate_book_should_be_moved(book, getattr(book, field), self.value)
+            return self.calculate_book_should_be_moved(book, unicode(getattr(book, field)), self.value)
     
 
     def calculate_book_should_be_moved(self, book, field_data, value):
