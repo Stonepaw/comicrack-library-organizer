@@ -165,28 +165,6 @@ class ConfigureForm(Form):
         self._cancel.TabIndex = 3
         self._cancel.Text = "Cancel"
         self._cancel.UseVisualStyleBackColor = True
-        # 
-        # files_page
-        # 
-        self._files_page.BackColor = System.Drawing.SystemColors.ControlLightLight
-        self._files_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        self._files_page.Location = System.Drawing.Point(130, 10)
-        self._files_page.Name = "files_page"
-        self._files_page.Size = System.Drawing.Size(500, 420)
-        self._files_page.TabIndex = 10
-        self._files_page.Visible = False
-        self._files_page.ColumnCount = 1
-        self._files_page.RowCount = 0
-        # 
-        # folders_page
-        # 
-        self._folders_page.BackColor = System.Drawing.SystemColors.ControlLightLight
-        self._folders_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        self._folders_page.Location = System.Drawing.Point(130, 10)
-        self._folders_page.Name = "folders_page"
-        self._folders_page.Size = System.Drawing.Size(500, 420)
-        self._folders_page.TabIndex = 0
-        self._folders_page.Visible = False
         #
         # options_page
         #
@@ -676,56 +654,55 @@ class ConfigureForm(Form):
 
     def create_files_page(self):
         """Creates the controls on the files page."""
-
-        self._files_page.SuspendLayout()
-
-        self._files_page.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
-        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52))
-        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
-        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
-        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
-        self._files_page.RowCount = 3
-
         self._file_structure = System.Windows.Forms.TextBox()
         self._label_file_structure = System.Windows.Forms.Label()
-        self._file_structure_container = System.Windows.Forms.TableLayoutPanel()
-        self._file_preview_container = System.Windows.Forms.TableLayoutPanel()
+        self._file_structure_layout = System.Windows.Forms.TableLayoutPanel()
+        self._file_preview_layout = System.Windows.Forms.TableLayoutPanel()
         self._label_file_preview = System.Windows.Forms.Label()
         self._file_preview = System.Windows.Forms.Label()
         self._file_preview_previous = System.Windows.Forms.Button()
         self._file_preview_next = System.Windows.Forms.Button()
         self._file_space_automatically = System.Windows.Forms.CheckBox()
         self._file_page_input_controls_container = System.Windows.Forms.Panel()
+        self._file_actions_layout = System.Windows.Forms.FlowLayoutPanel()
 
-        self._file_structure_container.SuspendLayout()
-        self._file_preview_container.SuspendLayout()
+        self._files_page.SuspendLayout()
+        self._file_structure_layout.SuspendLayout()
+        self._file_preview_layout.SuspendLayout()
+        self._file_actions_layout.SuspendLayout()
         self._file_page_input_controls_container.SuspendLayout()
 
         #
-        # file_structure_container
+        # _files_page
         #
-        self._file_structure_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
-        self._file_structure_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
-        self._file_structure_container.Dock = System.Windows.Forms.DockStyle.Fill
-        self._file_structure_container.RowCount = 0
-        self._file_structure_container.TabIndex = 0
+        self._files_page.BackColor = System.Drawing.SystemColors.ControlLightLight
+        self._files_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        self._files_page.ColumnCount = 1
+        self._files_page.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._files_page.Location = System.Drawing.Point(130, 10)
+        self._files_page.Name = "files_page"
+        self._files_page.RowCount = 4
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52))
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._files_page.Size = System.Drawing.Size(500, 420)
+        self._files_page.TabIndex = 10
+        self._files_page.Visible = False
+        self._files_page.Controls.Add(self._file_structure_layout, 0, 0)
+        self._files_page.Controls.Add(self._file_preview_layout, 0, 1)
+        self._files_page.Controls.Add(self._file_actions_layout, 0, 2)
+        self._files_page.Controls.Add(self._file_page_input_controls_container, 0, 3)
         #
-        # file_preview_container
+        # _file_structure_layout
         #
-        self._file_preview_container.AutoSize = True
-        self._file_preview_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
-        self._file_preview_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
-        self._file_preview_container.Dock = System.Windows.Forms.DockStyle.Fill
-        self._file_structure_container.TabIndex = 1
-
-        if self._has_multiple_preview_books:
-            self._file_preview_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
-            self._file_preview_container.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
-        #
-        # _file_page_input_controls_container
-        #
-        self._file_page_input_controls_container.Dock = System.Windows.Forms.DockStyle.Fill
-        self._file_page_input_controls_container.TabIndex = 3   
+        self._file_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._file_structure_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_structure_layout.RowCount = 1
+        self._file_structure_layout.TabIndex = 0
+        self._file_structure_layout.Controls.Add(self._label_file_structure, 0, 0)
+        self._file_structure_layout.Controls.Add(self._file_structure, 1, 0)
         # 
         # label_file_structure
         # 
@@ -743,6 +720,21 @@ class ConfigureForm(Form):
         self._file_structure.Name = "file_structure"
         self._file_structure.TabIndex = 1
         self._file_structure.TextChanged += self.update_template_text
+        #
+        # _file_preview_layout
+        #
+        self._file_preview_layout.AutoSize = True
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_structure_layout.TabIndex = 1
+        self._file_preview_layout.Controls.Add(self._label_file_preview, 0, 0)
+        self._file_preview_layout.Controls.Add(self._file_preview, 1, 0)
+        if self._has_multiple_preview_books:
+            self._file_preview_layout.Controls.Add(self._file_preview_previous, 2, 0)
+            self._file_preview_layout.Controls.Add(self._file_preview_next, 3, 0)
         # 
         # label_file_preview
         # 
@@ -783,6 +775,13 @@ class ConfigureForm(Form):
         self._file_preview_next.Text = ">"
         self._file_preview_next.UseVisualStyleBackColor = True
         self._file_preview_next.Click += self.next_preview_book
+        #
+        # _file_actions_layout
+        #
+        self._file_actions_layout.AutoSize = True
+        self._file_actions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_actions_layout.TabIndex = 2
+        self._file_actions_layout.Controls.Add(self._file_space_automatically)
         # 
         # _file_space_automatically
         # 
@@ -792,31 +791,22 @@ class ConfigureForm(Form):
         self._file_space_automatically.Checked = True
         self._file_space_automatically.CheckState = System.Windows.Forms.CheckState.Checked
         self._file_space_automatically.Name = "file_space_automatically"
-        self._file_space_automatically.Margin = System.Windows.Forms.Padding(6, 3, 3, 3);
-        self._file_space_automatically.TabIndex = 2
+        self._file_space_automatically.TabIndex = 0
         self._file_space_automatically.Text = "Space inserted fields automatically"
         self._file_space_automatically.UseVisualStyleBackColor = False
         self._file_space_automatically.CheckedChanged += self.space_automatically_check_changed
+        #
+        # _file_page_input_controls_container
+        #
+        self._file_page_input_controls_container.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_page_input_controls_container.TabIndex = 3
 
-        self._file_structure_container.Controls.Add(self._label_file_structure, 0, 0)
-        self._file_structure_container.Controls.Add(self._file_structure, 1, 0)
-
-        self._file_preview_container.Controls.Add(self._label_file_preview, 0, 0)
-        self._file_preview_container.Controls.Add(self._file_preview, 1, 0)
-
-        if self._has_multiple_preview_books:
-            self._file_preview_container.Controls.Add(self._file_preview_previous, 2, 0)
-            self._file_preview_container.Controls.Add(self._file_preview_next, 3, 0)
-
-        self._files_page.Controls.Add(self._file_structure_container, 0, 0)
-        self._files_page.Controls.Add(self._file_preview_container, 0, 1)
-        self._files_page.Controls.Add(self._file_space_automatically, 0, 2)
-        self._files_page.Controls.Add(self._file_page_input_controls_container, 0, 3)
-
-        self._file_structure_container.ResumeLayout(False)
-        self._file_structure_container.PerformLayout()
-        self._file_preview_container.ResumeLayout(False)
-        self._file_preview_container.PerformLayout()
+        self._file_structure_layout.ResumeLayout(False)
+        self._file_structure_layout.PerformLayout()
+        self._file_preview_layout.ResumeLayout(False)
+        self._file_preview_layout.PerformLayout()
+        self._file_actions_layout.ResumeLayout(False)
+        self._file_actions_layout.PerformLayout()
         self._file_page_input_controls_container.ResumeLayout(False)
         self._file_page_input_controls_container.PerformLayout()
         self._files_page.ResumeLayout(False)
@@ -825,9 +815,6 @@ class ConfigureForm(Form):
 
     def create_folders_page(self):
         """Creates the controls on the folders page."""
-        
-        self._folders_page.SuspendLayout()
-
         self._folder_structure_layout = System.Windows.Forms.TableLayoutPanel()
         self._folder_structure = System.Windows.Forms.TextBox()
         self._label_folder_structure = System.Windows.Forms.Label()
@@ -841,6 +828,7 @@ class ConfigureForm(Form):
         self._folder_page_input_controls_container = System.Windows.Forms.Panel()
         self._folder_space_automatically = System.Windows.Forms.CheckBox()
 
+        self._folders_page.SuspendLayout()
         self._folder_structure_layout.SuspendLayout()
         self._folder_preview_layout.SuspendLayout()
         self._folder_page_actions_layout.SuspendLayout()
@@ -849,12 +837,19 @@ class ConfigureForm(Form):
         #
         # _folders_page
         #
+        self._folders_page.BackColor = System.Drawing.SystemColors.ControlLightLight
+        self._folders_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         self._folders_page.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folders_page.Location = System.Drawing.Point(130, 10)
+        self._folders_page.Name = "folders_page"
         self._folders_page.RowCount = 4
         self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52))
         self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle())
         self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle())
         self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folders_page.Size = System.Drawing.Size(500, 420)
+        self._folders_page.TabIndex = 0
+        self._folders_page.Visible = False
         self._folders_page.Controls.Add(self._folder_structure_layout, 0, 0)
         self._folders_page.Controls.Add(self._folder_preview_layout, 0, 1)
         self._folders_page.Controls.Add(self._folder_page_actions_layout, 0, 2)
@@ -898,11 +893,9 @@ class ConfigureForm(Form):
         self._folder_preview_layout.TabIndex = 1
         self._folder_preview_layout.Controls.Add(self._label_folder_preview, 0, 0)
         self._folder_preview_layout.Controls.Add(self._folder_preview, 1, 0)
-
         if self._has_multiple_preview_books:
             self._folder_preview_layout.Controls.Add(self._folder_preview_previous, 2, 0)
             self._folder_preview_layout.Controls.Add(self._folder_preview_next, 3, 0)
-
         # 
         # label_folder_preview
         # 
@@ -978,8 +971,6 @@ class ConfigureForm(Form):
         self._folder_page_input_controls_container.Dock = System.Windows.Forms.DockStyle.Fill
         self._folder_page_input_controls_container.TabIndex = 3   
 
-        #self.load_folders_page_settings()
-
         self._folder_structure_layout.ResumeLayout(False)
         self._folder_structure_layout.PerformLayout()
         self._folder_preview_layout.ResumeLayout(False)
@@ -988,8 +979,8 @@ class ConfigureForm(Form):
         self._folder_page_actions_layout.PerformLayout()
         self._folder_page_input_controls_container.ResumeLayout(False)
         self._folder_page_input_controls_container.PerformLayout()
-
-        self._folders_page.ResumeLayout()
+        self._folders_page.ResumeLayout(False)
+        self._folders_page.PerformLayout()
 
 
     def create_rules_page(self):
