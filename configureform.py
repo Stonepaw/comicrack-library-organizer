@@ -988,6 +988,8 @@ class ConfigureForm(Form):
         self._metadata_rules_page = System.Windows.Forms.TabPage()
         self._metadata_rules_page_layout = System.Windows.Forms.TableLayoutPanel()
         self._folder_rules_page = System.Windows.Forms.TabPage()
+        self._folder_rules_page_layout = System.Windows.Forms.TableLayoutPanel()
+        self._folder_rules_actions_layout = System.Windows.Forms.FlowLayoutPanel()
         self._add_excluded_folder = System.Windows.Forms.Button()
         self._remove_excluded_folder = System.Windows.Forms.Button()
         self._excluded_folders_list = System.Windows.Forms.ListBox()
@@ -1004,6 +1006,8 @@ class ConfigureForm(Form):
         self._rules_page.SuspendLayout()
         self._metadata_rules_page.SuspendLayout()
         self._folder_rules_page.SuspendLayout()
+        self._folder_rules_page_layout.SuspendLayout()
+        self._folder_rules_actions_layout.SuspendLayout()
         self._metadata_rules_actions_container.SuspendLayout()
         self._metadata_rules_page_layout.SuspendLayout()
         #
@@ -1015,17 +1019,8 @@ class ConfigureForm(Form):
         # metadata_rules_page
         # 
         self._metadata_rules_page.Controls.Add(self._metadata_rules_page_layout)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_group)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_label2)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_operator)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_mode)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_label1)
-        #self._metadata_rules_page.Controls.Add(self._metadata_rules_container)
-        self._metadata_rules_page.Location = System.Drawing.Point(4, 22)
+        self._metadata_rules_page.Dock = System.Windows.Forms.DockStyle.Fill
         self._metadata_rules_page.Name = "metadata_rules_page"
-        self._metadata_rules_page.Size = System.Drawing.Size(492, 394)
         self._metadata_rules_page.TabIndex = 0
         self._metadata_rules_page.Text = "Metadata Rules"
         self._metadata_rules_page.UseVisualStyleBackColor = True
@@ -1039,27 +1034,61 @@ class ConfigureForm(Form):
         self._metadata_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
         self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_actions_container, 0, 0)
         self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_container, 0, 1)
+        self._metadata_rules_page_layout.Padding = System.Windows.Forms.Padding(7)
         self._metadata_rules_page_layout.TabIndex = 0
         # 
         # folder_rules_page
         # 
-        self._folder_rules_page.Controls.Add(self._excluded_folder_label)
-        self._folder_rules_page.Controls.Add(self._excluded_folders_list)
-        self._folder_rules_page.Controls.Add(self._remove_excluded_folder)
-        self._folder_rules_page.Controls.Add(self._add_excluded_folder)
-        self._folder_rules_page.Location = System.Drawing.Point(4, 22)
+        self._folder_rules_page.Controls.Add(self._folder_rules_page_layout)
+        self._folder_rules_page.Dock = System.Windows.Forms.DockStyle.Fill
         self._folder_rules_page.Name = "folder_rules_page"
-        self._folder_rules_page.Size = System.Drawing.Size(492, 394)
+        self._folder_rules_page.Padding = System.Windows.Forms.Padding(10)
         self._folder_rules_page.TabIndex = 1
         self._folder_rules_page.Text = "Folder Rules"
         self._folder_rules_page.UseVisualStyleBackColor = True
+        #
+        # _folder_rules_page_layout
+        #
+        self._folder_rules_page_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_rules_page_layout.RowCount = 2
+        self._folder_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._folder_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_rules_page_layout.Controls.Add(self._excluded_folder_label, 0, 0)
+        self._folder_rules_page_layout.Controls.Add(self._excluded_folders_list, 0, 1)
+        self._folder_rules_page_layout.Controls.Add(self._folder_rules_actions_layout, 1, 1)
+        self._folder_rules_page_layout.TabIndex = 0
+        # 
+        # excluded_folder_label
+        # 
+        self._excluded_folder_label.AutoSize = True
+        self._excluded_folder_label.Name = "excluded_folder_label"
+        self._excluded_folder_label.TabIndex = 0
+        self._excluded_folder_label.Text = "Do not move books if they are located in the following folders"
+        # 
+        # excluded_folders_list
+        # 
+        self._excluded_folders_list.Dock = System.Windows.Forms.DockStyle.Fill
+        self._excluded_folders_list.FormattingEnabled = True
+        self._excluded_folders_list.Name = "excluded_folders_list"
+        self._excluded_folders_list.Sorted = True
+        self._excluded_folders_list.TabIndex = 1
+        #
+        #  _folder_rules_actions_layout
+        #
+        self._folder_rules_actions_layout.AutoSize = True
+        self._folder_rules_actions_layout.Controls.Add(self._add_excluded_folder)
+        self._folder_rules_actions_layout.Controls.Add(self._remove_excluded_folder)
+        self._folder_rules_actions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_rules_actions_layout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        self._excluded_folders_list.TabIndex = 2
         # 
         # add_excluded_folder
         # 
-        self._add_excluded_folder.Location = System.Drawing.Point(403, 26)
         self._add_excluded_folder.Name = "add_excluded_folder"
         self._add_excluded_folder.Size = System.Drawing.Size(75, 23)
-        self._add_excluded_folder.TabIndex = 2
+        self._add_excluded_folder.TabIndex = 0
         self._add_excluded_folder.Tag = self._excluded_folders_list
         self._add_excluded_folder.Text = "Add"
         self._add_excluded_folder.UseVisualStyleBackColor = True
@@ -1067,32 +1096,13 @@ class ConfigureForm(Form):
         # 
         # remove_excluded_folder
         # 
-        self._remove_excluded_folder.Location = System.Drawing.Point(403, 62)
         self._remove_excluded_folder.Name = "remove_excluded_folder"
         self._remove_excluded_folder.Size = System.Drawing.Size(75, 23)
-        self._remove_excluded_folder.TabIndex = 3
+        self._remove_excluded_folder.TabIndex = 1
         self._remove_excluded_folder.Tag = self._excluded_folders_list
         self._remove_excluded_folder.Text = "Remove"
         self._remove_excluded_folder.UseVisualStyleBackColor = True
         self._remove_excluded_folder.Click += self.remove_folder_path_from_list
-        # 
-        # excluded_folders_list
-        # 
-        self._excluded_folders_list.FormattingEnabled = True
-        self._excluded_folders_list.Location = System.Drawing.Point(8, 26)
-        self._excluded_folders_list.Name = "excluded_folders_list"
-        self._excluded_folders_list.Size = System.Drawing.Size(389, 355)
-        self._excluded_folders_list.Sorted = True
-        self._excluded_folders_list.TabIndex = 1
-        # 
-        # excluded_folder_label
-        # 
-        self._excluded_folder_label.AutoSize = True
-        self._excluded_folder_label.Location = System.Drawing.Point(8, 7)
-        self._excluded_folder_label.Name = "excluded_folder_label"
-        self._excluded_folder_label.Size = System.Drawing.Size(294, 13)
-        self._excluded_folder_label.TabIndex = 0
-        self._excluded_folder_label.Text = "Do not move books if they are located in the following folders"
         # 
         # _metadata_rules_actions_container
         #
@@ -1184,6 +1194,8 @@ class ConfigureForm(Form):
         self._metadata_rules_container.ResumeLayout()
         self._metadata_rules_page_layout.ResumeLayout()
         self._metadata_rules_page.ResumeLayout()
+        self._folder_rules_actions_layout.ResumeLayout()
+        self._folder_rules_page_layout.ResumeLayout()
         self._folder_rules_page.ResumeLayout()
         self._rules_page.ResumeLayout()
 
