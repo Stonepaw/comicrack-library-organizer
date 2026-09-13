@@ -78,6 +78,7 @@ class ConfigureForm(Form):
         self._calculated_insert_controls_list = {}
         self._preview_books = books
         self._has_multiple_preview_books = len(books) > 1
+        self._space_automatically = False
 
         self.initialize_component()
 
@@ -134,7 +135,6 @@ class ConfigureForm(Form):
         self._rules_page = System.Windows.Forms.TabControl()
         self._options_page = System.Windows.Forms.TabControl()
         self._insert_controls = System.Windows.Forms.TabControl()
-        self._space_automatically = System.Windows.Forms.CheckBox()
         self._folder_browser_dialog = System.Windows.Forms.FolderBrowserDialog()
         self._toolstrip.SuspendLayout()
         self._overview_page.SuspendLayout()
@@ -165,23 +165,6 @@ class ConfigureForm(Form):
         self._cancel.TabIndex = 3
         self._cancel.Text = "Cancel"
         self._cancel.UseVisualStyleBackColor = True
-        # 
-        # space_automatically
-        # TODO: Use separate for the two pages and sync them
-        # TODO: Need to handle loading and syncing for the two different checkboxes now
-        # 
-        self._space_automatically.AutoSize = True
-        self._space_automatically.Anchor = System.Windows.Forms.AnchorStyles.Left
-        self._space_automatically.BackColor = System.Drawing.Color.Transparent
-        self._space_automatically.Checked = True
-        self._space_automatically.CheckState = System.Windows.Forms.CheckState.Checked
-        self._space_automatically.Location = System.Drawing.Point(5, 107)
-        self._space_automatically.Name = "space_automatically"
-        self._space_automatically.Margin = System.Windows.Forms.Padding(6, 3, 3, 3);
-        self._space_automatically.Size = System.Drawing.Size(188, 17)
-        self._space_automatically.TabIndex = 8
-        self._space_automatically.Text = "Space inserted fields automatically"
-        self._space_automatically.UseVisualStyleBackColor = False
         # 
         # files_page
         # 
@@ -813,6 +796,7 @@ class ConfigureForm(Form):
         self._file_space_automatically.TabIndex = 2
         self._file_space_automatically.Text = "Space inserted fields automatically"
         self._file_space_automatically.UseVisualStyleBackColor = False
+        self._file_space_automatically.CheckedChanged += self.space_automatically_check_changed
 
         self._file_structure_container.Controls.Add(self._label_file_structure, 0, 0)
         self._file_structure_container.Controls.Add(self._file_structure, 1, 0)
@@ -966,7 +950,7 @@ class ConfigureForm(Form):
         self._folder_page_actions_layout.Controls.Add(self._folder_space_automatically)
         self._folder_page_actions_layout.Controls.Add(self._insert_folder_seperator)
         # 
-        # _file_space_automatically
+        # _folder_space_automatically
         # 
         self._folder_space_automatically.AutoSize = True
         self._folder_space_automatically.Anchor = System.Windows.Forms.AnchorStyles.Left
@@ -977,6 +961,7 @@ class ConfigureForm(Form):
         self._folder_space_automatically.TabIndex = 0
         self._folder_space_automatically.Text = "Space inserted fields automatically"
         self._folder_space_automatically.UseVisualStyleBackColor = False
+        self._folder_space_automatically.CheckedChanged += self.space_automatically_check_changed
         # 
         # insert_folder_seperator
         # 
@@ -2530,7 +2515,7 @@ class ConfigureForm(Form):
 
     def insert_control_clicked(self, sender, e):
         """Gets the template text from the clicked insert control then passes it to the function that adds it to the correct textbox"""
-        template = sender.GetTemplateText(self._file_space_automatically if self._files_page.Visible else self._folder_space_automatically.Checked)
+        template = sender.GetTemplateText(self._space_automatically)
 
         if self._files_page.Visible:
             self.insert_template_text(template, self._file_structure)
@@ -2630,8 +2615,8 @@ class ConfigureForm(Form):
 
         self.load_overview_page_settings()
 
-        self._space_automatically.Checked = self.profile.AutoSpaceFields
-
+        self._space_automatically = self.profile.AutoSpaceFields
+        self.sync_space_automatically()
         
         if self._rules_page.Controls.Count > 0:
             self.load_rules_page_settings()
@@ -2771,7 +2756,7 @@ class ConfigureForm(Form):
 
         self.save_overview_page_settings()
 
-        self.profile.AutoSpaceFields = self._space_automatically.Checked
+        self.profile.AutoSpaceFields = self._space_automatically
 
         if self._options_page.Controls.Count > 0:
             self.save_options_page_settings()
@@ -3114,3 +3099,11 @@ class ConfigureForm(Form):
 
         combobox.DropDownWidth = width
         g.Dispose()
+
+    def space_automatically_check_changed(self, sender, e):
+        self._space_automatically = sender.Checked
+        self.sync_space_automatically()
+
+    def sync_space_automatically(self):
+        self._file_space_automatically.Checked = self._space_automatically
+        self._folder_space_automatically.Checked = self._space_automatically
