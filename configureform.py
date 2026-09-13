@@ -986,6 +986,7 @@ class ConfigureForm(Form):
     def create_rules_page(self):
         """Creates the controls in the rule page."""
         self._metadata_rules_page = System.Windows.Forms.TabPage()
+        self._metadata_rules_page_layout = System.Windows.Forms.TableLayoutPanel()
         self._folder_rules_page = System.Windows.Forms.TabPage()
         self._add_excluded_folder = System.Windows.Forms.Button()
         self._remove_excluded_folder = System.Windows.Forms.Button()
@@ -998,10 +999,13 @@ class ConfigureForm(Form):
         self._metadata_rules_label2 = System.Windows.Forms.Label()
         self._metadata_rules_add_group = System.Windows.Forms.Button()
         self._metadata_rules_add_rule = System.Windows.Forms.Button()
+        self._metadata_rules_actions_container = System.Windows.Forms.FlowLayoutPanel()
 
         self._rules_page.SuspendLayout()
         self._metadata_rules_page.SuspendLayout()
         self._folder_rules_page.SuspendLayout()
+        self._metadata_rules_actions_container.SuspendLayout()
+        self._metadata_rules_page_layout.SuspendLayout()
         #
         # rules_page
         #
@@ -1010,21 +1014,32 @@ class ConfigureForm(Form):
         # 
         # metadata_rules_page
         # 
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_add_group)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_label2)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_operator)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_mode)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_label1)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_container)
+        self._metadata_rules_page.Controls.Add(self._metadata_rules_page_layout)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_add_group)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_label2)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_operator)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_mode)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_label1)
+        #self._metadata_rules_page.Controls.Add(self._metadata_rules_container)
         self._metadata_rules_page.Location = System.Drawing.Point(4, 22)
         self._metadata_rules_page.Name = "metadata_rules_page"
         self._metadata_rules_page.Size = System.Drawing.Size(492, 394)
         self._metadata_rules_page.TabIndex = 0
         self._metadata_rules_page.Text = "Metadata Rules"
         self._metadata_rules_page.UseVisualStyleBackColor = True
-        
-
+        #
+        # _metadata_rules_page_layout
+        #
+        self._metadata_rules_page_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._metadata_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._metadata_rules_page_layout.RowCount = 2
+        self._metadata_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._metadata_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_actions_container, 0, 0)
+        self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_container, 0, 1)
+        self._metadata_rules_page_layout.TabIndex = 0
         # 
         # folder_rules_page
         # 
@@ -1079,65 +1094,65 @@ class ConfigureForm(Form):
         self._excluded_folder_label.TabIndex = 0
         self._excluded_folder_label.Text = "Do not move books if they are located in the following folders"
         # 
-        # metadata_rules_container
-        # 
-        self._metadata_rules_container.AutoScroll = True
-        self._metadata_rules_container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        self._metadata_rules_container.Location = System.Drawing.Point(0, 49)
-        self._metadata_rules_container.Name = "metadata_rules_container"
-        self._metadata_rules_container.Size = System.Drawing.Size(492, 345)
-        self._metadata_rules_container.TabIndex = 6
-        self._metadata_rules_container.WrapContents = False
-        # 
-        # metadata_rules_label1
-        # 
-        self._metadata_rules_label1.AutoSize = True
-        self._metadata_rules_label1.Location = System.Drawing.Point(66, 16)
-        self._metadata_rules_label1.Name = "metadata_rules_label1"
-        self._metadata_rules_label1.Size = System.Drawing.Size(118, 13)
-        self._metadata_rules_label1.TabIndex = 1
-        self._metadata_rules_label1.Text = "move books that match"
+        # _metadata_rules_actions_container
+        #
+        self._metadata_rules_actions_container.AutoSize = True
+        self._metadata_rules_actions_container.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_mode)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_label1)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_operator)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_label2)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_add_group)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_add_rule)
+        self._metadata_rules_actions_container.TabIndex = 0
         # 
         # metadata_rules_mode
         # 
+        self._metadata_rules_mode.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._metadata_rules_mode.AutoSize = True
         self._metadata_rules_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._metadata_rules_mode.FormattingEnabled = True
         self._metadata_rules_mode.Items.AddRange(System.Array[System.Object](
             ["Do not",
             "Only"]))
-        self._metadata_rules_mode.Location = System.Drawing.Point(8, 12)
         self._metadata_rules_mode.Name = "metadata_rules_mode"
-        self._metadata_rules_mode.Size = System.Drawing.Size(55, 21)
+        self._metadata_rules_mode.Size = System.Drawing.Size(70, 21)
         self._metadata_rules_mode.TabIndex = 0
+        # 
+        # metadata_rules_label1
+        # 
+        self._metadata_rules_label1.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._metadata_rules_label1.AutoSize = True
+        self._metadata_rules_label1.Name = "metadata_rules_label1"
+        self._metadata_rules_label1.TabIndex = 1
+        self._metadata_rules_label1.Text = "move books that match"
         # 
         # metadata_rules_operator
         # 
+        self._metadata_rules_operator.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._metadata_rules_operator.FormattingEnabled = True
         self._metadata_rules_operator.Items.AddRange(System.Array[System.Object](
             ["All",
             "Any"]))
-        self._metadata_rules_operator.Location = System.Drawing.Point(188, 12)
         self._metadata_rules_operator.Name = "metadata_rules_operator"
-        self._metadata_rules_operator.Size = System.Drawing.Size(43, 21)
+        self._metadata_rules_operator.Size = System.Drawing.Size(50, 21)
         self._metadata_rules_operator.TabIndex = 2
         # 
         # metadata_rules_label2
         # 
+        self._metadata_rules_label2.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_label2.AutoSize = True
-        self._metadata_rules_label2.Location = System.Drawing.Point(235, 15)
         self._metadata_rules_label2.Name = "metadata_rules_label2"
-        self._metadata_rules_label2.Size = System.Drawing.Size(106, 13)
         self._metadata_rules_label2.TabIndex = 3
         self._metadata_rules_label2.Text = "of the following rules."
         # 
         # metadata_rules_add_group
         # 
+        self._metadata_rules_add_group.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_add_group.AutoSize = True
         self._metadata_rules_add_group.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._metadata_rules_add_group.Location = System.Drawing.Point(347, 11)
         self._metadata_rules_add_group.Name = "metadata_rules_add_group"
-        self._metadata_rules_add_group.Size = System.Drawing.Size(68, 23)
         self._metadata_rules_add_group.TabIndex = 4
         self._metadata_rules_add_group.Text = "Add Group"
         self._metadata_rules_add_group.UseVisualStyleBackColor = True
@@ -1145,18 +1160,29 @@ class ConfigureForm(Form):
         # 
         # metadata_rules_add_rule
         # 
+        self._metadata_rules_add_rule.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_add_rule.AutoSize = True
         self._metadata_rules_add_rule.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._metadata_rules_add_rule.Location = System.Drawing.Point(421, 11)
         self._metadata_rules_add_rule.Name = "metadata_rules_add_rule"
-        self._metadata_rules_add_rule.Size = System.Drawing.Size(61, 23)
         self._metadata_rules_add_rule.TabIndex = 5
         self._metadata_rules_add_rule.Text = "Add Rule"
         self._metadata_rules_add_rule.UseVisualStyleBackColor = True
         self._metadata_rules_add_rule.Click += self.add_metadata_rule
+        # 
+        # metadata_rules_container
+        # 
+        self._metadata_rules_container.AutoScroll = True
+        self._metadata_rules_container.Dock = System.Windows.Forms.DockStyle.Fill
+        self._metadata_rules_container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        self._metadata_rules_container.Name = "metadata_rules_container"
+        self._metadata_rules_container.TabIndex = 1
+        self._metadata_rules_container.WrapContents = False
 
         self.load_rules_page_settings()
 
+        self._metadata_rules_actions_container.ResumeLayout()
+        self._metadata_rules_container.ResumeLayout()
+        self._metadata_rules_page_layout.ResumeLayout()
         self._metadata_rules_page.ResumeLayout()
         self._folder_rules_page.ResumeLayout()
         self._rules_page.ResumeLayout()
