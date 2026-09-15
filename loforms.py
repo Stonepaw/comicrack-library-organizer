@@ -26,7 +26,7 @@ import System
 
 clr.AddReference("System.Windows.Forms")
 
-from System.Windows.Forms import ScrollBars, ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox, ErrorProvider, MessageBox
+from System.Windows.Forms import AutoSizeMode, ListBox, Button, CheckBox, Form, FormBorderStyle, FormStartPosition, DialogResult, Label, TextBox, ErrorProvider, MessageBox
 
 clr.AddReference("System.Drawing")
 
@@ -36,6 +36,7 @@ from System.IO import FileInfo, PathTooLongException
 
 import locommon
 from locommon import ICON
+from dpi import apply_dpi_container_scaling
 
 
 
@@ -82,6 +83,7 @@ class MultiValueSelectionForm(Form):
             args.Items.Remove(i)
         self.Items.Items.AddRange(System.Array[System.String](args.Items))
         self.Selection.Items.AddRange(System.Array[System.String](args.SelectedItems))
+        apply_dpi_container_scaling(self)
 
     def InitializeComponent(self):
         self.Label = Label()
@@ -387,6 +389,7 @@ class GetProfileNameDialog(Form):
         self.StartPosition = FormStartPosition.CenterParent
         self.Icon = System.Drawing.Icon(ICON)
         self.ActiveControl = self._textbox
+        apply_dpi_container_scaling(self)
 
         
     def get_name(self):
@@ -413,37 +416,61 @@ class NewIllegalCharacterDialog(Form):
 
     def __init__(self, chracters):
         self.existingchracters = chracters
+
+        self.SuspendLayout()
+
+        apply_dpi_container_scaling(self)
+
         self.TextBox = TextBox()
+        self.TextBox.Dock = System.Windows.Forms.DockStyle.Top
         self.TextBox.Size = Size(250, 20)
         self.TextBox.Location = Point(15, 12)
-        self.TextBox.TabIndex = 1
+        self.TextBox.TabIndex = 0
         self.TextBox.MaxLength = 1
+
+        self.ButtonPanel = System.Windows.Forms.FlowLayoutPanel()
+        self.ButtonPanel.SuspendLayout()
+        self.ButtonPanel.AutoSize = True
+        self.ButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom
+        self.ButtonPanel.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft
+        self.ButtonPanel.TabIndex = 1
+        self.ButtonPanel.WrapContents = False
         
         self.OK = Button()
+        self.OK.TabIndex = 0
         self.OK.Text = "OK"
         self.OK.Size = Size(75, 23)
-        self.OK.Location = Point(109, 38)
         self.OK.DialogResult = DialogResult.OK
         self.OK.Click += self.CheckTextBox
         
         self.Cancel = Button()
+        self.Cancel.TabIndex = 1
         self.Cancel.Size = Size(75, 23)
         self.Cancel.Text = "Cancel"
-        self.Cancel.Location = Point(190, 38)
         self.Cancel.DialogResult = DialogResult.Cancel
         
-        self.Size = Size(300, 100)
+        self.Size = Size(310, 100)
         self.Text = "Please enter the character"
-        self.Controls.Add(self.OK)
-        self.Controls.Add(self.Cancel)
+        self.ButtonPanel.Controls.Add(self.Cancel)
+        self.ButtonPanel.Controls.Add(self.OK)
+        self.Controls.Add(self.ButtonPanel)
         self.Controls.Add(self.TextBox)
+        self.AutoSize = True
+        #self.AutoSizeMode = AutoSizeMode.Grow
         self.AcceptButton = self.OK
         self.CancelButton = self.Cancel
         self.FormBorderStyle = FormBorderStyle.FixedDialog
         self.StartPosition = FormStartPosition.CenterParent
+        self.MaximizeBox = False
+        self.MinimizeBox = False
+        self.Padding = System.Windows.Forms.Padding(6)
         self.Icon = System.Drawing.Icon(ICON)
         self.ActiveControl = self.TextBox
 
+        self.ButtonPanel.ResumeLayout(False)
+        self.ButtonPanel.PerformLayout()
+        self.ResumeLayout(False)
+        self.PerformLayout()
 
     def CheckTextBox(self, sender, e):
         if len(self.TextBox.Text) == 0:
@@ -462,6 +489,7 @@ class NewIllegalCharacterDialog(Form):
 
 class PathTooLongForm(Form):
     def __init__(self, path):
+        apply_dpi_container_scaling(self)
         self.InitializeComponent()
         self._Path.Text = path
         self.CheckPathLength(None, None)
@@ -592,6 +620,7 @@ class PathTooLongForm(Form):
 class ReportForm(Form):
 
     def __init__(self):
+        apply_dpi_container_scaling(self)
         
         self.Size = Size(780, 400)
         self.StartPosition = FormStartPosition.CenterParent

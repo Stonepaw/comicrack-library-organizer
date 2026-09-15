@@ -13,5 +13,5 @@ from System.Windows.Forms import *
 
 # https://stackoverflow.com/questions/22735174/how-to-write-winforms-code-that-auto-scales-to-system-font-and-dpi-settings
 def apply_dpi_container_scaling(container):
-    container.AutoScaleDimensions = System.Drawing.Size(96, 96)
-    container.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+    container.AutoScaleDimensions = System.Drawing.Size(6, 13)
+    container.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
