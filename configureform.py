@@ -53,6 +53,8 @@ from losettings import Profile
 
 from lobookmover import PathMaker
 
+from dpi import apply_dpi_container_scaling
+
 VERSION = "2.1.13"
 
 failed_items = System.Array[str](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series", "Black And White", "Characters", "Colorist", "Count", "Cover Artist", 
@@ -74,6 +76,9 @@ class ConfigureForm(Form):
         self._yes_no_insert_controls_list = {}
         self._multiple_value_insert_controls_list = {}
         self._calculated_insert_controls_list = {}
+        self._preview_books = books
+        self._has_multiple_preview_books = len(books) > 1
+        self._space_automatically = False
 
         self.initialize_component()
 
@@ -89,20 +94,19 @@ class ConfigureForm(Form):
 
         print "Done creating controls"
 
-        self._preview_books = books
+        
 
         if len(books) > 0:
             self._preview_book = self._preview_books[0]
-
-            self._preview_book_selector.Maximum = len(books) -1
+            self._preview_book_index = 0
         else:
-            self._preview_book_selector.Enabled = False
             self._folder_preview.Enabled = False
             self._file_preview.Enabled = False
             self._folder_preview.Text = "Preview not available without at least one book added into the library"
             self._file_preview.Text = "Preview not available without at least one book added into the library"
             self._label_file_preview.Enabled = False
             self._label_folder_preview.Enabled = False
+            self._preview_book_index = 0
 
         try:
             self.profile = profiles[last_used_profile]
@@ -126,13 +130,11 @@ class ConfigureForm(Form):
         self._overview_page = System.Windows.Forms.Panel()
         self._okay = System.Windows.Forms.Button()
         self._cancel = System.Windows.Forms.Button()
-        self._files_page = System.Windows.Forms.Panel()
-        self._folders_page = System.Windows.Forms.Panel()
+        self._files_page = System.Windows.Forms.TableLayoutPanel()
+        self._folders_page = System.Windows.Forms.TableLayoutPanel()
         self._rules_page = System.Windows.Forms.TabControl()
         self._options_page = System.Windows.Forms.TabControl()
         self._insert_controls = System.Windows.Forms.TabControl()
-        self._preview_book_selector = System.Windows.Forms.VScrollBar()
-        self._space_automatically = System.Windows.Forms.CheckBox()
         self._folder_browser_dialog = System.Windows.Forms.FolderBrowserDialog()
         self._toolstrip.SuspendLayout()
         self._overview_page.SuspendLayout()
@@ -163,51 +165,6 @@ class ConfigureForm(Form):
         self._cancel.TabIndex = 3
         self._cancel.Text = "Cancel"
         self._cancel.UseVisualStyleBackColor = True
-        # 
-        # space_automatically
-        # 
-        self._space_automatically.AutoSize = True
-        self._space_automatically.BackColor = System.Drawing.Color.Transparent
-        self._space_automatically.Checked = True
-        self._space_automatically.CheckState = System.Windows.Forms.CheckState.Checked
-        self._space_automatically.Location = System.Drawing.Point(5, 107)
-        self._space_automatically.Name = "space_automatically"
-        self._space_automatically.Size = System.Drawing.Size(188, 17)
-        self._space_automatically.TabIndex = 8
-        self._space_automatically.Text = "Space inserted fields automatically"
-        self._space_automatically.UseVisualStyleBackColor = False
-        # 
-        # preview_book_selector
-        # 
-        self._preview_book_selector.Location = System.Drawing.Point(472, 60)
-        self._preview_book_selector.Name = "preview_book_selector"
-        self._preview_book_selector.Size = System.Drawing.Size(17, 40)
-        self._preview_book_selector.TabIndex = 7
-        self._preview_book_selector.SmallChange = 1
-        self._preview_book_selector.LargeChange = 1
-        self._preview_book_selector.Minimum = 0
-        self._preview_book_selector.Value = 0
-        self._preview_book_selector.ValueChanged += self.change_preview_book
-        # 
-        # files_page
-        # 
-        self._files_page.BackColor = System.Drawing.SystemColors.ControlLightLight
-        self._files_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        self._files_page.Location = System.Drawing.Point(130, 10)
-        self._files_page.Name = "files_page"
-        self._files_page.Size = System.Drawing.Size(500, 420)
-        self._files_page.TabIndex = 10
-        self._files_page.Visible = False
-        # 
-        # folders_page
-        # 
-        self._folders_page.BackColor = System.Drawing.SystemColors.ControlLightLight
-        self._folders_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        self._folders_page.Location = System.Drawing.Point(130, 10)
-        self._folders_page.Name = "folders_page"
-        self._folders_page.Size = System.Drawing.Size(500, 420)
-        self._folders_page.TabIndex = 0
-        self._folders_page.Visible = False
         #
         # options_page
         #
@@ -281,6 +238,9 @@ class ConfigureForm(Form):
         self._rules_page.ResumeLayout(False)
         self._options_page.ResumeLayout(False)
         self._insert_controls.ResumeLayout(False)
+
+        apply_dpi_container_scaling(self)
+
         self.ResumeLayout(False)
 
 
@@ -533,6 +493,7 @@ class ConfigureForm(Form):
         self._overview_page.Name = "overview_page"
         self._overview_page.Size = System.Drawing.Size(500, 420)
         self._overview_page.TabIndex = 1
+
         # 
         # mode_move
         # 
@@ -625,7 +586,7 @@ class ConfigureForm(Form):
         self._copy_option.Enabled = False
         self._copy_option.Location = System.Drawing.Point(138, 44)
         self._copy_option.Name = "copy_option"
-        self._copy_option.Size = System.Drawing.Size(149, 17)
+        self._copy_option.Size = System.Drawing.Size(180, 17)
         self._copy_option.TabIndex = 6
         self._copy_option.Text = "Add copied book to library"
         self._copy_option.UseVisualStyleBackColor = True
@@ -693,135 +654,342 @@ class ConfigureForm(Form):
 
     def create_files_page(self):
         """Creates the controls on the files page."""
-
-        self._files_page.SuspendLayout()
-
         self._file_structure = System.Windows.Forms.TextBox()
         self._label_file_structure = System.Windows.Forms.Label()
+        self._file_structure_layout = System.Windows.Forms.TableLayoutPanel()
+        self._file_preview_layout = System.Windows.Forms.TableLayoutPanel()
         self._label_file_preview = System.Windows.Forms.Label()
         self._file_preview = System.Windows.Forms.Label()
-        # 
-        # file_structure
-        # 
-        self._file_structure.HideSelection = False
-        self._file_structure.Location = System.Drawing.Point(83, 10)
-        self._file_structure.Multiline = True
-        self._file_structure.Name = "file_structure"
-        self._file_structure.Size = System.Drawing.Size(407, 40)
-        self._file_structure.TabIndex = 1
-        self._file_structure.TextChanged += self.update_template_text
+        self._file_preview_previous = System.Windows.Forms.Button()
+        self._file_preview_next = System.Windows.Forms.Button()
+        self._file_space_automatically = System.Windows.Forms.CheckBox()
+        self._file_page_input_controls_container = System.Windows.Forms.Panel()
+        self._file_actions_layout = System.Windows.Forms.FlowLayoutPanel()
+
+        self._files_page.SuspendLayout()
+        self._file_structure_layout.SuspendLayout()
+        self._file_preview_layout.SuspendLayout()
+        self._file_actions_layout.SuspendLayout()
+        self._file_page_input_controls_container.SuspendLayout()
+
+        #
+        # _files_page
+        #
+        self._files_page.BackColor = System.Drawing.SystemColors.ControlLightLight
+        self._files_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        self._files_page.ColumnCount = 1
+        self._files_page.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._files_page.Location = System.Drawing.Point(130, 10)
+        self._files_page.Name = "files_page"
+        self._files_page.RowCount = 4
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52))
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._files_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._files_page.Size = System.Drawing.Size(500, 420)
+        self._files_page.TabIndex = 10
+        self._files_page.Visible = False
+        self._files_page.Controls.Add(self._file_structure_layout, 0, 0)
+        self._files_page.Controls.Add(self._file_preview_layout, 0, 1)
+        self._files_page.Controls.Add(self._file_actions_layout, 0, 2)
+        self._files_page.Controls.Add(self._file_page_input_controls_container, 0, 3)
+        #
+        # _file_structure_layout
+        #
+        self._file_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._file_structure_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_structure_layout.RowCount = 1
+        self._file_structure_layout.TabIndex = 0
+        self._file_structure_layout.Controls.Add(self._label_file_structure, 0, 0)
+        self._file_structure_layout.Controls.Add(self._file_structure, 1, 0)
         # 
         # label_file_structure
         # 
         self._label_file_structure.AutoSize = True
-        self._label_file_structure.Location = System.Drawing.Point(5, 24)
+        self._label_file_structure.Anchor = System.Windows.Forms.AnchorStyles.None
         self._label_file_structure.Name = "label_file_structure"
-        self._label_file_structure.Size = System.Drawing.Size(72, 13)
         self._label_file_structure.TabIndex = 0
         self._label_file_structure.Text = "File Structure:"
+        # 
+        # file_structure
+        # 
+        self._file_structure.HideSelection = False
+        self._file_structure.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_structure.Multiline = True
+        self._file_structure.Name = "file_structure"
+        self._file_structure.TabIndex = 1
+        self._file_structure.TextChanged += self.update_template_text
+        #
+        # _file_preview_layout
+        #
+        self._file_preview_layout.AutoSize = True
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._file_preview_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_structure_layout.TabIndex = 1
+        self._file_preview_layout.Controls.Add(self._label_file_preview, 0, 0)
+        self._file_preview_layout.Controls.Add(self._file_preview, 1, 0)
+        if self._has_multiple_preview_books:
+            self._file_preview_layout.Controls.Add(self._file_preview_previous, 2, 0)
+            self._file_preview_layout.Controls.Add(self._file_preview_next, 3, 0)
         # 
         # label_file_preview
         # 
         self._label_file_preview.AutoSize = True
-        self._label_file_preview.Location = System.Drawing.Point(5, 60)
+        self._label_file_preview.Anchor = System.Windows.Forms.AnchorStyles.Left
         self._label_file_preview.Name = "label_file_preview"
-        self._label_file_preview.Size = System.Drawing.Size(48, 13)
-        self._label_file_preview.TabIndex = 2
+        self._label_file_preview.TabIndex = 0
         self._label_file_preview.Text = "Preview:"
         # 
         # file_preview
         # 
-        self._file_preview.Location = System.Drawing.Point(59, 60)
+        self._file_preview.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._file_preview.AutoSize = True
         self._file_preview.Name = "file_preview"
-        self._file_preview.Size = System.Drawing.Size(410, 40)
-        self._file_preview.TabIndex = 3
+        self._file_preview.TabIndex = 1
         self._file_preview.UseMnemonic = False
+        #
+        # _file_preview_previous
+        #
+        self._file_preview_previous.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._file_preview_previous.AutoSize = True
+        self._file_preview_previous.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._file_preview_previous.Enabled = self._has_multiple_preview_books
+        self._file_preview_previous.Name = "file_preview_book_previous"
+        self._file_preview_previous.TabIndex = 2
+        self._file_preview_previous.Text = "<"
+        self._file_preview_previous.UseVisualStyleBackColor = True
+        self._file_preview_previous.Click += self.previous_preview_book
+        #
+        # _file_preview_next
+        #
+        self._file_preview_next.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._file_preview_next.AutoSize = True
+        self._file_preview_next.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._file_preview_next.Enabled = self._has_multiple_preview_books
+        self._file_preview_next.Name = "file_preview_book_next"
+        self._file_preview_next.TabIndex = 3
+        self._file_preview_next.Text = ">"
+        self._file_preview_next.UseVisualStyleBackColor = True
+        self._file_preview_next.Click += self.next_preview_book
+        #
+        # _file_actions_layout
+        #
+        self._file_actions_layout.AutoSize = True
+        self._file_actions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_actions_layout.TabIndex = 2
+        self._file_actions_layout.Controls.Add(self._file_space_automatically)
+        # 
+        # _file_space_automatically
+        # 
+        self._file_space_automatically.AutoSize = True
+        self._file_space_automatically.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._file_space_automatically.BackColor = System.Drawing.Color.Transparent
+        self._file_space_automatically.Checked = True
+        self._file_space_automatically.CheckState = System.Windows.Forms.CheckState.Checked
+        self._file_space_automatically.Name = "file_space_automatically"
+        self._file_space_automatically.TabIndex = 0
+        self._file_space_automatically.Text = "Space inserted fields automatically"
+        self._file_space_automatically.UseVisualStyleBackColor = False
+        self._file_space_automatically.CheckedChanged += self.space_automatically_check_changed
+        #
+        # _file_page_input_controls_container
+        #
+        self._file_page_input_controls_container.Dock = System.Windows.Forms.DockStyle.Fill
+        self._file_page_input_controls_container.TabIndex = 3
 
-        self._files_page.Controls.Add(self._preview_book_selector)
-        self._files_page.Controls.Add(self._file_preview)
-        self._files_page.Controls.Add(self._label_file_preview)
-        self._files_page.Controls.Add(self._label_file_structure)
-        self._files_page.Controls.Add(self._file_structure)
-
-        #self.load_files_page_settings()
-
-        self._files_page.ResumeLayout()
+        self._file_structure_layout.ResumeLayout(False)
+        self._file_structure_layout.PerformLayout()
+        self._file_preview_layout.ResumeLayout(False)
+        self._file_preview_layout.PerformLayout()
+        self._file_actions_layout.ResumeLayout(False)
+        self._file_actions_layout.PerformLayout()
+        self._file_page_input_controls_container.ResumeLayout(False)
+        self._file_page_input_controls_container.PerformLayout()
+        self._files_page.ResumeLayout(False)
+        self._files_page.PerformLayout()
 
 
     def create_folders_page(self):
         """Creates the controls on the folders page."""
-        
-        self._folders_page.SuspendLayout()
-
+        self._folder_structure_layout = System.Windows.Forms.TableLayoutPanel()
         self._folder_structure = System.Windows.Forms.TextBox()
         self._label_folder_structure = System.Windows.Forms.Label()
+        self._folder_preview_layout = System.Windows.Forms.TableLayoutPanel()
         self._label_folder_preview = System.Windows.Forms.Label()
         self._folder_preview = System.Windows.Forms.Label()
+        self._folder_preview_previous = System.Windows.Forms.Button()
+        self._folder_preview_next = System.Windows.Forms.Button()
         self._insert_folder_seperator = System.Windows.Forms.Button()
+        self._folder_page_actions_layout = System.Windows.Forms.FlowLayoutPanel()
+        self._folder_page_input_controls_container = System.Windows.Forms.Panel()
+        self._folder_space_automatically = System.Windows.Forms.CheckBox()
+
+        self._folders_page.SuspendLayout()
+        self._folder_structure_layout.SuspendLayout()
+        self._folder_preview_layout.SuspendLayout()
+        self._folder_page_actions_layout.SuspendLayout()
+        self._folder_page_input_controls_container.SuspendLayout()
+
         #
-        # 
+        # _folders_page
         #
-        self._folders_page.Controls.Add(self._folder_preview)
-        self._folders_page.Controls.Add(self._label_folder_preview)
-        self._folders_page.Controls.Add(self._label_folder_structure)
-        self._folders_page.Controls.Add(self._folder_structure)
-        self._folders_page.Controls.Add(self._insert_folder_seperator)
-        # 
-        # folder_structure
-        # 
-        self._folder_structure.HideSelection = False
-        self._folder_structure.Location = System.Drawing.Point(94, 10)
-        self._folder_structure.Multiline = True
-        self._folder_structure.Name = "folder_structure"
-        self._folder_structure.Size = System.Drawing.Size(395, 40)
-        self._folder_structure.TabIndex = 1
-        self._folder_structure.TextChanged += self.update_template_text
+        self._folders_page.BackColor = System.Drawing.SystemColors.ControlLightLight
+        self._folders_page.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        self._folders_page.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folders_page.Location = System.Drawing.Point(130, 10)
+        self._folders_page.Name = "folders_page"
+        self._folders_page.RowCount = 4
+        self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52))
+        self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._folders_page.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folders_page.Size = System.Drawing.Size(500, 420)
+        self._folders_page.TabIndex = 0
+        self._folders_page.Visible = False
+        self._folders_page.Controls.Add(self._folder_structure_layout, 0, 0)
+        self._folders_page.Controls.Add(self._folder_preview_layout, 0, 1)
+        self._folders_page.Controls.Add(self._folder_page_actions_layout, 0, 2)
+        self._folders_page.Controls.Add(self._folder_page_input_controls_container, 0, 3)
+        #
+        # _folder_structure_layout
+        #
+        self._folder_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_structure_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_structure_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_structure_layout.RowCount = 1
+        self._folder_structure_layout.TabIndex = 0
+        self._folder_structure_layout.Controls.Add(self._label_folder_structure, 0, 0)
+        self._folder_structure_layout.Controls.Add(self._folder_structure, 1, 0)
         # 
         # label_folder_structure
         # 
+        self._label_folder_structure.Anchor = System.Windows.Forms.AnchorStyles.None
         self._label_folder_structure.AutoSize = True
-        self._label_folder_structure.Location = System.Drawing.Point(3, 24)
         self._label_folder_structure.Name = "label_folder_structure"
-        self._label_folder_structure.Size = System.Drawing.Size(85, 13)
         self._label_folder_structure.TabIndex = 0
         self._label_folder_structure.Text = "Folder Structure:"
         # 
+        # folder_structure
+        # 
+        self._folder_structure.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_structure.HideSelection = False
+        self._folder_structure.Multiline = True
+        self._folder_structure.Name = "folder_structure"
+        self._folder_structure.TabIndex = 1
+        self._folder_structure.TextChanged += self.update_template_text
+        #
+        # _folder_preview_layout
+        #
+        self._folder_preview_layout.AutoSize = True
+        self._folder_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_preview_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_preview_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_preview_layout.TabIndex = 1
+        self._folder_preview_layout.Controls.Add(self._label_folder_preview, 0, 0)
+        self._folder_preview_layout.Controls.Add(self._folder_preview, 1, 0)
+        if self._has_multiple_preview_books:
+            self._folder_preview_layout.Controls.Add(self._folder_preview_previous, 2, 0)
+            self._folder_preview_layout.Controls.Add(self._folder_preview_next, 3, 0)
+        # 
         # label_folder_preview
         # 
+        self._label_folder_preview.Anchor = System.Windows.Forms.AnchorStyles.Left
         self._label_folder_preview.AutoSize = True
-        self._label_folder_preview.Location = System.Drawing.Point(5, 60)
         self._label_folder_preview.Name = "label_folder_preview"
-        self._label_folder_preview.Size = System.Drawing.Size(48, 13)
-        self._label_folder_preview.TabIndex = 2
+        self._label_folder_preview.TabIndex = 0
         self._label_folder_preview.Text = "Preview:"
         # 
         # folder_preview
         # 
-        self._folder_preview.Location = System.Drawing.Point(59, 60)
+        self._folder_preview.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._folder_preview.AutoSize = True
         self._folder_preview.Name = "folder_preview"
-        self._folder_preview.Size = System.Drawing.Size(410, 40)
-        self._folder_preview.TabIndex = 3
+        self._folder_preview.TabIndex = 1
         self._folder_preview.UseMnemonic = False
+        #
+        # _folder_preview_previous
+        #
+        self._folder_preview_previous.AutoSize = True
+        self._folder_preview_previous.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._folder_preview_previous.Enabled = self._has_multiple_preview_books
+        self._folder_preview_previous.Name = "folder_preview_book_previous"
+        self._folder_preview_previous.TabIndex = 2
+        self._folder_preview_previous.Text = "<"
+        self._folder_preview_previous.UseVisualStyleBackColor = True
+        self._folder_preview_previous.Click += self.previous_preview_book
+        #
+        # _folder_preview_next
+        #
+        self._folder_preview_next.AutoSize = True
+        self._folder_preview_next.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._folder_preview_next.Enabled = self._has_multiple_preview_books
+        self._folder_preview_next.Name = "folder_preview_book_next"
+        self._folder_preview_next.TabIndex = 3
+        self._folder_preview_next.Text = ">"
+        self._folder_preview_next.UseVisualStyleBackColor = True
+        self._folder_preview_next.Click += self.next_preview_book
+        #
+        # _folder_page_actions_layout
+        #
+        self._folder_page_actions_layout.AutoSize = True
+        self._folder_page_actions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_page_actions_layout.TabIndex = 2
+        self._folder_page_actions_layout.Controls.Add(self._folder_space_automatically)
+        self._folder_page_actions_layout.Controls.Add(self._insert_folder_seperator)
+        # 
+        # _folder_space_automatically
+        # 
+        self._folder_space_automatically.AutoSize = True
+        self._folder_space_automatically.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._folder_space_automatically.BackColor = System.Drawing.Color.Transparent
+        self._folder_space_automatically.Checked = True
+        self._folder_space_automatically.CheckState = System.Windows.Forms.CheckState.Checked
+        self._folder_space_automatically.Name = "folder_space_automatically"
+        self._folder_space_automatically.TabIndex = 0
+        self._folder_space_automatically.Text = "Space inserted fields automatically"
+        self._folder_space_automatically.UseVisualStyleBackColor = False
+        self._folder_space_automatically.CheckedChanged += self.space_automatically_check_changed
         # 
         # insert_folder_seperator
         # 
-        self._insert_folder_seperator.Location = System.Drawing.Point(220, 104)
+        self._insert_folder_seperator.AutoSize = True
+        self._insert_folder_seperator.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         self._insert_folder_seperator.Name = "insert_folder_seperator"
-        self._insert_folder_seperator.Size = System.Drawing.Size(98, 23)
-        self._insert_folder_seperator.TabIndex = 5
+        self._insert_folder_seperator.TabIndex = 1
         self._insert_folder_seperator.Text = "Folder Seperator"
         self._insert_folder_seperator.UseVisualStyleBackColor = True
         self._insert_folder_seperator.Click += self.insert_folder_seperator_clicked
+        #
+        # _folder_page_input_controls_container
+        #
+        self._folder_page_input_controls_container.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_page_input_controls_container.TabIndex = 3   
 
-        #self.load_folders_page_settings()
-
-        self._folders_page.ResumeLayout()
+        self._folder_structure_layout.ResumeLayout(False)
+        self._folder_structure_layout.PerformLayout()
+        self._folder_preview_layout.ResumeLayout(False)
+        self._folder_preview_layout.PerformLayout()
+        self._folder_page_actions_layout.ResumeLayout(False)
+        self._folder_page_actions_layout.PerformLayout()
+        self._folder_page_input_controls_container.ResumeLayout(False)
+        self._folder_page_input_controls_container.PerformLayout()
+        self._folders_page.ResumeLayout(False)
+        self._folders_page.PerformLayout()
 
 
     def create_rules_page(self):
         """Creates the controls in the rule page."""
         self._metadata_rules_page = System.Windows.Forms.TabPage()
+        self._metadata_rules_page_layout = System.Windows.Forms.TableLayoutPanel()
         self._folder_rules_page = System.Windows.Forms.TabPage()
+        self._folder_rules_page_layout = System.Windows.Forms.TableLayoutPanel()
+        self._folder_rules_actions_layout = System.Windows.Forms.FlowLayoutPanel()
         self._add_excluded_folder = System.Windows.Forms.Button()
         self._remove_excluded_folder = System.Windows.Forms.Button()
         self._excluded_folders_list = System.Windows.Forms.ListBox()
@@ -833,10 +1001,15 @@ class ConfigureForm(Form):
         self._metadata_rules_label2 = System.Windows.Forms.Label()
         self._metadata_rules_add_group = System.Windows.Forms.Button()
         self._metadata_rules_add_rule = System.Windows.Forms.Button()
+        self._metadata_rules_actions_container = System.Windows.Forms.FlowLayoutPanel()
 
         self._rules_page.SuspendLayout()
         self._metadata_rules_page.SuspendLayout()
         self._folder_rules_page.SuspendLayout()
+        self._folder_rules_page_layout.SuspendLayout()
+        self._folder_rules_actions_layout.SuspendLayout()
+        self._metadata_rules_actions_container.SuspendLayout()
+        self._metadata_rules_page_layout.SuspendLayout()
         #
         # rules_page
         #
@@ -845,39 +1018,77 @@ class ConfigureForm(Form):
         # 
         # metadata_rules_page
         # 
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_add_rule)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_add_group)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_label2)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_operator)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_mode)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_label1)
-        self._metadata_rules_page.Controls.Add(self._metadata_rules_container)
-        self._metadata_rules_page.Location = System.Drawing.Point(4, 22)
+        self._metadata_rules_page.Controls.Add(self._metadata_rules_page_layout)
+        self._metadata_rules_page.Dock = System.Windows.Forms.DockStyle.Fill
         self._metadata_rules_page.Name = "metadata_rules_page"
-        self._metadata_rules_page.Size = System.Drawing.Size(492, 394)
         self._metadata_rules_page.TabIndex = 0
         self._metadata_rules_page.Text = "Metadata Rules"
         self._metadata_rules_page.UseVisualStyleBackColor = True
+        #
+        # _metadata_rules_page_layout
+        #
+        self._metadata_rules_page_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._metadata_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._metadata_rules_page_layout.RowCount = 2
+        self._metadata_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._metadata_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_actions_container, 0, 0)
+        self._metadata_rules_page_layout.Controls.Add(self._metadata_rules_container, 0, 1)
+        self._metadata_rules_page_layout.Padding = System.Windows.Forms.Padding(7)
+        self._metadata_rules_page_layout.TabIndex = 0
         # 
         # folder_rules_page
         # 
-        self._folder_rules_page.Controls.Add(self._excluded_folder_label)
-        self._folder_rules_page.Controls.Add(self._excluded_folders_list)
-        self._folder_rules_page.Controls.Add(self._remove_excluded_folder)
-        self._folder_rules_page.Controls.Add(self._add_excluded_folder)
-        self._folder_rules_page.Location = System.Drawing.Point(4, 22)
+        self._folder_rules_page.Controls.Add(self._folder_rules_page_layout)
+        self._folder_rules_page.Dock = System.Windows.Forms.DockStyle.Fill
         self._folder_rules_page.Name = "folder_rules_page"
-        self._folder_rules_page.Size = System.Drawing.Size(492, 394)
+        self._folder_rules_page.Padding = System.Windows.Forms.Padding(10)
         self._folder_rules_page.TabIndex = 1
         self._folder_rules_page.Text = "Folder Rules"
         self._folder_rules_page.UseVisualStyleBackColor = True
+        #
+        # _folder_rules_page_layout
+        #
+        self._folder_rules_page_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_rules_page_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._folder_rules_page_layout.RowCount = 2
+        self._folder_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._folder_rules_page_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._folder_rules_page_layout.Controls.Add(self._excluded_folder_label, 0, 0)
+        self._folder_rules_page_layout.Controls.Add(self._excluded_folders_list, 0, 1)
+        self._folder_rules_page_layout.Controls.Add(self._folder_rules_actions_layout, 1, 1)
+        self._folder_rules_page_layout.TabIndex = 0
+        # 
+        # excluded_folder_label
+        # 
+        self._excluded_folder_label.AutoSize = True
+        self._excluded_folder_label.Name = "excluded_folder_label"
+        self._excluded_folder_label.TabIndex = 0
+        self._excluded_folder_label.Text = "Do not move books if they are located in the following folders"
+        # 
+        # excluded_folders_list
+        # 
+        self._excluded_folders_list.Dock = System.Windows.Forms.DockStyle.Fill
+        self._excluded_folders_list.FormattingEnabled = True
+        self._excluded_folders_list.Name = "excluded_folders_list"
+        self._excluded_folders_list.Sorted = True
+        self._excluded_folders_list.TabIndex = 1
+        #
+        #  _folder_rules_actions_layout
+        #
+        self._folder_rules_actions_layout.AutoSize = True
+        self._folder_rules_actions_layout.Controls.Add(self._add_excluded_folder)
+        self._folder_rules_actions_layout.Controls.Add(self._remove_excluded_folder)
+        self._folder_rules_actions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._folder_rules_actions_layout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        self._excluded_folders_list.TabIndex = 2
         # 
         # add_excluded_folder
         # 
-        self._add_excluded_folder.Location = System.Drawing.Point(403, 26)
         self._add_excluded_folder.Name = "add_excluded_folder"
         self._add_excluded_folder.Size = System.Drawing.Size(75, 23)
-        self._add_excluded_folder.TabIndex = 2
+        self._add_excluded_folder.TabIndex = 0
         self._add_excluded_folder.Tag = self._excluded_folders_list
         self._add_excluded_folder.Text = "Add"
         self._add_excluded_folder.UseVisualStyleBackColor = True
@@ -885,92 +1096,73 @@ class ConfigureForm(Form):
         # 
         # remove_excluded_folder
         # 
-        self._remove_excluded_folder.Location = System.Drawing.Point(403, 62)
         self._remove_excluded_folder.Name = "remove_excluded_folder"
         self._remove_excluded_folder.Size = System.Drawing.Size(75, 23)
-        self._remove_excluded_folder.TabIndex = 3
+        self._remove_excluded_folder.TabIndex = 1
         self._remove_excluded_folder.Tag = self._excluded_folders_list
         self._remove_excluded_folder.Text = "Remove"
         self._remove_excluded_folder.UseVisualStyleBackColor = True
         self._remove_excluded_folder.Click += self.remove_folder_path_from_list
         # 
-        # excluded_folders_list
-        # 
-        self._excluded_folders_list.FormattingEnabled = True
-        self._excluded_folders_list.Location = System.Drawing.Point(8, 26)
-        self._excluded_folders_list.Name = "excluded_folders_list"
-        self._excluded_folders_list.Size = System.Drawing.Size(389, 355)
-        self._excluded_folders_list.Sorted = True
-        self._excluded_folders_list.TabIndex = 1
-        # 
-        # excluded_folder_label
-        # 
-        self._excluded_folder_label.AutoSize = True
-        self._excluded_folder_label.Location = System.Drawing.Point(8, 7)
-        self._excluded_folder_label.Name = "excluded_folder_label"
-        self._excluded_folder_label.Size = System.Drawing.Size(294, 13)
-        self._excluded_folder_label.TabIndex = 0
-        self._excluded_folder_label.Text = "Do not move books if they are located in the following folders"
-        # 
-        # metadata_rules_container
-        # 
-        self._metadata_rules_container.AutoScroll = True
-        self._metadata_rules_container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
-        self._metadata_rules_container.Location = System.Drawing.Point(0, 49)
-        self._metadata_rules_container.Name = "metadata_rules_container"
-        self._metadata_rules_container.Size = System.Drawing.Size(492, 345)
-        self._metadata_rules_container.TabIndex = 6
-        self._metadata_rules_container.WrapContents = False
-        # 
-        # metadata_rules_label1
-        # 
-        self._metadata_rules_label1.AutoSize = True
-        self._metadata_rules_label1.Location = System.Drawing.Point(66, 16)
-        self._metadata_rules_label1.Name = "metadata_rules_label1"
-        self._metadata_rules_label1.Size = System.Drawing.Size(118, 13)
-        self._metadata_rules_label1.TabIndex = 1
-        self._metadata_rules_label1.Text = "move books that match"
+        # _metadata_rules_actions_container
+        #
+        self._metadata_rules_actions_container.AutoSize = True
+        self._metadata_rules_actions_container.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_mode)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_label1)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_operator)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_label2)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_add_group)
+        self._metadata_rules_actions_container.Controls.Add(self._metadata_rules_add_rule)
+        self._metadata_rules_actions_container.TabIndex = 0
         # 
         # metadata_rules_mode
         # 
+        self._metadata_rules_mode.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._metadata_rules_mode.AutoSize = True
         self._metadata_rules_mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._metadata_rules_mode.FormattingEnabled = True
         self._metadata_rules_mode.Items.AddRange(System.Array[System.Object](
             ["Do not",
             "Only"]))
-        self._metadata_rules_mode.Location = System.Drawing.Point(8, 12)
         self._metadata_rules_mode.Name = "metadata_rules_mode"
-        self._metadata_rules_mode.Size = System.Drawing.Size(55, 21)
+        self._metadata_rules_mode.Size = System.Drawing.Size(70, 21)
         self._metadata_rules_mode.TabIndex = 0
+        # 
+        # metadata_rules_label1
+        # 
+        self._metadata_rules_label1.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._metadata_rules_label1.AutoSize = True
+        self._metadata_rules_label1.Name = "metadata_rules_label1"
+        self._metadata_rules_label1.TabIndex = 1
+        self._metadata_rules_label1.Text = "move books that match"
         # 
         # metadata_rules_operator
         # 
+        self._metadata_rules_operator.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._metadata_rules_operator.FormattingEnabled = True
         self._metadata_rules_operator.Items.AddRange(System.Array[System.Object](
             ["All",
             "Any"]))
-        self._metadata_rules_operator.Location = System.Drawing.Point(188, 12)
         self._metadata_rules_operator.Name = "metadata_rules_operator"
-        self._metadata_rules_operator.Size = System.Drawing.Size(43, 21)
+        self._metadata_rules_operator.Size = System.Drawing.Size(50, 21)
         self._metadata_rules_operator.TabIndex = 2
         # 
         # metadata_rules_label2
         # 
+        self._metadata_rules_label2.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_label2.AutoSize = True
-        self._metadata_rules_label2.Location = System.Drawing.Point(235, 15)
         self._metadata_rules_label2.Name = "metadata_rules_label2"
-        self._metadata_rules_label2.Size = System.Drawing.Size(106, 13)
         self._metadata_rules_label2.TabIndex = 3
         self._metadata_rules_label2.Text = "of the following rules."
         # 
         # metadata_rules_add_group
         # 
+        self._metadata_rules_add_group.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_add_group.AutoSize = True
         self._metadata_rules_add_group.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._metadata_rules_add_group.Location = System.Drawing.Point(347, 11)
         self._metadata_rules_add_group.Name = "metadata_rules_add_group"
-        self._metadata_rules_add_group.Size = System.Drawing.Size(68, 23)
         self._metadata_rules_add_group.TabIndex = 4
         self._metadata_rules_add_group.Text = "Add Group"
         self._metadata_rules_add_group.UseVisualStyleBackColor = True
@@ -978,19 +1170,32 @@ class ConfigureForm(Form):
         # 
         # metadata_rules_add_rule
         # 
+        self._metadata_rules_add_rule.Anchor = System.Windows.Forms.AnchorStyles.None
         self._metadata_rules_add_rule.AutoSize = True
         self._metadata_rules_add_rule.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._metadata_rules_add_rule.Location = System.Drawing.Point(421, 11)
         self._metadata_rules_add_rule.Name = "metadata_rules_add_rule"
-        self._metadata_rules_add_rule.Size = System.Drawing.Size(61, 23)
         self._metadata_rules_add_rule.TabIndex = 5
         self._metadata_rules_add_rule.Text = "Add Rule"
         self._metadata_rules_add_rule.UseVisualStyleBackColor = True
         self._metadata_rules_add_rule.Click += self.add_metadata_rule
+        # 
+        # metadata_rules_container
+        # 
+        self._metadata_rules_container.AutoScroll = True
+        self._metadata_rules_container.Dock = System.Windows.Forms.DockStyle.Fill
+        self._metadata_rules_container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        self._metadata_rules_container.Name = "metadata_rules_container"
+        self._metadata_rules_container.TabIndex = 1
+        self._metadata_rules_container.WrapContents = False
 
         self.load_rules_page_settings()
 
+        self._metadata_rules_actions_container.ResumeLayout()
+        self._metadata_rules_container.ResumeLayout()
+        self._metadata_rules_page_layout.ResumeLayout()
         self._metadata_rules_page.ResumeLayout()
+        self._folder_rules_actions_layout.ResumeLayout()
+        self._folder_rules_page_layout.ResumeLayout()
         self._folder_rules_page.ResumeLayout()
         self._rules_page.ResumeLayout()
 
@@ -999,6 +1204,8 @@ class ConfigureForm(Form):
         """Creates the controls on the options page."""
         self._options_page_options_tab = System.Windows.Forms.TabPage()
         self._options_page_empty_values_tab = System.Windows.Forms.TabPage()
+        self._options_tab_layout = System.Windows.Forms.TableLayoutPanel()
+        self._options_tab_empty_values_layout = System.Windows.Forms.TableLayoutPanel()
         self._replace_multiple_spaces = System.Windows.Forms.CheckBox()
         self._insert_multiple_value_field_when_one = System.Windows.Forms.CheckBox()
         self._remove_empty_folders = System.Windows.Forms.CheckBox()
@@ -1009,20 +1216,28 @@ class ConfigureForm(Form):
         self._illegal_character_label1 = System.Windows.Forms.Label()
         self._remove_illegal_character = System.Windows.Forms.Button()
         self._add_illegal_character = System.Windows.Forms.Button()
+        self._options_tab_month_layout = System.Windows.Forms.FlowLayoutPanel()
         self._month_label2 = System.Windows.Forms.Label()
+        self._illegal_character_layout = System.Windows.Forms.FlowLayoutPanel()
         self._illegal_character_label2 = System.Windows.Forms.Label()
         self._illegal_character_replacement = System.Windows.Forms.TextBox()
         self._illegal_character_selector = System.Windows.Forms.ComboBox()
+        self._empty_folder_exceptions_layout = System.Windows.Forms.TableLayoutPanel()
+        self._empty_folder_exceptions_actions_layout = System.Windows.Forms.FlowLayoutPanel()
         self._empty_folder_exceptions_list = System.Windows.Forms.ListBox()
         self._remove_empty_folders_label = System.Windows.Forms.Label()
         self._add_empty_folder_exception = System.Windows.Forms.Button()
         self._remove_empty_folder_exception = System.Windows.Forms.Button()
+        self._replace_empty_folder_name_layout = System.Windows.Forms.TableLayoutPanel()
         self._empty_folder_name_label = System.Windows.Forms.Label()
         self._empty_folder_name = System.Windows.Forms.TextBox()
+        self._failed_empty_layout = System.Windows.Forms.TableLayoutPanel()
         self._failed_empty_selection = System.Windows.Forms.CheckedListBox()
         self._failed_empty_checkbox = System.Windows.Forms.CheckBox()
         self._failed_empty_folder = System.Windows.Forms.TextBox()
         self._failed_empty_browse = System.Windows.Forms.Button()
+        self._empty_substitution_panel = System.Windows.Forms.Panel()
+        self._empty_substitution_table = System.Windows.Forms.TableLayoutPanel()
         self._empty_substitution_label = System.Windows.Forms.Label()
         self._empty_substitution_field = System.Windows.Forms.ComboBox()
         self._empty_substitution_label1 = System.Windows.Forms.Label()
@@ -1032,7 +1247,17 @@ class ConfigureForm(Form):
 
         self._options_page.SuspendLayout()
         self._options_page_options_tab.SuspendLayout()
+        self._options_tab_month_layout.SuspendLayout()
+        self._options_tab_layout.SuspendLayout()
+        self._illegal_character_layout.SuspendLayout()
         self._options_page_empty_values_tab.SuspendLayout()
+        self._empty_folder_exceptions_layout.SuspendLayout()
+        self._empty_folder_exceptions_actions_layout.SuspendLayout()
+        self._options_tab_empty_values_layout.SuspendLayout()
+        self._replace_empty_folder_name_layout.SuspendLayout()
+        self._empty_substitution_panel.SuspendLayout()
+        self._empty_substitution_table.SuspendLayout()
+        self._failed_empty_layout.SuspendLayout()
         # 
         # options_page
         # 
@@ -1041,45 +1266,39 @@ class ConfigureForm(Form):
         # 
         # options_page_options_tab
         # 
-        self._options_page_options_tab.Controls.Add(self._remove_empty_folder_exception)
-        self._options_page_options_tab.Controls.Add(self._add_empty_folder_exception)
-        self._options_page_options_tab.Controls.Add(self._copy_read_percentage)
-        self._options_page_options_tab.Controls.Add(self._remove_empty_folders_label)
-        self._options_page_options_tab.Controls.Add(self._empty_folder_exceptions_list)
-        self._options_page_options_tab.Controls.Add(self._illegal_character_selector)
-        self._options_page_options_tab.Controls.Add(self._illegal_character_replacement)
-        self._options_page_options_tab.Controls.Add(self._illegal_character_label2)
-        self._options_page_options_tab.Controls.Add(self._month_label2)
-        self._options_page_options_tab.Controls.Add(self._add_illegal_character)
-        self._options_page_options_tab.Controls.Add(self._remove_illegal_character)
-        self._options_page_options_tab.Controls.Add(self._illegal_character_label1)
-        self._options_page_options_tab.Controls.Add(self._month_name)
-        self._options_page_options_tab.Controls.Add(self._month_number)
-        self._options_page_options_tab.Controls.Add(self._month_label1)
-        self._options_page_options_tab.Controls.Add(self._remove_empty_folders)
-        self._options_page_options_tab.Controls.Add(self._insert_multiple_value_field_when_one)
-        self._options_page_options_tab.Controls.Add(self._replace_multiple_spaces)
+        self._options_page_options_tab.Controls.Add(self._options_tab_layout)
         self._options_page_options_tab.Location = System.Drawing.Point(4, 22)
         self._options_page_options_tab.Name = "options_page_options_tab"
         self._options_page_options_tab.Size = System.Drawing.Size(492, 394)
         self._options_page_options_tab.TabIndex = 0
         self._options_page_options_tab.Text = "Options"
         self._options_page_options_tab.UseVisualStyleBackColor = True
+        #
+        # _options_tab_layout
+        #
+        self._options_tab_layout.Controls.Add(self._replace_multiple_spaces, 0, 0)
+        self._options_tab_layout.Controls.Add(self._copy_read_percentage, 0, 1)
+        self._options_tab_layout.Controls.Add(self._insert_multiple_value_field_when_one, 0, 2)
+        self._options_tab_layout.Controls.Add(self._options_tab_month_layout, 0, 3)
+        self._options_tab_layout.Controls.Add(self._illegal_character_layout, 0, 4)
+        self._options_tab_layout.Controls.Add(self._remove_empty_folders, 0, 5)
+        self._options_tab_layout.Controls.Add(self._remove_empty_folders_label, 0, 6)
+        self._options_tab_layout.Controls.Add(self._empty_folder_exceptions_layout, 0, 7)
+        self._options_tab_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._options_tab_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._options_tab_layout.Padding = System.Windows.Forms.Padding(10)
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._options_tab_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
         # 
         # options_page_empty_values_tab
         # 
-        self._options_page_empty_values_tab.Controls.Add(self._move_failed_empty)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_substitution_label2)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_substitution_value)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_substitution_label1)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_substitution_field)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_substitution_label)
-        self._options_page_empty_values_tab.Controls.Add(self._failed_empty_browse)
-        self._options_page_empty_values_tab.Controls.Add(self._failed_empty_folder)
-        self._options_page_empty_values_tab.Controls.Add(self._failed_empty_checkbox)
-        self._options_page_empty_values_tab.Controls.Add(self._failed_empty_selection)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_folder_name)
-        self._options_page_empty_values_tab.Controls.Add(self._empty_folder_name_label)
+        self._options_page_empty_values_tab.Controls.Add(self._options_tab_empty_values_layout)
         self._options_page_empty_values_tab.Location = System.Drawing.Point(4, 22)
         self._options_page_empty_values_tab.Name = "options_page_empty_values_tab"
         self._options_page_empty_values_tab.Size = System.Drawing.Size(492, 394)
@@ -1090,17 +1309,15 @@ class ConfigureForm(Form):
         # replace_multiple_spaces
         # 
         self._replace_multiple_spaces.AutoSize = True
-        self._replace_multiple_spaces.Location = System.Drawing.Point(17, 28)
         self._replace_multiple_spaces.Name = "replace_multiple_spaces"
-        self._replace_multiple_spaces.Size = System.Drawing.Size(234, 17)
         self._replace_multiple_spaces.TabIndex = 0
         self._replace_multiple_spaces.Text = "Replace multiple spaces with a single space."
         self._replace_multiple_spaces.UseVisualStyleBackColor = True
         #
         # copy_read_percentage
         #
-        self._copy_read_percentage.Location = System.Drawing.Point(17, 63)
-        self._copy_read_percentage.Size = System.Drawing.Size(411, 24)
+        self._copy_read_percentage.AutoSize = True
+        self._copy_read_percentage.Margin = System.Windows.Forms.Padding(3, 10, 0, 0)
         self._copy_read_percentage.Name = "copy_read_percentage"
         self._copy_read_percentage.Text = "When overwriting an existing file, copy the read percentage to the new file."
         self._copy_read_percentage.TabIndex = 1
@@ -1109,146 +1326,192 @@ class ConfigureForm(Form):
         # insert_multiple_value_field_when_one
         # 
         self._insert_multiple_value_field_when_one.AutoSize = True
-        self._insert_multiple_value_field_when_one.Location = System.Drawing.Point(17, 105)
+        self._insert_multiple_value_field_when_one.Margin = System.Windows.Forms.Padding(3, 10, 0, 0)
         self._insert_multiple_value_field_when_one.Name = "insert_multiple_value_field_when_one"
-        self._insert_multiple_value_field_when_one.Size = System.Drawing.Size(381, 17)
         self._insert_multiple_value_field_when_one.TabIndex = 2
         self._insert_multiple_value_field_when_one.Text = "If there is only one value in a multiple value field then insert it without asking."
         self._insert_multiple_value_field_when_one.UseVisualStyleBackColor = True
+        #
+        # _options_tab_month_layout
+        #
+        self._options_tab_month_layout.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._options_tab_month_layout.AutoSize = True
+        self._options_tab_month_layout.Controls.Add(self._month_label1)
+        self._options_tab_month_layout.Controls.Add(self._month_number)
+        self._options_tab_month_layout.Controls.Add(self._month_label2)
+        self._options_tab_month_layout.Controls.Add(self._month_name)
+        self._options_tab_month_layout.Margin = System.Windows.Forms.Padding(3, 10, 0, 0)
+        self._options_tab_month_layout.TabIndex = 3
+        # 
+        # month_label1
+        # 
+        self._month_label1.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._month_label1.AutoSize = True
+        self._month_label1.Name = "month_label1"
+        self._month_label1.TabIndex = 0
+        self._month_label1.Text = "Month"
+        # 
+        # month_number
+        # 
+        self._month_number.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._month_number.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        self._month_number.FormattingEnabled = True
+        self._month_number.Name = "month_number"
+        self._month_number.Size = System.Drawing.Size(50, 21)
+        self._month_number.TabIndex = 1
+        self._month_number.SelectedIndexChanged += self.month_number_selected_index_changed
+        # 
+        # month_label2
+        # 
+        self._month_label2.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._month_label2.AutoSize = True
+        self._month_label2.Location = System.Drawing.Point(100, 139)
+        self._month_label2.Name = "month_label2"
+        self._month_label2.Size = System.Drawing.Size(14, 13)
+        self._month_label2.TabIndex = 2
+        self._month_label2.Text = "is"
+        # 
+        # month_name
+        # 
+        self._month_name.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._month_name.Name = "month_name"
+        self._month_name.Size = System.Drawing.Size(131, 20)
+        self._month_name.TabIndex = 3
+        self._month_name.Leave += self.month_name_leave
+        #
+        # _illegal_character_layout
+        #
+        self._illegal_character_layout.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._illegal_character_layout.AutoSize = True
+        self._illegal_character_layout.Controls.Add(self._illegal_character_label1)
+        self._illegal_character_layout.Controls.Add(self._illegal_character_selector)
+        self._illegal_character_layout.Controls.Add(self._illegal_character_label2)
+        self._illegal_character_layout.Controls.Add(self._illegal_character_replacement)
+        self._illegal_character_layout.Controls.Add(self._add_illegal_character)
+        self._illegal_character_layout.Controls.Add(self._remove_illegal_character)
+        self._illegal_character_layout.Margin = System.Windows.Forms.Padding(3, 10, 0, 0)
+        self._illegal_character_layout.TabIndex = 4
+        # 
+        # illegal_character_label1
+        # 
+        self._illegal_character_label1.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._illegal_character_label1.AutoSize = True
+        self._illegal_character_label1.Location = System.Drawing.Point(17, 171)
+        self._illegal_character_label1.Name = "illegal_character_label1"
+        self._illegal_character_label1.Size = System.Drawing.Size(124, 13)
+        self._illegal_character_label1.TabIndex = 0
+        self._illegal_character_label1.Text = "Replace illegal character"
+        # 
+        # illegal_character_selector
+        # 
+        self._illegal_character_selector.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._illegal_character_selector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        self._illegal_character_selector.FormattingEnabled = True
+        self._illegal_character_selector.Name = "illegal_character_selector"
+        self._illegal_character_selector.Size = System.Drawing.Size(50, 21)
+        self._illegal_character_selector.TabIndex = 1
+        self._illegal_character_selector.SelectedIndexChanged += self.illegal_character_selector_selected_index_changed
+        # 
+        # illegal_character_label2
+        # 
+        self._illegal_character_label2.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._illegal_character_label2.AutoSize = True
+        self._illegal_character_label2.Location = System.Drawing.Point(185, 171)
+        self._illegal_character_label2.Name = "illegal_character_label2"
+        self._illegal_character_label2.Size = System.Drawing.Size(26, 13)
+        self._illegal_character_label2.TabIndex = 2
+        self._illegal_character_label2.Text = "with"
+        # 
+        # illegal_character_replacement
+        # 
+        self._illegal_character_replacement.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._illegal_character_replacement.Name = "illegal_character_replacement"
+        self._illegal_character_replacement.Size = System.Drawing.Size(37, 20)
+        self._illegal_character_replacement.TabIndex = 3
+        self._illegal_character_replacement.KeyPress += self.illegal_character_replacement_keypress
+        self._illegal_character_replacement.Leave += self.illegal_character_replacement_leave
+        # 
+        # add_illegal_character
+        # 
+        self._add_illegal_character.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._add_illegal_character.AutoSize = True
+        self._add_illegal_character.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._add_illegal_character.Location = System.Drawing.Point(263, 166)
+        self._add_illegal_character.Name = "add_illegal_character"
+        self._add_illegal_character.Size = System.Drawing.Size(23, 23)
+        self._add_illegal_character.TabIndex = 4
+        self._add_illegal_character.Text = "+"
+        self._add_illegal_character.UseVisualStyleBackColor = True
+        self._add_illegal_character.Click += self.add_illegal_character
+        # 
+        # remove_illegal_character
+        # 
+        self._remove_illegal_character.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._remove_illegal_character.AutoSize = True
+        self._remove_illegal_character.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        self._remove_illegal_character.Location = System.Drawing.Point(292, 166)
+        self._remove_illegal_character.Name = "remove_illegal_character"
+        self._remove_illegal_character.Size = System.Drawing.Size(20, 23)
+        self._remove_illegal_character.TabIndex = 5
+        self._remove_illegal_character.Text = "-"
+        self._remove_illegal_character.UseVisualStyleBackColor = True
+        self._remove_illegal_character.Click += self.remove_illegal_character
         # 
         # remove_empty_folders
         # 
         self._remove_empty_folders.AutoSize = True
         self._remove_empty_folders.Checked = True
         self._remove_empty_folders.CheckState = System.Windows.Forms.CheckState.Checked
-        self._remove_empty_folders.Location = System.Drawing.Point(17, 200)
+        self._remove_empty_folders.Margin = System.Windows.Forms.Padding(3, 10, 0, 0)
         self._remove_empty_folders.Name = "remove_empty_folders"
-        self._remove_empty_folders.Size = System.Drawing.Size(134, 17)
-        self._remove_empty_folders.TabIndex = 13
-        self._remove_empty_folders.Text = " Remove empty folders"
+        self._remove_empty_folders.TabIndex = 5
+        self._remove_empty_folders.Text = "Remove empty folders"
         self._remove_empty_folders.UseVisualStyleBackColor = True
         self._remove_empty_folders.CheckedChanged += self.remove_empty_folders_checked_changed
-        # 
-        # month_label1
-        # 
-        self._month_label1.AutoSize = True
-        self._month_label1.Location = System.Drawing.Point(17, 140)
-        self._month_label1.Name = "month_label1"
-        self._month_label1.Size = System.Drawing.Size(37, 13)
-        self._month_label1.TabIndex = 3
-        self._month_label1.Text = "Month"
-        # 
-        # month_number
-        # 
-        self._month_number.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        self._month_number.FormattingEnabled = True
-        self._month_number.Location = System.Drawing.Point(60, 136)
-        self._month_number.Name = "month_number"
-        self._month_number.Size = System.Drawing.Size(38, 21)
-        self._month_number.TabIndex = 4
-        self._month_number.SelectedIndexChanged += self.month_number_selected_index_changed
-        # 
-        # month_name
-        # 
-        self._month_name.Location = System.Drawing.Point(120, 137)
-        self._month_name.Name = "month_name"
-        self._month_name.Size = System.Drawing.Size(131, 20)
-        self._month_name.TabIndex = 6
-        self._month_name.Leave += self.month_name_leave
-        # 
-        # illegal_character_label1
-        # 
-        self._illegal_character_label1.AutoSize = True
-        self._illegal_character_label1.Location = System.Drawing.Point(17, 171)
-        self._illegal_character_label1.Name = "illegal_character_label1"
-        self._illegal_character_label1.Size = System.Drawing.Size(124, 13)
-        self._illegal_character_label1.TabIndex = 7
-        self._illegal_character_label1.Text = "Replace illegal character"
-        # 
-        # remove_illegal_character
-        # 
-        self._remove_illegal_character.AutoSize = True
-        self._remove_illegal_character.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._remove_illegal_character.Location = System.Drawing.Point(292, 166)
-        self._remove_illegal_character.Name = "remove_illegal_character"
-        self._remove_illegal_character.Size = System.Drawing.Size(20, 23)
-        self._remove_illegal_character.TabIndex = 12
-        self._remove_illegal_character.Text = "-"
-        self._remove_illegal_character.UseVisualStyleBackColor = True
-        self._remove_illegal_character.Click += self.remove_illegal_character
-        # 
-        # add_illegal_character
-        # 
-        self._add_illegal_character.AutoSize = True
-        self._add_illegal_character.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        self._add_illegal_character.Location = System.Drawing.Point(263, 166)
-        self._add_illegal_character.Name = "add_illegal_character"
-        self._add_illegal_character.Size = System.Drawing.Size(23, 23)
-        self._add_illegal_character.TabIndex = 11
-        self._add_illegal_character.Text = "+"
-        self._add_illegal_character.UseVisualStyleBackColor = True
-        self._add_illegal_character.Click += self.add_illegal_character
-        # 
-        # month_label2
-        # 
-        self._month_label2.AutoSize = True
-        self._month_label2.Location = System.Drawing.Point(100, 139)
-        self._month_label2.Name = "month_label2"
-        self._month_label2.Size = System.Drawing.Size(14, 13)
-        self._month_label2.TabIndex = 5
-        self._month_label2.Text = "is"
-        # 
-        # illegal_character_label2
-        # 
-        self._illegal_character_label2.AutoSize = True
-        self._illegal_character_label2.Location = System.Drawing.Point(185, 171)
-        self._illegal_character_label2.Name = "illegal_character_label2"
-        self._illegal_character_label2.Size = System.Drawing.Size(26, 13)
-        self._illegal_character_label2.TabIndex = 9
-        self._illegal_character_label2.Text = "with"
-        # 
-        # illegal_character_replacement
-        # 
-        self._illegal_character_replacement.Location = System.Drawing.Point(215, 167)
-        self._illegal_character_replacement.Name = "illegal_character_replacement"
-        self._illegal_character_replacement.Size = System.Drawing.Size(37, 20)
-        self._illegal_character_replacement.TabIndex = 10
-        self._illegal_character_replacement.KeyPress += self.illegal_character_replacement_keypress
-        self._illegal_character_replacement.Leave += self.illegal_character_replacement_leave
-        # 
-        # illegal_character_selector
-        # 
-        self._illegal_character_selector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        self._illegal_character_selector.FormattingEnabled = True
-        self._illegal_character_selector.Location = System.Drawing.Point(149, 167)
-        self._illegal_character_selector.Name = "illegal_character_selector"
-        self._illegal_character_selector.Size = System.Drawing.Size(32, 21)
-        self._illegal_character_selector.TabIndex = 8
-        self._illegal_character_selector.SelectedIndexChanged += self.illegal_character_selector_selected_index_changed
-        # 
-        # empty_folder_exceptions_list
-        # 
-        self._empty_folder_exceptions_list.FormattingEnabled = True
-        self._empty_folder_exceptions_list.Location = System.Drawing.Point(17, 248)
-        self._empty_folder_exceptions_list.Name = "empty_folder_exceptions_list"
-        self._empty_folder_exceptions_list.Size = System.Drawing.Size(411, 134)
-        self._empty_folder_exceptions_list.TabIndex = 15
         # 
         # remove_empty_folders_label
         # 
         self._remove_empty_folders_label.AutoSize = True
-        self._remove_empty_folders_label.Location = System.Drawing.Point(36, 226)
+        self._remove_empty_folders_label.Margin = System.Windows.Forms.Padding(20, 10, 0, 0)
         self._remove_empty_folders_label.Name = "remove_empty_folders_label"
-        self._remove_empty_folders_label.Size = System.Drawing.Size(193, 13)
-        self._remove_empty_folders_label.TabIndex = 14
+        self._remove_empty_folders_label.TabIndex = 6
         self._remove_empty_folders_label.Text = "But do not remove the following folders:"
+        #
+        # _empty_folder_exceptions_layout
+        #
+        self._empty_folder_exceptions_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._empty_folder_exceptions_layout.Controls.Add(self._empty_folder_exceptions_list, 0, 0)
+        self._empty_folder_exceptions_layout.Controls.Add(self._empty_folder_exceptions_actions_layout, 1, 0)
+        self._empty_folder_exceptions_layout.Controls.Add(self._failed_empty_layout, 2, 0)
+        self._empty_folder_exceptions_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._empty_folder_exceptions_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._empty_folder_exceptions_layout.RowCount = 1
+        self._empty_folder_exceptions_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._empty_folder_exceptions_layout.TabIndex = 7
+        # 
+        # empty_folder_exceptions_list
+        # 
+        self._empty_folder_exceptions_list.AutoSize = True
+        self._empty_folder_exceptions_list.Dock = System.Windows.Forms.DockStyle.Fill
+        self._empty_folder_exceptions_list.FormattingEnabled = True
+        self._empty_folder_exceptions_list.Name = "empty_folder_exceptions_list"
+        self._empty_folder_exceptions_list.TabIndex = 0
+        #
+        # _empty_folder_exceptions_actions_layout
+        #
+        self._empty_folder_exceptions_actions_layout.AutoSize = True
+        self._empty_folder_exceptions_actions_layout.Anchor = System.Windows.Forms.AnchorStyles.None
+        self._empty_folder_exceptions_actions_layout.Controls.Add(self._add_empty_folder_exception)
+        self._empty_folder_exceptions_actions_layout.Controls.Add(self._remove_empty_folder_exception)
+        self._empty_folder_exceptions_actions_layout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        self._empty_folder_exceptions_actions_layout.TabIndex = 1
         # 
         # add_empty_folder_exception
         # 
-        self._add_empty_folder_exception.Location = System.Drawing.Point(432, 277)
+        self._add_empty_folder_exception.Anchor = System.Windows.Forms.AnchorStyles.Left  | System.Windows.Forms.AnchorStyles.Right  
+        self._add_empty_folder_exception.AutoSize = True
         self._add_empty_folder_exception.Name = "add_empty_folder_exception"
-        self._add_empty_folder_exception.Size = System.Drawing.Size(57, 23)
-        self._add_empty_folder_exception.TabIndex = 16
+        self._add_empty_folder_exception.TabIndex = 0
         self._add_empty_folder_exception.Tag = self._empty_folder_exceptions_list
         self._add_empty_folder_exception.Text = "Add"
         self._add_empty_folder_exception.UseVisualStyleBackColor = True
@@ -1256,138 +1519,210 @@ class ConfigureForm(Form):
         # 
         # remove_empty_folder_exception
         # 
-        self._remove_empty_folder_exception.Location = System.Drawing.Point(432, 328)
+        self._remove_empty_folder_exception.Anchor = System.Windows.Forms.AnchorStyles.Left  | System.Windows.Forms.AnchorStyles.Right  
+        self._remove_empty_folder_exception.AutoSize = True
         self._remove_empty_folder_exception.Name = "remove_empty_folder_exception"
-        self._remove_empty_folder_exception.Size = System.Drawing.Size(57, 23)
-        self._remove_empty_folder_exception.TabIndex = 17
+        self._remove_empty_folder_exception.Margin = System.Windows.Forms.Padding(3, 40, 3, 3)
+        self._remove_empty_folder_exception.TabIndex = 1
         self._remove_empty_folder_exception.Tag = self._empty_folder_exceptions_list
         self._remove_empty_folder_exception.Text = "Remove"
         self._remove_empty_folder_exception.UseVisualStyleBackColor = True
         self._remove_empty_folder_exception.Click += self.remove_folder_path_from_list
+        #
+        # _options_tab_empty_values_layout
+        #
+        self._options_tab_empty_values_layout.Controls.Add(self._replace_empty_folder_name_layout, 0, 0)
+        self._options_tab_empty_values_layout.Controls.Add(self._empty_substitution_panel, 0, 1)
+        self._options_tab_empty_values_layout.Controls.Add(self._failed_empty_layout, 0, 2)
+        self._options_tab_empty_values_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._options_tab_empty_values_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._options_tab_empty_values_layout.Padding = System.Windows.Forms.Padding(10)
+        self._options_tab_empty_values_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50))
+        self._options_tab_empty_values_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50))
+        self._options_tab_empty_values_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._options_tab_empty_values_layout.TabIndex = 0
+        #
+        # _replace_empty_folder_name_layout
+        #
+        self._replace_empty_folder_name_layout.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top
+        self._replace_empty_folder_name_layout.AutoSize = True
+        self._replace_empty_folder_name_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._replace_empty_folder_name_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._replace_empty_folder_name_layout.Controls.Add(self._empty_folder_name_label, 0, 0)
+        self._replace_empty_folder_name_layout.Controls.Add(self._empty_folder_name, 1, 0)
+        self._replace_empty_folder_name_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._replace_empty_folder_name_layout.TabIndex = 0
         # 
         # empty_folder_name_label
         # 
-        self._empty_folder_name_label.Location = System.Drawing.Point(8, 16)
+        self._empty_folder_name_label.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._empty_folder_name_label.AutoSize = True
         self._empty_folder_name_label.Name = "empty_folder_name_label"
-        self._empty_folder_name_label.Size = System.Drawing.Size(201, 29)
         self._empty_folder_name_label.TabIndex = 0
-        self._empty_folder_name_label.Text = "Replace empty folder names with: (Leave empty to remove empty folders)"
+        self._empty_folder_name_label.Text = "Replace empty folder names with:\r\n(Leave empty to remove empty folders)"
         # 
         # empty_folder_name
-        # 
-        self._empty_folder_name.Location = System.Drawing.Point(208, 20)
+        #
+        self._empty_folder_name.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right 
+        self._empty_folder_name.AutoSize = True
         self._empty_folder_name.Name = "empty_folder_name"
-        self._empty_folder_name.Size = System.Drawing.Size(274, 20)
         self._empty_folder_name.TabIndex = 1
+        #
+        # _empty_substitution_panel
+        self._empty_substitution_panel.Controls.Add(self._empty_substitution_table)
+        self._empty_substitution_panel.Controls.Add(self._empty_substitution_label)
+        self._empty_substitution_panel.Dock = System.Windows.Forms.DockStyle.Top
+        self._empty_substitution_panel.TabIndex = 1
         # 
-        # failed_empty_selection
+        # empty_substitution_label
         # 
-        self._failed_empty_selection.CheckOnClick = True
-        self._failed_empty_selection.FormattingEnabled = True
-        self._failed_empty_selection.HorizontalScrollbar = True
-        self._failed_empty_selection.Location = System.Drawing.Point(26, 219)
-        self._failed_empty_selection.Name = "failed_empty_selection"
-        self._failed_empty_selection.Size = System.Drawing.Size(232, 109)
-        self._failed_empty_selection.Sorted = True
-        self._failed_empty_selection.TabIndex = 9
-        self._failed_empty_selection.Items.AddRange(failed_items)
+        self._empty_substitution_label.AutoSize = True
+        self._empty_substitution_label.Dock = System.Windows.Forms.DockStyle.Top
+        self._empty_substitution_label.Name = "empty_substitution_label"
+        self._empty_substitution_label.Padding = System.Windows.Forms.Padding(3, 3, 6, 3)
+        self._empty_substitution_label.TabIndex = 0
+        self._empty_substitution_label.Text = "When a field is empty substitute the following value:"
+        # 
+        # _empty_substitution_table
+        # 
+        self._empty_substitution_table.AutoSize = True
+        self._empty_substitution_table.Controls.Add(self._empty_substitution_label1, 0, 0)
+        self._empty_substitution_table.Controls.Add(self._empty_substitution_field, 1, 0)
+        self._empty_substitution_table.Controls.Add(self._empty_substitution_label2, 2, 0)
+        self._empty_substitution_table.Controls.Add(self._empty_substitution_value, 3, 0)
+        self._empty_substitution_table.ColumnCount = 4
+        self._empty_substitution_table.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._empty_substitution_table.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._empty_substitution_table.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._empty_substitution_table.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._empty_substitution_table.Dock = System.Windows.Forms.DockStyle.Top
+        self._empty_substitution_table.TabIndex = 1
+        # 
+        # empty_substitution_label1
+        # 
+        self._empty_substitution_label1.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._empty_substitution_label1.AutoSize = True
+        self._empty_substitution_label1.Name = "empty_substitution_label1"
+        self._empty_substitution_label1.TabIndex = 0
+        self._empty_substitution_label1.Text = "Field"
+        # 
+        # empty_substitution_field
+        # 
+        self._empty_substitution_field.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._empty_substitution_field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        self._empty_substitution_field.FormattingEnabled = True
+        self._empty_substitution_field.IntegralHeight = False
+        self._empty_substitution_field.MaxDropDownItems = 15
+        self._empty_substitution_field.Name = "empty_substitution_field"
+        self._empty_substitution_field.Size = System.Drawing.Size(175, 21)
+        self._empty_substitution_field.Sorted = True
+        self._empty_substitution_field.TabIndex = 1
+        self._empty_substitution_field.Items.AddRange(empty_substitution_items)
+        self._empty_substitution_field.SelectedIndex = 0
+        self._empty_substitution_field.SelectedIndexChanged += self.empty_substitution_field_selected_index_changed
+        # 
+        # empty_substitution_label2
+        # 
+        self._empty_substitution_label2.Anchor = System.Windows.Forms.AnchorStyles.Left
+        self._empty_substitution_label2.AutoSize = True
+        self._empty_substitution_label2.Name = "empty_substitution_label2"
+        self._empty_substitution_label2.TabIndex = 2
+        self._empty_substitution_label2.Text = "substitution"
+        # 
+        # empty_substitution_value
+        # 
+        self._empty_substitution_value.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right
+        self._empty_substitution_value.AutoSize = True
+        self._empty_substitution_value.Name = "empty_substitution_value"
+        self._empty_substitution_value.TabIndex = 3
+        self._empty_substitution_value.Leave += self.empty_subsititution_value_leave
+        #
+        # _failed_empty_layout
+        #
+        self._failed_empty_layout.Controls.Add(self._failed_empty_checkbox, 0, 0)
+        self._failed_empty_layout.Controls.Add(self._failed_empty_selection, 0, 1)
+        self._failed_empty_layout.Controls.Add(self._move_failed_empty, 0, 2)
+        self._failed_empty_layout.Controls.Add(self._failed_empty_folder, 0, 3)
+        self._failed_empty_layout.Controls.Add(self._failed_empty_browse, 1, 3)
+        self._failed_empty_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._failed_empty_layout.ColumnStyles.Add(System.Windows.Forms.ColumnStyle())
+        self._failed_empty_layout.Dock = System.Windows.Forms.DockStyle.Fill
+        self._failed_empty_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._failed_empty_layout.RowStyles.Add(System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100))
+        self._failed_empty_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._failed_empty_layout.RowStyles.Add(System.Windows.Forms.RowStyle())
+        self._failed_empty_layout.TabIndex = 2
         # 
         # failed_empty_checkbox
         # 
+        self._failed_empty_layout.SetColumnSpan(self._failed_empty_checkbox, 2)
+        self._failed_empty_checkbox.AutoSize = True
         self._failed_empty_checkbox.Checked = True
         self._failed_empty_checkbox.CheckState = System.Windows.Forms.CheckState.Checked
-        self._failed_empty_checkbox.Location = System.Drawing.Point(8, 182)
         self._failed_empty_checkbox.Name = "failed_empty_checkbox"
-        self._failed_empty_checkbox.Size = System.Drawing.Size(474, 31)
-        self._failed_empty_checkbox.TabIndex = 8
+        self._failed_empty_checkbox.TabIndex = 0
         self._failed_empty_checkbox.Text = "If any of the selected fields are empty then mark the operation as failed."
         self._failed_empty_checkbox.CheckedChanged += self.failed_empty_checkbox_checked_changed
         # 
+        # failed_empty_selection
+        # 
+        self._failed_empty_selection.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
+        self._failed_empty_selection.AutoSize = True
+        self._failed_empty_selection.CheckOnClick = True
+        self._failed_empty_selection.FormattingEnabled = True
+        self._failed_empty_selection.HorizontalScrollbar = True
+        self._failed_empty_selection.Margin = System.Windows.Forms.Padding(10, 3, 3, 3)
+        self._failed_empty_selection.Name = "failed_empty_selection"
+        self._failed_empty_selection.Size = System.Drawing.Size(380, 109)
+        self._failed_empty_selection.Sorted = True
+        self._failed_empty_selection.TabIndex = 1
+        self._failed_empty_selection.Items.AddRange(failed_items)
+        # 
+        # moved_failed_empty
+        # 
+        self._move_failed_empty.AutoSize = True
+        self._move_failed_empty.Margin = System.Windows.Forms.Padding(10, 3, 3, 3)
+        self._move_failed_empty.Name = "moved_failed_empty"
+        self._move_failed_empty.TabIndex = 2
+        self._move_failed_empty.Text = "and move/copy them to this folder:"
+        self._move_failed_empty.UseVisualStyleBackColor = True
+        self._move_failed_empty.CheckedChanged += self.move_failed_empty_check_changed
+        # 
         # failed_empty_folder
         # 
-        self._failed_empty_folder.Location = System.Drawing.Point(26, 357)
+        self._failed_empty_folder.AutoSize = True
+        self._failed_empty_folder.Dock = System.Windows.Forms.DockStyle.Fill
+        self._failed_empty_folder.Margin = System.Windows.Forms.Padding(10, 3, 3, 3)
         self._failed_empty_folder.Name = "failed_empty_folder"
-        self._failed_empty_folder.Size = System.Drawing.Size(377, 20)
-        self._failed_empty_folder.TabIndex = 11
+        self._failed_empty_folder.TabIndex = 3
         self._failed_empty_folder.Enabled = False
         # 
         # failed_empty_browse
         # 
-        self._failed_empty_browse.Location = System.Drawing.Point(409, 355)
+        self._failed_empty_browse.AutoSize = True
         self._failed_empty_browse.Name = "failed_empty_browse"
-        self._failed_empty_browse.Size = System.Drawing.Size(75, 23)
-        self._failed_empty_browse.TabIndex = 12
+        self._failed_empty_browse.TabIndex = 4
         self._failed_empty_browse.Text = "Browse"
         self._failed_empty_browse.UseVisualStyleBackColor = True
         self._failed_empty_browse.Tag = self._failed_empty_folder
         self._failed_empty_browse.Click += self.add_folder_path_to_text_box
         self._failed_empty_browse.Enabled = False
-        # 
-        # empty_substitution_label
-        # 
-        self._empty_substitution_label.AutoSize = True
-        self._empty_substitution_label.Location = System.Drawing.Point(8, 97)
-        self._empty_substitution_label.Name = "empty_substitution_label"
-        self._empty_substitution_label.Size = System.Drawing.Size(250, 13)
-        self._empty_substitution_label.TabIndex = 3
-        self._empty_substitution_label.Text = "When a field is empty substitute the following value:"
-        # 
-        # empty_substitution_field
-        # 
-        self._empty_substitution_field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        self._empty_substitution_field.FormattingEnabled = True
-        self._empty_substitution_field.IntegralHeight = False
-        self._empty_substitution_field.Location = System.Drawing.Point(43, 115)
-        self._empty_substitution_field.MaxDropDownItems = 15
-        self._empty_substitution_field.Name = "empty_substitution_field"
-        self._empty_substitution_field.Size = System.Drawing.Size(121, 21)
-        self._empty_substitution_field.Sorted = True
-        self._empty_substitution_field.TabIndex = 5
-        self._empty_substitution_field.Items.AddRange(empty_substitution_items)
-        self._empty_substitution_field.SelectedIndex = 0
-        self._empty_substitution_field.SelectedIndexChanged += self.empty_substitution_field_selected_index_changed
-        # 
-        # empty_substitution_label1
-        # 
-        self._empty_substitution_label1.AutoSize = True
-        self._empty_substitution_label1.Location = System.Drawing.Point(8, 118)
-        self._empty_substitution_label1.Name = "empty_substitution_label1"
-        self._empty_substitution_label1.Size = System.Drawing.Size(29, 13)
-        self._empty_substitution_label1.TabIndex = 4
-        self._empty_substitution_label1.Text = "Field"
-        # 
-        # empty_substitution_value
-        # 
-        self._empty_substitution_value.Location = System.Drawing.Point(237, 115)
-        self._empty_substitution_value.Name = "empty_substitution_value"
-        self._empty_substitution_value.Size = System.Drawing.Size(245, 20)
-        self._empty_substitution_value.TabIndex = 7
-        self._empty_substitution_value.Leave += self.empty_subsititution_value_leave
-        # 
-        # empty_substitution_label2
-        # 
-        self._empty_substitution_label2.AutoSize = True
-        self._empty_substitution_label2.Location = System.Drawing.Point(171, 118)
-        self._empty_substitution_label2.Name = "empty_substitution_label2"
-        self._empty_substitution_label2.Size = System.Drawing.Size(60, 13)
-        self._empty_substitution_label2.TabIndex = 6
-        self._empty_substitution_label2.Text = "substitution"
-        # 
-        # moved_failed_empty
-        # 
-        self._move_failed_empty.AutoSize = True
-        self._move_failed_empty.Location = System.Drawing.Point(26, 334)
-        self._move_failed_empty.Name = "moved_failed_empty"
-        self._move_failed_empty.Size = System.Drawing.Size(162, 17)
-        self._move_failed_empty.TabIndex = 10
-        self._move_failed_empty.Text = "and move/copy them to this folder:"
-        self._move_failed_empty.UseVisualStyleBackColor = True
-        self._move_failed_empty.CheckedChanged += self.move_failed_empty_check_changed
+
 
         self.load_options_page_settings()
 
-        self._options_page_empty_values_tab.ResumeLayout()        
+        self._options_tab_month_layout.ResumeLayout()
+        self._illegal_character_layout.ResumeLayout()
+        self._empty_folder_exceptions_actions_layout.ResumeLayout()
+        self._empty_folder_exceptions_layout.ResumeLayout()
+        self._replace_empty_folder_name_layout.ResumeLayout()
+        self._empty_substitution_table.ResumeLayout()
+        self._empty_substitution_panel.ResumeLayout()
+        self._failed_empty_layout.ResumeLayout()
+        self._options_tab_layout.ResumeLayout()
         self._options_page_options_tab.ResumeLayout()
+        self._options_tab_empty_values_layout.ResumeLayout()
+        self._options_page_empty_values_tab.ResumeLayout()        
         self._options_page.ResumeLayout()
 
 
@@ -1416,6 +1751,7 @@ class ConfigureForm(Form):
         self._insert_controls.Controls.Add(self._multiple_value_insert_controls)
         self._insert_controls.Controls.Add(self._calculated_insert_controls)
         self._insert_controls.Controls.Add(self._search_insert_controls)
+        self._insert_controls.Dock = System.Windows.Forms.DockStyle.Fill
         self._insert_controls.Location = System.Drawing.Point(-1, 131)
         self._insert_controls.Name = "insert_controls"
         self._insert_controls.SelectedIndex = 0
@@ -2017,6 +2353,7 @@ class ConfigureForm(Form):
 
     def create_search_insert_controls(self):
         self._insert_controls.SuspendLayout()
+
         self._search_insert_controls.SuspendLayout()
         self._search_insert_controls_name = System.Windows.Forms.TextBox()
         self._search_insert_controls_label = System.Windows.Forms.Label()
@@ -2029,7 +2366,7 @@ class ConfigureForm(Form):
         # 
         # search_insert_controls_name
         # 
-        self._search_insert_controls_name.Location = System.Drawing.Point(51, 6)
+        self._search_insert_controls_name.Location = System.Drawing.Point(56, 6)
         self._search_insert_controls_name.Name = "search_insert_controls_name"
         self._search_insert_controls_name.Size = System.Drawing.Size(435, 20)
         self._search_insert_controls_name.TabIndex = 1
@@ -2093,17 +2430,13 @@ class ConfigureForm(Form):
                 self.create_folders_page()
             if self._insert_controls.Controls.Count == 0:
                 self.create_insert_controls()
-            self._folders_page.Controls.Add(self._insert_controls)
-            self._folders_page.Controls.Add(self._space_automatically)
-            self._folders_page.Controls.Add(self._preview_book_selector)
+            self._folder_page_input_controls_container.Controls.Add(self._insert_controls)
         elif sender.Tag is self._files_page:
             if self._files_page.Controls.Count == 0:
                 self.create_files_page()
             if self._insert_controls.Controls.Count == 0:
                 self.create_insert_controls()
-            self._files_page.Controls.Add(self._insert_controls)
-            self._files_page.Controls.Add(self._space_automatically)
-            self._files_page.Controls.Add(self._preview_book_selector)
+            self._file_page_input_controls_container.Controls.Add(self._insert_controls)
 
         elif sender.Tag is self._rules_page:
             if self._rules_page.Controls.Count == 0:
@@ -2221,7 +2554,7 @@ class ConfigureForm(Form):
         dialog = NewIllegalCharacterDialog(self.profile.IllegalCharacters.keys())
         ThemeMe(dialog)
 
-        result = dialog.ShowDialog()
+        result = dialog.ShowDialog(self)
 
         if result == DialogResult.OK:
             character = dialog.GetCharacter()
@@ -2342,7 +2675,7 @@ class ConfigureForm(Form):
 
     def insert_control_clicked(self, sender, e):
         """Gets the template text from the clicked insert control then passes it to the function that adds it to the correct textbox"""
-        template = sender.GetTemplateText(self._space_automatically.Checked)
+        template = sender.GetTemplateText(self._space_automatically)
 
         if self._files_page.Visible:
             self.insert_template_text(template, self._file_structure)
@@ -2442,8 +2775,8 @@ class ConfigureForm(Form):
 
         self.load_overview_page_settings()
 
-        self._space_automatically.Checked = self.profile.AutoSpaceFields
-
+        self._space_automatically = self.profile.AutoSpaceFields
+        self.sync_space_automatically()
         
         if self._rules_page.Controls.Count > 0:
             self.load_rules_page_settings()
@@ -2583,7 +2916,7 @@ class ConfigureForm(Form):
 
         self.save_overview_page_settings()
 
-        self.profile.AutoSpaceFields = self._space_automatically.Checked
+        self.profile.AutoSpaceFields = self._space_automatically
 
         if self._options_page.Controls.Count > 0:
             self.save_options_page_settings()
@@ -2881,9 +3214,24 @@ class ConfigureForm(Form):
         else:
             sender.SelectedItem = self.profile.Name
 
+    def next_preview_book(self, sender, e):
+        next_value = self._preview_book_index + 1
 
-    def change_preview_book(self, sender, e):
-        self._preview_book = self._preview_books[sender.Value]
+        if next_value > len(self._preview_books) - 1:
+            next_value = 0
+
+        self._preview_book = self._preview_books[next_value]
+        self._preview_book_index = next_value
+        self.update_template_text()
+
+    def previous_preview_book(self, sender, e):
+        previous_value = self._preview_book_index - 1
+
+        if previous_value < 0:
+            previous_value = len(self._preview_books) - 1
+
+        self._preview_book = self._preview_books[previous_value]
+        self._preview_book_index = previous_value
         self.update_template_text()
 
 
@@ -2911,3 +3259,11 @@ class ConfigureForm(Form):
 
         combobox.DropDownWidth = width
         g.Dispose()
+
+    def space_automatically_check_changed(self, sender, e):
+        self._space_automatically = sender.Checked
+        self.sync_space_automatically()
+
+    def sync_space_automatically(self):
+        self._file_space_automatically.Checked = self._space_automatically
+        self._folder_space_automatically.Checked = self._space_automatically
