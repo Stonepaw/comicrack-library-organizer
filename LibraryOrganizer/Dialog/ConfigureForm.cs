@@ -19,10 +19,12 @@ namespace LibraryOrganizer.Dialog
             profileBindingSource.DataSource = _profile;
 
             removeEmptyFolderExclusions.SelectedIndex = -1;
-            failedEmptyFields.ClearSelection();
         }
 
-        private void failedFolderBrowse_Click(object sender, EventArgs e)
+        private void failOperationOnEmptyValueDestinationFolderBrowse_Click(
+            object sender,
+            EventArgs e
+        )
         {
             FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
 
@@ -58,7 +60,7 @@ namespace LibraryOrganizer.Dialog
             }
         }
 
-        private void emptyFolderExceptions_EnabledChanged(object sender, EventArgs e)
+        private void removeEmptyFolderExclusions_EnabledChanged(object sender, EventArgs e)
         {
             if (!removeEmptyFolderExclusions.Enabled)
             {
@@ -66,16 +68,20 @@ namespace LibraryOrganizer.Dialog
             }
         }
 
-        private void failedEmptyFields_EnabledChanged(object sender, EventArgs e)
+        private void failOperationOnEmptyValueFields_EnabledChanged(object sender, EventArgs e)
         {
-            if (!failedEmptyFields.Enabled)
+            if (failOperationOnEmptyValueFields.Enabled)
             {
-                failedEmptyFields.ClearSelection();
-                failedEmptyFields.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor =
+                    SystemColors.ControlText;
+                failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
+                    SystemColors.ControlText;
             }
             else
             {
-                failedEmptyFields.DefaultCellStyle.ForeColor = SystemColors.ControlText;
+                failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
+                    SystemColors.GrayText;
             }
         }
     }

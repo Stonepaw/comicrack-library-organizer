@@ -107,8 +107,8 @@ namespace LibraryOrganizer.ViewModel
         /// <summary>
         /// Replacement values for empty field data.
         /// </summary>
-        public List<EmptyFieldSubstitution> EmptyFieldSubstitutions =>
-            _profile.EmptyFieldSubstitutions;
+        public List<EmptyFieldReplacement> EmptyFieldReplacements =>
+            _profile.EmptyFieldReplacements;
 
         /// <summary>
         /// Replace empty folder names in the template with this value. Empty folders are removed
@@ -148,8 +148,17 @@ namespace LibraryOrganizer.ViewModel
                     NotifyPropertyChanged(
                         nameof(FailOperationOnEmptyValueDestinationFolderEnabled)
                     );
+                    NotifyPropertyChanged(nameof(FailOperationOnEmptyValueFieldsReadonly));
                 }
             }
+        }
+
+        /// <summary>
+        /// If the fail operation on empty value fields should be editable or readonly
+        /// </summary>
+        public bool FailOperationOnEmptyValueFieldsReadonly
+        {
+            get => !_profile.FailOperationOnEmptyValue;
         }
 
         /// <summary>

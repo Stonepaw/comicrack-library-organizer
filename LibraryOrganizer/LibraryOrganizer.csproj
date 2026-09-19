@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="Data\EmptyFieldSubstitution.cs" />
+    <Compile Include="Data\EmptyFieldReplacement.cs" />
     <Compile Include="Data\FailedEmptyField.cs" />
     <Compile Include="Data\IllegalCharacterReplacement.cs" />
     <Compile Include="Data\MonthReplacement.cs" />

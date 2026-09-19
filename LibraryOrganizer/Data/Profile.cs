@@ -49,8 +49,8 @@ namespace LibraryOrganizer.Data
         /// <summary>
         /// Replacement values for empty field data.
         /// </summary>
-        public List<EmptyFieldSubstitution> EmptyFieldSubstitutions { get; } =
-            new List<EmptyFieldSubstitution>();
+        public List<EmptyFieldReplacement> EmptyFieldReplacements { get; } =
+            new List<EmptyFieldReplacement>();
 
         /// <summary>
         /// Replace empty folder names in the template with this value. Empty folders are removed

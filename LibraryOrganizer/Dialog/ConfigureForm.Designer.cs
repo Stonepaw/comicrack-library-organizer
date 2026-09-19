@@ -60,24 +60,27 @@ namespace LibraryOrganizer.Dialog
             this.copyReadPercentageToReplacement = new System.Windows.Forms.CheckBox();
             this.normalizeMultipleSpaces = new System.Windows.Forms.CheckBox();
             this.emptyValuesTabPage = new System.Windows.Forms.TabPage();
-            this.failedFolderLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.failedFolderBrowse = new System.Windows.Forms.Button();
-            this.failedFolder = new System.Windows.Forms.TextBox();
-            this.moveFailed = new System.Windows.Forms.CheckBox();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.failedEmptyFields = new System.Windows.Forms.DataGridView();
-            this.Enabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.failOperationOnEmptyValueDestinationFolderLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.failOperationOnEmptyValueDestinationFolderBrowse = new System.Windows.Forms.Button();
+            this.failOperationOnEmptyValueDestinationFolder = new System.Windows.Forms.TextBox();
+            this.failOperationOnEmptyValueUseDestinationFolder = new System.Windows.Forms.CheckBox();
+            this.failOperationOnEmptyValueFieldsLayout = new System.Windows.Forms.Panel();
+            this.failOperationOnEmptyValueFields = new System.Windows.Forms.DataGridView();
+            this.emptyValueFieldEnabledColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.emptyValueFieldNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.failOperationOnEmptyValueFieldsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.failOperationOnEmptyValue = new System.Windows.Forms.CheckBox();
+            this.emptyFieldReplacementLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.emptyFieldReplacementLabel2 = new System.Windows.Forms.Label();
+            this.emptyFieldReplacementSelector = new System.Windows.Forms.ComboBox();
+            this.emptyFieldReplacementsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.emptyFieldReplacementLabel3 = new System.Windows.Forms.Label();
+            this.emptyFieldReplacement = new System.Windows.Forms.TextBox();
+            this.emptyFieldReplacementLabel = new System.Windows.Forms.Label();
+            this.emptyFolderNameReplacementLabel2 = new System.Windows.Forms.Label();
+            this.emptyFolderNameReplacementLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.emptyFolderNameReplacement = new System.Windows.Forms.TextBox();
+            this.emptyFolderNameReplacementLabel = new System.Windows.Forms.Label();
             this.rulesPage = new System.Windows.Forms.TabControl();
             this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
             this.metadataRulesActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
@@ -142,11 +145,13 @@ namespace LibraryOrganizer.Dialog
             this.monthReplacementsLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.monthReplacementsBindingSource)).BeginInit();
             this.emptyValuesTabPage.SuspendLayout();
-            this.failedFolderLayout.SuspendLayout();
-            this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.failedEmptyFields)).BeginInit();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
+            this.failOperationOnEmptyValueDestinationFolderLayout.SuspendLayout();
+            this.failOperationOnEmptyValueFieldsLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.failOperationOnEmptyValueFields)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.failOperationOnEmptyValueFieldsBindingSource)).BeginInit();
+            this.emptyFieldReplacementLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).BeginInit();
+            this.emptyFolderNameReplacementLayout.SuspendLayout();
             this.rulesPage.SuspendLayout();
             this.metadataRulesTabPage.SuspendLayout();
             this.metadataRulesControlsLayout.SuspendLayout();
@@ -234,7 +239,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusions.Name = "removeEmptyFolderExclusions";
             this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(502, 370);
             this.removeEmptyFolderExclusions.TabIndex = 2;
-            this.removeEmptyFolderExclusions.EnabledChanged += new System.EventHandler(this.emptyFolderExceptions_EnabledChanged);
+            this.removeEmptyFolderExclusions.EnabledChanged += new System.EventHandler(this.removeEmptyFolderExclusions_EnabledChanged);
             // 
             // profileBindingSource
             // 
@@ -508,14 +513,14 @@ namespace LibraryOrganizer.Dialog
             // 
             // emptyValuesTabPage
             // 
-            this.emptyValuesTabPage.Controls.Add(this.failedFolderLayout);
-            this.emptyValuesTabPage.Controls.Add(this.moveFailed);
-            this.emptyValuesTabPage.Controls.Add(this.panel5);
-            this.emptyValuesTabPage.Controls.Add(this.checkBox3);
-            this.emptyValuesTabPage.Controls.Add(this.tableLayoutPanel1);
-            this.emptyValuesTabPage.Controls.Add(this.label8);
-            this.emptyValuesTabPage.Controls.Add(this.label7);
-            this.emptyValuesTabPage.Controls.Add(this.tableLayoutPanel3);
+            this.emptyValuesTabPage.Controls.Add(this.failOperationOnEmptyValueDestinationFolderLayout);
+            this.emptyValuesTabPage.Controls.Add(this.failOperationOnEmptyValueUseDestinationFolder);
+            this.emptyValuesTabPage.Controls.Add(this.failOperationOnEmptyValueFieldsLayout);
+            this.emptyValuesTabPage.Controls.Add(this.failOperationOnEmptyValue);
+            this.emptyValuesTabPage.Controls.Add(this.emptyFieldReplacementLayout);
+            this.emptyValuesTabPage.Controls.Add(this.emptyFieldReplacementLabel);
+            this.emptyValuesTabPage.Controls.Add(this.emptyFolderNameReplacementLabel2);
+            this.emptyValuesTabPage.Controls.Add(this.emptyFolderNameReplacementLayout);
             this.emptyValuesTabPage.Location = new System.Drawing.Point(4, 25);
             this.emptyValuesTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.emptyValuesTabPage.Name = "emptyValuesTabPage";
@@ -525,83 +530,92 @@ namespace LibraryOrganizer.Dialog
             this.emptyValuesTabPage.Text = "Empty Values";
             this.emptyValuesTabPage.UseVisualStyleBackColor = true;
             // 
-            // failedFolderLayout
+            // failOperationOnEmptyValueDestinationFolderLayout
             // 
-            this.failedFolderLayout.AutoSize = true;
-            this.failedFolderLayout.ColumnCount = 2;
-            this.failedFolderLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.failedFolderLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.failedFolderLayout.Controls.Add(this.failedFolderBrowse, 1, 0);
-            this.failedFolderLayout.Controls.Add(this.failedFolder, 0, 0);
-            this.failedFolderLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.failedFolderLayout.Location = new System.Drawing.Point(4, 308);
-            this.failedFolderLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.failedFolderLayout.Name = "failedFolderLayout";
-            this.failedFolderLayout.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
-            this.failedFolderLayout.RowCount = 1;
-            this.failedFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.failedFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.failedFolderLayout.Size = new System.Drawing.Size(620, 34);
-            this.failedFolderLayout.TabIndex = 2;
+            this.failOperationOnEmptyValueDestinationFolderLayout.AutoSize = true;
+            this.failOperationOnEmptyValueDestinationFolderLayout.ColumnCount = 2;
+            this.failOperationOnEmptyValueDestinationFolderLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.failOperationOnEmptyValueDestinationFolderLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.failOperationOnEmptyValueDestinationFolderLayout.Controls.Add(this.failOperationOnEmptyValueDestinationFolderBrowse, 1, 0);
+            this.failOperationOnEmptyValueDestinationFolderLayout.Controls.Add(this.failOperationOnEmptyValueDestinationFolder, 0, 0);
+            this.failOperationOnEmptyValueDestinationFolderLayout.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "FailOperationOnEmptyValueDestinationFolderEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValueDestinationFolderLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.failOperationOnEmptyValueDestinationFolderLayout.Location = new System.Drawing.Point(4, 308);
+            this.failOperationOnEmptyValueDestinationFolderLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValueDestinationFolderLayout.Name = "failOperationOnEmptyValueDestinationFolderLayout";
+            this.failOperationOnEmptyValueDestinationFolderLayout.Padding = new System.Windows.Forms.Padding(16, 0, 0, 0);
+            this.failOperationOnEmptyValueDestinationFolderLayout.RowCount = 1;
+            this.failOperationOnEmptyValueDestinationFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.failOperationOnEmptyValueDestinationFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.failOperationOnEmptyValueDestinationFolderLayout.Size = new System.Drawing.Size(620, 34);
+            this.failOperationOnEmptyValueDestinationFolderLayout.TabIndex = 2;
             // 
-            // failedFolderBrowse
+            // failOperationOnEmptyValueDestinationFolderBrowse
             // 
-            this.failedFolderBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.failedFolderBrowse.AutoSize = true;
-            this.failedFolderBrowse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.failedFolderBrowse.Location = new System.Drawing.Point(554, 4);
-            this.failedFolderBrowse.Margin = new System.Windows.Forms.Padding(4);
-            this.failedFolderBrowse.Name = "failedFolderBrowse";
-            this.failedFolderBrowse.Size = new System.Drawing.Size(62, 26);
-            this.failedFolderBrowse.TabIndex = 0;
-            this.failedFolderBrowse.Text = "Browse";
-            this.failedFolderBrowse.UseVisualStyleBackColor = true;
-            this.failedFolderBrowse.Click += new System.EventHandler(this.failedFolderBrowse_Click);
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.failOperationOnEmptyValueDestinationFolderBrowse.AutoSize = true;
+            this.failOperationOnEmptyValueDestinationFolderBrowse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Location = new System.Drawing.Point(554, 4);
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Name = "failOperationOnEmptyValueDestinationFolderBrowse";
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Size = new System.Drawing.Size(62, 26);
+            this.failOperationOnEmptyValueDestinationFolderBrowse.TabIndex = 0;
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Text = "Browse";
+            this.failOperationOnEmptyValueDestinationFolderBrowse.UseVisualStyleBackColor = true;
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Click += new System.EventHandler(this.failOperationOnEmptyValueDestinationFolderBrowse_Click);
             // 
-            // failedFolder
+            // failOperationOnEmptyValueDestinationFolder
             // 
-            this.failedFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.failedFolder.Location = new System.Drawing.Point(20, 6);
-            this.failedFolder.Margin = new System.Windows.Forms.Padding(4);
-            this.failedFolder.Name = "failedFolder";
-            this.failedFolder.ReadOnly = true;
-            this.failedFolder.Size = new System.Drawing.Size(526, 22);
-            this.failedFolder.TabIndex = 1;
+            this.failOperationOnEmptyValueDestinationFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.failOperationOnEmptyValueDestinationFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.profileBindingSource, "FailOperationOnEmptyValueDestinationFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValueDestinationFolder.Location = new System.Drawing.Point(20, 6);
+            this.failOperationOnEmptyValueDestinationFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValueDestinationFolder.Name = "failOperationOnEmptyValueDestinationFolder";
+            this.failOperationOnEmptyValueDestinationFolder.ReadOnly = true;
+            this.failOperationOnEmptyValueDestinationFolder.Size = new System.Drawing.Size(526, 22);
+            this.failOperationOnEmptyValueDestinationFolder.TabIndex = 1;
             // 
-            // moveFailed
+            // failOperationOnEmptyValueUseDestinationFolder
             // 
-            this.moveFailed.AutoSize = true;
-            this.moveFailed.Dock = System.Windows.Forms.DockStyle.Top;
-            this.moveFailed.Location = new System.Drawing.Point(4, 284);
-            this.moveFailed.Margin = new System.Windows.Forms.Padding(4);
-            this.moveFailed.Name = "moveFailed";
-            this.moveFailed.Padding = new System.Windows.Forms.Padding(20, 4, 0, 0);
-            this.moveFailed.Size = new System.Drawing.Size(620, 24);
-            this.moveFailed.TabIndex = 0;
-            this.moveFailed.Text = "and move/copy them to this folder:";
-            this.moveFailed.UseVisualStyleBackColor = true;
+            this.failOperationOnEmptyValueUseDestinationFolder.AutoSize = true;
+            this.failOperationOnEmptyValueUseDestinationFolder.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "FailOperationOnEmptyValuesUseDestinationFolder", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValueUseDestinationFolder.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "FailOperationOnEmptyValue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValueUseDestinationFolder.Dock = System.Windows.Forms.DockStyle.Top;
+            this.failOperationOnEmptyValueUseDestinationFolder.Location = new System.Drawing.Point(4, 284);
+            this.failOperationOnEmptyValueUseDestinationFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValueUseDestinationFolder.Name = "failOperationOnEmptyValueUseDestinationFolder";
+            this.failOperationOnEmptyValueUseDestinationFolder.Padding = new System.Windows.Forms.Padding(20, 4, 0, 0);
+            this.failOperationOnEmptyValueUseDestinationFolder.Size = new System.Drawing.Size(620, 24);
+            this.failOperationOnEmptyValueUseDestinationFolder.TabIndex = 0;
+            this.failOperationOnEmptyValueUseDestinationFolder.Text = "and move/copy them to this folder:";
+            this.failOperationOnEmptyValueUseDestinationFolder.UseVisualStyleBackColor = true;
             // 
-            // panel5
+            // failOperationOnEmptyValueFieldsLayout
             // 
-            this.panel5.Controls.Add(this.failedEmptyFields);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel5.Location = new System.Drawing.Point(4, 161);
-            this.panel5.Margin = new System.Windows.Forms.Padding(4);
-            this.panel5.Name = "panel5";
-            this.panel5.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.panel5.Size = new System.Drawing.Size(620, 123);
-            this.panel5.TabIndex = 3;
+            this.failOperationOnEmptyValueFieldsLayout.Controls.Add(this.failOperationOnEmptyValueFields);
+            this.failOperationOnEmptyValueFieldsLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.failOperationOnEmptyValueFieldsLayout.Location = new System.Drawing.Point(4, 161);
+            this.failOperationOnEmptyValueFieldsLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValueFieldsLayout.Name = "failOperationOnEmptyValueFieldsLayout";
+            this.failOperationOnEmptyValueFieldsLayout.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.failOperationOnEmptyValueFieldsLayout.Size = new System.Drawing.Size(620, 123);
+            this.failOperationOnEmptyValueFieldsLayout.TabIndex = 3;
             // 
-            // failedEmptyFields
+            // failOperationOnEmptyValueFields
             // 
-            this.failedEmptyFields.AllowUserToAddRows = false;
-            this.failedEmptyFields.AllowUserToDeleteRows = false;
-            this.failedEmptyFields.AllowUserToResizeRows = false;
-            this.failedEmptyFields.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
-            this.failedEmptyFields.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.failedEmptyFields.ColumnHeadersVisible = false;
-            this.failedEmptyFields.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Enabled});
+            this.failOperationOnEmptyValueFields.AllowUserToAddRows = false;
+            this.failOperationOnEmptyValueFields.AllowUserToDeleteRows = false;
+            this.failOperationOnEmptyValueFields.AllowUserToResizeColumns = false;
+            this.failOperationOnEmptyValueFields.AllowUserToResizeRows = false;
+            this.failOperationOnEmptyValueFields.AutoGenerateColumns = false;
+            this.failOperationOnEmptyValueFields.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
+            this.failOperationOnEmptyValueFields.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.failOperationOnEmptyValueFields.ColumnHeadersVisible = false;
+            this.failOperationOnEmptyValueFields.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.emptyValueFieldEnabledColumn,
+            this.emptyValueFieldNameColumn});
+            this.failOperationOnEmptyValueFields.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "FailOperationOnEmptyValue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValueFields.DataSource = this.failOperationOnEmptyValueFieldsBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -609,167 +623,194 @@ namespace LibraryOrganizer.Dialog
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.failedEmptyFields.DefaultCellStyle = dataGridViewCellStyle1;
-            this.failedEmptyFields.Dock = System.Windows.Forms.DockStyle.Left;
-            this.failedEmptyFields.GridColor = System.Drawing.SystemColors.Window;
-            this.failedEmptyFields.Location = new System.Drawing.Point(20, 0);
-            this.failedEmptyFields.MultiSelect = false;
-            this.failedEmptyFields.Name = "failedEmptyFields";
-            this.failedEmptyFields.RowHeadersVisible = false;
-            this.failedEmptyFields.RowHeadersWidth = 51;
-            this.failedEmptyFields.RowTemplate.Height = 24;
-            this.failedEmptyFields.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.failedEmptyFields.Size = new System.Drawing.Size(251, 123);
-            this.failedEmptyFields.TabIndex = 3;
-            this.failedEmptyFields.EnabledChanged += new System.EventHandler(this.failedEmptyFields_EnabledChanged);
+            this.failOperationOnEmptyValueFields.DefaultCellStyle = dataGridViewCellStyle1;
+            this.failOperationOnEmptyValueFields.Dock = System.Windows.Forms.DockStyle.Left;
+            this.failOperationOnEmptyValueFields.GridColor = System.Drawing.SystemColors.Window;
+            this.failOperationOnEmptyValueFields.Location = new System.Drawing.Point(20, 0);
+            this.failOperationOnEmptyValueFields.MultiSelect = false;
+            this.failOperationOnEmptyValueFields.Name = "failOperationOnEmptyValueFields";
+            this.failOperationOnEmptyValueFields.RowHeadersVisible = false;
+            this.failOperationOnEmptyValueFields.RowHeadersWidth = 51;
+            this.failOperationOnEmptyValueFields.RowTemplate.Height = 24;
+            this.failOperationOnEmptyValueFields.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.failOperationOnEmptyValueFields.ShowEditingIcon = false;
+            this.failOperationOnEmptyValueFields.Size = new System.Drawing.Size(221, 123);
+            this.failOperationOnEmptyValueFields.TabIndex = 3;
+            this.failOperationOnEmptyValueFields.EnabledChanged += new System.EventHandler(this.failOperationOnEmptyValueFields_EnabledChanged);
             // 
-            // Enabled
+            // emptyValueFieldEnabledColumn
             // 
-            this.Enabled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Enabled.DataPropertyName = "Enabled";
-            this.Enabled.HeaderText = "";
-            this.Enabled.MinimumWidth = 6;
-            this.Enabled.Name = "Enabled";
-            this.Enabled.Width = 6;
+            this.emptyValueFieldEnabledColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.emptyValueFieldEnabledColumn.DataPropertyName = "Enabled";
+            this.emptyValueFieldEnabledColumn.HeaderText = "Enabled";
+            this.emptyValueFieldEnabledColumn.MinimumWidth = 6;
+            this.emptyValueFieldEnabledColumn.Name = "emptyValueFieldEnabledColumn";
+            this.emptyValueFieldEnabledColumn.Width = 6;
             // 
-            // checkBox3
+            // emptyValueFieldNameColumn
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.checkBox3.Location = new System.Drawing.Point(4, 116);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Padding = new System.Windows.Forms.Padding(8, 25, 0, 0);
-            this.checkBox3.Size = new System.Drawing.Size(620, 45);
-            this.checkBox3.TabIndex = 2;
-            this.checkBox3.Text = "If any of the selected fields are empty then mark the operation as failed";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.emptyValueFieldNameColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.emptyValueFieldNameColumn.DataPropertyName = "Name";
+            this.emptyValueFieldNameColumn.HeaderText = "Name";
+            this.emptyValueFieldNameColumn.MinimumWidth = 6;
+            this.emptyValueFieldNameColumn.Name = "emptyValueFieldNameColumn";
+            this.emptyValueFieldNameColumn.ReadOnly = true;
             // 
-            // tableLayoutPanel1
+            // failOperationOnEmptyValueFieldsBindingSource
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.textBox3, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label9, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.label10, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox4, 1, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(4, 84);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(620, 32);
-            this.tableLayoutPanel1.TabIndex = 2;
+            this.failOperationOnEmptyValueFieldsBindingSource.DataMember = "FailOperationOnEmptyValueFields";
+            this.failOperationOnEmptyValueFieldsBindingSource.DataSource = this.profileBindingSource;
             // 
-            // textBox3
+            // failOperationOnEmptyValue
             // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(299, 5);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(317, 22);
-            this.textBox3.TabIndex = 13;
+            this.failOperationOnEmptyValue.AutoSize = true;
+            this.failOperationOnEmptyValue.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "FailOperationOnEmptyValue", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.failOperationOnEmptyValue.Dock = System.Windows.Forms.DockStyle.Top;
+            this.failOperationOnEmptyValue.Location = new System.Drawing.Point(4, 116);
+            this.failOperationOnEmptyValue.Margin = new System.Windows.Forms.Padding(4);
+            this.failOperationOnEmptyValue.Name = "failOperationOnEmptyValue";
+            this.failOperationOnEmptyValue.Padding = new System.Windows.Forms.Padding(8, 25, 0, 0);
+            this.failOperationOnEmptyValue.Size = new System.Drawing.Size(620, 45);
+            this.failOperationOnEmptyValue.TabIndex = 2;
+            this.failOperationOnEmptyValue.Text = "If any of the selected fields are empty then mark the operation as failed";
+            this.failOperationOnEmptyValue.UseVisualStyleBackColor = true;
             // 
-            // label9
+            // emptyFieldReplacementLayout
             // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(4, 8);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(37, 16);
-            this.label9.TabIndex = 1;
-            this.label9.Text = "Field";
+            this.emptyFieldReplacementLayout.AutoSize = true;
+            this.emptyFieldReplacementLayout.ColumnCount = 4;
+            this.emptyFieldReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.emptyFieldReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.emptyFieldReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.emptyFieldReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.emptyFieldReplacementLayout.Controls.Add(this.emptyFieldReplacementLabel2, 0, 0);
+            this.emptyFieldReplacementLayout.Controls.Add(this.emptyFieldReplacementSelector, 1, 0);
+            this.emptyFieldReplacementLayout.Controls.Add(this.emptyFieldReplacementLabel3, 2, 0);
+            this.emptyFieldReplacementLayout.Controls.Add(this.emptyFieldReplacement, 3, 0);
+            this.emptyFieldReplacementLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.emptyFieldReplacementLayout.Location = new System.Drawing.Point(4, 84);
+            this.emptyFieldReplacementLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyFieldReplacementLayout.Name = "emptyFieldReplacementLayout";
+            this.emptyFieldReplacementLayout.RowCount = 1;
+            this.emptyFieldReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.emptyFieldReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.emptyFieldReplacementLayout.Size = new System.Drawing.Size(620, 32);
+            this.emptyFieldReplacementLayout.TabIndex = 2;
             // 
-            // label10
+            // emptyFieldReplacementLabel2
             // 
-            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(218, 8);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(73, 16);
-            this.label10.TabIndex = 12;
-            this.label10.Text = "substitution";
+            this.emptyFieldReplacementLabel2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.emptyFieldReplacementLabel2.AutoSize = true;
+            this.emptyFieldReplacementLabel2.Location = new System.Drawing.Point(4, 8);
+            this.emptyFieldReplacementLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.emptyFieldReplacementLabel2.Name = "emptyFieldReplacementLabel2";
+            this.emptyFieldReplacementLabel2.Size = new System.Drawing.Size(37, 16);
+            this.emptyFieldReplacementLabel2.TabIndex = 1;
+            this.emptyFieldReplacementLabel2.Text = "Field";
             // 
-            // comboBox4
+            // emptyFieldReplacementSelector
             // 
-            this.comboBox4.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(49, 4);
-            this.comboBox4.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(161, 24);
-            this.comboBox4.TabIndex = 11;
+            this.emptyFieldReplacementSelector.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.emptyFieldReplacementSelector.DataSource = this.emptyFieldReplacementsBindingSource;
+            this.emptyFieldReplacementSelector.DisplayMember = "Field";
+            this.emptyFieldReplacementSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.emptyFieldReplacementSelector.FormattingEnabled = true;
+            this.emptyFieldReplacementSelector.Location = new System.Drawing.Point(49, 4);
+            this.emptyFieldReplacementSelector.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyFieldReplacementSelector.Name = "emptyFieldReplacementSelector";
+            this.emptyFieldReplacementSelector.Size = new System.Drawing.Size(161, 24);
+            this.emptyFieldReplacementSelector.TabIndex = 11;
+            this.emptyFieldReplacementSelector.ValueMember = "Field";
             // 
-            // label8
+            // emptyFieldReplacementsBindingSource
             // 
-            this.label8.AutoSize = true;
-            this.label8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label8.Location = new System.Drawing.Point(4, 50);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label8.Name = "label8";
-            this.label8.Padding = new System.Windows.Forms.Padding(4, 18, 0, 0);
-            this.label8.Size = new System.Drawing.Size(291, 34);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "When a field is empty substitue the follow value:";
+            this.emptyFieldReplacementsBindingSource.DataMember = "EmptyFieldReplacements";
+            this.emptyFieldReplacementsBindingSource.DataSource = this.profileBindingSource;
             // 
-            // label7
+            // emptyFieldReplacementLabel3
             // 
-            this.label7.AutoSize = true;
-            this.label7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label7.Location = new System.Drawing.Point(4, 34);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-            this.label7.Size = new System.Drawing.Size(236, 16);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Leave empty to remove empty folders";
+            this.emptyFieldReplacementLabel3.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.emptyFieldReplacementLabel3.AutoSize = true;
+            this.emptyFieldReplacementLabel3.Location = new System.Drawing.Point(218, 8);
+            this.emptyFieldReplacementLabel3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.emptyFieldReplacementLabel3.Name = "emptyFieldReplacementLabel3";
+            this.emptyFieldReplacementLabel3.Size = new System.Drawing.Size(73, 16);
+            this.emptyFieldReplacementLabel3.TabIndex = 12;
+            this.emptyFieldReplacementLabel3.Text = "substitution";
             // 
-            // tableLayoutPanel3
+            // emptyFieldReplacement
             // 
-            this.tableLayoutPanel3.AutoSize = true;
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.textBox2, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(4, 4);
-            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(620, 30);
-            this.tableLayoutPanel3.TabIndex = 2;
+            this.emptyFieldReplacement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.emptyFieldReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.emptyFieldReplacementsBindingSource, "Replacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.emptyFieldReplacement.Location = new System.Drawing.Point(299, 5);
+            this.emptyFieldReplacement.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyFieldReplacement.Name = "emptyFieldReplacement";
+            this.emptyFieldReplacement.Size = new System.Drawing.Size(317, 22);
+            this.emptyFieldReplacement.TabIndex = 13;
             // 
-            // textBox2
+            // emptyFieldReplacementLabel
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.emptyFieldReplacementLabel.AutoSize = true;
+            this.emptyFieldReplacementLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.emptyFieldReplacementLabel.Location = new System.Drawing.Point(4, 50);
+            this.emptyFieldReplacementLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.emptyFieldReplacementLabel.Name = "emptyFieldReplacementLabel";
+            this.emptyFieldReplacementLabel.Padding = new System.Windows.Forms.Padding(4, 18, 0, 0);
+            this.emptyFieldReplacementLabel.Size = new System.Drawing.Size(291, 34);
+            this.emptyFieldReplacementLabel.TabIndex = 0;
+            this.emptyFieldReplacementLabel.Text = "When a field is empty substitue the follow value:";
+            // 
+            // emptyFolderNameReplacementLabel2
+            // 
+            this.emptyFolderNameReplacementLabel2.AutoSize = true;
+            this.emptyFolderNameReplacementLabel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.emptyFolderNameReplacementLabel2.Location = new System.Drawing.Point(4, 34);
+            this.emptyFolderNameReplacementLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.emptyFolderNameReplacementLabel2.Name = "emptyFolderNameReplacementLabel2";
+            this.emptyFolderNameReplacementLabel2.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
+            this.emptyFolderNameReplacementLabel2.Size = new System.Drawing.Size(236, 16);
+            this.emptyFolderNameReplacementLabel2.TabIndex = 2;
+            this.emptyFolderNameReplacementLabel2.Text = "Leave empty to remove empty folders";
+            // 
+            // emptyFolderNameReplacementLayout
+            // 
+            this.emptyFolderNameReplacementLayout.AutoSize = true;
+            this.emptyFolderNameReplacementLayout.ColumnCount = 2;
+            this.emptyFolderNameReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.emptyFolderNameReplacementLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.emptyFolderNameReplacementLayout.Controls.Add(this.emptyFolderNameReplacement, 1, 0);
+            this.emptyFolderNameReplacementLayout.Controls.Add(this.emptyFolderNameReplacementLabel, 0, 0);
+            this.emptyFolderNameReplacementLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.emptyFolderNameReplacementLayout.Location = new System.Drawing.Point(4, 4);
+            this.emptyFolderNameReplacementLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyFolderNameReplacementLayout.Name = "emptyFolderNameReplacementLayout";
+            this.emptyFolderNameReplacementLayout.RowCount = 1;
+            this.emptyFolderNameReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.emptyFolderNameReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.emptyFolderNameReplacementLayout.Size = new System.Drawing.Size(620, 30);
+            this.emptyFolderNameReplacementLayout.TabIndex = 2;
+            // 
+            // emptyFolderNameReplacement
+            // 
+            this.emptyFolderNameReplacement.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(220, 4);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(396, 22);
-            this.textBox2.TabIndex = 1;
+            this.emptyFolderNameReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.profileBindingSource, "EmptyFolderNameReplacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.emptyFolderNameReplacement.Location = new System.Drawing.Point(220, 4);
+            this.emptyFolderNameReplacement.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyFolderNameReplacement.Name = "emptyFolderNameReplacement";
+            this.emptyFolderNameReplacement.Size = new System.Drawing.Size(396, 22);
+            this.emptyFolderNameReplacement.TabIndex = 1;
             // 
-            // label5
+            // emptyFolderNameReplacementLabel
             // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 7);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(208, 16);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "Replace empty folder names with:";
+            this.emptyFolderNameReplacementLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.emptyFolderNameReplacementLabel.AutoSize = true;
+            this.emptyFolderNameReplacementLabel.Location = new System.Drawing.Point(4, 7);
+            this.emptyFolderNameReplacementLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.emptyFolderNameReplacementLabel.Name = "emptyFolderNameReplacementLabel";
+            this.emptyFolderNameReplacementLabel.Size = new System.Drawing.Size(208, 16);
+            this.emptyFolderNameReplacementLabel.TabIndex = 0;
+            this.emptyFolderNameReplacementLabel.Text = "Replace empty folder names with:";
             // 
             // rulesPage
             // 
@@ -1419,14 +1460,16 @@ namespace LibraryOrganizer.Dialog
             ((System.ComponentModel.ISupportInitialize)(this.monthReplacementsBindingSource)).EndInit();
             this.emptyValuesTabPage.ResumeLayout(false);
             this.emptyValuesTabPage.PerformLayout();
-            this.failedFolderLayout.ResumeLayout(false);
-            this.failedFolderLayout.PerformLayout();
-            this.panel5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.failedEmptyFields)).EndInit();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
+            this.failOperationOnEmptyValueDestinationFolderLayout.ResumeLayout(false);
+            this.failOperationOnEmptyValueDestinationFolderLayout.PerformLayout();
+            this.failOperationOnEmptyValueFieldsLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.failOperationOnEmptyValueFields)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.failOperationOnEmptyValueFieldsBindingSource)).EndInit();
+            this.emptyFieldReplacementLayout.ResumeLayout(false);
+            this.emptyFieldReplacementLayout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).EndInit();
+            this.emptyFolderNameReplacementLayout.ResumeLayout(false);
+            this.emptyFolderNameReplacementLayout.PerformLayout();
             this.rulesPage.ResumeLayout(false);
             this.metadataRulesTabPage.ResumeLayout(false);
             this.metadataRulesTabPage.PerformLayout();
@@ -1537,31 +1580,34 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.FlowLayoutPanel removeEmptyFolderExclusionsActionPanel;
         private System.Windows.Forms.Button addEmptyFolderExclusion;
         private System.Windows.Forms.Button removeEmptyFolderExclusion;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label emptyFieldReplacementLabel;
+        private System.Windows.Forms.Label emptyFolderNameReplacementLabel2;
+        private System.Windows.Forms.TextBox emptyFolderNameReplacement;
+        private System.Windows.Forms.Label emptyFolderNameReplacementLabel;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ComboBox comboBox4;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.CheckBox moveFailed;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.TextBox emptyFieldReplacement;
+        private System.Windows.Forms.Label emptyFieldReplacementLabel3;
+        private System.Windows.Forms.ComboBox emptyFieldReplacementSelector;
+        private System.Windows.Forms.Label emptyFieldReplacementLabel2;
+        private System.Windows.Forms.TableLayoutPanel emptyFieldReplacementLayout;
+        private System.Windows.Forms.CheckBox failOperationOnEmptyValueUseDestinationFolder;
+        private System.Windows.Forms.CheckBox failOperationOnEmptyValue;
         private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.TableLayoutPanel failedFolderLayout;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Button failedFolderBrowse;
-        private System.Windows.Forms.TextBox failedFolder;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel failOperationOnEmptyValueDestinationFolderLayout;
+        private System.Windows.Forms.Panel failOperationOnEmptyValueFieldsLayout;
+        private System.Windows.Forms.Button failOperationOnEmptyValueDestinationFolderBrowse;
+        private System.Windows.Forms.TextBox failOperationOnEmptyValueDestinationFolder;
+        private System.Windows.Forms.TableLayoutPanel emptyFolderNameReplacementLayout;
         private System.Windows.Forms.TextBox illegalCharacterReplacementsReplacement;
-        private System.Windows.Forms.DataGridView failedEmptyFields;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Enabled;
+        private System.Windows.Forms.DataGridView failOperationOnEmptyValueFields;
         private System.Windows.Forms.BindingSource profileBindingSource;
         private System.Windows.Forms.BindingSource monthReplacementsBindingSource;
         private System.Windows.Forms.BindingSource illegalCharacterReplacementsBindingSource;
         private System.Windows.Forms.BindingSource removeEmptyFoldersExclusionsBindingSource;
+        private System.Windows.Forms.BindingSource emptyFieldReplacementsBindingSource;
+        private System.Windows.Forms.BindingSource failOperationOnEmptyValueFieldsBindingSource;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn emptyValueFieldEnabledColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn emptyValueFieldNameColumn;
     }
 }
 
