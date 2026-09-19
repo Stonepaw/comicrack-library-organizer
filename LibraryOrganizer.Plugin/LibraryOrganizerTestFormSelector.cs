@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LibraryOrganizer.Dialog;
 
 namespace LibraryOrganizer.Plugin
 {
@@ -19,8 +20,7 @@ namespace LibraryOrganizer.Plugin
 
         private void openConfigureForm_Click(object sender, EventArgs e)
         {
-            var configureForm = new ConfigureForm();
-            configureForm.Show(this);
+            new ConfigureForm(new Data.Profile()).Show(this);
         }
     }
 }
