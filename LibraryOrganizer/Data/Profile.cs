@@ -89,7 +89,7 @@ namespace LibraryOrganizer.Data
         /// <summary>
         /// Enables moving/copying failed empty fields to a specific folder.
         /// </summary>
-        public bool FailOperationOnEmptyValuesUseDestinationFolder { get; set; }
+        public bool FailOperationOnEmptyValueUseDestinationFolder { get; set; }
 
         /// <summary>
         /// The file template to use during the operation if file naming is enabled.
@@ -152,14 +152,14 @@ namespace LibraryOrganizer.Data
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// The operation mode to use when this profile is run.
-        /// </summary>
-        public OperationMode OperationMode { get; set; } = OperationMode.Move;
-
-        /// <summary>
         /// Replaces multiple spaces in the generated file and folders with a single space when true.
         /// </summary>
         public bool NormalizeMultipleSpaces { get; set; } = true;
+
+        /// <summary>
+        /// The operation mode to use when this profile is run.
+        /// </summary>
+        public OperationMode OperationMode { get; set; } = OperationMode.Move;
 
         /// <summary>
         /// Remove empty folders from the source locations when moving the last file from it.

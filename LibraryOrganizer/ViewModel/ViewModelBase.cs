@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace LibraryOrganizer.Data
+namespace LibraryOrganizer.ViewModel
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
