@@ -109,18 +109,7 @@ namespace LibraryOrganizer.Data
         /// Configurable replacements to use for illegal characters when inserted into the template.
         /// </summary>
         public List<IllegalCharacterReplacement> IllegalCharacterReplacements { get; } =
-            new List<IllegalCharacterReplacement>
-            {
-                new IllegalCharacterReplacement("?", ""),
-                new IllegalCharacterReplacement("/", ""),
-                new IllegalCharacterReplacement("\\", ""),
-                new IllegalCharacterReplacement("*", ""),
-                new IllegalCharacterReplacement(":", " -"),
-                new IllegalCharacterReplacement("<", "["),
-                new IllegalCharacterReplacement(">", "]"),
-                new IllegalCharacterReplacement("|", "!"),
-                new IllegalCharacterReplacement("\"", "'"),
-            };
+            IllegalCharacterReplacement.DefaultList();
 
         /// <summary>
         /// Replacements to use for month numbers when inserted into the template.

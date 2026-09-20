@@ -222,10 +222,10 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusionsLayout.Controls.Add(this.removeEmptyFolderExclusions);
             this.removeEmptyFolderExclusionsLayout.Controls.Add(this.removeEmptyFolderExclusionsActionPanel);
             this.removeEmptyFolderExclusionsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.removeEmptyFolderExclusionsLayout.Location = new System.Drawing.Point(9, 206);
+            this.removeEmptyFolderExclusionsLayout.Location = new System.Drawing.Point(9, 203);
             this.removeEmptyFolderExclusionsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolderExclusionsLayout.Name = "removeEmptyFolderExclusionsLayout";
-            this.removeEmptyFolderExclusionsLayout.Size = new System.Drawing.Size(610, 370);
+            this.removeEmptyFolderExclusionsLayout.Size = new System.Drawing.Size(610, 373);
             this.removeEmptyFolderExclusionsLayout.TabIndex = 6;
             // 
             // removeEmptyFolderExclusions
@@ -237,7 +237,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusions.ItemHeight = 16;
             this.removeEmptyFolderExclusions.Location = new System.Drawing.Point(0, 0);
             this.removeEmptyFolderExclusions.Name = "removeEmptyFolderExclusions";
-            this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(502, 370);
+            this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(502, 373);
             this.removeEmptyFolderExclusions.TabIndex = 2;
             this.removeEmptyFolderExclusions.EnabledChanged += new System.EventHandler(this.removeEmptyFolderExclusions_EnabledChanged);
             // 
@@ -262,7 +262,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusionsActionPanel.Location = new System.Drawing.Point(502, 0);
             this.removeEmptyFolderExclusionsActionPanel.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolderExclusionsActionPanel.Name = "removeEmptyFolderExclusionsActionPanel";
-            this.removeEmptyFolderExclusionsActionPanel.Size = new System.Drawing.Size(108, 370);
+            this.removeEmptyFolderExclusionsActionPanel.Size = new System.Drawing.Size(108, 373);
             this.removeEmptyFolderExclusionsActionPanel.TabIndex = 1;
             // 
             // addEmptyFolderExclusion
@@ -291,7 +291,7 @@ namespace LibraryOrganizer.Dialog
             // 
             this.removeEmptyFoldersLabel.AutoSize = true;
             this.removeEmptyFoldersLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.removeEmptyFoldersLabel.Location = new System.Drawing.Point(9, 187);
+            this.removeEmptyFoldersLabel.Location = new System.Drawing.Point(9, 184);
             this.removeEmptyFoldersLabel.Margin = new System.Windows.Forms.Padding(0);
             this.removeEmptyFoldersLabel.Name = "removeEmptyFoldersLabel";
             this.removeEmptyFoldersLabel.Padding = new System.Windows.Forms.Padding(3, 0, 0, 3);
@@ -304,7 +304,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolders.AutoSize = true;
             this.removeEmptyFolders.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "RemoveEmptyFolders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.removeEmptyFolders.Dock = System.Windows.Forms.DockStyle.Top;
-            this.removeEmptyFolders.Location = new System.Drawing.Point(9, 161);
+            this.removeEmptyFolders.Location = new System.Drawing.Point(9, 158);
             this.removeEmptyFolders.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolders.Name = "removeEmptyFolders";
             this.removeEmptyFolders.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
@@ -326,14 +326,14 @@ namespace LibraryOrganizer.Dialog
             this.illegalCharacterReplacementsLayout.Location = new System.Drawing.Point(9, 120);
             this.illegalCharacterReplacementsLayout.Name = "illegalCharacterReplacementsLayout";
             this.illegalCharacterReplacementsLayout.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.illegalCharacterReplacementsLayout.Size = new System.Drawing.Size(610, 41);
+            this.illegalCharacterReplacementsLayout.Size = new System.Drawing.Size(610, 38);
             this.illegalCharacterReplacementsLayout.TabIndex = 0;
             // 
             // illegalCharacterReplacementsLabel
             // 
             this.illegalCharacterReplacementsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.illegalCharacterReplacementsLabel.AutoSize = true;
-            this.illegalCharacterReplacementsLabel.Location = new System.Drawing.Point(0, 15);
+            this.illegalCharacterReplacementsLabel.Location = new System.Drawing.Point(0, 14);
             this.illegalCharacterReplacementsLabel.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
             this.illegalCharacterReplacementsLabel.Name = "illegalCharacterReplacementsLabel";
             this.illegalCharacterReplacementsLabel.Size = new System.Drawing.Size(157, 16);
@@ -347,7 +347,7 @@ namespace LibraryOrganizer.Dialog
             this.illegalCharacterReplacementsCharacterSelector.DisplayMember = "Character";
             this.illegalCharacterReplacementsCharacterSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.illegalCharacterReplacementsCharacterSelector.FormattingEnabled = true;
-            this.illegalCharacterReplacementsCharacterSelector.Location = new System.Drawing.Point(165, 11);
+            this.illegalCharacterReplacementsCharacterSelector.Location = new System.Drawing.Point(165, 10);
             this.illegalCharacterReplacementsCharacterSelector.Margin = new System.Windows.Forms.Padding(4);
             this.illegalCharacterReplacementsCharacterSelector.Name = "illegalCharacterReplacementsCharacterSelector";
             this.illegalCharacterReplacementsCharacterSelector.Size = new System.Drawing.Size(44, 24);
@@ -363,7 +363,7 @@ namespace LibraryOrganizer.Dialog
             // 
             this.illegalCharacterReplacementsWith.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.illegalCharacterReplacementsWith.AutoSize = true;
-            this.illegalCharacterReplacementsWith.Location = new System.Drawing.Point(217, 15);
+            this.illegalCharacterReplacementsWith.Location = new System.Drawing.Point(217, 14);
             this.illegalCharacterReplacementsWith.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.illegalCharacterReplacementsWith.Name = "illegalCharacterReplacementsWith";
             this.illegalCharacterReplacementsWith.Size = new System.Drawing.Size(29, 16);
@@ -374,35 +374,36 @@ namespace LibraryOrganizer.Dialog
             // 
             this.illegalCharacterReplacementsReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.illegalCharacterReplacementsReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.illegalCharacterReplacementsBindingSource, "Replacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.illegalCharacterReplacementsReplacement.Location = new System.Drawing.Point(253, 12);
+            this.illegalCharacterReplacementsReplacement.Location = new System.Drawing.Point(253, 11);
             this.illegalCharacterReplacementsReplacement.Name = "illegalCharacterReplacementsReplacement";
             this.illegalCharacterReplacementsReplacement.Size = new System.Drawing.Size(57, 22);
             this.illegalCharacterReplacementsReplacement.TabIndex = 6;
+            this.illegalCharacterReplacementsReplacement.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.illegalCharacterReplacementsReplacement_KeyPress);
             // 
             // addIllegalCharacterReplacement
             // 
             this.addIllegalCharacterReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.addIllegalCharacterReplacement.AutoSize = true;
             this.addIllegalCharacterReplacement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.addIllegalCharacterReplacement.Location = new System.Drawing.Point(317, 10);
             this.addIllegalCharacterReplacement.Margin = new System.Windows.Forms.Padding(4);
             this.addIllegalCharacterReplacement.Name = "addIllegalCharacterReplacement";
-            this.addIllegalCharacterReplacement.Size = new System.Drawing.Size(24, 26);
+            this.addIllegalCharacterReplacement.Size = new System.Drawing.Size(24, 24);
             this.addIllegalCharacterReplacement.TabIndex = 4;
             this.addIllegalCharacterReplacement.Text = "+";
             this.addIllegalCharacterReplacement.UseVisualStyleBackColor = true;
+            this.addIllegalCharacterReplacement.Click += new System.EventHandler(this.addIllegalCharacterReplacement_Click);
             // 
             // removeIllegalCharacterReplacement
             // 
             this.removeIllegalCharacterReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.removeIllegalCharacterReplacement.AutoSize = true;
             this.removeIllegalCharacterReplacement.Location = new System.Drawing.Point(349, 10);
             this.removeIllegalCharacterReplacement.Margin = new System.Windows.Forms.Padding(4);
             this.removeIllegalCharacterReplacement.Name = "removeIllegalCharacterReplacement";
-            this.removeIllegalCharacterReplacement.Size = new System.Drawing.Size(26, 27);
+            this.removeIllegalCharacterReplacement.Size = new System.Drawing.Size(24, 24);
             this.removeIllegalCharacterReplacement.TabIndex = 5;
             this.removeIllegalCharacterReplacement.Text = "-";
             this.removeIllegalCharacterReplacement.UseVisualStyleBackColor = true;
+            this.removeIllegalCharacterReplacement.Click += new System.EventHandler(this.removeIllegalCharacterReplacement_Click);
             // 
             // monthReplacementsLayout
             // 

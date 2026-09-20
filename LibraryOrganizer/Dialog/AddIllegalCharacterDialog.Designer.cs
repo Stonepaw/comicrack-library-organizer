@@ -1,4 +1,4 @@
-﻿namespace LibraryOrganizer
+namespace LibraryOrganizer.Dialog
 {
     partial class AddIllegalCharacterDialog
     {
@@ -28,70 +28,62 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.components = new System.ComponentModel.Container();
+            this.textBox = new System.Windows.Forms.TextBox();
+            this.ok = new System.Windows.Forms.Button();
+            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
-            // textBox1
+            // textBox
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.textBox1.Location = new System.Drawing.Point(6, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(283, 20);
-            this.textBox1.TabIndex = 0;
+            this.textBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.textBox.Location = new System.Drawing.Point(8, 8);
+            this.textBox.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox.MaxLength = 1;
+            this.textBox.Name = "textBox";
+            this.textBox.Size = new System.Drawing.Size(191, 22);
+            this.textBox.TabIndex = 0;
+            this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBox.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_Validating);
             // 
-            // button1
+            // ok
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(205, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Cancel";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ok.Location = new System.Drawing.Point(99, 38);
+            this.ok.Margin = new System.Windows.Forms.Padding(4);
+            this.ok.Name = "ok";
+            this.ok.Size = new System.Drawing.Size(100, 28);
+            this.ok.TabIndex = 1;
+            this.ok.Text = "Add";
+            this.ok.UseVisualStyleBackColor = true;
+            this.ok.Click += new System.EventHandler(this.ok_Click);
             // 
-            // button2
+            // errorProvider
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(124, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Okay";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.button1);
-            this.flowLayoutPanel1.Controls.Add(this.button2);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(6, 26);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(283, 29);
-            this.flowLayoutPanel1.TabIndex = 3;
+            this.errorProvider.ContainerControl = this;
             // 
             // AddIllegalCharacterDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.ok;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(295, 76);
-            this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(207, 83);
+            this.Controls.Add(this.ok);
+            this.Controls.Add(this.textBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddIllegalCharacterDialog";
-            this.Padding = new System.Windows.Forms.Padding(6);
+            this.Padding = new System.Windows.Forms.Padding(8);
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "AddIllegalCharacterDialog";
-            this.flowLayoutPanel1.ResumeLayout(false);
+            this.Text = "Add Illegal Character";
+            this.TopMost = true;
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,9 +91,8 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TextBox textBox;
+        private System.Windows.Forms.Button ok;
+        private System.Windows.Forms.ErrorProvider errorProvider;
     }
 }

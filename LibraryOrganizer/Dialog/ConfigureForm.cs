@@ -26,7 +26,7 @@ namespace LibraryOrganizer.Dialog
             EventArgs e
         )
         {
-            FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+            var openFolderDialog = new FolderBrowserDialog();
 
             if (
                 openFolderDialog.ShowDialog(this) == DialogResult.OK
@@ -39,7 +39,7 @@ namespace LibraryOrganizer.Dialog
 
         private void addEmptyFolderExclusion_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+            var openFolderDialog = new FolderBrowserDialog();
 
             if (
                 openFolderDialog.ShowDialog(this) == DialogResult.OK
@@ -82,6 +82,47 @@ namespace LibraryOrganizer.Dialog
                 failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor = SystemColors.GrayText;
                 failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
                     SystemColors.GrayText;
+            }
+        }
+
+        private void addIllegalCharacterReplacement_Click(object sender, EventArgs e)
+        {
+            var addIllegalCharacterDialog = new AddIllegalCharacterDialog(
+                _profile.IllegalCharacterReplacements
+            );
+
+            if (addIllegalCharacterDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                var index = illegalCharacterReplacementsBindingSource.Add(
+                    new IllegalCharacterReplacement(addIllegalCharacterDialog.GetCharacter(), "")
+                );
+                illegalCharacterReplacementsBindingSource.Position = index;
+            }
+        }
+
+        private void removeIllegalCharacterReplacement_Click(object sender, EventArgs e)
+        {
+            if (
+                !(
+                    (IllegalCharacterReplacement)illegalCharacterReplacementsBindingSource.Current
+                ).IsRequired()
+            )
+            {
+                illegalCharacterReplacementsBindingSource.RemoveCurrent();
+            }
+        }
+
+        /// <summary>
+        /// Disallows entering required illegal characters since they would just get replaced anyway.
+        /// </summary>
+        private void illegalCharacterReplacementsReplacement_KeyPress(
+            object sender,
+            KeyPressEventArgs e
+        )
+        {
+            if (IllegalCharacterReplacement.IsRequiredIllegalCharacter(e.KeyChar))
+            {
+                e.Handled = true;
             }
         }
     }
