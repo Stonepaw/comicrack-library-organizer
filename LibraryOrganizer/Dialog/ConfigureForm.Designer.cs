@@ -29,8 +29,33 @@ namespace LibraryOrganizer.Dialog
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ToolStrip toolStrip;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigureForm));
+            System.Windows.Forms.ToolStripLabel profileLabel;
+            System.Windows.Forms.ToolStripSeparator profileSeparator;
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.overviewButton = new System.Windows.Forms.ToolStripButton();
+            this.filesButton = new System.Windows.Forms.ToolStripButton();
+            this.foldersButton = new System.Windows.Forms.ToolStripButton();
+            this.rulesButton = new System.Windows.Forms.ToolStripButton();
+            this.optionsButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.configurationPanel = new System.Windows.Forms.Panel();
+            this.folderStructurePage = new System.Windows.Forms.Panel();
+            this.folderInsertControlsPanel = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.folderStructurePreviewLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.folderPreviewLabel = new System.Windows.Forms.Label();
+            this.folderPreview = new System.Windows.Forms.Label();
+            this.folderPreviewPrevious = new System.Windows.Forms.Button();
+            this.folderPreviewNext = new System.Windows.Forms.Button();
+            this.folderStructureActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.folderSpaceAutomatically = new System.Windows.Forms.CheckBox();
+            this.insertFolderSeparator = new System.Windows.Forms.Button();
+            this.folderStructurePanel = new System.Windows.Forms.Panel();
+            this.folderStructureLabel = new System.Windows.Forms.Label();
+            this.folderStructure = new System.Windows.Forms.TextBox();
             this.optionsPage = new System.Windows.Forms.TabControl();
             this.optionsTabPage = new System.Windows.Forms.TabPage();
             this.removeEmptyFolderExclusionsLayout = new System.Windows.Forms.Panel();
@@ -81,6 +106,20 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacementLayout = new System.Windows.Forms.TableLayoutPanel();
             this.emptyFolderNameReplacement = new System.Windows.Forms.TextBox();
             this.emptyFolderNameReplacementLabel = new System.Windows.Forms.Label();
+            this.fileStructurePage = new System.Windows.Forms.Panel();
+            this.fileStructureInsertControlsPanel = new System.Windows.Forms.Panel();
+            this.insertControlsTabPanel = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.fileSpaceAutomatically = new System.Windows.Forms.CheckBox();
+            this.fileStructurePreviewLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.fileStructurePreviewLabel = new System.Windows.Forms.Label();
+            this.fileStructurePreview = new System.Windows.Forms.Label();
+            this.fileStructurePreviewPrevious = new System.Windows.Forms.Button();
+            this.fileStructurePreviewNext = new System.Windows.Forms.Button();
+            this.fileStructurePanel = new System.Windows.Forms.Panel();
+            this.fileStructureLabel = new System.Windows.Forms.Label();
+            this.fileStructureTextBox = new System.Windows.Forms.TextBox();
             this.rulesPage = new System.Windows.Forms.TabControl();
             this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
             this.metadataRulesActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
@@ -97,43 +136,21 @@ namespace LibraryOrganizer.Dialog
             this.addExcludedFolder = new System.Windows.Forms.Button();
             this.removeExcludedFolder = new System.Windows.Forms.Button();
             this.excludedFolderLabel = new System.Windows.Forms.Label();
-            this.folderStructurePage = new System.Windows.Forms.Panel();
-            this.folderInsertControlsPanel = new System.Windows.Forms.Panel();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.folderStructureActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.folderSpaceAutomatically = new System.Windows.Forms.CheckBox();
-            this.insertFolderSeparator = new System.Windows.Forms.Button();
-            this.folderStructurePreviewLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.folderPreviewLabel = new System.Windows.Forms.Label();
-            this.folderPreview = new System.Windows.Forms.Label();
-            this.folderPreviewPrevious = new System.Windows.Forms.Button();
-            this.folderPreviewNext = new System.Windows.Forms.Button();
-            this.folderStructurePanel = new System.Windows.Forms.Panel();
-            this.folderStructureLabel = new System.Windows.Forms.Label();
-            this.folderStructure = new System.Windows.Forms.TextBox();
-            this.fileStructurePage = new System.Windows.Forms.Panel();
-            this.fileStructureInsertControlsPanel = new System.Windows.Forms.Panel();
-            this.insertControlsTabPanel = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.fileSpaceAutomatically = new System.Windows.Forms.CheckBox();
-            this.fileStructurePreviewLayout = new System.Windows.Forms.TableLayoutPanel();
-            this.fileStructurePreviewLabel = new System.Windows.Forms.Label();
-            this.fileStructurePreview = new System.Windows.Forms.Label();
-            this.fileStructurePreviewPrevious = new System.Windows.Forms.Button();
-            this.fileStructurePreviewNext = new System.Windows.Forms.Button();
-            this.fileStructurePanel = new System.Windows.Forms.Panel();
-            this.fileStructureLabel = new System.Windows.Forms.Label();
-            this.fileStructureTextBox = new System.Windows.Forms.TextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.configFormViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.formActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            toolStrip = new System.Windows.Forms.ToolStrip();
+            profileLabel = new System.Windows.Forms.ToolStripLabel();
+            profileSeparator = new System.Windows.Forms.ToolStripSeparator();
+            toolStrip.SuspendLayout();
             this.configurationPanel.SuspendLayout();
+            this.folderStructurePage.SuspendLayout();
+            this.folderInsertControlsPanel.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.folderStructurePreviewLayout.SuspendLayout();
+            this.folderStructureActionsLayout.SuspendLayout();
+            this.folderStructurePanel.SuspendLayout();
             this.optionsPage.SuspendLayout();
             this.optionsTabPage.SuspendLayout();
             this.removeEmptyFolderExclusionsLayout.SuspendLayout();
@@ -152,39 +169,331 @@ namespace LibraryOrganizer.Dialog
             this.emptyFieldReplacementLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).BeginInit();
             this.emptyFolderNameReplacementLayout.SuspendLayout();
-            this.rulesPage.SuspendLayout();
-            this.metadataRulesTabPage.SuspendLayout();
-            this.metadataRulesControlsLayout.SuspendLayout();
-            this.folderRulesTabPage.SuspendLayout();
-            this.folderRulesActionsLayout.SuspendLayout();
-            this.folderStructurePage.SuspendLayout();
-            this.folderInsertControlsPanel.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.folderStructureActionsLayout.SuspendLayout();
-            this.folderStructurePreviewLayout.SuspendLayout();
-            this.folderStructurePanel.SuspendLayout();
             this.fileStructurePage.SuspendLayout();
             this.fileStructureInsertControlsPanel.SuspendLayout();
             this.insertControlsTabPanel.SuspendLayout();
             this.fileStructurePreviewLayout.SuspendLayout();
             this.fileStructurePanel.SuspendLayout();
+            this.rulesPage.SuspendLayout();
+            this.metadataRulesTabPage.SuspendLayout();
+            this.metadataRulesControlsLayout.SuspendLayout();
+            this.folderRulesTabPage.SuspendLayout();
+            this.folderRulesActionsLayout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).BeginInit();
             this.formActionsLayout.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // toolStrip
+            // 
+            toolStrip.AutoSize = false;
+            toolStrip.Dock = System.Windows.Forms.DockStyle.Left;
+            toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            toolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.overviewButton,
+            this.filesButton,
+            this.foldersButton,
+            this.rulesButton,
+            this.optionsButton,
+            this.toolStripDropDownButton1,
+            this.toolStripComboBox1,
+            profileLabel,
+            profileSeparator});
+            toolStrip.Location = new System.Drawing.Point(0, 0);
+            toolStrip.Name = "toolStrip";
+            toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            toolStrip.ShowItemToolTips = false;
+            toolStrip.Size = new System.Drawing.Size(130, 666);
+            toolStrip.TabIndex = 1;
+            toolStrip.Text = "toolStrip1";
+            // 
+            // overviewButton
+            // 
+            this.overviewButton.Checked = true;
+            this.overviewButton.CheckOnClick = true;
+            this.overviewButton.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.overviewButton.Image = ((System.Drawing.Image)(resources.GetObject("overviewButton.Image")));
+            this.overviewButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.overviewButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.overviewButton.Margin = new System.Windows.Forms.Padding(10);
+            this.overviewButton.Name = "overviewButton";
+            this.overviewButton.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.overviewButton.Size = new System.Drawing.Size(108, 76);
+            this.overviewButton.Text = "Overview";
+            this.overviewButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.overviewButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.overviewButton.Click += new System.EventHandler(this.PageButton_Click);
+            // 
+            // filesButton
+            // 
+            this.filesButton.Image = ((System.Drawing.Image)(resources.GetObject("filesButton.Image")));
+            this.filesButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.filesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.filesButton.Margin = new System.Windows.Forms.Padding(10);
+            this.filesButton.Name = "filesButton";
+            this.filesButton.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.filesButton.Size = new System.Drawing.Size(108, 76);
+            this.filesButton.Text = "Files";
+            this.filesButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.filesButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.filesButton.Click += new System.EventHandler(this.PageButton_Click);
+            // 
+            // foldersButton
+            // 
+            this.foldersButton.Image = ((System.Drawing.Image)(resources.GetObject("foldersButton.Image")));
+            this.foldersButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.foldersButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.foldersButton.Margin = new System.Windows.Forms.Padding(10);
+            this.foldersButton.Name = "foldersButton";
+            this.foldersButton.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.foldersButton.Size = new System.Drawing.Size(108, 76);
+            this.foldersButton.Text = "Folders";
+            this.foldersButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.foldersButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.foldersButton.Click += new System.EventHandler(this.PageButton_Click);
+            // 
+            // rulesButton
+            // 
+            this.rulesButton.Image = ((System.Drawing.Image)(resources.GetObject("rulesButton.Image")));
+            this.rulesButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.rulesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.rulesButton.Margin = new System.Windows.Forms.Padding(10);
+            this.rulesButton.Name = "rulesButton";
+            this.rulesButton.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.rulesButton.Size = new System.Drawing.Size(108, 76);
+            this.rulesButton.Text = "Rules";
+            this.rulesButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.rulesButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.rulesButton.Click += new System.EventHandler(this.PageButton_Click);
+            // 
+            // optionsButton
+            // 
+            this.optionsButton.Image = ((System.Drawing.Image)(resources.GetObject("optionsButton.Image")));
+            this.optionsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.optionsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.optionsButton.Margin = new System.Windows.Forms.Padding(10);
+            this.optionsButton.Name = "optionsButton";
+            this.optionsButton.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            this.optionsButton.Size = new System.Drawing.Size(108, 76);
+            this.optionsButton.Text = "Options";
+            this.optionsButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.optionsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.optionsButton.Click += new System.EventHandler(this.PageButton_Click);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(128, 24);
+            this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
+            // 
+            // toolStripComboBox1
+            // 
+            this.toolStripComboBox1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripComboBox1.Name = "toolStripComboBox1";
+            this.toolStripComboBox1.Size = new System.Drawing.Size(126, 28);
+            // 
+            // profileLabel
+            // 
+            profileLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            profileLabel.Name = "profileLabel";
+            profileLabel.Size = new System.Drawing.Size(128, 20);
+            profileLabel.Text = "Profile";
+            // 
+            // profileSeparator
+            // 
+            profileSeparator.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            profileSeparator.Name = "profileSeparator";
+            profileSeparator.Size = new System.Drawing.Size(128, 6);
             // 
             // configurationPanel
             // 
             this.configurationPanel.AutoSize = true;
-            this.configurationPanel.Controls.Add(this.optionsPage);
-            this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Controls.Add(this.folderStructurePage);
+            this.configurationPanel.Controls.Add(this.optionsPage);
             this.configurationPanel.Controls.Add(this.fileStructurePage);
+            this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.configurationPanel.Location = new System.Drawing.Point(208, 0);
+            this.configurationPanel.Location = new System.Drawing.Point(130, 0);
             this.configurationPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.configurationPanel.Name = "configurationPanel";
             this.configurationPanel.Padding = new System.Windows.Forms.Padding(0, 12, 13, 4);
-            this.configurationPanel.Size = new System.Drawing.Size(649, 630);
+            this.configurationPanel.Size = new System.Drawing.Size(727, 630);
             this.configurationPanel.TabIndex = 0;
+            // 
+            // folderStructurePage
+            // 
+            this.folderStructurePage.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.folderStructurePage.Controls.Add(this.folderInsertControlsPanel);
+            this.folderStructurePage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.folderStructurePage.Location = new System.Drawing.Point(0, 12);
+            this.folderStructurePage.Margin = new System.Windows.Forms.Padding(4);
+            this.folderStructurePage.Name = "folderStructurePage";
+            this.folderStructurePage.Size = new System.Drawing.Size(714, 614);
+            this.folderStructurePage.TabIndex = 1;
+            // 
+            // folderInsertControlsPanel
+            // 
+            this.folderInsertControlsPanel.Controls.Add(this.panel1);
+            this.folderInsertControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.folderInsertControlsPanel.Location = new System.Drawing.Point(0, 0);
+            this.folderInsertControlsPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.folderInsertControlsPanel.Name = "folderInsertControlsPanel";
+            this.folderInsertControlsPanel.Padding = new System.Windows.Forms.Padding(1);
+            this.folderInsertControlsPanel.Size = new System.Drawing.Size(714, 614);
+            this.folderInsertControlsPanel.TabIndex = 8;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel1.Controls.Add(this.folderStructurePreviewLayout);
+            this.panel1.Controls.Add(this.folderStructureActionsLayout);
+            this.panel1.Controls.Add(this.folderStructurePanel);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(1, 1);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(712, 612);
+            this.panel1.TabIndex = 2;
+            // 
+            // folderStructurePreviewLayout
+            // 
+            this.folderStructurePreviewLayout.AutoSize = true;
+            this.folderStructurePreviewLayout.ColumnCount = 4;
+            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewLabel, 0, 0);
+            this.folderStructurePreviewLayout.Controls.Add(this.folderPreview, 1, 0);
+            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewPrevious, 2, 0);
+            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewNext, 3, 0);
+            this.folderStructurePreviewLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.folderStructurePreviewLayout.Location = new System.Drawing.Point(0, 96);
+            this.folderStructurePreviewLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.folderStructurePreviewLayout.Name = "folderStructurePreviewLayout";
+            this.folderStructurePreviewLayout.RowCount = 1;
+            this.folderStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.folderStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.folderStructurePreviewLayout.Size = new System.Drawing.Size(712, 34);
+            this.folderStructurePreviewLayout.TabIndex = 6;
+            // 
+            // folderPreviewLabel
+            // 
+            this.folderPreviewLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.folderPreviewLabel.AutoSize = true;
+            this.folderPreviewLabel.Location = new System.Drawing.Point(4, 9);
+            this.folderPreviewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.folderPreviewLabel.Name = "folderPreviewLabel";
+            this.folderPreviewLabel.Size = new System.Drawing.Size(55, 16);
+            this.folderPreviewLabel.TabIndex = 2;
+            this.folderPreviewLabel.Text = "Preview";
+            // 
+            // folderPreview
+            // 
+            this.folderPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.folderPreview.AutoSize = true;
+            this.folderPreview.Location = new System.Drawing.Point(67, 9);
+            this.folderPreview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.folderPreview.Name = "folderPreview";
+            this.folderPreview.Size = new System.Drawing.Size(577, 16);
+            this.folderPreview.TabIndex = 1;
+            this.folderPreview.Text = "label2";
+            // 
+            // folderPreviewPrevious
+            // 
+            this.folderPreviewPrevious.AutoSize = true;
+            this.folderPreviewPrevious.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.folderPreviewPrevious.Location = new System.Drawing.Point(652, 4);
+            this.folderPreviewPrevious.Margin = new System.Windows.Forms.Padding(4);
+            this.folderPreviewPrevious.Name = "folderPreviewPrevious";
+            this.folderPreviewPrevious.Size = new System.Drawing.Size(24, 26);
+            this.folderPreviewPrevious.TabIndex = 4;
+            this.folderPreviewPrevious.Text = "<";
+            this.folderPreviewPrevious.UseVisualStyleBackColor = true;
+            // 
+            // folderPreviewNext
+            // 
+            this.folderPreviewNext.AutoSize = true;
+            this.folderPreviewNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.folderPreviewNext.Location = new System.Drawing.Point(684, 4);
+            this.folderPreviewNext.Margin = new System.Windows.Forms.Padding(4);
+            this.folderPreviewNext.Name = "folderPreviewNext";
+            this.folderPreviewNext.Size = new System.Drawing.Size(24, 26);
+            this.folderPreviewNext.TabIndex = 3;
+            this.folderPreviewNext.Text = ">";
+            this.folderPreviewNext.UseVisualStyleBackColor = true;
+            // 
+            // folderStructureActionsLayout
+            // 
+            this.folderStructureActionsLayout.AutoSize = true;
+            this.folderStructureActionsLayout.Controls.Add(this.folderSpaceAutomatically);
+            this.folderStructureActionsLayout.Controls.Add(this.insertFolderSeparator);
+            this.folderStructureActionsLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.folderStructureActionsLayout.Location = new System.Drawing.Point(0, 56);
+            this.folderStructureActionsLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.folderStructureActionsLayout.Name = "folderStructureActionsLayout";
+            this.folderStructureActionsLayout.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
+            this.folderStructureActionsLayout.Size = new System.Drawing.Size(712, 40);
+            this.folderStructureActionsLayout.TabIndex = 5;
+            // 
+            // folderSpaceAutomatically
+            // 
+            this.folderSpaceAutomatically.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.folderSpaceAutomatically.AutoSize = true;
+            this.folderSpaceAutomatically.Location = new System.Drawing.Point(11, 10);
+            this.folderSpaceAutomatically.Margin = new System.Windows.Forms.Padding(4);
+            this.folderSpaceAutomatically.Name = "folderSpaceAutomatically";
+            this.folderSpaceAutomatically.Size = new System.Drawing.Size(237, 20);
+            this.folderSpaceAutomatically.TabIndex = 7;
+            this.folderSpaceAutomatically.Text = "Space inserted fields automatically";
+            this.folderSpaceAutomatically.UseVisualStyleBackColor = true;
+            // 
+            // insertFolderSeparator
+            // 
+            this.insertFolderSeparator.AutoSize = true;
+            this.insertFolderSeparator.Location = new System.Drawing.Point(256, 4);
+            this.insertFolderSeparator.Margin = new System.Windows.Forms.Padding(4);
+            this.insertFolderSeparator.Name = "insertFolderSeparator";
+            this.insertFolderSeparator.Size = new System.Drawing.Size(159, 32);
+            this.insertFolderSeparator.TabIndex = 8;
+            this.insertFolderSeparator.Text = "Folder Seperator";
+            this.insertFolderSeparator.UseVisualStyleBackColor = true;
+            // 
+            // folderStructurePanel
+            // 
+            this.folderStructurePanel.AutoSize = true;
+            this.folderStructurePanel.Controls.Add(this.folderStructureLabel);
+            this.folderStructurePanel.Controls.Add(this.folderStructure);
+            this.folderStructurePanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.folderStructurePanel.Location = new System.Drawing.Point(0, 0);
+            this.folderStructurePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.folderStructurePanel.Name = "folderStructurePanel";
+            this.folderStructurePanel.Size = new System.Drawing.Size(712, 56);
+            this.folderStructurePanel.TabIndex = 4;
+            // 
+            // folderStructureLabel
+            // 
+            this.folderStructureLabel.AutoSize = true;
+            this.folderStructureLabel.Location = new System.Drawing.Point(7, 21);
+            this.folderStructureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.folderStructureLabel.Name = "folderStructureLabel";
+            this.folderStructureLabel.Size = new System.Drawing.Size(104, 16);
+            this.folderStructureLabel.TabIndex = 0;
+            this.folderStructureLabel.Text = "Folder Structure:";
+            // 
+            // folderStructure
+            // 
+            this.folderStructure.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.folderStructure.Location = new System.Drawing.Point(128, 4);
+            this.folderStructure.Margin = new System.Windows.Forms.Padding(4);
+            this.folderStructure.Multiline = true;
+            this.folderStructure.Name = "folderStructure";
+            this.folderStructure.Size = new System.Drawing.Size(579, 48);
+            this.folderStructure.TabIndex = 1;
             // 
             // optionsPage
             // 
@@ -195,7 +504,7 @@ namespace LibraryOrganizer.Dialog
             this.optionsPage.Margin = new System.Windows.Forms.Padding(4);
             this.optionsPage.Name = "optionsPage";
             this.optionsPage.SelectedIndex = 0;
-            this.optionsPage.Size = new System.Drawing.Size(636, 614);
+            this.optionsPage.Size = new System.Drawing.Size(714, 614);
             this.optionsPage.TabIndex = 10;
             // 
             // optionsTabPage
@@ -212,7 +521,7 @@ namespace LibraryOrganizer.Dialog
             this.optionsTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.optionsTabPage.Name = "optionsTabPage";
             this.optionsTabPage.Padding = new System.Windows.Forms.Padding(9);
-            this.optionsTabPage.Size = new System.Drawing.Size(628, 585);
+            this.optionsTabPage.Size = new System.Drawing.Size(706, 585);
             this.optionsTabPage.TabIndex = 0;
             this.optionsTabPage.Text = "Options";
             this.optionsTabPage.UseVisualStyleBackColor = true;
@@ -225,7 +534,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusionsLayout.Location = new System.Drawing.Point(9, 203);
             this.removeEmptyFolderExclusionsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolderExclusionsLayout.Name = "removeEmptyFolderExclusionsLayout";
-            this.removeEmptyFolderExclusionsLayout.Size = new System.Drawing.Size(610, 373);
+            this.removeEmptyFolderExclusionsLayout.Size = new System.Drawing.Size(688, 373);
             this.removeEmptyFolderExclusionsLayout.TabIndex = 6;
             // 
             // removeEmptyFolderExclusions
@@ -237,7 +546,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusions.ItemHeight = 16;
             this.removeEmptyFolderExclusions.Location = new System.Drawing.Point(0, 0);
             this.removeEmptyFolderExclusions.Name = "removeEmptyFolderExclusions";
-            this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(502, 373);
+            this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(580, 373);
             this.removeEmptyFolderExclusions.TabIndex = 2;
             this.removeEmptyFolderExclusions.EnabledChanged += new System.EventHandler(this.removeEmptyFolderExclusions_EnabledChanged);
             // 
@@ -259,7 +568,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolderExclusionsActionPanel.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "RemoveEmptyFolders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.removeEmptyFolderExclusionsActionPanel.Dock = System.Windows.Forms.DockStyle.Right;
             this.removeEmptyFolderExclusionsActionPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.removeEmptyFolderExclusionsActionPanel.Location = new System.Drawing.Point(502, 0);
+            this.removeEmptyFolderExclusionsActionPanel.Location = new System.Drawing.Point(580, 0);
             this.removeEmptyFolderExclusionsActionPanel.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolderExclusionsActionPanel.Name = "removeEmptyFolderExclusionsActionPanel";
             this.removeEmptyFolderExclusionsActionPanel.Size = new System.Drawing.Size(108, 373);
@@ -308,7 +617,7 @@ namespace LibraryOrganizer.Dialog
             this.removeEmptyFolders.Margin = new System.Windows.Forms.Padding(4);
             this.removeEmptyFolders.Name = "removeEmptyFolders";
             this.removeEmptyFolders.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.removeEmptyFolders.Size = new System.Drawing.Size(610, 26);
+            this.removeEmptyFolders.Size = new System.Drawing.Size(688, 26);
             this.removeEmptyFolders.TabIndex = 4;
             this.removeEmptyFolders.Text = "Remove empty folders";
             this.removeEmptyFolders.UseVisualStyleBackColor = true;
@@ -326,7 +635,7 @@ namespace LibraryOrganizer.Dialog
             this.illegalCharacterReplacementsLayout.Location = new System.Drawing.Point(9, 120);
             this.illegalCharacterReplacementsLayout.Name = "illegalCharacterReplacementsLayout";
             this.illegalCharacterReplacementsLayout.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.illegalCharacterReplacementsLayout.Size = new System.Drawing.Size(610, 38);
+            this.illegalCharacterReplacementsLayout.Size = new System.Drawing.Size(688, 38);
             this.illegalCharacterReplacementsLayout.TabIndex = 0;
             // 
             // illegalCharacterReplacementsLabel
@@ -417,7 +726,7 @@ namespace LibraryOrganizer.Dialog
             this.monthReplacementsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.monthReplacementsLayout.Name = "monthReplacementsLayout";
             this.monthReplacementsLayout.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.monthReplacementsLayout.Size = new System.Drawing.Size(610, 38);
+            this.monthReplacementsLayout.Size = new System.Drawing.Size(688, 38);
             this.monthReplacementsLayout.TabIndex = 3;
             // 
             // monthReplacementsMonth
@@ -480,7 +789,7 @@ namespace LibraryOrganizer.Dialog
             this.autoSelectSingleMultiValueField.Margin = new System.Windows.Forms.Padding(4);
             this.autoSelectSingleMultiValueField.Name = "autoSelectSingleMultiValueField";
             this.autoSelectSingleMultiValueField.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.autoSelectSingleMultiValueField.Size = new System.Drawing.Size(610, 26);
+            this.autoSelectSingleMultiValueField.Size = new System.Drawing.Size(688, 26);
             this.autoSelectSingleMultiValueField.TabIndex = 2;
             this.autoSelectSingleMultiValueField.Text = "If there is only one value in a multiple value field then insert it without askin" +
     "g";
@@ -495,7 +804,7 @@ namespace LibraryOrganizer.Dialog
             this.copyReadPercentageToReplacement.Margin = new System.Windows.Forms.Padding(4);
             this.copyReadPercentageToReplacement.Name = "copyReadPercentageToReplacement";
             this.copyReadPercentageToReplacement.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.copyReadPercentageToReplacement.Size = new System.Drawing.Size(610, 26);
+            this.copyReadPercentageToReplacement.Size = new System.Drawing.Size(688, 26);
             this.copyReadPercentageToReplacement.TabIndex = 1;
             this.copyReadPercentageToReplacement.Text = "When overwriting an existing file, copy the read percentage to the new file";
             this.copyReadPercentageToReplacement.UseVisualStyleBackColor = true;
@@ -507,7 +816,7 @@ namespace LibraryOrganizer.Dialog
             this.normalizeMultipleSpaces.Location = new System.Drawing.Point(9, 9);
             this.normalizeMultipleSpaces.Margin = new System.Windows.Forms.Padding(4);
             this.normalizeMultipleSpaces.Name = "normalizeMultipleSpaces";
-            this.normalizeMultipleSpaces.Size = new System.Drawing.Size(610, 21);
+            this.normalizeMultipleSpaces.Size = new System.Drawing.Size(688, 21);
             this.normalizeMultipleSpaces.TabIndex = 0;
             this.normalizeMultipleSpaces.Text = "Replace multiple spaces with a single space";
             this.normalizeMultipleSpaces.UseVisualStyleBackColor = true;
@@ -526,7 +835,7 @@ namespace LibraryOrganizer.Dialog
             this.emptyValuesTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.emptyValuesTabPage.Name = "emptyValuesTabPage";
             this.emptyValuesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.emptyValuesTabPage.Size = new System.Drawing.Size(628, 585);
+            this.emptyValuesTabPage.Size = new System.Drawing.Size(706, 585);
             this.emptyValuesTabPage.TabIndex = 1;
             this.emptyValuesTabPage.Text = "Empty Values";
             this.emptyValuesTabPage.UseVisualStyleBackColor = true;
@@ -548,7 +857,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValueDestinationFolderLayout.RowCount = 1;
             this.failOperationOnEmptyValueDestinationFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.failOperationOnEmptyValueDestinationFolderLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.failOperationOnEmptyValueDestinationFolderLayout.Size = new System.Drawing.Size(620, 34);
+            this.failOperationOnEmptyValueDestinationFolderLayout.Size = new System.Drawing.Size(698, 34);
             this.failOperationOnEmptyValueDestinationFolderLayout.TabIndex = 2;
             // 
             // failOperationOnEmptyValueDestinationFolderBrowse
@@ -556,7 +865,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValueDestinationFolderBrowse.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.failOperationOnEmptyValueDestinationFolderBrowse.AutoSize = true;
             this.failOperationOnEmptyValueDestinationFolderBrowse.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.failOperationOnEmptyValueDestinationFolderBrowse.Location = new System.Drawing.Point(554, 4);
+            this.failOperationOnEmptyValueDestinationFolderBrowse.Location = new System.Drawing.Point(632, 4);
             this.failOperationOnEmptyValueDestinationFolderBrowse.Margin = new System.Windows.Forms.Padding(4);
             this.failOperationOnEmptyValueDestinationFolderBrowse.Name = "failOperationOnEmptyValueDestinationFolderBrowse";
             this.failOperationOnEmptyValueDestinationFolderBrowse.Size = new System.Drawing.Size(62, 26);
@@ -573,7 +882,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValueDestinationFolder.Margin = new System.Windows.Forms.Padding(4);
             this.failOperationOnEmptyValueDestinationFolder.Name = "failOperationOnEmptyValueDestinationFolder";
             this.failOperationOnEmptyValueDestinationFolder.ReadOnly = true;
-            this.failOperationOnEmptyValueDestinationFolder.Size = new System.Drawing.Size(526, 22);
+            this.failOperationOnEmptyValueDestinationFolder.Size = new System.Drawing.Size(604, 22);
             this.failOperationOnEmptyValueDestinationFolder.TabIndex = 1;
             // 
             // failOperationOnEmptyValueUseDestinationFolder
@@ -586,7 +895,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValueUseDestinationFolder.Margin = new System.Windows.Forms.Padding(4);
             this.failOperationOnEmptyValueUseDestinationFolder.Name = "failOperationOnEmptyValueUseDestinationFolder";
             this.failOperationOnEmptyValueUseDestinationFolder.Padding = new System.Windows.Forms.Padding(20, 4, 0, 0);
-            this.failOperationOnEmptyValueUseDestinationFolder.Size = new System.Drawing.Size(620, 24);
+            this.failOperationOnEmptyValueUseDestinationFolder.Size = new System.Drawing.Size(698, 24);
             this.failOperationOnEmptyValueUseDestinationFolder.TabIndex = 0;
             this.failOperationOnEmptyValueUseDestinationFolder.Text = "and move/copy them to this folder:";
             this.failOperationOnEmptyValueUseDestinationFolder.UseVisualStyleBackColor = true;
@@ -599,7 +908,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValueFieldsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.failOperationOnEmptyValueFieldsLayout.Name = "failOperationOnEmptyValueFieldsLayout";
             this.failOperationOnEmptyValueFieldsLayout.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.failOperationOnEmptyValueFieldsLayout.Size = new System.Drawing.Size(620, 123);
+            this.failOperationOnEmptyValueFieldsLayout.Size = new System.Drawing.Size(698, 123);
             this.failOperationOnEmptyValueFieldsLayout.TabIndex = 3;
             // 
             // failOperationOnEmptyValueFields
@@ -671,7 +980,7 @@ namespace LibraryOrganizer.Dialog
             this.failOperationOnEmptyValue.Margin = new System.Windows.Forms.Padding(4);
             this.failOperationOnEmptyValue.Name = "failOperationOnEmptyValue";
             this.failOperationOnEmptyValue.Padding = new System.Windows.Forms.Padding(8, 25, 0, 0);
-            this.failOperationOnEmptyValue.Size = new System.Drawing.Size(620, 45);
+            this.failOperationOnEmptyValue.Size = new System.Drawing.Size(698, 45);
             this.failOperationOnEmptyValue.TabIndex = 2;
             this.failOperationOnEmptyValue.Text = "If any of the selected fields are empty then mark the operation as failed";
             this.failOperationOnEmptyValue.UseVisualStyleBackColor = true;
@@ -695,7 +1004,7 @@ namespace LibraryOrganizer.Dialog
             this.emptyFieldReplacementLayout.RowCount = 1;
             this.emptyFieldReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.emptyFieldReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
-            this.emptyFieldReplacementLayout.Size = new System.Drawing.Size(620, 32);
+            this.emptyFieldReplacementLayout.Size = new System.Drawing.Size(698, 32);
             this.emptyFieldReplacementLayout.TabIndex = 2;
             // 
             // emptyFieldReplacementLabel2
@@ -746,7 +1055,7 @@ namespace LibraryOrganizer.Dialog
             this.emptyFieldReplacement.Location = new System.Drawing.Point(299, 5);
             this.emptyFieldReplacement.Margin = new System.Windows.Forms.Padding(4);
             this.emptyFieldReplacement.Name = "emptyFieldReplacement";
-            this.emptyFieldReplacement.Size = new System.Drawing.Size(317, 22);
+            this.emptyFieldReplacement.Size = new System.Drawing.Size(395, 22);
             this.emptyFieldReplacement.TabIndex = 13;
             // 
             // emptyFieldReplacementLabel
@@ -788,7 +1097,7 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacementLayout.RowCount = 1;
             this.emptyFolderNameReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.emptyFolderNameReplacementLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.emptyFolderNameReplacementLayout.Size = new System.Drawing.Size(620, 30);
+            this.emptyFolderNameReplacementLayout.Size = new System.Drawing.Size(698, 30);
             this.emptyFolderNameReplacementLayout.TabIndex = 2;
             // 
             // emptyFolderNameReplacement
@@ -799,7 +1108,7 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacement.Location = new System.Drawing.Point(220, 4);
             this.emptyFolderNameReplacement.Margin = new System.Windows.Forms.Padding(4);
             this.emptyFolderNameReplacement.Name = "emptyFolderNameReplacement";
-            this.emptyFolderNameReplacement.Size = new System.Drawing.Size(396, 22);
+            this.emptyFolderNameReplacement.Size = new System.Drawing.Size(474, 22);
             this.emptyFolderNameReplacement.TabIndex = 1;
             // 
             // emptyFolderNameReplacementLabel
@@ -813,6 +1122,179 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacementLabel.TabIndex = 0;
             this.emptyFolderNameReplacementLabel.Text = "Replace empty folder names with:";
             // 
+            // fileStructurePage
+            // 
+            this.fileStructurePage.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.fileStructurePage.Controls.Add(this.fileStructureInsertControlsPanel);
+            this.fileStructurePage.Controls.Add(this.fileSpaceAutomatically);
+            this.fileStructurePage.Controls.Add(this.fileStructurePreviewLayout);
+            this.fileStructurePage.Controls.Add(this.fileStructurePanel);
+            this.fileStructurePage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileStructurePage.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.fileStructurePage.Location = new System.Drawing.Point(0, 12);
+            this.fileStructurePage.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructurePage.Name = "fileStructurePage";
+            this.fileStructurePage.Size = new System.Drawing.Size(714, 614);
+            this.fileStructurePage.TabIndex = 0;
+            // 
+            // fileStructureInsertControlsPanel
+            // 
+            this.fileStructureInsertControlsPanel.Controls.Add(this.insertControlsTabPanel);
+            this.fileStructureInsertControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fileStructureInsertControlsPanel.Location = new System.Drawing.Point(0, 118);
+            this.fileStructureInsertControlsPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructureInsertControlsPanel.Name = "fileStructureInsertControlsPanel";
+            this.fileStructureInsertControlsPanel.Size = new System.Drawing.Size(714, 496);
+            this.fileStructureInsertControlsPanel.TabIndex = 6;
+            // 
+            // insertControlsTabPanel
+            // 
+            this.insertControlsTabPanel.Controls.Add(this.tabPage1);
+            this.insertControlsTabPanel.Controls.Add(this.tabPage2);
+            this.insertControlsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.insertControlsTabPanel.Location = new System.Drawing.Point(0, 0);
+            this.insertControlsTabPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.insertControlsTabPanel.Name = "insertControlsTabPanel";
+            this.insertControlsTabPanel.SelectedIndex = 0;
+            this.insertControlsTabPanel.Size = new System.Drawing.Size(714, 496);
+            this.insertControlsTabPanel.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Size = new System.Drawing.Size(706, 467);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage2.Size = new System.Drawing.Size(706, 467);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // fileSpaceAutomatically
+            // 
+            this.fileSpaceAutomatically.AutoSize = true;
+            this.fileSpaceAutomatically.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fileSpaceAutomatically.Location = new System.Drawing.Point(0, 90);
+            this.fileSpaceAutomatically.Margin = new System.Windows.Forms.Padding(4);
+            this.fileSpaceAutomatically.Name = "fileSpaceAutomatically";
+            this.fileSpaceAutomatically.Padding = new System.Windows.Forms.Padding(7, 4, 0, 4);
+            this.fileSpaceAutomatically.Size = new System.Drawing.Size(714, 28);
+            this.fileSpaceAutomatically.TabIndex = 2;
+            this.fileSpaceAutomatically.Text = "Space inserted fields automatically";
+            this.fileSpaceAutomatically.UseVisualStyleBackColor = true;
+            // 
+            // fileStructurePreviewLayout
+            // 
+            this.fileStructurePreviewLayout.AutoSize = true;
+            this.fileStructurePreviewLayout.ColumnCount = 4;
+            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewLabel, 0, 0);
+            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreview, 1, 0);
+            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewPrevious, 2, 0);
+            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewNext, 3, 0);
+            this.fileStructurePreviewLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fileStructurePreviewLayout.Location = new System.Drawing.Point(0, 56);
+            this.fileStructurePreviewLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructurePreviewLayout.Name = "fileStructurePreviewLayout";
+            this.fileStructurePreviewLayout.RowCount = 1;
+            this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.fileStructurePreviewLayout.Size = new System.Drawing.Size(714, 34);
+            this.fileStructurePreviewLayout.TabIndex = 5;
+            // 
+            // fileStructurePreviewLabel
+            // 
+            this.fileStructurePreviewLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.fileStructurePreviewLabel.AutoSize = true;
+            this.fileStructurePreviewLabel.Location = new System.Drawing.Point(4, 9);
+            this.fileStructurePreviewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.fileStructurePreviewLabel.Name = "fileStructurePreviewLabel";
+            this.fileStructurePreviewLabel.Size = new System.Drawing.Size(55, 16);
+            this.fileStructurePreviewLabel.TabIndex = 2;
+            this.fileStructurePreviewLabel.Text = "Preview";
+            // 
+            // fileStructurePreview
+            // 
+            this.fileStructurePreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.fileStructurePreview.AutoSize = true;
+            this.fileStructurePreview.Location = new System.Drawing.Point(67, 9);
+            this.fileStructurePreview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.fileStructurePreview.Name = "fileStructurePreview";
+            this.fileStructurePreview.Size = new System.Drawing.Size(579, 16);
+            this.fileStructurePreview.TabIndex = 1;
+            this.fileStructurePreview.Text = "label2";
+            // 
+            // fileStructurePreviewPrevious
+            // 
+            this.fileStructurePreviewPrevious.AutoSize = true;
+            this.fileStructurePreviewPrevious.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.fileStructurePreviewPrevious.Location = new System.Drawing.Point(654, 4);
+            this.fileStructurePreviewPrevious.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructurePreviewPrevious.Name = "fileStructurePreviewPrevious";
+            this.fileStructurePreviewPrevious.Size = new System.Drawing.Size(24, 26);
+            this.fileStructurePreviewPrevious.TabIndex = 4;
+            this.fileStructurePreviewPrevious.Text = "<";
+            this.fileStructurePreviewPrevious.UseVisualStyleBackColor = true;
+            // 
+            // fileStructurePreviewNext
+            // 
+            this.fileStructurePreviewNext.AutoSize = true;
+            this.fileStructurePreviewNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.fileStructurePreviewNext.Location = new System.Drawing.Point(686, 4);
+            this.fileStructurePreviewNext.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructurePreviewNext.Name = "fileStructurePreviewNext";
+            this.fileStructurePreviewNext.Size = new System.Drawing.Size(24, 26);
+            this.fileStructurePreviewNext.TabIndex = 3;
+            this.fileStructurePreviewNext.Text = ">";
+            this.fileStructurePreviewNext.UseVisualStyleBackColor = true;
+            // 
+            // fileStructurePanel
+            // 
+            this.fileStructurePanel.AutoSize = true;
+            this.fileStructurePanel.Controls.Add(this.fileStructureLabel);
+            this.fileStructurePanel.Controls.Add(this.fileStructureTextBox);
+            this.fileStructurePanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fileStructurePanel.Location = new System.Drawing.Point(0, 0);
+            this.fileStructurePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructurePanel.Name = "fileStructurePanel";
+            this.fileStructurePanel.Size = new System.Drawing.Size(714, 56);
+            this.fileStructurePanel.TabIndex = 3;
+            // 
+            // fileStructureLabel
+            // 
+            this.fileStructureLabel.AutoSize = true;
+            this.fileStructureLabel.Location = new System.Drawing.Point(7, 21);
+            this.fileStructureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.fileStructureLabel.Name = "fileStructureLabel";
+            this.fileStructureLabel.Size = new System.Drawing.Size(87, 16);
+            this.fileStructureLabel.TabIndex = 0;
+            this.fileStructureLabel.Text = "File Structure:";
+            // 
+            // fileStructureTextBox
+            // 
+            this.fileStructureTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.fileStructureTextBox.Location = new System.Drawing.Point(111, 4);
+            this.fileStructureTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.fileStructureTextBox.Multiline = true;
+            this.fileStructureTextBox.Name = "fileStructureTextBox";
+            this.fileStructureTextBox.Size = new System.Drawing.Size(598, 48);
+            this.fileStructureTextBox.TabIndex = 1;
+            // 
             // rulesPage
             // 
             this.rulesPage.Controls.Add(this.metadataRulesTabPage);
@@ -822,7 +1304,7 @@ namespace LibraryOrganizer.Dialog
             this.rulesPage.Margin = new System.Windows.Forms.Padding(4);
             this.rulesPage.Name = "rulesPage";
             this.rulesPage.SelectedIndex = 0;
-            this.rulesPage.Size = new System.Drawing.Size(636, 614);
+            this.rulesPage.Size = new System.Drawing.Size(714, 614);
             this.rulesPage.TabIndex = 9;
             // 
             // metadataRulesTabPage
@@ -833,7 +1315,7 @@ namespace LibraryOrganizer.Dialog
             this.metadataRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.metadataRulesTabPage.Name = "metadataRulesTabPage";
             this.metadataRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.metadataRulesTabPage.Size = new System.Drawing.Size(628, 585);
+            this.metadataRulesTabPage.Size = new System.Drawing.Size(706, 585);
             this.metadataRulesTabPage.TabIndex = 0;
             this.metadataRulesTabPage.Text = "Metadata Rules";
             this.metadataRulesTabPage.UseVisualStyleBackColor = true;
@@ -841,10 +1323,10 @@ namespace LibraryOrganizer.Dialog
             // metadataRulesActionsLayout
             // 
             this.metadataRulesActionsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metadataRulesActionsLayout.Location = new System.Drawing.Point(4, 76);
+            this.metadataRulesActionsLayout.Location = new System.Drawing.Point(4, 40);
             this.metadataRulesActionsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.metadataRulesActionsLayout.Name = "metadataRulesActionsLayout";
-            this.metadataRulesActionsLayout.Size = new System.Drawing.Size(620, 505);
+            this.metadataRulesActionsLayout.Size = new System.Drawing.Size(698, 541);
             this.metadataRulesActionsLayout.TabIndex = 1;
             // 
             // metadataRulesControlsLayout
@@ -860,7 +1342,7 @@ namespace LibraryOrganizer.Dialog
             this.metadataRulesControlsLayout.Location = new System.Drawing.Point(4, 4);
             this.metadataRulesControlsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.metadataRulesControlsLayout.Name = "metadataRulesControlsLayout";
-            this.metadataRulesControlsLayout.Size = new System.Drawing.Size(620, 72);
+            this.metadataRulesControlsLayout.Size = new System.Drawing.Size(698, 36);
             this.metadataRulesControlsLayout.TabIndex = 0;
             // 
             // metadataRulesAction
@@ -921,7 +1403,7 @@ namespace LibraryOrganizer.Dialog
             // metadataRulesAddRule
             // 
             this.metadataRulesAddRule.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.metadataRulesAddRule.Location = new System.Drawing.Point(4, 40);
+            this.metadataRulesAddRule.Location = new System.Drawing.Point(552, 4);
             this.metadataRulesAddRule.Margin = new System.Windows.Forms.Padding(4);
             this.metadataRulesAddRule.Name = "metadataRulesAddRule";
             this.metadataRulesAddRule.Size = new System.Drawing.Size(100, 28);
@@ -938,7 +1420,7 @@ namespace LibraryOrganizer.Dialog
             this.folderRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.folderRulesTabPage.Name = "folderRulesTabPage";
             this.folderRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.folderRulesTabPage.Size = new System.Drawing.Size(628, 585);
+            this.folderRulesTabPage.Size = new System.Drawing.Size(706, 585);
             this.folderRulesTabPage.TabIndex = 1;
             this.folderRulesTabPage.Text = "Folder Rules";
             this.folderRulesTabPage.UseVisualStyleBackColor = true;
@@ -950,7 +1432,7 @@ namespace LibraryOrganizer.Dialog
             this.excludedFoldersList.Location = new System.Drawing.Point(4, 32);
             this.excludedFoldersList.Margin = new System.Windows.Forms.Padding(4);
             this.excludedFoldersList.Name = "excludedFoldersList";
-            this.excludedFoldersList.Size = new System.Drawing.Size(512, 549);
+            this.excludedFoldersList.Size = new System.Drawing.Size(590, 549);
             this.excludedFoldersList.TabIndex = 1;
             this.excludedFoldersList.UseCompatibleStateImageBehavior = false;
             // 
@@ -961,7 +1443,7 @@ namespace LibraryOrganizer.Dialog
             this.folderRulesActionsLayout.Controls.Add(this.removeExcludedFolder);
             this.folderRulesActionsLayout.Dock = System.Windows.Forms.DockStyle.Right;
             this.folderRulesActionsLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.folderRulesActionsLayout.Location = new System.Drawing.Point(516, 32);
+            this.folderRulesActionsLayout.Location = new System.Drawing.Point(594, 32);
             this.folderRulesActionsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.folderRulesActionsLayout.Name = "folderRulesActionsLayout";
             this.folderRulesActionsLayout.Size = new System.Drawing.Size(108, 549);
@@ -999,383 +1481,9 @@ namespace LibraryOrganizer.Dialog
             this.excludedFolderLabel.TabIndex = 0;
             this.excludedFolderLabel.Text = "Do not move books if they are located in the following folders";
             // 
-            // folderStructurePage
+            // configFormViewModelBindingSource
             // 
-            this.folderStructurePage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.folderStructurePage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.folderStructurePage.Controls.Add(this.folderInsertControlsPanel);
-            this.folderStructurePage.Controls.Add(this.folderStructureActionsLayout);
-            this.folderStructurePage.Controls.Add(this.folderStructurePreviewLayout);
-            this.folderStructurePage.Controls.Add(this.folderStructurePanel);
-            this.folderStructurePage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.folderStructurePage.Location = new System.Drawing.Point(0, 12);
-            this.folderStructurePage.Margin = new System.Windows.Forms.Padding(4);
-            this.folderStructurePage.Name = "folderStructurePage";
-            this.folderStructurePage.Size = new System.Drawing.Size(636, 614);
-            this.folderStructurePage.TabIndex = 1;
-            // 
-            // folderInsertControlsPanel
-            // 
-            this.folderInsertControlsPanel.Controls.Add(this.tabControl1);
-            this.folderInsertControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.folderInsertControlsPanel.Location = new System.Drawing.Point(0, 130);
-            this.folderInsertControlsPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.folderInsertControlsPanel.Name = "folderInsertControlsPanel";
-            this.folderInsertControlsPanel.Size = new System.Drawing.Size(634, 482);
-            this.folderInsertControlsPanel.TabIndex = 8;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(634, 482);
-            this.tabControl1.TabIndex = 0;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(626, 453);
-            this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Location = new System.Drawing.Point(4, 25);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage4.Size = new System.Drawing.Size(626, 453);
-            this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "tabPage4";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // folderStructureActionsLayout
-            // 
-            this.folderStructureActionsLayout.AutoSize = true;
-            this.folderStructureActionsLayout.Controls.Add(this.folderSpaceAutomatically);
-            this.folderStructureActionsLayout.Controls.Add(this.insertFolderSeparator);
-            this.folderStructureActionsLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.folderStructureActionsLayout.Location = new System.Drawing.Point(0, 90);
-            this.folderStructureActionsLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.folderStructureActionsLayout.Name = "folderStructureActionsLayout";
-            this.folderStructureActionsLayout.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.folderStructureActionsLayout.Size = new System.Drawing.Size(634, 40);
-            this.folderStructureActionsLayout.TabIndex = 5;
-            // 
-            // folderSpaceAutomatically
-            // 
-            this.folderSpaceAutomatically.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.folderSpaceAutomatically.AutoSize = true;
-            this.folderSpaceAutomatically.Location = new System.Drawing.Point(11, 10);
-            this.folderSpaceAutomatically.Margin = new System.Windows.Forms.Padding(4);
-            this.folderSpaceAutomatically.Name = "folderSpaceAutomatically";
-            this.folderSpaceAutomatically.Size = new System.Drawing.Size(237, 20);
-            this.folderSpaceAutomatically.TabIndex = 7;
-            this.folderSpaceAutomatically.Text = "Space inserted fields automatically";
-            this.folderSpaceAutomatically.UseVisualStyleBackColor = true;
-            // 
-            // insertFolderSeparator
-            // 
-            this.insertFolderSeparator.AutoSize = true;
-            this.insertFolderSeparator.Location = new System.Drawing.Point(256, 4);
-            this.insertFolderSeparator.Margin = new System.Windows.Forms.Padding(4);
-            this.insertFolderSeparator.Name = "insertFolderSeparator";
-            this.insertFolderSeparator.Size = new System.Drawing.Size(159, 32);
-            this.insertFolderSeparator.TabIndex = 8;
-            this.insertFolderSeparator.Text = "Folder Seperator";
-            this.insertFolderSeparator.UseVisualStyleBackColor = true;
-            // 
-            // folderStructurePreviewLayout
-            // 
-            this.folderStructurePreviewLayout.AutoSize = true;
-            this.folderStructurePreviewLayout.ColumnCount = 4;
-            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.folderStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewLabel, 0, 0);
-            this.folderStructurePreviewLayout.Controls.Add(this.folderPreview, 1, 0);
-            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewPrevious, 2, 0);
-            this.folderStructurePreviewLayout.Controls.Add(this.folderPreviewNext, 3, 0);
-            this.folderStructurePreviewLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.folderStructurePreviewLayout.Location = new System.Drawing.Point(0, 56);
-            this.folderStructurePreviewLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.folderStructurePreviewLayout.Name = "folderStructurePreviewLayout";
-            this.folderStructurePreviewLayout.RowCount = 1;
-            this.folderStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.folderStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.folderStructurePreviewLayout.Size = new System.Drawing.Size(634, 34);
-            this.folderStructurePreviewLayout.TabIndex = 6;
-            // 
-            // folderPreviewLabel
-            // 
-            this.folderPreviewLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.folderPreviewLabel.AutoSize = true;
-            this.folderPreviewLabel.Location = new System.Drawing.Point(4, 9);
-            this.folderPreviewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.folderPreviewLabel.Name = "folderPreviewLabel";
-            this.folderPreviewLabel.Size = new System.Drawing.Size(55, 16);
-            this.folderPreviewLabel.TabIndex = 2;
-            this.folderPreviewLabel.Text = "Preview";
-            // 
-            // folderPreview
-            // 
-            this.folderPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderPreview.AutoSize = true;
-            this.folderPreview.Location = new System.Drawing.Point(67, 9);
-            this.folderPreview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.folderPreview.Name = "folderPreview";
-            this.folderPreview.Size = new System.Drawing.Size(499, 16);
-            this.folderPreview.TabIndex = 1;
-            this.folderPreview.Text = "label2";
-            // 
-            // folderPreviewPrevious
-            // 
-            this.folderPreviewPrevious.AutoSize = true;
-            this.folderPreviewPrevious.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.folderPreviewPrevious.Location = new System.Drawing.Point(574, 4);
-            this.folderPreviewPrevious.Margin = new System.Windows.Forms.Padding(4);
-            this.folderPreviewPrevious.Name = "folderPreviewPrevious";
-            this.folderPreviewPrevious.Size = new System.Drawing.Size(24, 26);
-            this.folderPreviewPrevious.TabIndex = 4;
-            this.folderPreviewPrevious.Text = "<";
-            this.folderPreviewPrevious.UseVisualStyleBackColor = true;
-            // 
-            // folderPreviewNext
-            // 
-            this.folderPreviewNext.AutoSize = true;
-            this.folderPreviewNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.folderPreviewNext.Location = new System.Drawing.Point(606, 4);
-            this.folderPreviewNext.Margin = new System.Windows.Forms.Padding(4);
-            this.folderPreviewNext.Name = "folderPreviewNext";
-            this.folderPreviewNext.Size = new System.Drawing.Size(24, 26);
-            this.folderPreviewNext.TabIndex = 3;
-            this.folderPreviewNext.Text = ">";
-            this.folderPreviewNext.UseVisualStyleBackColor = true;
-            // 
-            // folderStructurePanel
-            // 
-            this.folderStructurePanel.AutoSize = true;
-            this.folderStructurePanel.Controls.Add(this.folderStructureLabel);
-            this.folderStructurePanel.Controls.Add(this.folderStructure);
-            this.folderStructurePanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.folderStructurePanel.Location = new System.Drawing.Point(0, 0);
-            this.folderStructurePanel.Margin = new System.Windows.Forms.Padding(4);
-            this.folderStructurePanel.Name = "folderStructurePanel";
-            this.folderStructurePanel.Size = new System.Drawing.Size(634, 56);
-            this.folderStructurePanel.TabIndex = 4;
-            // 
-            // folderStructureLabel
-            // 
-            this.folderStructureLabel.AutoSize = true;
-            this.folderStructureLabel.Location = new System.Drawing.Point(7, 21);
-            this.folderStructureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.folderStructureLabel.Name = "folderStructureLabel";
-            this.folderStructureLabel.Size = new System.Drawing.Size(104, 16);
-            this.folderStructureLabel.TabIndex = 0;
-            this.folderStructureLabel.Text = "Folder Structure:";
-            // 
-            // folderStructure
-            // 
-            this.folderStructure.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.folderStructure.Location = new System.Drawing.Point(128, 4);
-            this.folderStructure.Margin = new System.Windows.Forms.Padding(4);
-            this.folderStructure.Multiline = true;
-            this.folderStructure.Name = "folderStructure";
-            this.folderStructure.Size = new System.Drawing.Size(501, 48);
-            this.folderStructure.TabIndex = 1;
-            // 
-            // fileStructurePage
-            // 
-            this.fileStructurePage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.fileStructurePage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fileStructurePage.Controls.Add(this.fileStructureInsertControlsPanel);
-            this.fileStructurePage.Controls.Add(this.fileSpaceAutomatically);
-            this.fileStructurePage.Controls.Add(this.fileStructurePreviewLayout);
-            this.fileStructurePage.Controls.Add(this.fileStructurePanel);
-            this.fileStructurePage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileStructurePage.Location = new System.Drawing.Point(0, 12);
-            this.fileStructurePage.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructurePage.Name = "fileStructurePage";
-            this.fileStructurePage.Size = new System.Drawing.Size(636, 614);
-            this.fileStructurePage.TabIndex = 0;
-            // 
-            // fileStructureInsertControlsPanel
-            // 
-            this.fileStructureInsertControlsPanel.Controls.Add(this.insertControlsTabPanel);
-            this.fileStructureInsertControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileStructureInsertControlsPanel.Location = new System.Drawing.Point(0, 118);
-            this.fileStructureInsertControlsPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructureInsertControlsPanel.Name = "fileStructureInsertControlsPanel";
-            this.fileStructureInsertControlsPanel.Size = new System.Drawing.Size(634, 494);
-            this.fileStructureInsertControlsPanel.TabIndex = 6;
-            // 
-            // insertControlsTabPanel
-            // 
-            this.insertControlsTabPanel.Controls.Add(this.tabPage1);
-            this.insertControlsTabPanel.Controls.Add(this.tabPage2);
-            this.insertControlsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.insertControlsTabPanel.Location = new System.Drawing.Point(0, 0);
-            this.insertControlsTabPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.insertControlsTabPanel.Name = "insertControlsTabPanel";
-            this.insertControlsTabPanel.SelectedIndex = 0;
-            this.insertControlsTabPanel.Size = new System.Drawing.Size(634, 494);
-            this.insertControlsTabPanel.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(626, 465);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(626, 465);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // fileSpaceAutomatically
-            // 
-            this.fileSpaceAutomatically.AutoSize = true;
-            this.fileSpaceAutomatically.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileSpaceAutomatically.Location = new System.Drawing.Point(0, 90);
-            this.fileSpaceAutomatically.Margin = new System.Windows.Forms.Padding(4);
-            this.fileSpaceAutomatically.Name = "fileSpaceAutomatically";
-            this.fileSpaceAutomatically.Padding = new System.Windows.Forms.Padding(7, 4, 0, 4);
-            this.fileSpaceAutomatically.Size = new System.Drawing.Size(634, 28);
-            this.fileSpaceAutomatically.TabIndex = 2;
-            this.fileSpaceAutomatically.Text = "Space inserted fields automatically";
-            this.fileSpaceAutomatically.UseVisualStyleBackColor = true;
-            // 
-            // fileStructurePreviewLayout
-            // 
-            this.fileStructurePreviewLayout.AutoSize = true;
-            this.fileStructurePreviewLayout.ColumnCount = 4;
-            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.fileStructurePreviewLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewLabel, 0, 0);
-            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreview, 1, 0);
-            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewPrevious, 2, 0);
-            this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewNext, 3, 0);
-            this.fileStructurePreviewLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileStructurePreviewLayout.Location = new System.Drawing.Point(0, 56);
-            this.fileStructurePreviewLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructurePreviewLayout.Name = "fileStructurePreviewLayout";
-            this.fileStructurePreviewLayout.RowCount = 1;
-            this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.fileStructurePreviewLayout.Size = new System.Drawing.Size(634, 34);
-            this.fileStructurePreviewLayout.TabIndex = 5;
-            // 
-            // fileStructurePreviewLabel
-            // 
-            this.fileStructurePreviewLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.fileStructurePreviewLabel.AutoSize = true;
-            this.fileStructurePreviewLabel.Location = new System.Drawing.Point(4, 9);
-            this.fileStructurePreviewLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.fileStructurePreviewLabel.Name = "fileStructurePreviewLabel";
-            this.fileStructurePreviewLabel.Size = new System.Drawing.Size(55, 16);
-            this.fileStructurePreviewLabel.TabIndex = 2;
-            this.fileStructurePreviewLabel.Text = "Preview";
-            // 
-            // fileStructurePreview
-            // 
-            this.fileStructurePreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.fileStructurePreview.AutoSize = true;
-            this.fileStructurePreview.Location = new System.Drawing.Point(67, 9);
-            this.fileStructurePreview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.fileStructurePreview.Name = "fileStructurePreview";
-            this.fileStructurePreview.Size = new System.Drawing.Size(499, 16);
-            this.fileStructurePreview.TabIndex = 1;
-            this.fileStructurePreview.Text = "label2";
-            // 
-            // fileStructurePreviewPrevious
-            // 
-            this.fileStructurePreviewPrevious.AutoSize = true;
-            this.fileStructurePreviewPrevious.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fileStructurePreviewPrevious.Location = new System.Drawing.Point(574, 4);
-            this.fileStructurePreviewPrevious.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructurePreviewPrevious.Name = "fileStructurePreviewPrevious";
-            this.fileStructurePreviewPrevious.Size = new System.Drawing.Size(24, 26);
-            this.fileStructurePreviewPrevious.TabIndex = 4;
-            this.fileStructurePreviewPrevious.Text = "<";
-            this.fileStructurePreviewPrevious.UseVisualStyleBackColor = true;
-            // 
-            // fileStructurePreviewNext
-            // 
-            this.fileStructurePreviewNext.AutoSize = true;
-            this.fileStructurePreviewNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fileStructurePreviewNext.Location = new System.Drawing.Point(606, 4);
-            this.fileStructurePreviewNext.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructurePreviewNext.Name = "fileStructurePreviewNext";
-            this.fileStructurePreviewNext.Size = new System.Drawing.Size(24, 26);
-            this.fileStructurePreviewNext.TabIndex = 3;
-            this.fileStructurePreviewNext.Text = ">";
-            this.fileStructurePreviewNext.UseVisualStyleBackColor = true;
-            // 
-            // fileStructurePanel
-            // 
-            this.fileStructurePanel.AutoSize = true;
-            this.fileStructurePanel.Controls.Add(this.fileStructureLabel);
-            this.fileStructurePanel.Controls.Add(this.fileStructureTextBox);
-            this.fileStructurePanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileStructurePanel.Location = new System.Drawing.Point(0, 0);
-            this.fileStructurePanel.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructurePanel.Name = "fileStructurePanel";
-            this.fileStructurePanel.Size = new System.Drawing.Size(634, 56);
-            this.fileStructurePanel.TabIndex = 3;
-            // 
-            // fileStructureLabel
-            // 
-            this.fileStructureLabel.AutoSize = true;
-            this.fileStructureLabel.Location = new System.Drawing.Point(7, 21);
-            this.fileStructureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.fileStructureLabel.Name = "fileStructureLabel";
-            this.fileStructureLabel.Size = new System.Drawing.Size(87, 16);
-            this.fileStructureLabel.TabIndex = 0;
-            this.fileStructureLabel.Text = "File Structure:";
-            // 
-            // fileStructureTextBox
-            // 
-            this.fileStructureTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.fileStructureTextBox.Location = new System.Drawing.Point(111, 4);
-            this.fileStructureTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructureTextBox.Multiline = true;
-            this.fileStructureTextBox.Name = "fileStructureTextBox";
-            this.fileStructureTextBox.Size = new System.Drawing.Size(518, 48);
-            this.fileStructureTextBox.TabIndex = 1;
-            // 
-            // panel2
-            // 
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(208, 666);
-            this.panel2.TabIndex = 1;
+            this.configFormViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ConfigFormViewModel);
             // 
             // formActionsLayout
             // 
@@ -1384,15 +1492,15 @@ namespace LibraryOrganizer.Dialog
             this.formActionsLayout.Controls.Add(this.cancelButton);
             this.formActionsLayout.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.formActionsLayout.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.formActionsLayout.Location = new System.Drawing.Point(208, 630);
+            this.formActionsLayout.Location = new System.Drawing.Point(130, 630);
             this.formActionsLayout.Margin = new System.Windows.Forms.Padding(4);
             this.formActionsLayout.Name = "formActionsLayout";
-            this.formActionsLayout.Size = new System.Drawing.Size(649, 36);
+            this.formActionsLayout.Size = new System.Drawing.Size(727, 36);
             this.formActionsLayout.TabIndex = 0;
             // 
             // okayButton
             // 
-            this.okayButton.Location = new System.Drawing.Point(545, 4);
+            this.okayButton.Location = new System.Drawing.Point(623, 4);
             this.okayButton.Margin = new System.Windows.Forms.Padding(4);
             this.okayButton.Name = "okayButton";
             this.okayButton.Size = new System.Drawing.Size(100, 28);
@@ -1402,7 +1510,7 @@ namespace LibraryOrganizer.Dialog
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(437, 4);
+            this.cancelButton.Location = new System.Drawing.Point(515, 4);
             this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(100, 28);
@@ -1410,41 +1518,31 @@ namespace LibraryOrganizer.Dialog
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(0, 0);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 16);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "label6";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(0, 0);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(95, 20);
-            this.checkBox2.TabIndex = 3;
-            this.checkBox2.Text = "checkBox2";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // ConfigureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(857, 666);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.label6);
             this.Controls.Add(this.configurationPanel);
             this.Controls.Add(this.formActionsLayout);
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(toolStrip);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "ConfigureForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.ConfigureForm_Load);
+            toolStrip.ResumeLayout(false);
+            toolStrip.PerformLayout();
             this.configurationPanel.ResumeLayout(false);
+            this.folderStructurePage.ResumeLayout(false);
+            this.folderInsertControlsPanel.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.folderStructurePreviewLayout.ResumeLayout(false);
+            this.folderStructurePreviewLayout.PerformLayout();
+            this.folderStructureActionsLayout.ResumeLayout(false);
+            this.folderStructureActionsLayout.PerformLayout();
+            this.folderStructurePanel.ResumeLayout(false);
+            this.folderStructurePanel.PerformLayout();
             this.optionsPage.ResumeLayout(false);
             this.optionsTabPage.ResumeLayout(false);
             this.optionsTabPage.PerformLayout();
@@ -1471,24 +1569,6 @@ namespace LibraryOrganizer.Dialog
             ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).EndInit();
             this.emptyFolderNameReplacementLayout.ResumeLayout(false);
             this.emptyFolderNameReplacementLayout.PerformLayout();
-            this.rulesPage.ResumeLayout(false);
-            this.metadataRulesTabPage.ResumeLayout(false);
-            this.metadataRulesTabPage.PerformLayout();
-            this.metadataRulesControlsLayout.ResumeLayout(false);
-            this.metadataRulesControlsLayout.PerformLayout();
-            this.folderRulesTabPage.ResumeLayout(false);
-            this.folderRulesTabPage.PerformLayout();
-            this.folderRulesActionsLayout.ResumeLayout(false);
-            this.folderStructurePage.ResumeLayout(false);
-            this.folderStructurePage.PerformLayout();
-            this.folderInsertControlsPanel.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
-            this.folderStructureActionsLayout.ResumeLayout(false);
-            this.folderStructureActionsLayout.PerformLayout();
-            this.folderStructurePreviewLayout.ResumeLayout(false);
-            this.folderStructurePreviewLayout.PerformLayout();
-            this.folderStructurePanel.ResumeLayout(false);
-            this.folderStructurePanel.PerformLayout();
             this.fileStructurePage.ResumeLayout(false);
             this.fileStructurePage.PerformLayout();
             this.fileStructureInsertControlsPanel.ResumeLayout(false);
@@ -1497,6 +1577,15 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePreviewLayout.PerformLayout();
             this.fileStructurePanel.ResumeLayout(false);
             this.fileStructurePanel.PerformLayout();
+            this.rulesPage.ResumeLayout(false);
+            this.metadataRulesTabPage.ResumeLayout(false);
+            this.metadataRulesTabPage.PerformLayout();
+            this.metadataRulesControlsLayout.ResumeLayout(false);
+            this.metadataRulesControlsLayout.PerformLayout();
+            this.folderRulesTabPage.ResumeLayout(false);
+            this.folderRulesTabPage.PerformLayout();
+            this.folderRulesActionsLayout.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).EndInit();
             this.formActionsLayout.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1508,7 +1597,6 @@ namespace LibraryOrganizer.Dialog
         #endregion
 
         private System.Windows.Forms.Panel configurationPanel;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel fileStructurePage;
         private System.Windows.Forms.FlowLayoutPanel formActionsLayout;
         private System.Windows.Forms.Button okayButton;
@@ -1531,9 +1619,6 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.CheckBox folderSpaceAutomatically;
         private System.Windows.Forms.Button insertFolderSeparator;
         private System.Windows.Forms.Panel folderInsertControlsPanel;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TableLayoutPanel folderStructurePreviewLayout;
         private System.Windows.Forms.Label folderPreviewLabel;
         private System.Windows.Forms.Label folderPreview;
@@ -1585,7 +1670,6 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.Label emptyFolderNameReplacementLabel2;
         private System.Windows.Forms.TextBox emptyFolderNameReplacement;
         private System.Windows.Forms.Label emptyFolderNameReplacementLabel;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox emptyFieldReplacement;
         private System.Windows.Forms.Label emptyFieldReplacementLabel3;
         private System.Windows.Forms.ComboBox emptyFieldReplacementSelector;
@@ -1593,7 +1677,6 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.TableLayoutPanel emptyFieldReplacementLayout;
         private System.Windows.Forms.CheckBox failOperationOnEmptyValueUseDestinationFolder;
         private System.Windows.Forms.CheckBox failOperationOnEmptyValue;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.TableLayoutPanel failOperationOnEmptyValueDestinationFolderLayout;
         private System.Windows.Forms.Panel failOperationOnEmptyValueFieldsLayout;
         private System.Windows.Forms.Button failOperationOnEmptyValueDestinationFolderBrowse;
@@ -1609,6 +1692,15 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.BindingSource failOperationOnEmptyValueFieldsBindingSource;
         private System.Windows.Forms.DataGridViewCheckBoxColumn emptyValueFieldEnabledColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn emptyValueFieldNameColumn;
+        private System.Windows.Forms.ToolStripButton overviewButton;
+        private System.Windows.Forms.ToolStripButton filesButton;
+        private System.Windows.Forms.ToolStripButton foldersButton;
+        private System.Windows.Forms.ToolStripButton optionsButton;
+        private System.Windows.Forms.ToolStripButton rulesButton;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
+        private System.Windows.Forms.BindingSource configFormViewModelBindingSource;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
