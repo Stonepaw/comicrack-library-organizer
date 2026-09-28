@@ -2,7 +2,7 @@
 
 namespace LibraryOrganizer.Matcher
 {
-    internal enum BookFieldNumberMatcherMode
+    internal enum NumberMatcherMode
     {
         [Description("is")]
         Equal,

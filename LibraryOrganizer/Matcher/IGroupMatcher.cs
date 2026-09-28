@@ -2,7 +2,7 @@
 
 namespace LibraryOrganizer.Matcher
 {
-    internal interface IGroupMatcher
+    internal interface IGroupMatcher : IMatcher
     {
         IEnumerable<IMatcher> Matchers { get; }
 

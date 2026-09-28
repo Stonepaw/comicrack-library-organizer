@@ -6,7 +6,7 @@ namespace LibraryOrganizer.Matcher
     {
         IComicBookStringField Field { get; }
 
-        BookFieldStringMatcherMode Mode { get; }
+        StringMatcherMode Mode { get; }
 
         string Value { get; }
     }

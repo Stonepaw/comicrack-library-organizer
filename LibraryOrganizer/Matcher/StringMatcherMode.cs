@@ -2,7 +2,7 @@
 
 namespace LibraryOrganizer.Matcher
 {
-    internal enum BookFieldStringMatcherMode
+    internal enum StringMatcherMode
     {
         [Description("contains")]
         Contains,

@@ -1,3 +1,5 @@
+using System;
+
 namespace LibraryOrganizer.ViewModel
 {
     internal enum ConfigFormPage
@@ -13,44 +15,31 @@ namespace LibraryOrganizer.ViewModel
     {
         private ConfigFormPage _currentPage = ConfigFormPage.Overview;
 
-        public bool OverviewPageEnabled
-        {
-            get => _currentPage == ConfigFormPage.Overview;
-        }
+        public bool OverviewPageEnabled => _currentPage == ConfigFormPage.Overview;
 
-        public bool FilesPageEnabled
-        {
-            get => _currentPage == ConfigFormPage.Files;
-        }
+        public bool FilesPageEnabled => _currentPage == ConfigFormPage.Files;
 
-        public bool FoldersPageEnabled
-        {
-            get => _currentPage == ConfigFormPage.Folders;
-        }
+        public bool FoldersPageEnabled => _currentPage == ConfigFormPage.Folders;
 
-        public bool RulesPageEnabled
-        {
-            get => _currentPage == ConfigFormPage.Rules;
-        }
+        public bool RulesPageEnabled => _currentPage == ConfigFormPage.Rules;
 
-        public bool OptionsPageEnabled
-        {
-            get => _currentPage == ConfigFormPage.Options;
-        }
+        public bool OptionsPageEnabled => _currentPage == ConfigFormPage.Options;
 
         public void SetPage(ConfigFormPage page)
         {
-            if (_currentPage != page)
+            if (_currentPage == page)
             {
-                var current = _currentPage;
-                _currentPage = page;
-
-                NotifyChangeForm(current);
-                NotifyChangeForm(page);
+                return;
             }
+
+            ConfigFormPage current = _currentPage;
+            _currentPage = page;
+
+            NotifyChangedPage(current);
+            NotifyChangedPage(page);
         }
 
-        private void NotifyChangeForm(ConfigFormPage page)
+        private void NotifyChangedPage(ConfigFormPage page)
         {
             switch (page)
             {
@@ -69,6 +58,8 @@ namespace LibraryOrganizer.ViewModel
                 case ConfigFormPage.Overview:
                     NotifyPropertyChanged(nameof(OverviewPageEnabled));
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(page), page, null);
             }
         }
     }

@@ -3,7 +3,7 @@ using LibraryOrganizer.ComicBookField;
 
 namespace LibraryOrganizer.Matcher
 {
-    internal interface IBookFieldYesNoMatcher
+    internal interface IBookFieldYesNoMatcher : IBookFieldMatcher
     {
         IComicBookYesNoField Field { get; }
 

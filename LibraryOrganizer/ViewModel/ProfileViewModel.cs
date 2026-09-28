@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using LibraryOrganizer.Data;
 
 namespace LibraryOrganizer.ViewModel
 {
-    public class ProfileViewModel : ViewModelBase
+    internal class ProfileViewModel : ViewModelBase
     {
         private readonly Profile _profile;
 
@@ -249,6 +248,8 @@ namespace LibraryOrganizer.ViewModel
         /// </summary>
         public List<IllegalCharacterReplacement> IllegalCharacterReplacements =>
             _profile.IllegalCharacterReplacements;
+
+        public IGroupMatcherViewModel Matchers { get; } = new GroupMatcherViewModel(null);
 
         /// <summary>
         /// Replacements to use for month numbers when inserted into the template.
