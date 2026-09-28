@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using cYo.Projects.ComicRack.Engine;
 
-namespace LibraryOrganizer.ComicBook
+namespace LibraryOrganizer.ComicBookField
 {
     internal class ComicBookIntField : ComicBookFieldBase, IComicBookIntField
     {
@@ -36,38 +36,29 @@ namespace LibraryOrganizer.ComicBook
             (book, seriesStatistics) => book.ShadowYear
         );
 
-        private readonly Func<
-            cYo.Projects.ComicRack.Engine.ComicBook,
-            cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics,
-            int
-        > _getValue;
+        private readonly Func<ComicBook, ComicBookSeriesStatistics, int> _getValue;
 
         private ComicBookIntField(
             string label,
-            Func<
-                cYo.Projects.ComicRack.Engine.ComicBook,
-                cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics,
-                int
-            > getValue
+            Func<ComicBook, ComicBookSeriesStatistics, int> getValue
         )
             : base(label)
         {
             _getValue = getValue;
         }
 
-        public int GetValue(
-            cYo.Projects.ComicRack.Engine.ComicBook comicBook,
-            cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics seriesStatistics
-        ) => _getValue(comicBook, seriesStatistics);
+        public int GetValue(ComicBook comicBook, ComicBookSeriesStatistics seriesStatistics) =>
+            _getValue(comicBook, seriesStatistics);
 
-        public static IReadOnlyCollection<ComicBookIntField> Fields = new List<ComicBookIntField>
-        {
-            AlternateCount,
-            Count,
-            Day,
-            Month,
-            ReadPercentage,
-            Year,
-        }.AsReadOnly();
+        public static readonly IReadOnlyCollection<ComicBookIntField> Fields =
+            new List<ComicBookIntField>
+            {
+                AlternateCount,
+                Count,
+                Day,
+                Month,
+                ReadPercentage,
+                Year,
+            }.AsReadOnly();
     }
 }

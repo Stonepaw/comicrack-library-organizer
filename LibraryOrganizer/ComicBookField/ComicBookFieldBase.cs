@@ -1,6 +1,4 @@
-﻿using LibraryOrganizer.Data;
-
-namespace LibraryOrganizer.ComicBook
+﻿namespace LibraryOrganizer.ComicBookField
 {
     internal class ComicBookFieldBase : IComicBookField
     {

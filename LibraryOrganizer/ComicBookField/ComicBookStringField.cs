@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using cYo.Projects.ComicRack.Engine;
 
-namespace LibraryOrganizer.ComicBook
+namespace LibraryOrganizer.ComicBookField
 {
     internal class ComicBookStringField : ComicBookFieldBase, IComicBookStringField
     {
@@ -70,31 +71,21 @@ namespace LibraryOrganizer.ComicBook
             (book, seriesStatistics) => book.ShadowSeries
         );
 
-        private readonly Func<
-            cYo.Projects.ComicRack.Engine.ComicBook,
-            cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics,
-            string
-        > _getValue;
+        private readonly Func<ComicBook, ComicBookSeriesStatistics, string> _getValue;
 
         private ComicBookStringField(
             string label,
-            Func<
-                cYo.Projects.ComicRack.Engine.ComicBook,
-                cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics,
-                string
-            > getValue
+            Func<ComicBook, ComicBookSeriesStatistics, string> getValue
         )
             : base(label)
         {
             _getValue = getValue;
         }
 
-        public string GetValue(
-            cYo.Projects.ComicRack.Engine.ComicBook comicBook,
-            cYo.Projects.ComicRack.Engine.ComicBookSeriesStatistics seriesStatistics
-        ) => _getValue(comicBook, seriesStatistics);
+        public string GetValue(ComicBook comicBook, ComicBookSeriesStatistics seriesStatistics) =>
+            _getValue(comicBook, seriesStatistics);
 
-        public static IReadOnlyCollection<ComicBookStringField> Fields =
+        public static readonly IReadOnlyCollection<ComicBookStringField> Fields =
             new List<ComicBookStringField>
             {
                 AgeRating,
