@@ -1,16 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using LibraryOrganizer.Matcher;
 using LibraryOrganizer.ViewModel;
 
 namespace LibraryOrganizer.Control
 {
     internal partial class MatcherGroupControl : UserControl
     {
-        private readonly BindingSource _bindingSource;
-
         private readonly IGroupMatcherViewModel _matcher;
 
         public new int Width
@@ -60,18 +58,13 @@ namespace LibraryOrganizer.Control
         }
 
         public MatcherGroupControl()
-        {
-            _bindingSource = new BindingSource();
-
-            InitializeComponent();
-        }
+            : this(new GroupMatcherViewModel(null)) { }
 
         public MatcherGroupControl(IGroupMatcherViewModel matcher)
         {
-            _bindingSource = new BindingSource();
-            _bindingSource.DataSource = matcher;
-
             InitializeComponent();
+            matchOperation.DataSource = Enum.GetValues(typeof(GroupMatcherMode));
+            groupMatcherViewModelBindingSource.DataSource = matcher;
 
             _matcher = matcher;
             matcher.Matchers.ListChanged += Matchers_ListChanged;
@@ -104,6 +97,11 @@ namespace LibraryOrganizer.Control
         private void addGroupAction_Click(object sender, EventArgs e)
         {
             _matcher.AddGroup();
+        }
+
+        private void deleteGroupAction_Click(object sender, EventArgs e)
+        {
+            _matcher.Delete();
         }
     }
 }

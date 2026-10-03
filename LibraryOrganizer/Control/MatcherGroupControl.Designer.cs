@@ -31,15 +31,17 @@ namespace LibraryOrganizer.Control
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label matchLabel2;
             this.matchOperation = new System.Windows.Forms.ComboBox();
+            this.groupMatcherViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.actionsButton = new System.Windows.Forms.Button();
             this.matcherGroupActions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addGroupAction = new System.Windows.Forms.ToolStripMenuItem();
+            this.addMatcherAction = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteGroupAction = new System.Windows.Forms.ToolStripMenuItem();
             this.matchLabel = new System.Windows.Forms.Label();
             this.matchersPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.configPanel = new System.Windows.Forms.Panel();
-            this.addMatcherAction = new System.Windows.Forms.ToolStripMenuItem();
             matchLabel2 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).BeginInit();
             this.matcherGroupActions.SuspendLayout();
             this.configPanel.SuspendLayout();
             this.SuspendLayout();
@@ -55,6 +57,7 @@ namespace LibraryOrganizer.Control
             // 
             // matchOperation
             // 
+            this.matchOperation.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.groupMatcherViewModelBindingSource, "Mode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.matchOperation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.matchOperation.FormattingEnabled = true;
             this.matchOperation.Items.AddRange(new object[] {
@@ -64,6 +67,10 @@ namespace LibraryOrganizer.Control
             this.matchOperation.Name = "matchOperation";
             this.matchOperation.Size = new System.Drawing.Size(63, 24);
             this.matchOperation.TabIndex = 1;
+            // 
+            // groupMatcherViewModelBindingSource
+            // 
+            this.groupMatcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.GroupMatcherViewModel);
             // 
             // actionsButton
             // 
@@ -85,20 +92,28 @@ namespace LibraryOrganizer.Control
             this.addMatcherAction,
             this.deleteGroupAction});
             this.matcherGroupActions.Name = "contextMenuStrip1";
-            this.matcherGroupActions.Size = new System.Drawing.Size(211, 104);
+            this.matcherGroupActions.Size = new System.Drawing.Size(152, 76);
             // 
             // addGroupAction
             // 
             this.addGroupAction.Name = "addGroupAction";
-            this.addGroupAction.Size = new System.Drawing.Size(210, 24);
+            this.addGroupAction.Size = new System.Drawing.Size(151, 24);
             this.addGroupAction.Text = "Add Group";
             this.addGroupAction.Click += new System.EventHandler(this.addGroupAction_Click);
+            // 
+            // addMatcherAction
+            // 
+            this.addMatcherAction.Name = "addMatcherAction";
+            this.addMatcherAction.Size = new System.Drawing.Size(151, 24);
+            this.addMatcherAction.Text = "Add Rule";
+            this.addMatcherAction.Click += new System.EventHandler(this.addMatcherAction_Click);
             // 
             // deleteGroupAction
             // 
             this.deleteGroupAction.Name = "deleteGroupAction";
-            this.deleteGroupAction.Size = new System.Drawing.Size(210, 24);
+            this.deleteGroupAction.Size = new System.Drawing.Size(151, 24);
             this.deleteGroupAction.Text = "Delete";
+            this.deleteGroupAction.Click += new System.EventHandler(this.deleteGroupAction_Click);
             // 
             // matchLabel
             // 
@@ -138,13 +153,6 @@ namespace LibraryOrganizer.Control
             this.configPanel.Size = new System.Drawing.Size(300, 30);
             this.configPanel.TabIndex = 4;
             // 
-            // addMatcherAction
-            // 
-            this.addMatcherAction.Name = "addMatcherAction";
-            this.addMatcherAction.Size = new System.Drawing.Size(210, 24);
-            this.addMatcherAction.Text = "Add Rule";
-            this.addMatcherAction.Click += new System.EventHandler(this.addMatcherAction_Click);
-            // 
             // MatcherGroupControl
             // 
             this.Controls.Add(this.matchersPanel);
@@ -153,6 +161,7 @@ namespace LibraryOrganizer.Control
             this.MinimumSize = new System.Drawing.Size(300, 0);
             this.Name = "MatcherGroupControl";
             this.Size = new System.Drawing.Size(300, 30);
+            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).EndInit();
             this.matcherGroupActions.ResumeLayout(false);
             this.configPanel.ResumeLayout(false);
             this.configPanel.PerformLayout();
@@ -171,5 +180,6 @@ namespace LibraryOrganizer.Control
         private System.Windows.Forms.FlowLayoutPanel matchersPanel;
         private System.Windows.Forms.Panel configPanel;
         private System.Windows.Forms.ToolStripMenuItem addMatcherAction;
+        private System.Windows.Forms.BindingSource groupMatcherViewModelBindingSource;
     }
 }
