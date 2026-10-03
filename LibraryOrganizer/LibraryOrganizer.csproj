@@ -31,6 +31,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ComicRack.Engine">
+      <HintPath>C:\Program Files\ComicRack Community Edition\ComicRack.Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ComicRack.Plugins">
+      <HintPath>C:\Program Files\ComicRack Community Edition\ComicRack.Plugins.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -44,6 +51,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="ComicBookField\ComicBookField.cs" />
+    <Compile Include="ComicBookField\ComicBookFieldBase.cs" />
+    <Compile Include="ComicBookField\ComicBookIntField.cs" />
+    <Compile Include="ComicBookField\ComicBookStringField.cs" />
+    <Compile Include="ComicBookField\ComicBookYesNoField.cs" />
+    <Compile Include="ComicBookField\IComicBookField.cs" />
+    <Compile Include="ComicBookField\IComicBookIntField.cs" />
+    <Compile Include="ComicBookField\IComicBookStringField.cs" />
+    <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
+    <Compile Include="Control\MatcherGroupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Control\MatcherGroupControl.Designer.cs">
+      <DependentUpon>MatcherGroupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Control\MatcherGroupControlUtils.cs" />
+    <Compile Include="Control\MatcherRuleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Control\MatcherRuleControl.Designer.cs">
+      <DependentUpon>MatcherRuleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Control\ProfileMatcherGroupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Control\ProfileMatcherGroupControl.Designer.cs">
+      <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\EmptyFieldReplacement.cs" />
     <Compile Include="Data\FailedEmptyField.cs" />
     <Compile Include="Data\IllegalCharacterReplacement.cs" />
@@ -62,17 +97,43 @@
     <Compile Include="Dialog\ConfigureForm.Designer.cs">
       <DependentUpon>ConfigureForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Matcher\GroupMatcherMode.cs" />
+    <Compile Include="Matcher\IBookFieldIntMatcher.cs" />
+    <Compile Include="Matcher\NumberMatcherMode.cs" />
+    <Compile Include="Matcher\IBookFieldStringMatcher.cs" />
+    <Compile Include="Matcher\StringMatcherMode.cs" />
+    <Compile Include="Matcher\IBookFieldYesNoMatcher.cs" />
+    <Compile Include="Matcher\IGroupMatcher.cs" />
+    <Compile Include="Matcher\IMatcher.cs" />
+    <Compile Include="Matcher\IBookFieldMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\BookFieldMatcherViewModel.cs" />
+    <Compile Include="ViewModel\BookFieldIntMatcherViewModel.cs" />
+    <Compile Include="ViewModel\BookFieldStringMatcherViewModel.cs" />
+    <Compile Include="ViewModel\BookFieldYesNoMatcherViewModel.cs" />
     <Compile Include="ViewModel\ConfigFormViewModel.cs" />
+    <Compile Include="ViewModel\IBookFieldMatcherViewModel.cs" />
+    <Compile Include="ViewModel\IGroupMatcherViewModel.cs" />
+    <Compile Include="ViewModel\IMatcherViewModel.cs" />
+    <Compile Include="ViewModel\GroupMatcherViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Control\MatcherGroupControl.resx">
+      <DependentUpon>MatcherGroupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\MatcherRuleControl.resx">
+      <DependentUpon>MatcherRuleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\ProfileMatcherGroupControl.resx">
+      <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddIllegalCharacterDialog.resx">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -84,7 +145,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
