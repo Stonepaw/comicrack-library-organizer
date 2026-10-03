@@ -30,10 +30,37 @@ clr.AddReference("System.Windows.Forms")
 
 from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, Button, Panel, Label, AutoSizeMode, NumericUpDown, CheckBox, ComboBox, ComboBoxStyle, BorderStyle, BindingSource
                                  
-from System.Drawing import Size, Point, ContentAlignment
+from System.Drawing import Size, SizeF, Point, ContentAlignment, Graphics
 
 from locommon import ExcludeGroup, ExcludeRule
 
+
+
+_dpi_scale = None
+
+def get_dpi_scale():
+    """Returns the screen DPI relative to the 96 DPI the controls are laid out for, e.g. 1.25 at 125% scaling."""
+    global _dpi_scale
+    if _dpi_scale is None:
+        g = Graphics.FromHwnd(System.IntPtr.Zero)
+        try:
+            _dpi_scale = g.DpiX / 96.0
+        finally:
+            g.Dispose()
+    return _dpi_scale
+
+
+def scale_for_dpi(control):
+    """Scales a control and its children, which must not have been scaled yet, from 96 DPI to the screen DPI."""
+    scale = get_dpi_scale()
+    if scale != 1.0:
+        control.Scale(SizeF(scale, scale))
+
+
+def fit_rule_controls(container, width):
+    """Fits the rule and group controls in a container to the given inner width."""
+    for control in container.Controls:
+        control.fit_width(width - control.Margin.Horizontal)
 
 
 class InsertControl(FlowLayoutPanel):
@@ -702,6 +729,10 @@ class MetadataExcludeGroupControl(Panel):
         self.Size = Size(451, 70)
         self.MinimumSize = Size(451, 70)
         self.AutoSize = True
+        self.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        #Rules added while loading are scaled with the whole group by whoever adds the group
+        self._scale_new_rules = False
+        self._rules_width = None
 
         #Labels
         self._label1 = Label()
@@ -715,6 +746,8 @@ class MetadataExcludeGroupControl(Panel):
         self._label2.Text = "of the following rules"
         self._label2.Size = Size(120, 20)
         self._label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        #Sized to its text, so nested groups need less width
+        self._label2.AutoSize = True
 
         #Operator combobox
         self._operator = ComboBox()
@@ -752,6 +785,7 @@ class MetadataExcludeGroupControl(Panel):
         self._rules_container.Size = Size(458, 30)
         self._rules_container.MinimumSize = Size(458, 30)
         self._rules_container.AutoSize = True
+        self._rules_container.AutoSizeMode = AutoSizeMode.GrowAndShrink
         self._rules_container.Location = Point(15, 32)
         self._rules_container.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         
@@ -775,19 +809,55 @@ class MetadataExcludeGroupControl(Panel):
         else:
             self.add_rule(None, None, None)
 
+        self._scale_new_rules = True
+
 
     def add_rule(self, sender, e, rule=None):
         """Adds a new metadata exclude rule control to this group"""
         rule = MetadataExcludeRuleControl(self.remove_rule, rule)
-
-        self._rules_container.Controls.Add(rule)
+        self.add_control(rule)
 
 
     def add_group(self, sender, e, rule_group=None):
         """Adds a new metadata exclude group control to this group"""
         group = MetadataExcludeGroupControl(self.remove_rule, rule_group)
+        self.add_control(group)
 
-        self._rules_container.Controls.Add(group)
+
+    def add_control(self, control):
+        if self._scale_new_rules:
+            scale_for_dpi(control)
+        if self._rules_width is not None:
+            control.fit_width(self._rules_width - control.Margin.Horizontal)
+        self._rules_container.Controls.Add(control)
+
+
+    def fit_width(self, width):
+        """Stretches the group to the width, keeping the buttons on the right and fitting the rules inside."""
+        gap = int(round(6 * get_dpi_scale()))
+        header_width = self._label2.Right + gap + self._add_group.Width + gap + self._add_rule.Width + gap + self._remove.Width + gap
+        rules_width = width - self._rules_container.Left - gap
+        rules_width = max(rules_width, max([c.min_width() + c.Margin.Horizontal for c in self._rules_container.Controls] + [0]) + self._rules_container.Padding.Horizontal)
+        width = max(width, header_width, self._rules_container.Left + rules_width + gap)
+
+        self._remove.Left = width - gap - self._remove.Width
+        self._add_rule.Left = self._remove.Left - gap - self._add_rule.Width
+        self._add_group.Left = self._add_rule.Left - gap - self._add_group.Width
+
+        self._rules_width = rules_width - self._rules_container.Padding.Horizontal
+        self._rules_container.MinimumSize = Size(rules_width, self._rules_container.MinimumSize.Height)
+        fit_rule_controls(self._rules_container, self._rules_width)
+        self._rules_container.Width = rules_width
+        self.MinimumSize = Size(width, self.MinimumSize.Height)
+        self.Width = width
+
+
+    def min_width(self):
+        """The narrowest this group can be laid out."""
+        gap = int(round(6 * get_dpi_scale()))
+        header_width = self._label2.Right + gap + self._add_group.Width + gap + self._add_rule.Width + gap + self._remove.Width + gap
+        rules = max([c.min_width() + c.Margin.Horizontal for c in self._rules_container.Controls] + [0]) + self._rules_container.Padding.Horizontal
+        return max(header_width, self._rules_container.Left + rules + gap)
 
 
     def remove_rule(self, sender, e):
@@ -816,6 +886,7 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         
         #Flow Layout Panel
         self.Size = Size(451, 30)
+        self.WrapContents = False
         
         #Field selector
         self._field = ComboBox()
@@ -876,6 +947,34 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         self.Controls.Add(self._value_combobox)
         self.Controls.Add(self._remove)
         
+
+    def _fixed_width(self):
+        """The width of everything in the rule except the value box."""
+        width = self.Padding.Horizontal
+        for control in (self._field, self._operator, self._remove):
+            width += control.Width + control.Margin.Horizontal
+        return width + self._value_textbox.Margin.Horizontal
+
+
+    def min_width(self):
+        #Measured with the field at its base width, since fit_width may have widened it
+        field_width = getattr(self, "_field_base_width", self._field.Width)
+        return self._fixed_width() - self._field.Width + field_width + int(round(80 * get_dpi_scale()))
+
+
+    def fit_width(self, width):
+        """Stretches the rule to the width. A quarter of the extra width goes to the field, up to 60 pixels, and the rest to the value box."""
+        scale = get_dpi_scale()
+        if not hasattr(self, "_field_base_width"):
+            self._field_base_width = self._field.Width
+        self._field.Width = self._field_base_width
+        extra = max(width - self.min_width(), 0)
+        self._field.Width = self._field_base_width + min(extra // 4, int(round(60 * scale)))
+        value_width = max(width - self._fixed_width(), int(round(80 * scale)))
+        self._value_textbox.Width = value_width
+        self._value_combobox.Width = value_width
+        self.Width = self._fixed_width() + value_width
+
 
     def set_fields(self, rule):
 
