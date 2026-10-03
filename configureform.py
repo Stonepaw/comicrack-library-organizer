@@ -124,6 +124,53 @@ class ConfigureForm(Form):
 
         self.adjust_combo_box_drop_down_width(self._profile_selector.ComboBox)
 
+        self.make_resizable()
+
+
+    @property
+    def CreateParams(self):
+        """Paints the form and all its controls in one pass (WS_EX_COMPOSITED), which stops the flicker when pages are switched or the form is resized."""
+        params = super(ConfigureForm, self).CreateParams
+        params.ExStyle |= 0x02000000
+        return params
+
+
+    def make_resizable(self):
+        """Lets the form be resized, with the pages growing with it, between its opening size and twice that."""
+        self.AutoSize = False
+        fill = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+        for page in (self._overview_page, self._files_page, self._folders_page, self._options_page, self._rules_page):
+            page.Anchor = fill
+        self._okay.Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+        self._cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+        #The overview page isn't a layout panel, so stretch its wide controls with it
+        self._mode_groupbox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+        self._base_folder_path.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+        self._browse_button.Anchor = AnchorStyles.Top | AnchorStyles.Right
+        #The size limits are set once the form has been scaled for the screen DPI
+        self.Load += self.set_size_limits
+
+
+    def set_size_limits(self, sender, e):
+        #A little wider than designed, so rules nested three groups deep fit the rules list without scrolling sideways
+        self.Width += int(round(21 * get_dpi_scale()))
+        self.MinimumSize = self.Size
+        self.MaximumSize = Size(self.Width * 2, self.Height * 2)
+        #The simulate description is placed for 96 DPI text and overlaps the radio button when the text is larger
+        self._label_simulate.Top = max(self._label_simulate.Top, self._mode_simulate.Bottom)
+        overflow = self._label_simulate.Bottom + self._label_simulate.Margin.Bottom - self._mode_groupbox.DisplayRectangle.Bottom
+        if overflow > 0:
+            self._mode_groupbox.Height += overflow
+
+
+    def use_page_colors(self, control):
+        """Draws tab pages white like the other pages, instead of the visual style's near-white."""
+        if type(control) is TabPage:
+            control.UseVisualStyleBackColor = False
+            control.BackColor = SystemColors.ControlLightLight
+        for child in control.Controls:
+            self.use_page_colors(child)
+
 
     def initialize_component(self):
         self._toolstrip = System.Windows.Forms.ToolStrip()
@@ -220,7 +267,7 @@ class ConfigureForm(Form):
         self.Controls.Add(self._cancel)
         self.Controls.Add(self._okay)
         self.Controls.Add(self._toolstrip)
-        self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        self.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         self.StartPosition = FormStartPosition.CenterParent
         self.MaximizeBox = False
         self.MinimizeBox = False
@@ -1187,6 +1234,14 @@ class ConfigureForm(Form):
         self._metadata_rules_container.Name = "metadata_rules_container"
         self._metadata_rules_container.TabIndex = 1
         self._metadata_rules_container.WrapContents = False
+        self._metadata_rules_container.Resize += self.fit_metadata_rules
+        #The rules are always fitted to the width of the list, so it only scrolls vertically.
+        #AutoScroll has to be off while the horizontal scroll bar is disabled.
+        self._metadata_rules_container.AutoScroll = False
+        self._metadata_rules_container.HorizontalScroll.Maximum = 0
+        self._metadata_rules_container.HorizontalScroll.Enabled = False
+        self._metadata_rules_container.HorizontalScroll.Visible = False
+        self._metadata_rules_container.AutoScroll = True
 
         self.load_rules_page_settings()
 
@@ -2406,6 +2461,7 @@ class ConfigureForm(Form):
             return
         
         self.SuspendLayout()
+        created_rules_page = False
 
         #Save the metadata rules when switching away from the rules page. 
         #This caches it so it doesn't have to be rebuit everytime the preview text is updated
@@ -2441,6 +2497,7 @@ class ConfigureForm(Form):
         elif sender.Tag is self._rules_page:
             if self._rules_page.Controls.Count == 0:
                 self.create_rules_page()
+                created_rules_page = True
 
         elif sender.Tag is self._options_page:
             if self._options_page.Controls.Count == 0:
@@ -2452,14 +2509,21 @@ class ConfigureForm(Form):
                 control.Tag.Visible = False
         
         sender.Checked = True
-                
+
+        self.use_page_colors(sender.Tag)
+
         sender.Tag.Visible = True
-        
+
         self.update_template_text()
-        ThemeMe(self)
+        #Only the page needs theming; theming the whole form on every page change makes it flicker
+        ThemeMe(sender.Tag)
 
         self.ResumeLayout()
-        
+
+        #Showing the new rules page lays it out, which scrolls the rules list down again
+        if created_rules_page:
+            self._metadata_rules_container.AutoScrollPosition = System.Drawing.Point(0, 0)
+
 
     #These five methods adjust which controls are visible when a checkbox changes
 
@@ -2661,7 +2725,8 @@ class ConfigureForm(Form):
                 self.create_calculated_insert_controls()
             self._calculated_insert_controls.Controls.Clear()
 
-        ThemeMe(self)
+        self.use_page_colors(self._insert_controls)
+        ThemeMe(self._insert_controls)
         self._insert_controls.ResumeLayout()
 
 
@@ -2749,15 +2814,41 @@ class ConfigureForm(Form):
     def add_metadata_rule(self, sender, e, exclude_rule=None):
         """Creates a new metadata rule and adds it into metadata rules container"""
         rule = MetadataExcludeRuleControl(self.remove_metadata_rule, exclude_rule)
-        self._metadata_rules_container.Controls.Add(rule)
-        self._metadata_rules_container.ScrollControlIntoView(rule)
+        self.add_metadata_rule_control(rule, sender is not None)
 
 
     def add_metadata_rule_group(self, sender, e, exclude_rule_group=None):
         """Creates a new metadata group and adds it into the metadata rules container"""
         group = MetadataExcludeGroupControl(self.remove_metadata_rule, exclude_rule_group)
-        self._metadata_rules_container.Controls.Add(group)
-        self._metadata_rules_container.ScrollControlIntoView(group)
+        self.add_metadata_rule_control(group, sender is not None)
+
+
+    def add_metadata_rule_control(self, control, added_by_user):
+        """Scales a new rule or group control for the screen DPI, fits it to the rules list and adds it"""
+        scale_for_dpi(control)
+        control.fit_width(self.metadata_rules_width() - control.Margin.Horizontal)
+        self._metadata_rules_container.Controls.Add(control)
+        if added_by_user:
+            ThemeMe(control)
+            self._metadata_rules_container.ScrollControlIntoView(control)
+
+
+    def metadata_rules_width(self):
+        """The width available to the rules, leaving room for the vertical scroll bar"""
+        container = self._metadata_rules_container
+        width = container.ClientSize.Width - container.Padding.Horizontal
+        if not container.VerticalScroll.Visible:
+            width -= SystemInformation.VerticalScrollBarWidth
+        return width
+
+
+    def fit_metadata_rules(self, sender, e):
+        container = self._metadata_rules_container
+        container.SuspendLayout()
+        fit_rule_controls(container, self.metadata_rules_width())
+        container.ResumeLayout()
+        #Recalculate the scroll range now, so a range left over from a wider layout doesn't stay
+        container.PerformLayout()
 
 
     def remove_metadata_rule(self, sender, e):
@@ -2868,6 +2959,7 @@ class ConfigureForm(Form):
         self._metadata_rules_mode.SelectedItem = self.profile.ExcludeMode
         self._metadata_rules_operator.SelectedItem = self.profile.ExcludeOperator
 
+        self._metadata_rules_container.SuspendLayout()
         self._metadata_rules_container.Controls.Clear()
 
         for rule in self.profile.ExcludeRules:
@@ -2875,6 +2967,9 @@ class ConfigureForm(Form):
                 self.add_metadata_rule_group(None, None, rule)
             else:
                 self.add_metadata_rule(None, None, rule)
+
+        self._metadata_rules_container.ResumeLayout()
+        self._metadata_rules_container.AutoScrollPosition = System.Drawing.Point(0, 0)
 
         #Listboxes
         self._excluded_folders_list.Items.Clear()
