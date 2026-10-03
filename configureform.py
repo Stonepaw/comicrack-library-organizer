@@ -1604,14 +1604,14 @@ class ConfigureForm(Form):
         self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
-        custom_value_keys = get_custom_value_keys()
+        custom_value_keys = get_custom_value_keys(refresh=True)
         self.Custom = InsertControlFirstLetter()
         self.Custom.SetTemplate("Custom", "Custom")
         self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
         self.Custom.Location = Point(4, 280)
         self.Custom.Tag = self.Custom.Location
         self.Custom.Name = "Custom"
-        self.Custom.SetComboBoxItems(get_custom_value_keys())
+        self.Custom.SetComboBoxItems(custom_value_keys)
         self._text_insert_controls_list['custom'] = self.Custom
         self.Custom.Enabled = True if len(custom_value_keys) > 0 else False
 

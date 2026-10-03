@@ -32,7 +32,7 @@ from System.Windows.Forms import Appearance, Padding, FlowLayoutPanel, TextBox, 
                                  
 from System.Drawing import Size, Point, ContentAlignment
 
-from locommon import ExcludeGroup, ExcludeRule
+from locommon import ExcludeGroup, ExcludeRule, get_custom_value_keys, make_custom_rule_field, get_custom_rule_key
 
 
 
@@ -824,8 +824,10 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
                                                                "Format", "Genre", "Imprint", "Language", "Locations", "Main Character Or Team", "Manga", "Month", "Number",
                                                                "Notes", "Publisher", "Rating", "Read Percentage", "Review", "Series Complete", "Tags", "Teams", 
                                                                "Title", "Scan Information", "Series", "Series Group", "Start Month", "Start Year", "Story Arc", "Volume", "Web", "Year"]))            
+        self._field.Items.AddRange(System.Array[System.String]([make_custom_rule_field(key) for key in get_custom_value_keys()]))
         self._field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._field.Size = Size(121, 21)
+        self._field.DropDownWidth = 200
         self._field.MaxDropDownItems = 15
         self._field.IntegralHeight = False
         self._field.Sorted = True
@@ -878,6 +880,10 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         
 
     def set_fields(self, rule):
+
+        #Keep custom value rules whose key no longer exists in the library instead of falling back to the first field
+        if get_custom_rule_key(rule.field) is not None and not self._field.Items.Contains(rule.field):
+            self._field.Items.Add(rule.field)
 
         self._field.SelectedItem = rule.field
 
