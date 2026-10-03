@@ -16,6 +16,8 @@ namespace LibraryOrganizer.Dialog
         {
             InitializeComponent();
 
+            SuspendLayout();
+
             _profile = new ProfileViewModel(profile);
 
             profileBindingSource.DataSource = _profile;
@@ -28,6 +30,9 @@ namespace LibraryOrganizer.Dialog
             rulesButton.Tag = ConfigFormPage.Rules;
             optionsButton.Tag = ConfigFormPage.Options;
             SetCurrentPage(ConfigFormPage.Overview);
+            ShowPage(ConfigFormPage.Overview);
+
+            ResumeLayout();
         }
 
         private void failOperationOnEmptyValueDestinationFolderBrowse_Click(
@@ -147,70 +152,45 @@ namespace LibraryOrganizer.Dialog
 
         private void ConfigureForm_Load(object sender, EventArgs e)
         {
-            // For whatever reason the bindings don't work when created in the designer so we have to add them here.
-            optionsPage.DataBindings.Add(
-                "Visible",
-                configFormViewModelBindingSource,
-                "OptionsPageEnabled"
-            );
-            optionsPage.DataBindings.Add(
-                "Enabled",
-                configFormViewModelBindingSource,
-                "OptionsPageEnabled"
-            );
-            rulesPage.DataBindings.Add(
-                "Visible",
-                configFormViewModelBindingSource,
-                "RulesPageEnabled"
-            );
-            rulesPage.DataBindings.Add(
-                "Enabled",
-                configFormViewModelBindingSource,
-                "RulesPageEnabled"
-            );
-            folderStructurePage.DataBindings.Add(
-                "Visible",
-                configFormViewModelBindingSource,
-                "FoldersPageEnabled"
-            );
-            folderStructurePage.DataBindings.Add(
-                "Enabled",
-                configFormViewModelBindingSource,
-                "FoldersPageEnabled"
-            );
-            fileStructurePage.DataBindings.Add(
-                "Visible",
-                configFormViewModelBindingSource,
-                "FilesPageEnabled"
-            );
-            fileStructurePage.DataBindings.Add(
-                "Enabled",
-                configFormViewModelBindingSource,
-                "FilesPageEnabled"
-            );
-
-            // ToolStripButton doesn't have bindings, so we just hook them up here.
-            _configFormViewModel.PropertyChanged += (o, args) =>
+            _configFormViewModel.PropertyChanged += (s, a) =>
             {
-                switch (args.PropertyName)
+                if (a.PropertyName != nameof(_configFormViewModel.CurrentPage))
                 {
-                    case nameof(ConfigFormViewModel.FilesPageEnabled):
-                        filesButton.Checked = _configFormViewModel.FilesPageEnabled;
-                        break;
-                    case nameof(ConfigFormViewModel.FoldersPageEnabled):
-                        foldersButton.Checked = _configFormViewModel.FoldersPageEnabled;
-                        break;
-                    case nameof(ConfigFormViewModel.OptionsPageEnabled):
-                        optionsButton.Checked = _configFormViewModel.OptionsPageEnabled;
-                        break;
-                    case nameof(ConfigFormViewModel.RulesPageEnabled):
-                        rulesButton.Checked = _configFormViewModel.RulesPageEnabled;
-                        break;
-                    case nameof(ConfigFormViewModel.OverviewPageEnabled):
-                        overviewButton.Checked = _configFormViewModel.OverviewPageEnabled;
-                        break;
+                    return;
                 }
+
+                ShowPage(_configFormViewModel.CurrentPage);
             };
+        }
+
+        private void ShowPage(ConfigFormPage page)
+        {
+            SuspendLayout();
+
+            SetPageEnabled(optionsPage, optionsButton, page == ConfigFormPage.Options);
+            SetPageEnabled(fileStructurePage, filesButton, page == ConfigFormPage.Files);
+            SetPageEnabled(folderStructurePage, foldersButton, page == ConfigFormPage.Folders);
+            SetPageEnabled(rulesPage, rulesButton, page == ConfigFormPage.Rules);
+
+            ResumeLayout();
+        }
+
+        private static void SetPageEnabled(
+            System.Windows.Forms.Control page,
+            ToolStripButton button,
+            bool enabled
+        )
+        {
+            if (enabled)
+            {
+                page.Show();
+            }
+            else
+            {
+                page.Hide();
+            }
+
+            button.Checked = enabled;
         }
     }
 }

@@ -25,6 +25,12 @@ namespace LibraryOrganizer.ViewModel
 
         public bool OptionsPageEnabled => _currentPage == ConfigFormPage.Options;
 
+        public ConfigFormPage CurrentPage
+        {
+            get => _currentPage;
+            set => SetPage(value);
+        }
+
         public void SetPage(ConfigFormPage page)
         {
             if (_currentPage == page)
@@ -34,6 +40,8 @@ namespace LibraryOrganizer.ViewModel
 
             ConfigFormPage current = _currentPage;
             _currentPage = page;
+
+            NotifyPropertyChanged(nameof(CurrentPage));
 
             NotifyChangedPage(current);
             NotifyChangedPage(page);
