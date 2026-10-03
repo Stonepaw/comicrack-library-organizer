@@ -1,17 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LibraryOrganizer.Control
 {
     public partial class MatcherRuleControl : UserControl
     {
+        public new int Width
+        {
+            get => base.Width;
+            set
+            {
+                Debug.WriteLine($"Setting matcher width to {value}");
+
+                base.Width = value;
+                MaximumSize = new Size(value, int.MaxValue);
+                MinimumSize = new Size(value, 0);
+            }
+        }
+
         public MatcherRuleControl()
         {
             InitializeComponent();

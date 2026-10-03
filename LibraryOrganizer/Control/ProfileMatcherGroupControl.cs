@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using LibraryOrganizer.ViewModel;
@@ -29,7 +30,10 @@ namespace LibraryOrganizer.Control
                 value.Matchers.ListChanged += MatchersOnListChanged;
                 matchersPanel.RebuildMatcherControls(
                     value.Matchers,
-                    matchersPanel.Size.Width - SystemInformation.VerticalScrollBarWidth - 10
+                    matchersPanel.Size.Width
+                        - matchersPanel.Margin.Horizontal
+                        - SystemInformation.VerticalScrollBarWidth
+                        - 10
                 );
             }
         }
@@ -38,15 +42,11 @@ namespace LibraryOrganizer.Control
         {
             InitializeComponent();
 
-            // TODO: Figure out a nicer solution for this
-            matcherGroupActionMenuButton.Location = new Point(
+            matcherGroupActionMenuButton.Left =
                 configPanel.ClientSize.Width
-                    - configPanel.Padding.Left
-                    - matcherGroupActionMenuButton.Width
-                    - SystemInformation.VerticalScrollBarWidth
-                    - 3,
-                3
-            );
+                - matcherGroupActionMenuButton.Width
+                - SystemInformation.VerticalScrollBarWidth
+                - 9;
         }
 
         private void MatchersOnListChanged(object sender, ListChangedEventArgs e)
@@ -55,7 +55,10 @@ namespace LibraryOrganizer.Control
                 e,
                 matchersPanel,
                 Matcher.Matchers,
-                matchersPanel.Size.Width - SystemInformation.VerticalScrollBarWidth - 10
+                matchersPanel.Size.Width
+                    - matchersPanel.Margin.Horizontal
+                    - SystemInformation.VerticalScrollBarWidth
+                    - 10
             );
         }
 
@@ -75,6 +78,45 @@ namespace LibraryOrganizer.Control
                 matcherGroupActionMenuButton,
                 new Point(0, matcherGroupActionMenuButton.Height)
             );
+        }
+
+        private void ProfileMatcherGroupControl_Resize(object sender, System.EventArgs e)
+        {
+            SuspendLayout();
+
+            int panelWidth = Width - Padding.Horizontal - matchersPanel.Margin.Horizontal;
+
+            int matcherControlWidth = panelWidth - SystemInformation.VerticalScrollBarWidth - 10;
+
+            flowLayoutPanel1.SuspendLayout();
+
+            foreach (System.Windows.Forms.Control control in matchersPanel.Controls)
+            {
+                int controlWidth = control.Width;
+
+                if (controlWidth == matcherControlWidth)
+                {
+                    continue;
+                }
+
+                switch (control)
+                {
+                    case MatcherGroupControl groupControl:
+                        groupControl.Width = matcherControlWidth;
+                        break;
+                    case MatcherRuleControl matcherRuleControl:
+                        matcherRuleControl.Width = matcherControlWidth;
+                        break;
+                    default:
+                        control.Width = matcherControlWidth;
+                        control.MinimumSize = new Size(matcherControlWidth, 0);
+                        control.MaximumSize = new Size(matcherControlWidth, int.MaxValue);
+                        break;
+                }
+            }
+
+            flowLayoutPanel1.ResumeLayout();
+            ResumeLayout();
         }
     }
 }

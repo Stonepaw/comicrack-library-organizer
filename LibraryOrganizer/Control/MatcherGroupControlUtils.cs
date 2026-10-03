@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using LibraryOrganizer.ViewModel;
 
@@ -57,25 +58,6 @@ namespace LibraryOrganizer.Control
 
             panel.AutoTabIndex();
             panel.ResumeLayout();
-        }
-
-        public static void MakeAllControlsFullWidth(this Panel panel)
-        {
-            panel.SuspendLayout();
-
-            var width = panel.ClientSize.Width - panel.Padding.Horizontal;
-
-            foreach (System.Windows.Forms.Control control in panel.Controls)
-            {
-                control.Width = width - control.Margin.Horizontal;
-
-                if (control is MatcherGroupControl)
-                {
-                    control.PerformLayout();
-                }
-            }
-
-            panel.ResumeLayout(true);
         }
 
         private static void AddMatcher(
@@ -153,10 +135,14 @@ namespace LibraryOrganizer.Control
                     );
                     groupControl.AutoSize = true;
                     groupControl.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+                    groupControl.Width = width;
+
                     AddMatcherControlToPanel(panel, groupControl, width, index);
                     break;
                 case IBookFieldMatcherViewModel bookFieldMatcherViewModel:
-                    AddMatcherControlToPanel(panel, new MatcherRuleControl(), width, index);
+                    MatcherRuleControl ruleControl = new MatcherRuleControl();
+                    ruleControl.Width = width;
+                    AddMatcherControlToPanel(panel, ruleControl, width, index);
                     break;
             }
         }
@@ -168,13 +154,18 @@ namespace LibraryOrganizer.Control
             int index
         )
         {
+            control.SuspendLayout();
             control.Width = width;
+            control.MinimumSize = new Size(width, 0);
+            control.MaximumSize = new Size(width, int.MaxValue);
             panel.Controls.Add(control);
 
             if (index >= 0)
             {
                 panel.Controls.SetChildIndex(control, index);
             }
+
+            control.ResumeLayout();
         }
 
         private static void AutoTabIndex(this Panel panel)

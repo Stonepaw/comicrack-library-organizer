@@ -38,16 +38,16 @@ namespace LibraryOrganizer.Control
             this.matcherMode = new System.Windows.Forms.ComboBox();
             this.matchersPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.configPanel = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.matcherGroupActionMenuButton = new System.Windows.Forms.Button();
             this.matcherGroupActionMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addGroup = new System.Windows.Forms.ToolStripMenuItem();
             this.addMatcher = new System.Windows.Forms.ToolStripMenuItem();
-            this.matcherGroupActionMenuButton = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             matcherConfigLabel1 = new System.Windows.Forms.Label();
             matcherConfigLabel2 = new System.Windows.Forms.Label();
             this.configPanel.SuspendLayout();
-            this.matcherGroupActionMenu.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.matcherGroupActionMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // matcherConfigLabel1
@@ -119,6 +119,32 @@ namespace LibraryOrganizer.Control
             this.configPanel.Size = new System.Drawing.Size(700, 38);
             this.configPanel.TabIndex = 6;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel1.Controls.Add(this.matcherNegation);
+            this.flowLayoutPanel1.Controls.Add(matcherConfigLabel1);
+            this.flowLayoutPanel1.Controls.Add(this.matcherMode);
+            this.flowLayoutPanel1.Controls.Add(matcherConfigLabel2);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(457, 32);
+            this.flowLayoutPanel1.TabIndex = 7;
+            // 
+            // matcherGroupActionMenuButton
+            // 
+            this.matcherGroupActionMenuButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.matcherGroupActionMenuButton.AutoSize = true;
+            this.matcherGroupActionMenuButton.Location = new System.Drawing.Point(655, 5);
+            this.matcherGroupActionMenuButton.Margin = new System.Windows.Forms.Padding(0);
+            this.matcherGroupActionMenuButton.Name = "matcherGroupActionMenuButton";
+            this.matcherGroupActionMenuButton.Size = new System.Drawing.Size(25, 26);
+            this.matcherGroupActionMenuButton.TabIndex = 6;
+            this.matcherGroupActionMenuButton.Text = "▼";
+            this.matcherGroupActionMenuButton.UseVisualStyleBackColor = true;
+            this.matcherGroupActionMenuButton.Click += new System.EventHandler(this.matcherGroupActionMenuButton_Click);
+            // 
             // matcherGroupActionMenu
             // 
             this.matcherGroupActionMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -142,32 +168,6 @@ namespace LibraryOrganizer.Control
             this.addMatcher.Text = "Add Rule";
             this.addMatcher.Click += new System.EventHandler(this.addRule_Click);
             // 
-            // matcherGroupActionMenuButton
-            // 
-            this.matcherGroupActionMenuButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.matcherGroupActionMenuButton.AutoSize = true;
-            this.matcherGroupActionMenuButton.Location = new System.Drawing.Point(655, 5);
-            this.matcherGroupActionMenuButton.Margin = new System.Windows.Forms.Padding(0);
-            this.matcherGroupActionMenuButton.Name = "matcherGroupActionMenuButton";
-            this.matcherGroupActionMenuButton.Size = new System.Drawing.Size(25, 26);
-            this.matcherGroupActionMenuButton.TabIndex = 6;
-            this.matcherGroupActionMenuButton.Text = "▼";
-            this.matcherGroupActionMenuButton.UseVisualStyleBackColor = true;
-            this.matcherGroupActionMenuButton.Click += new System.EventHandler(this.matcherGroupActionMenuButton_Click);
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flowLayoutPanel1.Controls.Add(this.matcherNegation);
-            this.flowLayoutPanel1.Controls.Add(matcherConfigLabel1);
-            this.flowLayoutPanel1.Controls.Add(this.matcherMode);
-            this.flowLayoutPanel1.Controls.Add(matcherConfigLabel2);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(457, 32);
-            this.flowLayoutPanel1.TabIndex = 7;
-            // 
             // ProfileMatcherGroupControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -176,11 +176,12 @@ namespace LibraryOrganizer.Control
             this.Controls.Add(this.configPanel);
             this.Name = "ProfileMatcherGroupControl";
             this.Size = new System.Drawing.Size(700, 125);
+            this.Resize += new System.EventHandler(this.ProfileMatcherGroupControl_Resize);
             this.configPanel.ResumeLayout(false);
             this.configPanel.PerformLayout();
-            this.matcherGroupActionMenu.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.matcherGroupActionMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

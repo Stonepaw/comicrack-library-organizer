@@ -192,5 +192,15 @@ namespace LibraryOrganizer.Dialog
 
             button.Checked = enabled;
         }
+
+        private void ConfigureForm_ResizeBegin(object sender, EventArgs e)
+        {
+            SuspendLayout();
+        }
+
+        private void ConfigureForm_ResizeEnd(object sender, EventArgs e)
+        {
+            ResumeLayout();
+        }
     }
 }
