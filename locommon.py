@@ -648,13 +648,19 @@ def check_excluded_folders(book_path, profile):
 
 _custom_value_keys = None
 
-def get_custom_value_keys(refresh=False):
+def clear_custom_value_keys():
+    """Clears the cached custom value keys, so the next get_custom_value_keys scans the library again."""
+    global _custom_value_keys
+    _custom_value_keys = None
+
+
+def get_custom_value_keys():
     """Retrieves a list of all the custom value keys in the library.
 
-    Scanning the library is slow on large libraries, so the result is cached until refresh is True.
+    Scanning the library is slow on large libraries, so the result is cached until clear_custom_value_keys is called.
     """
     global _custom_value_keys
-    if _custom_value_keys is None or refresh:
+    if _custom_value_keys is None:
         keys = []
         for book in ComicRack.App.GetLibraryBooks():
             for pair in book.GetCustomValues():

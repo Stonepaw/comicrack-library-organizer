@@ -43,7 +43,7 @@ from locommon import Mode, ExcludeGroup, ExcludeRule, field_to_name, name_to_fie
 
 from loforms import NewIllegalCharacterDialog, GetProfileNameDialog
 
-from locommon import SCRIPTDIRECTORY, ICON, check_excluded_folders, check_metadata_rules, get_custom_value_keys
+from locommon import SCRIPTDIRECTORY, ICON, check_excluded_folders, check_metadata_rules, get_custom_value_keys, clear_custom_value_keys
 
 from locommon import ThemeMe, get_toolstrip_renderer
 
@@ -68,6 +68,8 @@ class ConfigureForm(Form):
 
     def __init__(self, profiles, last_used_profile, books):
         print "Starting to load controls"
+        #Custom value keys may have changed since the form was last open. They are scanned once, when first needed.
+        clear_custom_value_keys()
         self._insert_controls_dict = {}
         self._text_insert_controls_list = {}
         self._number_insert_controls_list = {}
@@ -1604,7 +1606,7 @@ class ConfigureForm(Form):
         self.Title.TabIndex = 11
         self._text_insert_controls_list["title"] = self.Title
 
-        custom_value_keys = get_custom_value_keys(refresh=True)
+        custom_value_keys = get_custom_value_keys()
         self.Custom = InsertControlFirstLetter()
         self.Custom.SetTemplate("Custom", "Custom")
         self.Custom.SetLabels("Prefix", "", "Suffix", "Custom Value")
