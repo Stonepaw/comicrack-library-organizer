@@ -898,7 +898,7 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         if sender.SelectedItem in ("Series Complete", "Black And White"):
             self.set_operator_and_value_items(["is", "is not"], ["Yes", "No", "Unknown"])
 
-        elif sender.SelectedItem is "Manga":
+        elif sender.SelectedItem == "Manga":
             self.set_operator_and_value_items(["is", "is not"], ["Yes", "Yes (Right to Left)", "No", "Unknown"])
 
         else:
