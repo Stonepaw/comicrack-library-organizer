@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using LibraryOrganizer.ComicBookField;
 using LibraryOrganizer.Matcher;
@@ -41,25 +41,12 @@ namespace LibraryOrganizer.ViewModel
 
         public void AddBookFieldMatcher()
         {
-            Matchers.Add(
-                new BookFieldStringMatcherViewModel(this, ComicBookField.ComicBookField.Series)
-            );
+            Matchers.Add(new MatcherViewModel(this));
         }
 
         public void AddBookFieldMatcher(IBookFieldMatcher matcher)
         {
-            switch (matcher)
-            {
-                case IBookFieldIntMatcher bookFieldIntMatcher:
-                    Matchers.Add(new BookFieldIntMatcherViewModel(this, bookFieldIntMatcher));
-                    break;
-                case IBookFieldStringMatcher bookFieldMatcher:
-                    Matchers.Add(new BookFieldStringMatcherViewModel(this, bookFieldMatcher));
-                    break;
-                case IBookFieldYesNoMatcher bookFieldYesNoMatcher:
-                    Matchers.Add(new BookFieldYesNoMatcherViewModel(this, bookFieldYesNoMatcher));
-                    break;
-            }
+            Matchers.Add(new MatcherViewModel(this));
         }
 
         public void AddGroup()

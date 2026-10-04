@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import
-    Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-    Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"
-  />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -62,7 +59,6 @@
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
-    <Compile Include="Controls\MatcherControl.cs" />
     <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -70,17 +66,23 @@
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\MatcherGroupControlUtils.cs" />
-    <Compile Include="Controls\StringMatcherControl.cs">
+    <Compile Include="Controls\MatcherControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\StringMatcherControl.Designer.cs">
-      <DependentUpon>StringMatcherControl.cs</DependentUpon>
+    <Compile Include="Controls\MatcherControl.Designer.cs">
+      <DependentUpon>MatcherControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ProfileMatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ProfileMatcherGroupControl.Designer.cs">
       <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StringMatcherValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StringMatcherValueControl.Designer.cs">
+      <DependentUpon>StringMatcherValueControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\EmptyFieldReplacement.cs" />
     <Compile Include="Data\FailedEmptyField.cs" />
@@ -122,20 +124,28 @@
     <Compile Include="ViewModel\ConfigFormViewModel.cs" />
     <Compile Include="ViewModel\IBookFieldMatcherViewModel.cs" />
     <Compile Include="ViewModel\IGroupMatcherViewModel.cs" />
+    <Compile Include="ViewModel\IMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\IMatcherViewModel.cs" />
     <Compile Include="ViewModel\GroupMatcherViewModel.cs" />
+    <Compile Include="ViewModel\NumberMatcherValueViewModel.cs" />
+    <Compile Include="ViewModel\MatcherViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
+    <Compile Include="ViewModel\StringMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\YesNoMatcherValueViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\StringMatcherControl.resx">
-      <DependentUpon>StringMatcherControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MatcherControl.resx">
+      <DependentUpon>MatcherControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ProfileMatcherGroupControl.resx">
       <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StringMatcherValueControl.resx">
+      <DependentUpon>StringMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddIllegalCharacterDialog.resx">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
@@ -152,7 +162,10 @@
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldStringMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.GroupMatcherViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.MatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

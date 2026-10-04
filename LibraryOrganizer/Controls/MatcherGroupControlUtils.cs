@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using LibraryOrganizer.ViewModel;
@@ -121,12 +122,12 @@ namespace LibraryOrganizer.Controls
 
         private static void AddMatcherControl(
             this Panel panel,
-            IMatcherViewModel matcherViewModel,
+            IMatcherViewModel iMatcherViewModel,
             int width,
             int index = -1
         )
         {
-            switch (matcherViewModel)
+            switch (iMatcherViewModel)
             {
                 case IGroupMatcherViewModel groupMatcherViewModel:
                     MatcherGroupControl groupControl = new MatcherGroupControl(
@@ -138,12 +139,10 @@ namespace LibraryOrganizer.Controls
 
                     AddMatcherControlToPanel(panel, groupControl, width, index);
                     break;
-                case BookFieldStringMatcherViewModel bookFieldStringMatcherViewModel:
-                    StringMatcherControl ruleControl = new StringMatcherControl(
-                        bookFieldStringMatcherViewModel
-                    );
-                    ruleControl.Width = width;
-                    AddMatcherControlToPanel(panel, ruleControl, width, index);
+                case MatcherViewModel matcherViewModel:
+                    MatcherControl stringMatcherControl = new MatcherControl(matcherViewModel);
+                    stringMatcherControl.Width = width;
+                    AddMatcherControlToPanel(panel, stringMatcherControl, width, index);
                     break;
             }
         }
