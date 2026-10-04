@@ -31,7 +31,6 @@ namespace LibraryOrganizer.Controls
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label matchLabel2;
             this.matchOperation = new System.Windows.Forms.ComboBox();
-            this.groupMatcherViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.actionsButton = new System.Windows.Forms.Button();
             this.matcherGroupActions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addGroupAction = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,10 +39,11 @@ namespace LibraryOrganizer.Controls
             this.matchLabel = new System.Windows.Forms.Label();
             this.matchersPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.configPanel = new System.Windows.Forms.Panel();
+            this.groupMatcherViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             matchLabel2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).BeginInit();
             this.matcherGroupActions.SuspendLayout();
             this.configPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // matchLabel2
@@ -68,17 +68,13 @@ namespace LibraryOrganizer.Controls
             this.matchOperation.Size = new System.Drawing.Size(63, 24);
             this.matchOperation.TabIndex = 1;
             // 
-            // groupMatcherViewModelBindingSource
-            // 
-            this.groupMatcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.GroupMatcherViewModel);
-            // 
             // actionsButton
             // 
             this.actionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.actionsButton.AutoSize = true;
-            this.actionsButton.Location = new System.Drawing.Point(272, 1);
+            this.actionsButton.Location = new System.Drawing.Point(274, 1);
+            this.actionsButton.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.actionsButton.Name = "actionsButton";
-            this.actionsButton.Size = new System.Drawing.Size(25, 26);
+            this.actionsButton.Size = new System.Drawing.Size(26, 26);
             this.actionsButton.TabIndex = 2;
             this.actionsButton.Text = "▼";
             this.actionsButton.UseVisualStyleBackColor = true;
@@ -131,7 +127,7 @@ namespace LibraryOrganizer.Controls
             this.matchersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.matchersPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.matchersPanel.Location = new System.Drawing.Point(0, 30);
-            this.matchersPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.matchersPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
             this.matchersPanel.MinimumSize = new System.Drawing.Size(200, 0);
             this.matchersPanel.Name = "matchersPanel";
             this.matchersPanel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
@@ -153,6 +149,10 @@ namespace LibraryOrganizer.Controls
             this.configPanel.Size = new System.Drawing.Size(300, 30);
             this.configPanel.TabIndex = 4;
             // 
+            // groupMatcherViewModelBindingSource
+            // 
+            this.groupMatcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.GroupMatcherViewModel);
+            // 
             // MatcherGroupControl
             // 
             this.Controls.Add(this.matchersPanel);
@@ -161,10 +161,10 @@ namespace LibraryOrganizer.Controls
             this.MinimumSize = new System.Drawing.Size(300, 0);
             this.Name = "MatcherGroupControl";
             this.Size = new System.Drawing.Size(300, 30);
-            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).EndInit();
             this.matcherGroupActions.ResumeLayout(false);
             this.configPanel.ResumeLayout(false);
             this.configPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.groupMatcherViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

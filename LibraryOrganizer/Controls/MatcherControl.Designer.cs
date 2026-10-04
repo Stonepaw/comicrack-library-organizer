@@ -136,9 +136,9 @@ namespace LibraryOrganizer.Controls
             this.Controls.Add(this.matcherValuePanel);
             this.Controls.Add(this.field);
             this.Controls.Add(this.actionsButton);
-            this.Margin = new System.Windows.Forms.Padding(0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.Name = "MatcherControl";
-            this.Size = new System.Drawing.Size(1005, 30);
+            this.Size = new System.Drawing.Size(1005, 29);
             ((System.ComponentModel.ISupportInitialize)(this.matcherViewModelBindingSource)).EndInit();
             this.matcherGroupActions.ResumeLayout(false);
             this.ResumeLayout(false);

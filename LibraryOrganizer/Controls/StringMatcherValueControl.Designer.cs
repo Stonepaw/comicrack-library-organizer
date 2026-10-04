@@ -30,8 +30,8 @@ namespace LibraryOrganizer.Controls
         {
             this.components = new System.ComponentModel.Container();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.stringMatcherValueViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.stringMatcherValueViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,20 +46,20 @@ namespace LibraryOrganizer.Controls
             this.comboBox1.Size = new System.Drawing.Size(121, 24);
             this.comboBox1.TabIndex = 0;
             // 
+            // stringMatcherValueViewModelBindingSource
+            // 
+            this.stringMatcherValueViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.StringMatcherValueViewModel);
+            // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.stringMatcherValueViewModelBindingSource, "Value", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.stringMatcherValueViewModelBindingSource, "Value", true));
             this.textBox1.Location = new System.Drawing.Point(127, 1);
             this.textBox1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(525, 22);
             this.textBox1.TabIndex = 1;
-            // 
-            // stringMatcherValueViewModelBindingSource
-            // 
-            this.stringMatcherValueViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.StringMatcherValueViewModel);
             // 
             // StringMatcherValueControl
             // 

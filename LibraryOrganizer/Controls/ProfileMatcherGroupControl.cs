@@ -45,7 +45,7 @@ namespace LibraryOrganizer.Controls
                 configPanel.ClientSize.Width
                 - matcherGroupActionMenuButton.Width
                 - SystemInformation.VerticalScrollBarWidth
-                - 9;
+                - 10;
         }
 
         private void MatchersOnListChanged(object sender, ListChangedEventArgs e)

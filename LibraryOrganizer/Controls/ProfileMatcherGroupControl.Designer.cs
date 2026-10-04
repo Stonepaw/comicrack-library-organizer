@@ -102,7 +102,7 @@ namespace LibraryOrganizer.Controls
             this.matchersPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.matchersPanel.Location = new System.Drawing.Point(0, 38);
             this.matchersPanel.Name = "matchersPanel";
-            this.matchersPanel.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.matchersPanel.Padding = new System.Windows.Forms.Padding(6, 0, 10, 0);
             this.matchersPanel.Size = new System.Drawing.Size(700, 87);
             this.matchersPanel.TabIndex = 6;
             this.matchersPanel.WrapContents = false;
@@ -135,11 +135,10 @@ namespace LibraryOrganizer.Controls
             // matcherGroupActionMenuButton
             // 
             this.matcherGroupActionMenuButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.matcherGroupActionMenuButton.AutoSize = true;
             this.matcherGroupActionMenuButton.Location = new System.Drawing.Point(655, 5);
             this.matcherGroupActionMenuButton.Margin = new System.Windows.Forms.Padding(0);
             this.matcherGroupActionMenuButton.Name = "matcherGroupActionMenuButton";
-            this.matcherGroupActionMenuButton.Size = new System.Drawing.Size(25, 26);
+            this.matcherGroupActionMenuButton.Size = new System.Drawing.Size(26, 26);
             this.matcherGroupActionMenuButton.TabIndex = 6;
             this.matcherGroupActionMenuButton.Text = "▼";
             this.matcherGroupActionMenuButton.UseVisualStyleBackColor = true;
