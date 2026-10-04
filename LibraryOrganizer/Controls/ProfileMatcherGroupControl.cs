@@ -1,10 +1,9 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using LibraryOrganizer.ViewModel;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     internal partial class ProfileMatcherGroupControl : UserControl
     {
@@ -90,7 +89,7 @@ namespace LibraryOrganizer.Control
 
             flowLayoutPanel1.SuspendLayout();
 
-            foreach (System.Windows.Forms.Control control in matchersPanel.Controls)
+            foreach (Control control in matchersPanel.Controls)
             {
                 int controlWidth = control.Width;
 

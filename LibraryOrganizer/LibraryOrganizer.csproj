@@ -62,24 +62,24 @@
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
-    <Compile Include="Control\MatcherControl.cs" />
-    <Compile Include="Control\MatcherGroupControl.cs">
+    <Compile Include="Controls\MatcherControl.cs" />
+    <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\MatcherGroupControl.Designer.cs">
+    <Compile Include="Controls\MatcherGroupControl.Designer.cs">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\MatcherGroupControlUtils.cs" />
-    <Compile Include="Control\StringMatcherControl.cs">
+    <Compile Include="Controls\MatcherGroupControlUtils.cs" />
+    <Compile Include="Controls\StringMatcherControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\StringMatcherControl.Designer.cs">
+    <Compile Include="Controls\StringMatcherControl.Designer.cs">
       <DependentUpon>StringMatcherControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\ProfileMatcherGroupControl.cs">
+    <Compile Include="Controls\ProfileMatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\ProfileMatcherGroupControl.Designer.cs">
+    <Compile Include="Controls\ProfileMatcherGroupControl.Designer.cs">
       <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\EmptyFieldReplacement.cs" />
@@ -128,13 +128,13 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Control\MatcherGroupControl.resx">
+    <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Control\StringMatcherControl.resx">
+    <EmbeddedResource Include="Controls\StringMatcherControl.resx">
       <DependentUpon>StringMatcherControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Control\ProfileMatcherGroupControl.resx">
+    <EmbeddedResource Include="Controls\ProfileMatcherGroupControl.resx">
       <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddIllegalCharacterDialog.resx">

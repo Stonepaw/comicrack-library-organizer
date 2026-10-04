@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using LibraryOrganizer.Matcher;
 using LibraryOrganizer.ViewModel;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     internal partial class MatcherGroupControl : UserControl
     {
@@ -29,7 +29,7 @@ namespace LibraryOrganizer.Control
                     - matchersPanel.Margin.Horizontal
                     - matchersPanel.Padding.Horizontal;
 
-                foreach (System.Windows.Forms.Control control in matchersPanel.Controls)
+                foreach (Control control in matchersPanel.Controls)
                 {
                     int newWidth = controlWidth - control.Margin.Horizontal;
 

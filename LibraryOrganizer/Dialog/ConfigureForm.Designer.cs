@@ -1,3 +1,5 @@
+using LibraryOrganizer.Controls;
+
 namespace LibraryOrganizer.Dialog
 {
     partial class ConfigureForm
@@ -44,7 +46,7 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel = new System.Windows.Forms.Panel();
             this.rulesPage = new System.Windows.Forms.TabControl();
             this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
-            this.profileMetadataRulesControl1 = new LibraryOrganizer.Control.ProfileMatcherGroupControl();
+            this.profileMetadataRulesControl1 = new ProfileMatcherGroupControl();
             this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.folderRulesTabPage = new System.Windows.Forms.TabPage();
             this.excludedFoldersList = new System.Windows.Forms.ListView();
@@ -1602,7 +1604,7 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.BindingSource configFormViewModelBindingSource;
         private System.Windows.Forms.Panel panel1;
-        private Control.ProfileMatcherGroupControl profileMetadataRulesControl1;
+        private ProfileMatcherGroupControl profileMetadataRulesControl1;
     }
 }
 

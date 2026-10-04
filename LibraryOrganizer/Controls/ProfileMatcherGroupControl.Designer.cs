@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     partial class ProfileMatcherGroupControl
     {

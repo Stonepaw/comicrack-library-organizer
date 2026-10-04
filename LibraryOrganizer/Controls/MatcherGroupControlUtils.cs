@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using LibraryOrganizer.ViewModel;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     /// <summary>
     /// This handles shared actions for matcher groups to handle changes to the list of matchers.
@@ -99,7 +98,7 @@ namespace LibraryOrganizer.Control
                 return;
             }
 
-            System.Windows.Forms.Control control = panel.Controls[fromIndex];
+            Control control = panel.Controls[fromIndex];
 
             if (control == null)
             {
@@ -151,7 +150,7 @@ namespace LibraryOrganizer.Control
 
         private static void AddMatcherControlToPanel(
             Panel panel,
-            System.Windows.Forms.Control control,
+            Control control,
             int width,
             int index
         )

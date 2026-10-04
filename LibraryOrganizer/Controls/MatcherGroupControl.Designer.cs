@@ -1,4 +1,4 @@
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     partial class MatcherGroupControl
     {

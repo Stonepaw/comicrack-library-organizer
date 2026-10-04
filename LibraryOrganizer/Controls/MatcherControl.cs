@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     internal static class MatcherControl
     {

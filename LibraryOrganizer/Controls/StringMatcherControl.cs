@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using LibraryOrganizer.ComicBookField;
 using LibraryOrganizer.Matcher;
 using LibraryOrganizer.ViewModel;
 
-namespace LibraryOrganizer.Control
+namespace LibraryOrganizer.Controls
 {
     internal partial class StringMatcherControl : UserControl
     {
@@ -37,8 +35,6 @@ namespace LibraryOrganizer.Control
             get => base.Width;
             set
             {
-                Debug.WriteLine($"Setting matcher width to {value}");
-
                 base.Width = value;
                 MaximumSize = new Size(value, int.MaxValue);
                 MinimumSize = new Size(value, 0);
