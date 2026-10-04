@@ -6,7 +6,7 @@ namespace LibraryOrganizer.Controls
 {
     internal partial class MatcherControl : UserControl
     {
-        private readonly MatcherViewModel _viewModel;
+        private readonly BookFieldMatcherViewModel _viewModel;
 
         public new int Width
         {
@@ -22,9 +22,9 @@ namespace LibraryOrganizer.Controls
         }
 
         public MatcherControl()
-            : this(new MatcherViewModel(new GroupMatcherViewModel(null))) { }
+            : this(new BookFieldMatcherViewModel(new GroupMatcherViewModel(null))) { }
 
-        public MatcherControl(MatcherViewModel viewModel)
+        public MatcherControl(BookFieldMatcherViewModel viewModel)
         {
             _viewModel = viewModel;
 
@@ -78,12 +78,12 @@ namespace LibraryOrganizer.Controls
 
         private void UseStringMatcherValueControl(StringMatcherValueViewModel viewModel)
         {
-            if (matcherValuePanel.Controls.Count > 0)
+            if (
+                matcherValuePanel.Controls.Count > 0
+                && matcherValuePanel.Controls[0] is StringMatcherValueControl
+            )
             {
-                if (matcherValuePanel.Controls[0] is StringMatcherValueControl)
-                {
-                    return;
-                }
+                return;
             }
 
             SetValueControl(new StringMatcherValueControl(viewModel));
@@ -91,12 +91,12 @@ namespace LibraryOrganizer.Controls
 
         private void UseYesNoMatcherValueControl(YesNoMatcherValueViewModel viewModel)
         {
-            if (matcherValuePanel.Controls.Count > 0)
+            if (
+                matcherValuePanel.Controls.Count > 0
+                && matcherValuePanel.Controls[0] is YesNoMatcherValueControl
+            )
             {
-                if (matcherValuePanel.Controls[0] is YesNoMatcherValueControl)
-                {
-                    return;
-                }
+                return;
             }
 
             SetValueControl(new YesNoMatcherValueControl(viewModel));
@@ -111,6 +111,16 @@ namespace LibraryOrganizer.Controls
             matcherValuePanel.Controls.Add(control);
             control.ResumeLayout();
             matcherValuePanel.ResumeLayout();
+        }
+
+        private void addGroupAction_Click(object sender, System.EventArgs e)
+        {
+            _viewModel.AddGroupAfter();
+        }
+
+        private void addMatcherAction_Click(object sender, System.EventArgs e)
+        {
+            _viewModel.AddBookFieldMatcherAfter();
         }
     }
 }

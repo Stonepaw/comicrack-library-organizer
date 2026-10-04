@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using cYo.Projects.ComicRack.Engine;
+using LibraryOrganizer.Matcher;
 
 namespace LibraryOrganizer.ViewModel
 {
@@ -21,5 +22,12 @@ namespace LibraryOrganizer.ViewModel
             new KeyValuePair<YesNo, string>(YesNo.No, "is No"),
             new KeyValuePair<YesNo, string>(YesNo.Unknown, "is Unknown"),
         };
+
+        public YesNoMatcherValueViewModel() { }
+
+        public YesNoMatcherValueViewModel(IBookFieldYesNoMatcher matcher)
+        {
+            _value = matcher.Value;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using LibraryOrganizer.ComicBookField;
+using System.ComponentModel;
 using LibraryOrganizer.Matcher;
 
 namespace LibraryOrganizer.ViewModel
@@ -10,15 +9,17 @@ namespace LibraryOrganizer.ViewModel
 
         BindingList<IMatcherViewModel> Matchers { get; }
 
-        void AddGroup();
-
-        void AddGroup(IGroupMatcher groupMatcher);
-
         void AddBookFieldMatcher();
 
         void AddBookFieldMatcher(IBookFieldMatcher matcher);
 
-        void ChangeFieldType(IBookFieldMatcherViewModel matcher, IComicBookField field);
+        void AddBookFieldMatcherAfter(IMatcherViewModel after);
+
+        void AddGroup();
+
+        void AddGroup(IGroupMatcher groupMatcher);
+
+        void AddGroupAfter(IMatcherViewModel after);
 
         void Remove(IMatcherViewModel matcher);
     }

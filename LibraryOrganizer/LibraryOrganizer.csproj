@@ -123,18 +123,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\BookFieldMatcherViewModel.cs" />
-    <Compile Include="ViewModel\BookFieldIntMatcherViewModel.cs" />
-    <Compile Include="ViewModel\BookFieldStringMatcherViewModel.cs" />
-    <Compile Include="ViewModel\BookFieldYesNoMatcherViewModel.cs" />
     <Compile Include="ViewModel\ConfigFormViewModel.cs" />
-    <Compile Include="ViewModel\IBookFieldMatcherViewModel.cs" />
     <Compile Include="ViewModel\IGroupMatcherViewModel.cs" />
     <Compile Include="ViewModel\IMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\IMatcherViewModel.cs" />
     <Compile Include="ViewModel\GroupMatcherViewModel.cs" />
     <Compile Include="ViewModel\NumberMatcherValueViewModel.cs" />
-    <Compile Include="ViewModel\MatcherViewModel.cs" />
+    <Compile Include="ViewModel\BookFieldMatcherViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
     <Compile Include="ViewModel\StringMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -168,10 +163,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldStringMatcherViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.GroupMatcherViewModel.datasource" />
-    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.MatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.YesNoMatcherValueViewModel.datasource" />

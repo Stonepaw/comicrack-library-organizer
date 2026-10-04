@@ -1,4 +1,3 @@
-﻿using System;
 using LibraryOrganizer.Matcher;
 
 namespace LibraryOrganizer.ViewModel
@@ -18,6 +17,14 @@ namespace LibraryOrganizer.ViewModel
         {
             get => _value;
             set => Set(ref _value, value);
+        }
+
+        public NumberMatcherValueViewModel() { }
+
+        public NumberMatcherValueViewModel(IBookFieldIntMatcher bookFieldIntMatcher)
+        {
+            _mode = bookFieldIntMatcher.Mode;
+            _value = bookFieldIntMatcher.Value;
         }
     }
 }

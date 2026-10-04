@@ -55,7 +55,7 @@ namespace LibraryOrganizer.Controls
             // 
             // matcherViewModelBindingSource
             // 
-            this.matcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.MatcherViewModel);
+            this.matcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.BookFieldMatcherViewModel);
             // 
             // matcherGroupActions
             // 
@@ -72,12 +72,14 @@ namespace LibraryOrganizer.Controls
             this.addGroupAction.Name = "addGroupAction";
             this.addGroupAction.Size = new System.Drawing.Size(151, 24);
             this.addGroupAction.Text = "Add Group";
+            this.addGroupAction.Click += new System.EventHandler(this.addGroupAction_Click);
             // 
             // addMatcherAction
             // 
             this.addMatcherAction.Name = "addMatcherAction";
             this.addMatcherAction.Size = new System.Drawing.Size(151, 24);
             this.addMatcherAction.Text = "Add Rule";
+            this.addMatcherAction.Click += new System.EventHandler(this.addMatcherAction_Click);
             // 
             // deleteGroupAction
             // 
@@ -136,7 +138,7 @@ namespace LibraryOrganizer.Controls
             this.Controls.Add(this.actionsButton);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "MatcherControl";
-            this.Size = new System.Drawing.Size(1005, 29);
+            this.Size = new System.Drawing.Size(1005, 30);
             ((System.ComponentModel.ISupportInitialize)(this.matcherViewModelBindingSource)).EndInit();
             this.matcherGroupActions.ResumeLayout(false);
             this.ResumeLayout(false);

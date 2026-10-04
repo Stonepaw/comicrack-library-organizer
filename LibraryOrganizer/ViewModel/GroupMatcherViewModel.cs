@@ -41,44 +41,32 @@ namespace LibraryOrganizer.ViewModel
 
         public void AddBookFieldMatcher()
         {
-            Matchers.Add(new MatcherViewModel(this));
+            AddBookFieldMatcherAt(Matchers.Count, null);
         }
 
         public void AddBookFieldMatcher(IBookFieldMatcher matcher)
         {
-            Matchers.Add(new MatcherViewModel(this));
+            AddBookFieldMatcherAt(Matchers.Count, matcher);
+        }
+
+        public void AddBookFieldMatcherAfter(IMatcherViewModel after)
+        {
+            AddBookFieldMatcherAt(Matchers.IndexOf(after) + 1, null);
         }
 
         public void AddGroup()
         {
-            Matchers.Add(new GroupMatcherViewModel(this));
+            AddGroupAt(Matchers.Count, null);
         }
 
         public void AddGroup(IGroupMatcher groupMatcher)
         {
-            Matchers.Add(new GroupMatcherViewModel(this, groupMatcher));
+            AddGroupAt(Matchers.Count, groupMatcher);
         }
 
-        public void ChangeFieldType(IBookFieldMatcherViewModel matcher, IComicBookField field)
+        public void AddGroupAfter(IMatcherViewModel after)
         {
-            IBookFieldMatcherViewModel replacement;
-
-            switch (field)
-            {
-                case IComicBookIntField intField:
-                    replacement = new BookFieldIntMatcherViewModel(this, intField);
-                    break;
-                case IComicBookStringField stringField:
-                    replacement = new BookFieldStringMatcherViewModel(this, stringField);
-                    break;
-                case IComicBookYesNoField yesNoField:
-                    replacement = new BookFieldYesNoMatcherViewModel(this, yesNoField);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-
-            Matchers[Matchers.IndexOf(matcher)] = replacement;
+            AddGroupAt(Matchers.IndexOf(after) + 1, null);
         }
 
         public void Delete()
@@ -89,6 +77,38 @@ namespace LibraryOrganizer.ViewModel
         public void Remove(IMatcherViewModel matcher)
         {
             Matchers.Remove(matcher);
+        }
+
+        private void AddGroupAt(int index, IGroupMatcher matcher)
+        {
+            AddMatcherAt(
+                index,
+                matcher != null
+                    ? new GroupMatcherViewModel(this, matcher)
+                    : new GroupMatcherViewModel(this)
+            );
+        }
+
+        private void AddBookFieldMatcherAt(int index, IBookFieldMatcher matcher)
+        {
+            AddMatcherAt(
+                index,
+                matcher != null
+                    ? new BookFieldMatcherViewModel(this, matcher)
+                    : new BookFieldMatcherViewModel(this)
+            );
+        }
+
+        private void AddMatcherAt(int index, IMatcherViewModel viewModel)
+        {
+            if (index >= 0 && index < Matchers.Count)
+            {
+                Matchers.Insert(index, viewModel);
+            }
+            else
+            {
+                Matchers.Add(viewModel);
+            }
         }
     }
 }

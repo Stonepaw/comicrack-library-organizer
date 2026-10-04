@@ -39,5 +39,13 @@ namespace LibraryOrganizer.ViewModel
             get => _value;
             set => Set(ref _value, value);
         }
+
+        public StringMatcherValueViewModel() { }
+
+        public StringMatcherValueViewModel(IBookFieldStringMatcher matcher)
+        {
+            _mode = matcher.Mode;
+            _value = matcher.Value;
+        }
     }
 }
