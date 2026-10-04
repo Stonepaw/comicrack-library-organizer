@@ -62,6 +62,9 @@ namespace LibraryOrganizer.Controls
         {
             switch (_viewModel.Value)
             {
+                case NumberMatcherValueViewModel numberMatcherValueViewModel:
+                    UseNumberMatcherValueControl(numberMatcherValueViewModel);
+                    break;
                 case StringMatcherValueViewModel stringMatcherValueViewModel:
                     UseStringMatcherValueControl(stringMatcherValueViewModel);
                     break;
@@ -74,6 +77,19 @@ namespace LibraryOrganizer.Controls
                     matcherValuePanel.ResumeLayout();
                     break;
             }
+        }
+
+        private void UseNumberMatcherValueControl(NumberMatcherValueViewModel viewModel)
+        {
+            if (
+                matcherValuePanel.Controls.Count > 0
+                && matcherValuePanel.Controls[0] is NumberMatcherValueControl
+            )
+            {
+                return;
+            }
+
+            SetValueControl(new NumberMatcherValueControl(viewModel));
         }
 
         private void UseStringMatcherValueControl(StringMatcherValueViewModel viewModel)

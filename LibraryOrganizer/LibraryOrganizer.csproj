@@ -72,6 +72,12 @@
     <Compile Include="Controls\MatcherControl.Designer.cs">
       <DependentUpon>MatcherControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\NumberMatcherValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NumberMatcherValueControl.Designer.cs">
+      <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\YesNoMatcherValueControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     <EmbeddedResource Include="Controls\MatcherControl.resx">
       <DependentUpon>MatcherControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NumberMatcherValueControl.resx">
+      <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\YesNoMatcherValueControl.resx">
       <DependentUpon>YesNoMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -166,6 +175,7 @@
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.GroupMatcherViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.NumberMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.YesNoMatcherValueViewModel.datasource" />
