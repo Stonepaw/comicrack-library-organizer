@@ -296,6 +296,11 @@ class ExcludeRule(object):
         Returns 0 if the book should not be moved.
         """
 
+        key = get_custom_rule_key(self.field)
+        if key is not None:
+            value = book.GetCustomValue(key)
+            return self.calculate_book_should_be_moved(book, unicode(value) if value is not None else u"", self.value)
+
         field = name_to_field[self.field]
 
         if field in ("Manga", "SeriesComplete", "BlackAndWhite"):
@@ -641,14 +646,40 @@ def check_excluded_folders(book_path, profile):
     return True
 
 
+_custom_value_keys = None
+
+def clear_custom_value_keys():
+    """Clears the cached custom value keys, so the next get_custom_value_keys scans the library again."""
+    global _custom_value_keys
+    _custom_value_keys = None
+
+
 def get_custom_value_keys():
-    """Retrieves a list of all the custom value keys in the library"""
-    keys = []
-    for book in ComicRack.App.GetLibraryBooks():
-        for pair in book.GetCustomValues():
-            if pair.Key not in keys:
-                keys.append(pair.Key)
-    return keys
+    """Retrieves a list of all the custom value keys in the library.
+
+    Scanning the library is slow on large libraries, so the result is cached until clear_custom_value_keys is called.
+    """
+    global _custom_value_keys
+    if _custom_value_keys is None:
+        keys = []
+        for book in ComicRack.App.GetLibraryBooks():
+            for pair in book.GetCustomValues():
+                if pair.Key not in keys:
+                    keys.append(pair.Key)
+        _custom_value_keys = keys
+    return list(_custom_value_keys)
+
+
+def make_custom_rule_field(key):
+    """Returns the rule field name for a custom value key, e.g. Custom(comicvine_issue)"""
+    return "Custom(" + key + ")"
+
+
+def get_custom_rule_key(field):
+    """Returns the custom value key of a rule field name like Custom(key), or None if it isn't a custom value field"""
+    if field.startswith("Custom(") and field.endswith(")") and len(field) > len("Custom()"):
+        return field[len("Custom("):-1]
+    return None
 
 def ThemeMe(control):
     """Applies the current theme applied to ComicRack
