@@ -278,20 +278,20 @@ namespace LibraryOrganizer.Dialog
             // profileActions
             // 
             this.profileActions.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.profileActions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.profileActions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.profileActions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem});
             this.profileActions.Image = ((System.Drawing.Image)(resources.GetObject("profileActions.Image")));
             this.profileActions.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.profileActions.Name = "profileActions";
             this.profileActions.Size = new System.Drawing.Size(128, 24);
-            this.profileActions.Text = "toolStripDropDownButton1";
+            this.profileActions.Text = "Profile Action";
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(122, 26);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
