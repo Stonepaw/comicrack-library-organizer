@@ -819,11 +819,12 @@ class MetadataExcludeRuleControl(FlowLayoutPanel):
         
         #Field selector
         self._field = ComboBox()
-        self._field.Items.AddRange(System.Array[System.String](["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series",
-                                                               "Black And White", "Characters", "Count", "File Name", "File Path", "File Format",
-                                                               "Format", "Genre", "Imprint", "Language", "Locations", "Main Character Or Team", "Manga", "Month", "Number",
-                                                               "Notes", "Publisher", "Rating", "Read Percentage", "Review", "Series Complete", "Tags", "Teams", 
-                                                               "Title", "Scan Information", "Series", "Series Group", "Start Month", "Start Year", "Story Arc", "Volume", "Web", "Year"]))            
+        self._field.Items.AddRange(System.Array[System.String](
+            ["Age Rating", "Alternate Count", "Alternate Number", "Alternate Series",
+            "Black And White", "Characters", "Count", "File Name", "File Path", "File Format",
+            "Format", "Genre", "Imprint", "Inker", "Language", "Locations", "Main Character Or Team", "Manga", "Month", "Number",
+            "Notes", "Penciller", "Publisher", "Rating", "Read Percentage", "Review", "Series Complete", "Tags", "Teams", 
+            "Title", "Scan Information", "Series", "Series Group", "Start Month", "Start Year", "Story Arc", "Volume", "Web", "Writer", "Year"]))            
         self._field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         self._field.Size = Size(121, 21)
         self._field.MaxDropDownItems = 15
