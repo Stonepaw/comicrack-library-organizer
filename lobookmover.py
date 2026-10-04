@@ -451,6 +451,11 @@ class BookMover(object):
         #Since the duplicate is checked for last in the orginal process_book function there is no need to check for path errors.
         if File.Exists(full_path) or full_path in self.MovedBooks:
 
+            #In simulate mode an earlier book may only have been simulated to this path, so there is no file to compare with.
+            if not File.Exists(full_path):
+                self.logger.Add("Skipped", self.report_book_name, "Duplicate: another book was already " + ModeText.get_mode_past(self.profile.Mode) + " to: " + full_path)
+                return MoveResult.Skipped
+
             #Find the existing book if it occurs in the library
             oldbook = self.find_duplicate_book(full_path)
             if oldbook == None:
