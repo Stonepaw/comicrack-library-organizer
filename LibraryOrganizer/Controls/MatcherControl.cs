@@ -60,15 +60,19 @@ namespace LibraryOrganizer.Controls
 
         private void UpdateValueControl()
         {
-            if (_viewModel.Value is StringMatcherValueViewModel stringMatcherValueViewModel)
+            switch (_viewModel.Value)
             {
-                UseStringMatcherValueControl(stringMatcherValueViewModel);
-            }
-            else
-            {
-                matcherValuePanel.SuspendLayout();
-                matcherValuePanel.Controls.Clear();
-                matcherValuePanel.ResumeLayout();
+                case StringMatcherValueViewModel stringMatcherValueViewModel:
+                    UseStringMatcherValueControl(stringMatcherValueViewModel);
+                    break;
+                case YesNoMatcherValueViewModel yesNoMatcherValueViewModel:
+                    UseYesNoMatcherValueControl(yesNoMatcherValueViewModel);
+                    break;
+                default:
+                    matcherValuePanel.SuspendLayout();
+                    matcherValuePanel.Controls.Clear();
+                    matcherValuePanel.ResumeLayout();
+                    break;
             }
         }
 
@@ -82,16 +86,30 @@ namespace LibraryOrganizer.Controls
                 }
             }
 
+            SetValueControl(new StringMatcherValueControl(viewModel));
+        }
+
+        private void UseYesNoMatcherValueControl(YesNoMatcherValueViewModel viewModel)
+        {
+            if (matcherValuePanel.Controls.Count > 0)
+            {
+                if (matcherValuePanel.Controls[0] is YesNoMatcherValueControl)
+                {
+                    return;
+                }
+            }
+
+            SetValueControl(new YesNoMatcherValueControl(viewModel));
+        }
+
+        private void SetValueControl(Control control)
+        {
             matcherValuePanel.SuspendLayout();
             matcherValuePanel.Controls.Clear();
-
-            StringMatcherValueControl stringMatcherValueControl = new StringMatcherValueControl(
-                viewModel
-            );
-            stringMatcherValueControl.SuspendLayout();
-            stringMatcherValueControl.Dock = DockStyle.Fill;
-            matcherValuePanel.Controls.Add(stringMatcherValueControl);
-            stringMatcherValueControl.ResumeLayout();
+            control.SuspendLayout();
+            control.Dock = DockStyle.Fill;
+            matcherValuePanel.Controls.Add(control);
+            control.ResumeLayout();
             matcherValuePanel.ResumeLayout();
         }
     }

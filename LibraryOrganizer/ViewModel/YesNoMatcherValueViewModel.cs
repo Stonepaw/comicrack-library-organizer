@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using cYo.Projects.ComicRack.Engine;
 
 namespace LibraryOrganizer.ViewModel
@@ -19,6 +19,7 @@ namespace LibraryOrganizer.ViewModel
         {
             new KeyValuePair<YesNo, string>(YesNo.Yes, "is Yes"),
             new KeyValuePair<YesNo, string>(YesNo.No, "is No"),
+            new KeyValuePair<YesNo, string>(YesNo.Unknown, "is Unknown"),
         };
     }
 }
