@@ -1,6 +1,6 @@
 namespace LibraryOrganizer.Control
 {
-    partial class StringMatcherControl
+    internal partial class StringMatcherControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,63 +30,54 @@ namespace LibraryOrganizer.Control
         {
             this.components = new System.ComponentModel.Container();
             this.field = new System.Windows.Forms.ComboBox();
-            this.bookFieldStringMatcherViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.mode = new System.Windows.Forms.ComboBox();
             this.value = new System.Windows.Forms.TextBox();
-            this.actionsButton = new System.Windows.Forms.Button();
             this.matcherGroupActions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addGroupAction = new System.Windows.Forms.ToolStripMenuItem();
             this.addMatcherAction = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteGroupAction = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.bookFieldStringMatcherViewModelBindingSource)).BeginInit();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.actionsButton = new System.Windows.Forms.Button();
+            this.bookFieldStringMatcherViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.matcherGroupActions.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bookFieldStringMatcherViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // field
             // 
+            this.field.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.field.DataBindings.Add(new System.Windows.Forms.Binding("SelectedItem", this.bookFieldStringMatcherViewModelBindingSource, "Field", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.field.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.field.FormattingEnabled = true;
-            this.field.Location = new System.Drawing.Point(3, 3);
+            this.field.Location = new System.Drawing.Point(29, 1);
+            this.field.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
             this.field.Name = "field";
-            this.field.Size = new System.Drawing.Size(121, 24);
+            this.field.Size = new System.Drawing.Size(124, 24);
             this.field.TabIndex = 0;
-            // 
-            // bookFieldStringMatcherViewModelBindingSource
-            // 
-            this.bookFieldStringMatcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.BookFieldStringMatcherViewModel);
             // 
             // mode
             // 
+            this.mode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.mode.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bookFieldStringMatcherViewModelBindingSource, "Mode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.mode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.mode.FormattingEnabled = true;
-            this.mode.Location = new System.Drawing.Point(130, 3);
+            this.mode.Location = new System.Drawing.Point(159, 1);
+            this.mode.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
             this.mode.Name = "mode";
-            this.mode.Size = new System.Drawing.Size(121, 24);
+            this.mode.Size = new System.Drawing.Size(124, 24);
             this.mode.TabIndex = 1;
             // 
             // value
             // 
-            this.value.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.value.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.value.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bookFieldStringMatcherViewModelBindingSource, "Value", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.value.Location = new System.Drawing.Point(257, 4);
+            this.value.Location = new System.Drawing.Point(289, 2);
+            this.value.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.value.Name = "value";
-            this.value.Size = new System.Drawing.Size(555, 22);
+            this.value.Size = new System.Drawing.Size(546, 22);
             this.value.TabIndex = 2;
-            // 
-            // actionsButton
-            // 
-            this.actionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.actionsButton.AutoSize = true;
-            this.actionsButton.Location = new System.Drawing.Point(818, 2);
-            this.actionsButton.Name = "actionsButton";
-            this.actionsButton.Size = new System.Drawing.Size(25, 26);
-            this.actionsButton.TabIndex = 4;
-            this.actionsButton.Text = "▼";
-            this.actionsButton.UseVisualStyleBackColor = true;
-            this.actionsButton.Click += new System.EventHandler(this.actionsButton_Click);
             // 
             // matcherGroupActions
             // 
@@ -117,21 +108,77 @@ namespace LibraryOrganizer.Control
             this.deleteGroupAction.Text = "Delete";
             this.deleteGroupAction.Click += new System.EventHandler(this.deleteGroupAction_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.checkBox1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.field, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.mode, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.value, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.actionsButton, 4, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(867, 26);
+            this.tableLayoutPanel1.TabIndex = 3;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBox1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBox1.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.bookFieldStringMatcherViewModelBindingSource, "Negated", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.checkBox1.Location = new System.Drawing.Point(0, 0);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(26, 26);
+            this.checkBox1.TabIndex = 5;
+            this.checkBox1.Text = "!";
+            this.checkBox1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // actionsButton
+            // 
+            this.actionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.actionsButton.Location = new System.Drawing.Point(841, 0);
+            this.actionsButton.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.actionsButton.Name = "actionsButton";
+            this.actionsButton.Size = new System.Drawing.Size(26, 26);
+            this.actionsButton.TabIndex = 4;
+            this.actionsButton.Text = "▼";
+            this.actionsButton.UseVisualStyleBackColor = true;
+            this.actionsButton.Click += new System.EventHandler(this.actionsButton_Click);
+            // 
+            // bookFieldStringMatcherViewModelBindingSource
+            // 
+            this.bookFieldStringMatcherViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.BookFieldStringMatcherViewModel);
+            // 
             // StringMatcherControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.field);
-            this.Controls.Add(this.mode);
-            this.Controls.Add(this.value);
-            this.Controls.Add(this.actionsButton);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "StringMatcherControl";
-            this.Size = new System.Drawing.Size(846, 31);
-            ((System.ComponentModel.ISupportInitialize)(this.bookFieldStringMatcherViewModelBindingSource)).EndInit();
+            this.Size = new System.Drawing.Size(867, 29);
             this.matcherGroupActions.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bookFieldStringMatcherViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,5 +194,7 @@ namespace LibraryOrganizer.Control
         private System.Windows.Forms.ToolStripMenuItem addMatcherAction;
         private System.Windows.Forms.ToolStripMenuItem deleteGroupAction;
         private System.Windows.Forms.BindingSource bookFieldStringMatcherViewModelBindingSource;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

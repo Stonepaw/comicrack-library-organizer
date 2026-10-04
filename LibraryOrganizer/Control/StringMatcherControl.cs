@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using LibraryOrganizer.ComicBookField;
 using LibraryOrganizer.Matcher;
@@ -13,7 +14,7 @@ namespace LibraryOrganizer.Control
 {
     internal partial class StringMatcherControl : UserControl
     {
-        private static IReadOnlyCollection<
+        private static readonly IReadOnlyCollection<
             KeyValuePair<StringMatcherMode, string>
         > StringOperators = Enum.GetValues(typeof(StringMatcherMode))
             .Cast<StringMatcherMode>()
@@ -29,7 +30,7 @@ namespace LibraryOrganizer.Control
             ))
             .ToList();
 
-        private BookFieldStringMatcherViewModel _viewModel;
+        private readonly BookFieldStringMatcherViewModel _viewModel;
 
         public new int Width
         {
@@ -58,6 +59,21 @@ namespace LibraryOrganizer.Control
 
             InitializeComponent();
 
+            SuspendLayout();
+
+            actionsButton.Size = MatcherControl.ActionButtonSize;
+
+            tableLayoutPanel1.ColumnStyles[1] = new ColumnStyle(
+                SizeType.Absolute,
+                MatcherControl.FieldComboBoxWidth
+            );
+            tableLayoutPanel1.ColumnStyles[2] = new ColumnStyle(
+                SizeType.Absolute,
+                MatcherControl.ModeComboBoxWidth
+            );
+
+            tableLayoutPanel1.ResumeLayout();
+
             bookFieldStringMatcherViewModelBindingSource.DataSource = _viewModel;
 
             field.DataSource = ComicBookField.ComicBookField.Fields;
@@ -65,6 +81,8 @@ namespace LibraryOrganizer.Control
             mode.DataSource = StringOperators;
             mode.DisplayMember = "Value";
             mode.ValueMember = "Key";
+
+            ResumeLayout();
         }
 
         private void actionsButton_Click(object sender, System.EventArgs e)
