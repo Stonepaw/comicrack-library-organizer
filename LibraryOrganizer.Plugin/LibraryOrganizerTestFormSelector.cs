@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using LibraryOrganizer.Data;
 using LibraryOrganizer.Dialog;
 
 namespace LibraryOrganizer.Plugin
@@ -20,7 +14,10 @@ namespace LibraryOrganizer.Plugin
 
         private void openConfigureForm_Click(object sender, EventArgs e)
         {
-            new ConfigureForm(new Data.Profile()).Show(this);
+            Profile profile = new Profile();
+            profile.Name = "Test";
+
+            new ConfigureForm(new[] { profile }).Show(this);
         }
     }
 }

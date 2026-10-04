@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using LibraryOrganizer.Data;
 using LibraryOrganizer.ViewModel;
@@ -8,19 +10,22 @@ namespace LibraryOrganizer.Dialog
 {
     public partial class ConfigureForm : Form
     {
-        private readonly ProfileViewModel _profile;
+        private readonly List<ProfileViewModel> _profiles;
 
         private readonly ConfigFormViewModel _configFormViewModel = new ConfigFormViewModel();
 
-        public ConfigureForm(Profile profile)
+        public ConfigureForm()
+            : this(new[] { new Profile() }) { }
+
+        public ConfigureForm(IEnumerable<Profile> profiles)
         {
             InitializeComponent();
 
             SuspendLayout();
 
-            _profile = new ProfileViewModel(profile);
+            _profiles = profiles.Select(profile => new ProfileViewModel(profile)).ToList();
 
-            profileBindingSource.DataSource = _profile;
+            profileBindingSource.DataSource = _profiles;
             configFormViewModelBindingSource.DataSource = _configFormViewModel;
 
             removeEmptyFolderExclusions.SelectedIndex = -1;
@@ -31,6 +36,9 @@ namespace LibraryOrganizer.Dialog
             optionsButton.Tag = ConfigFormPage.Options;
             SetCurrentPage(ConfigFormPage.Overview);
             ShowPage(ConfigFormPage.Overview);
+
+            profileSelector.ComboBox.DataSource = profileBindingSource;
+            profileSelector.ComboBox.DisplayMember = "Name";
 
             ResumeLayout();
         }
@@ -47,7 +55,9 @@ namespace LibraryOrganizer.Dialog
                 && openFolderDialog.SelectedPath != null
             )
             {
-                _profile.FailOperationOnEmptyValueDestinationFolder = openFolderDialog.SelectedPath;
+                (
+                    (ProfileViewModel)profileBindingSource.Current
+                ).FailOperationOnEmptyValueDestinationFolder = openFolderDialog.SelectedPath;
             }
         }
 
@@ -102,7 +112,7 @@ namespace LibraryOrganizer.Dialog
         private void addIllegalCharacterReplacement_Click(object sender, EventArgs e)
         {
             var addIllegalCharacterDialog = new AddIllegalCharacterDialog(
-                _profile.IllegalCharacterReplacements
+                ((ProfileViewModel)profileBindingSource.Current).IllegalCharacterReplacements
             );
 
             if (addIllegalCharacterDialog.ShowDialog(this) == DialogResult.OK)
@@ -201,6 +211,23 @@ namespace LibraryOrganizer.Dialog
         private void ConfigureForm_ResizeEnd(object sender, EventArgs e)
         {
             ResumeLayout();
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddProfileDialog dialog = new AddProfileDialog();
+
+            DialogResult result = dialog.ShowDialog(this);
+
+            if (result == DialogResult.OK)
+            {
+                ProfileViewModel profile = new ProfileViewModel(new Profile())
+                {
+                    Name = dialog.ProfileName,
+                };
+                profileBindingSource.Add(profile);
+                profileBindingSource.Position = profileBindingSource.Count;
+            }
         }
     }
 }

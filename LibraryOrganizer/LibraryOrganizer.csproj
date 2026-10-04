@@ -108,6 +108,12 @@
     <Compile Include="Dialog\AddIllegalCharacterDialog.Designer.cs">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialog\AddProfileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\AddProfileDialog.Designer.cs">
+      <DependentUpon>AddProfileDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialog\ConfigureForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddIllegalCharacterDialog.resx">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\AddProfileDialog.resx">
+      <DependentUpon>AddProfileDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\ConfigureForm.resx">
       <DependentUpon>ConfigureForm.cs</DependentUpon>
