@@ -1,4 +1,4 @@
-﻿using LibraryOrganizer.ComicBookField;
+using LibraryOrganizer.ComicBookField;
 
 namespace LibraryOrganizer.Matcher
 {
@@ -9,5 +9,10 @@ namespace LibraryOrganizer.Matcher
         NumberMatcherMode Mode { get; }
 
         string Value { get; }
+
+        /// <summary>
+        /// The second value to use when using the range operator.
+        /// </summary>
+        string Value2 { get; }
     }
 }
