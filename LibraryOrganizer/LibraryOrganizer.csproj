@@ -66,11 +66,11 @@
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Control\MatcherGroupControlUtils.cs" />
-    <Compile Include="Control\MatcherRuleControl.cs">
+    <Compile Include="Control\StringMatcherControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\MatcherRuleControl.Designer.cs">
-      <DependentUpon>MatcherRuleControl.cs</DependentUpon>
+    <Compile Include="Control\StringMatcherControl.Designer.cs">
+      <DependentUpon>StringMatcherControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Control\ProfileMatcherGroupControl.cs">
       <SubType>UserControl</SubType>
@@ -127,8 +127,8 @@
     <EmbeddedResource Include="Control\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Control\MatcherRuleControl.resx">
-      <DependentUpon>MatcherRuleControl.cs</DependentUpon>
+    <EmbeddedResource Include="Control\StringMatcherControl.resx">
+      <DependentUpon>StringMatcherControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Control\ProfileMatcherGroupControl.resx">
       <DependentUpon>ProfileMatcherGroupControl.cs</DependentUpon>
@@ -145,6 +145,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldStringMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.GroupMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />

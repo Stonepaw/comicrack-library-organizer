@@ -43,7 +43,7 @@ namespace LibraryOrganizer.Control
                         case MatcherGroupControl groupControl:
                             groupControl.Width = newWidth;
                             break;
-                        case MatcherRuleControl ruleControl:
+                        case StringMatcherControl ruleControl:
                             ruleControl.Width = newWidth;
                             break;
                         default:

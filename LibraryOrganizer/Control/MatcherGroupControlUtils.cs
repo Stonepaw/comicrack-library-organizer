@@ -139,8 +139,10 @@ namespace LibraryOrganizer.Control
 
                     AddMatcherControlToPanel(panel, groupControl, width, index);
                     break;
-                case IBookFieldMatcherViewModel bookFieldMatcherViewModel:
-                    MatcherRuleControl ruleControl = new MatcherRuleControl();
+                case BookFieldStringMatcherViewModel bookFieldStringMatcherViewModel:
+                    StringMatcherControl ruleControl = new StringMatcherControl(
+                        bookFieldStringMatcherViewModel
+                    );
                     ruleControl.Width = width;
                     AddMatcherControlToPanel(panel, ruleControl, width, index);
                     break;
