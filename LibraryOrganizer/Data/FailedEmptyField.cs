@@ -63,7 +63,7 @@ namespace LibraryOrganizer.Data
         public static List<FailedEmptyField> DefaultList()
         {
             return new List<FailedEmptyField>(
-                _fieldNames.Select((field) => new FailedEmptyField(field, true))
+                _fieldNames.Select((field) => new FailedEmptyField(field, false))
             );
         }
     }

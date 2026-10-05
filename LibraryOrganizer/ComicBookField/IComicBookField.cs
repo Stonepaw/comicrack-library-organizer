@@ -1,6 +1,6 @@
-﻿namespace LibraryOrganizer.ComicBookField
+namespace LibraryOrganizer.ComicBookField
 {
-    internal interface IComicBookField
+    public interface IComicBookField
     {
         /// <summary>
         /// The label of the field to display in UI elements

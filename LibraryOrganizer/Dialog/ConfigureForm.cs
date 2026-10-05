@@ -99,46 +99,12 @@ namespace LibraryOrganizer.Dialog
 
             profileBindingSource.CurrentChanged += (s, e) =>
             {
-                if (CurrentProfileViewModel != null)
-                {
-                    overviewPage.ProfileViewModel = CurrentProfileViewModel;
-                    optionsPageControl.ProfileViewModel = CurrentProfileViewModel;
-                }
+                OnCurrentProfileChange();
             };
-            overviewPage.ProfileViewModel = CurrentProfileViewModel;
-            optionsPageControl.ProfileViewModel = CurrentProfileViewModel;
+
+            OnCurrentProfileChange();
 
             ResumeLayout();
-        }
-
-        private void failOperationOnEmptyValueDestinationFolderBrowse_Click(
-            object sender,
-            EventArgs e
-        )
-        {
-            string folder = SelectFolder();
-
-            if (folder != null)
-            {
-                CurrentProfileViewModel.FailOperationOnEmptyValueDestinationFolder = folder;
-            }
-        }
-
-        private void failOperationOnEmptyValueFields_EnabledChanged(object sender, EventArgs e)
-        {
-            if (failOperationOnEmptyValueFields.Enabled)
-            {
-                failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor =
-                    SystemColors.ControlText;
-                failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
-                    SystemColors.ControlText;
-            }
-            else
-            {
-                failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
-                    SystemColors.GrayText;
-            }
         }
 
         private void PageButton_Click(object sender, EventArgs e)
@@ -223,6 +189,20 @@ namespace LibraryOrganizer.Dialog
             }
 
             return null;
+        }
+
+        private void OnCurrentProfileChange()
+        {
+            ProfileViewModel current = CurrentProfileViewModel;
+
+            if (current == null)
+            {
+                return;
+            }
+
+            overviewPage.ProfileViewModel = current;
+            optionsPageControl.ProfileViewModel = current;
+            emptyValuesConfigurationControl1.ProfileViewModel = current;
         }
     }
 }

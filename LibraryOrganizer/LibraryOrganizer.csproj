@@ -59,6 +59,12 @@
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
+    <Compile Include="Controls\EmptyValuesConfigurationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EmptyValuesConfigurationControl.Designer.cs">
+      <DependentUpon>EmptyValuesConfigurationControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FolderBrowserUtil.cs" />
     <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
@@ -161,6 +167,9 @@
     <Compile Include="ViewModel\YesNoMatcherValueViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\EmptyValuesConfigurationControl.resx">
+      <DependentUpon>EmptyValuesConfigurationControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
     </EmbeddedResource>

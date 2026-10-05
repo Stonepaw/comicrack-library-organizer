@@ -1,8 +1,21 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using LibraryOrganizer.ComicBookField;
+
 namespace LibraryOrganizer.Data
 {
     public class EmptyFieldReplacement
     {
-        public EmptyFieldReplacement(string field, string replacement)
+        internal static List<EmptyFieldReplacement> Default()
+        {
+            return new List<EmptyFieldReplacement>
+            {
+                new EmptyFieldReplacement(ComicBookField.ComicBookField.AlternateCount, ""),
+                new EmptyFieldReplacement(ComicBookField.ComicBookField.Count, ""),
+            };
+        }
+
+        public EmptyFieldReplacement(IComicBookField field, string replacement)
         {
             Field = field;
             Replacement = replacement;
@@ -11,7 +24,12 @@ namespace LibraryOrganizer.Data
         /// <summary>
         /// The field name to substitute.
         /// </summary>
-        public string Field { get; private set; }
+        public IComicBookField Field { get; private set; }
+
+        /// <summary>
+        /// The field name extracted from the field.
+        /// </summary>
+        public string Label => Field.Label;
 
         /// <summary>
         /// The replacement to use when the field is empty.

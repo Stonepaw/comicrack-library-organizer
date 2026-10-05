@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using LibraryOrganizer.Data;
 
 namespace LibraryOrganizer.ViewModel
@@ -107,7 +108,7 @@ namespace LibraryOrganizer.ViewModel
         /// Replacement values for empty field data.
         /// </summary>
         public List<EmptyFieldReplacement> EmptyFieldReplacements =>
-            _profile.EmptyFieldReplacements;
+            _profile.EmptyFieldReplacements.ToList();
 
         /// <summary>
         /// Replace empty folder names in the template with this value. Empty folders are removed
