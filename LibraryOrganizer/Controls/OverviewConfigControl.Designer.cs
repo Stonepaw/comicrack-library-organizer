@@ -200,6 +200,7 @@ namespace LibraryOrganizer.Controls
             // baseFolder
             // 
             this.baseFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.baseFolder.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.profileViewModelBindingSource, "BaseFolder", true));
             this.baseFolder.Location = new System.Drawing.Point(90, 45);
             this.baseFolder.Name = "baseFolder";
             this.baseFolder.Size = new System.Drawing.Size(569, 22);
@@ -290,7 +291,7 @@ namespace LibraryOrganizer.Controls
             // 
             this.profileViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
             // 
-            // OverviewPageControl
+            // OverviewConfigControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -299,7 +300,7 @@ namespace LibraryOrganizer.Controls
             this.Controls.Add(this.fileFolderModePanel);
             this.Controls.Add(this.baseFolderPanel);
             this.Controls.Add(this.modeGroup);
-            this.Name = "OverviewPageControl";
+            this.Name = "OverviewConfigControl";
             this.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.Size = new System.Drawing.Size(755, 584);
             modeLayout.ResumeLayout(false);
