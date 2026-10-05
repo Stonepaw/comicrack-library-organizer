@@ -249,6 +249,24 @@ namespace LibraryOrganizer.ViewModel
         public List<IllegalCharacterReplacement> IllegalCharacterReplacements =>
             _profile.IllegalCharacterReplacements;
 
+        public bool IsCopyMode
+        {
+            get => OperationMode == OperationMode.Copy;
+            set => OperationMode = OperationMode.Copy;
+        }
+
+        public bool IsMoveMode
+        {
+            get => OperationMode == OperationMode.Move;
+            set => OperationMode = OperationMode.Move;
+        }
+
+        public bool IsSimulateMode
+        {
+            get => OperationMode == OperationMode.Simulate;
+            set => OperationMode = OperationMode.Simulate;
+        }
+
         public IGroupMatcherViewModel Matchers { get; } = new GroupMatcherViewModel(null);
 
         /// <summary>
@@ -285,7 +303,17 @@ namespace LibraryOrganizer.ViewModel
         public OperationMode OperationMode
         {
             get => _profile.OperationMode;
-            set => SetProperty(_profile.OperationMode, value, (v) => _profile.OperationMode = v);
+            set
+            {
+                if (!SetProperty(_profile.OperationMode, value, (v) => _profile.OperationMode = v))
+                {
+                    return;
+                }
+
+                NotifyPropertyChanged(nameof(IsCopyMode));
+                NotifyPropertyChanged(nameof(IsMoveMode));
+                NotifyPropertyChanged(nameof(IsSimulateMode));
+            }
         }
 
         /// <summary>

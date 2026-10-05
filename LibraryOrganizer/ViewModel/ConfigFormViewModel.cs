@@ -2,7 +2,7 @@ using System;
 
 namespace LibraryOrganizer.ViewModel
 {
-    internal enum ConfigFormPage
+    public enum ConfigFormPage
     {
         Overview,
         Files,

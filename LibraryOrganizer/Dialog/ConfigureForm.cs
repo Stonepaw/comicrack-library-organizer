@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using LibraryOrganizer.Data;
 using LibraryOrganizer.ViewModel;
 
@@ -13,6 +14,47 @@ namespace LibraryOrganizer.Dialog
         private readonly List<ProfileViewModel> _profiles;
 
         private readonly ConfigFormViewModel _configFormViewModel = new ConfigFormViewModel();
+
+        private bool _fileButtonEnabled = true;
+        private bool _folderButtonEnabled = true;
+
+        /// <summary>
+        /// This is used to databind the file toolstrip button since toolstrip buttons don't have data binding.
+        /// </summary>
+        public bool FileButtonEnabled
+        {
+            get => _fileButtonEnabled;
+            set
+            {
+                _fileButtonEnabled = value;
+                filesButton.Enabled = value;
+            }
+        }
+
+        /// <summary>
+        /// This is used to databind the folder toolstrip button since toolstrip buttons don't have data binding.
+        /// </summary>
+        public bool FolderButtonEnabled
+        {
+            get => _folderButtonEnabled;
+            set
+            {
+                _folderButtonEnabled = value;
+                foldersButton.Enabled = value;
+            }
+        }
+
+        /// <summary>
+        /// This is used to simplify data binding which page is visible.
+        /// </summary>
+        public ConfigFormPage CurrentPage
+        {
+            get => _configFormViewModel.CurrentPage;
+            set => ShowPage(value);
+        }
+
+        private ProfileViewModel CurrentProfileViewModel =>
+            (ProfileViewModel)profileBindingSource.Current;
 
         public ConfigureForm()
             : this(new[] { new Profile() }) { }
@@ -34,11 +76,35 @@ namespace LibraryOrganizer.Dialog
             foldersButton.Tag = ConfigFormPage.Folders;
             rulesButton.Tag = ConfigFormPage.Rules;
             optionsButton.Tag = ConfigFormPage.Options;
+
+            if (profileSelector.ComboBox != null)
+            {
+                profileSelector.ComboBox.DataSource = profileBindingSource;
+                profileSelector.ComboBox.DisplayMember = "Name";
+            }
+
+            // Some things can't be data bound directly. We can instead data-bind our form properties and use them as
+            // updater functions to update form properties.
+            DataBindings.Add(
+                new Binding("FileButtonEnabled", profileBindingSource, "UseFileNaming")
+            );
+            DataBindings.Add(
+                new Binding("FolderButtonEnabled", profileBindingSource, "UseFolderOrganization")
+            );
+            DataBindings.Add("CurrentPage", _configFormViewModel, "CurrentPage");
+            FileButtonEnabled = CurrentProfileViewModel.UseFileNaming;
+            FolderButtonEnabled = CurrentProfileViewModel.UseFolderOrganization;
             SetCurrentPage(ConfigFormPage.Overview);
             ShowPage(ConfigFormPage.Overview);
 
-            profileSelector.ComboBox.DataSource = profileBindingSource;
-            profileSelector.ComboBox.DisplayMember = "Name";
+            profileBindingSource.CurrentChanged += (s, e) =>
+            {
+                if (CurrentProfileViewModel != null)
+                {
+                    overviewPage.ProfileViewModel = CurrentProfileViewModel;
+                }
+            };
+            overviewPage.ProfileViewModel = CurrentProfileViewModel;
 
             ResumeLayout();
         }
@@ -48,29 +114,21 @@ namespace LibraryOrganizer.Dialog
             EventArgs e
         )
         {
-            var openFolderDialog = new FolderBrowserDialog();
+            string folder = SelectFolder();
 
-            if (
-                openFolderDialog.ShowDialog(this) == DialogResult.OK
-                && openFolderDialog.SelectedPath != null
-            )
+            if (folder != null)
             {
-                (
-                    (ProfileViewModel)profileBindingSource.Current
-                ).FailOperationOnEmptyValueDestinationFolder = openFolderDialog.SelectedPath;
+                CurrentProfileViewModel.FailOperationOnEmptyValueDestinationFolder = folder;
             }
         }
 
         private void addEmptyFolderExclusion_Click(object sender, EventArgs e)
         {
-            var openFolderDialog = new FolderBrowserDialog();
+            string folder = SelectFolder();
 
-            if (
-                openFolderDialog.ShowDialog(this) == DialogResult.OK
-                && openFolderDialog.SelectedPath != null
-            )
+            if (folder != null)
             {
-                removeEmptyFoldersExclusionsBindingSource.Add(openFolderDialog.SelectedPath);
+                removeEmptyFoldersExclusionsBindingSource.Add(folder);
             }
         }
 
@@ -112,7 +170,7 @@ namespace LibraryOrganizer.Dialog
         private void addIllegalCharacterReplacement_Click(object sender, EventArgs e)
         {
             var addIllegalCharacterDialog = new AddIllegalCharacterDialog(
-                ((ProfileViewModel)profileBindingSource.Current).IllegalCharacterReplacements
+                CurrentProfileViewModel.IllegalCharacterReplacements
             );
 
             if (addIllegalCharacterDialog.ShowDialog(this) == DialogResult.OK)
@@ -160,23 +218,13 @@ namespace LibraryOrganizer.Dialog
             _configFormViewModel.SetPage(page);
         }
 
-        private void ConfigureForm_Load(object sender, EventArgs e)
-        {
-            _configFormViewModel.PropertyChanged += (s, a) =>
-            {
-                if (a.PropertyName != nameof(_configFormViewModel.CurrentPage))
-                {
-                    return;
-                }
-
-                ShowPage(_configFormViewModel.CurrentPage);
-            };
-        }
+        private void ConfigureForm_Load(object sender, EventArgs e) { }
 
         private void ShowPage(ConfigFormPage page)
         {
             SuspendLayout();
 
+            SetPageEnabled(overviewPage, overviewButton, page == ConfigFormPage.Overview);
             SetPageEnabled(optionsPage, optionsButton, page == ConfigFormPage.Options);
             SetPageEnabled(fileStructurePage, filesButton, page == ConfigFormPage.Files);
             SetPageEnabled(folderStructurePage, foldersButton, page == ConfigFormPage.Folders);
@@ -185,11 +233,7 @@ namespace LibraryOrganizer.Dialog
             ResumeLayout();
         }
 
-        private static void SetPageEnabled(
-            System.Windows.Forms.Control page,
-            ToolStripButton button,
-            bool enabled
-        )
+        private static void SetPageEnabled(Control page, ToolStripButton button, bool enabled)
         {
             if (enabled)
             {
@@ -219,15 +263,33 @@ namespace LibraryOrganizer.Dialog
 
             DialogResult result = dialog.ShowDialog(this);
 
-            if (result == DialogResult.OK)
+            if (result != DialogResult.OK)
             {
-                ProfileViewModel profile = new ProfileViewModel(new Profile())
-                {
-                    Name = dialog.ProfileName,
-                };
-                profileBindingSource.Add(profile);
-                profileBindingSource.Position = profileBindingSource.Count;
+                return;
             }
+
+            ProfileViewModel profile = new ProfileViewModel(new Profile())
+            {
+                Name = dialog.ProfileName,
+            };
+
+            profileBindingSource.Add(profile);
+            profileBindingSource.Position = profileBindingSource.Count;
+        }
+
+        private string SelectFolder()
+        {
+            var openFolderDialog = new FolderBrowserDialog();
+
+            if (
+                openFolderDialog.ShowDialog(this) == DialogResult.OK
+                && openFolderDialog.SelectedPath != null
+            )
+            {
+                return openFolderDialog.SelectedPath;
+            }
+
+            return null;
         }
     }
 }

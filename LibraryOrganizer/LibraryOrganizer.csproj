@@ -59,6 +59,7 @@
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
+    <Compile Include="Controls\FolderBrowserUtil.cs" />
     <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -77,6 +78,12 @@
     </Compile>
     <Compile Include="Controls\NumberMatcherValueControl.Designer.cs">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OverviewPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\OverviewPageControl.Designer.cs">
+      <DependentUpon>OverviewPageControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\YesNoMatcherValueControl.cs">
       <SubType>UserControl</SubType>
@@ -156,6 +163,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\NumberMatcherValueControl.resx">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\OverviewPageControl.resx">
+      <DependentUpon>OverviewPageControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\YesNoMatcherValueControl.resx">
       <DependentUpon>YesNoMatcherValueControl.cs</DependentUpon>
