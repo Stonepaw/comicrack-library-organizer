@@ -46,10 +46,16 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel = new System.Windows.Forms.Panel();
             this.rulesPage = new System.Windows.Forms.TabControl();
             this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
+            this.profileMetadataRules = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
+            this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.folderRulesTabPage = new System.Windows.Forms.TabPage();
+            this.folderRulesConfig = new LibraryOrganizer.Controls.FolderRulesConfigControl();
+            this.overviewConfig = new LibraryOrganizer.Controls.OverviewConfigControl();
             this.optionsPage = new System.Windows.Forms.TabControl();
             this.optionsTabPage = new System.Windows.Forms.TabPage();
+            this.optionsConfig = new LibraryOrganizer.Controls.OptionsConfigControl();
             this.emptyValuesTabPage = new System.Windows.Forms.TabPage();
+            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigControl();
             this.fileStructurePage = new System.Windows.Forms.Panel();
             this.fileStructureInsertControlsPanel = new System.Windows.Forms.Panel();
             this.insertControlsTabPanel = new System.Windows.Forms.TabControl();
@@ -81,13 +87,7 @@ namespace LibraryOrganizer.Dialog
             this.formActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.profileMetadataRules = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
-            this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.overviewConfig = new LibraryOrganizer.Controls.OverviewConfigControl();
-            this.optionsConfig = new LibraryOrganizer.Controls.OptionsConfigControl();
-            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigControl();
             this.configFormViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.folderRulesConfig = new LibraryOrganizer.Controls.FolderRulesConfigControl();
             toolStrip = new System.Windows.Forms.ToolStrip();
             profileLabel = new System.Windows.Forms.ToolStripLabel();
             profileSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -95,6 +95,7 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel.SuspendLayout();
             this.rulesPage.SuspendLayout();
             this.metadataRulesTabPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).BeginInit();
             this.folderRulesTabPage.SuspendLayout();
             this.optionsPage.SuspendLayout();
             this.optionsTabPage.SuspendLayout();
@@ -111,7 +112,6 @@ namespace LibraryOrganizer.Dialog
             this.folderStructureActionsLayout.SuspendLayout();
             this.folderStructurePanel.SuspendLayout();
             this.formActionsLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -256,11 +256,11 @@ namespace LibraryOrganizer.Dialog
             // configurationPanel
             // 
             this.configurationPanel.AutoSize = true;
-            this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Controls.Add(this.overviewConfig);
-            this.configurationPanel.Controls.Add(this.optionsPage);
             this.configurationPanel.Controls.Add(this.fileStructurePage);
             this.configurationPanel.Controls.Add(this.folderStructurePage);
+            this.configurationPanel.Controls.Add(this.rulesPage);
+            this.configurationPanel.Controls.Add(this.optionsPage);
             this.configurationPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.configurationPanel.Location = new System.Drawing.Point(130, 0);
             this.configurationPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -293,6 +293,20 @@ namespace LibraryOrganizer.Dialog
             this.metadataRulesTabPage.Text = "Metadata Rules";
             this.metadataRulesTabPage.UseVisualStyleBackColor = true;
             // 
+            // profileMetadataRules
+            // 
+            this.profileMetadataRules.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.profileMetadataRules.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.profileMetadataRules.Location = new System.Drawing.Point(4, 4);
+            this.profileMetadataRules.Matcher = null;
+            this.profileMetadataRules.Name = "profileMetadataRules";
+            this.profileMetadataRules.Size = new System.Drawing.Size(732, 552);
+            this.profileMetadataRules.TabIndex = 0;
+            // 
+            // profileBindingSource
+            // 
+            this.profileBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
+            // 
             // folderRulesTabPage
             // 
             this.folderRulesTabPage.Controls.Add(this.folderRulesConfig);
@@ -304,6 +318,25 @@ namespace LibraryOrganizer.Dialog
             this.folderRulesTabPage.TabIndex = 1;
             this.folderRulesTabPage.Text = "Folder Rules";
             this.folderRulesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // folderRulesConfig
+            // 
+            this.folderRulesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.folderRulesConfig.Location = new System.Drawing.Point(4, 4);
+            this.folderRulesConfig.Name = "folderRulesConfig";
+            this.folderRulesConfig.ProfileViewModel = null;
+            this.folderRulesConfig.Size = new System.Drawing.Size(732, 552);
+            this.folderRulesConfig.TabIndex = 0;
+            // 
+            // overviewConfig
+            // 
+            this.overviewConfig.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.overviewConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewConfig.Location = new System.Drawing.Point(0, 12);
+            this.overviewConfig.Name = "overviewConfig";
+            this.overviewConfig.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.overviewConfig.Size = new System.Drawing.Size(748, 589);
+            this.overviewConfig.TabIndex = 4;
             // 
             // optionsPage
             // 
@@ -329,6 +362,15 @@ namespace LibraryOrganizer.Dialog
             this.optionsTabPage.Text = "Options";
             this.optionsTabPage.UseVisualStyleBackColor = true;
             // 
+            // optionsConfig
+            // 
+            this.optionsConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsConfig.Location = new System.Drawing.Point(9, 9);
+            this.optionsConfig.Name = "optionsConfig";
+            this.optionsConfig.ProfileViewModel = null;
+            this.optionsConfig.Size = new System.Drawing.Size(722, 542);
+            this.optionsConfig.TabIndex = 7;
+            // 
             // emptyValuesTabPage
             // 
             this.emptyValuesTabPage.Controls.Add(this.emptyValuesConfig);
@@ -340,6 +382,15 @@ namespace LibraryOrganizer.Dialog
             this.emptyValuesTabPage.TabIndex = 1;
             this.emptyValuesTabPage.Text = "Empty Values";
             this.emptyValuesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // emptyValuesConfig
+            // 
+            this.emptyValuesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.emptyValuesConfig.Location = new System.Drawing.Point(4, 4);
+            this.emptyValuesConfig.Name = "emptyValuesConfig";
+            this.emptyValuesConfig.ProfileViewModel = null;
+            this.emptyValuesConfig.Size = new System.Drawing.Size(732, 552);
+            this.emptyValuesConfig.TabIndex = 0;
             // 
             // fileStructurePage
             // 
@@ -718,60 +769,9 @@ namespace LibraryOrganizer.Dialog
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // profileMetadataRules
-            // 
-            this.profileMetadataRules.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.profileMetadataRules.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.profileMetadataRules.Location = new System.Drawing.Point(4, 4);
-            this.profileMetadataRules.Matcher = null;
-            this.profileMetadataRules.Name = "profileMetadataRules";
-            this.profileMetadataRules.Size = new System.Drawing.Size(732, 552);
-            this.profileMetadataRules.TabIndex = 0;
-            // 
-            // profileBindingSource
-            // 
-            this.profileBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
-            // 
-            // overviewConfig
-            // 
-            this.overviewConfig.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.overviewConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewConfig.Location = new System.Drawing.Point(0, 12);
-            this.overviewConfig.Name = "overviewConfig";
-            this.overviewConfig.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.overviewConfig.Size = new System.Drawing.Size(748, 589);
-            this.overviewConfig.TabIndex = 4;
-            // 
-            // optionsConfig
-            // 
-            this.optionsConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsConfig.Location = new System.Drawing.Point(9, 9);
-            this.optionsConfig.Name = "optionsConfig";
-            this.optionsConfig.ProfileViewModel = null;
-            this.optionsConfig.Size = new System.Drawing.Size(722, 542);
-            this.optionsConfig.TabIndex = 7;
-            // 
-            // emptyValuesConfig
-            // 
-            this.emptyValuesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.emptyValuesConfig.Location = new System.Drawing.Point(4, 4);
-            this.emptyValuesConfig.Name = "emptyValuesConfig";
-            this.emptyValuesConfig.ProfileViewModel = null;
-            this.emptyValuesConfig.Size = new System.Drawing.Size(732, 552);
-            this.emptyValuesConfig.TabIndex = 0;
-            // 
             // configFormViewModelBindingSource
             // 
             this.configFormViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ConfigFormViewModel);
-            // 
-            // folderRulesConfig
-            // 
-            this.folderRulesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.folderRulesConfig.Location = new System.Drawing.Point(4, 4);
-            this.folderRulesConfig.Name = "folderRulesConfig";
-            this.folderRulesConfig.ProfileViewModel = null;
-            this.folderRulesConfig.Size = new System.Drawing.Size(732, 552);
-            this.folderRulesConfig.TabIndex = 0;
             // 
             // ConfigureForm
             // 
@@ -792,6 +792,7 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel.ResumeLayout(false);
             this.rulesPage.ResumeLayout(false);
             this.metadataRulesTabPage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).EndInit();
             this.folderRulesTabPage.ResumeLayout(false);
             this.optionsPage.ResumeLayout(false);
             this.optionsTabPage.ResumeLayout(false);
@@ -815,7 +816,6 @@ namespace LibraryOrganizer.Dialog
             this.folderStructurePanel.ResumeLayout(false);
             this.folderStructurePanel.PerformLayout();
             this.formActionsLayout.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

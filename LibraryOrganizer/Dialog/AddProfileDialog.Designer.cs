@@ -29,9 +29,9 @@ namespace LibraryOrganizer.Dialog
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.profileName = new System.Windows.Forms.TextBox();
-            this.okay = new System.Windows.Forms.Button();
             this.cancel = new System.Windows.Forms.Button();
+            this.okay = new System.Windows.Forms.Button();
+            this.profileName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1.SuspendLayout();
@@ -53,15 +53,16 @@ namespace LibraryOrganizer.Dialog
             this.flowLayoutPanel1.TabIndex = 0;
             this.flowLayoutPanel1.WrapContents = false;
             // 
-            // profileName
+            // cancel
             // 
-            this.profileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.profileName.Location = new System.Drawing.Point(6, 28);
-            this.profileName.Margin = new System.Windows.Forms.Padding(0);
-            this.profileName.Name = "profileName";
-            this.profileName.Size = new System.Drawing.Size(270, 22);
-            this.profileName.TabIndex = 0;
+            this.cancel.AutoSize = true;
+            this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cancel.Location = new System.Drawing.Point(201, 3);
+            this.cancel.Name = "cancel";
+            this.cancel.Size = new System.Drawing.Size(75, 26);
+            this.cancel.TabIndex = 2;
+            this.cancel.Text = "Cancel";
+            this.cancel.UseVisualStyleBackColor = true;
             // 
             // okay
             // 
@@ -74,16 +75,15 @@ namespace LibraryOrganizer.Dialog
             this.okay.UseVisualStyleBackColor = true;
             this.okay.Click += new System.EventHandler(this.okay_Click);
             // 
-            // cancel
+            // profileName
             // 
-            this.cancel.AutoSize = true;
-            this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancel.Location = new System.Drawing.Point(201, 3);
-            this.cancel.Name = "cancel";
-            this.cancel.Size = new System.Drawing.Size(75, 26);
-            this.cancel.TabIndex = 2;
-            this.cancel.Text = "Cancel";
-            this.cancel.UseVisualStyleBackColor = true;
+            this.profileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.profileName.Location = new System.Drawing.Point(6, 28);
+            this.profileName.Margin = new System.Windows.Forms.Padding(0);
+            this.profileName.Name = "profileName";
+            this.profileName.Size = new System.Drawing.Size(270, 22);
+            this.profileName.TabIndex = 0;
             // 
             // label1
             // 
@@ -111,19 +111,22 @@ namespace LibraryOrganizer.Dialog
             // 
             // AddProfileDialog
             // 
+            this.AcceptButton = this.okay;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.CancelButton = this.cancel;
             this.ClientSize = new System.Drawing.Size(282, 91);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 0);
+            this.MinimumSize = new System.Drawing.Size(300, 47);
             this.Name = "AddProfileDialog";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add Profile";
             this.TopMost = true;
             this.flowLayoutPanel1.ResumeLayout(false);
