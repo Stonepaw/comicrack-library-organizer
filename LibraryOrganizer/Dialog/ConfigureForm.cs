@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using LibraryOrganizer.Controls;
 using LibraryOrganizer.Data;
 using LibraryOrganizer.ViewModel;
 
@@ -123,7 +121,7 @@ namespace LibraryOrganizer.Dialog
         {
             SuspendLayout();
 
-            SetPageEnabled(overviewPage, overviewButton, page == ConfigFormPage.Overview);
+            SetPageEnabled(overviewConfig, overviewButton, page == ConfigFormPage.Overview);
             SetPageEnabled(optionsPage, optionsButton, page == ConfigFormPage.Options);
             SetPageEnabled(fileStructurePage, filesButton, page == ConfigFormPage.Files);
             SetPageEnabled(folderStructurePage, foldersButton, page == ConfigFormPage.Folders);
@@ -176,21 +174,6 @@ namespace LibraryOrganizer.Dialog
             profileBindingSource.Position = profileBindingSource.Count;
         }
 
-        private string SelectFolder()
-        {
-            var openFolderDialog = new FolderBrowserDialog();
-
-            if (
-                openFolderDialog.ShowDialog(this) == DialogResult.OK
-                && openFolderDialog.SelectedPath != null
-            )
-            {
-                return openFolderDialog.SelectedPath;
-            }
-
-            return null;
-        }
-
         private void OnCurrentProfileChange()
         {
             ProfileViewModel current = CurrentProfileViewModel;
@@ -200,9 +183,9 @@ namespace LibraryOrganizer.Dialog
                 return;
             }
 
-            overviewPage.ProfileViewModel = current;
-            optionsPageControl.ProfileViewModel = current;
-            emptyValuesConfigurationControl1.ProfileViewModel = current;
+            overviewConfig.ProfileViewModel = current;
+            optionsConfig.ProfileViewModel = current;
+            emptyValuesConfig.ProfileViewModel = current;
         }
     }
 }

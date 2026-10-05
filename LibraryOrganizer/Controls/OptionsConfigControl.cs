@@ -5,7 +5,7 @@ using LibraryOrganizer.ViewModel;
 
 namespace LibraryOrganizer.Controls
 {
-    internal partial class OptionsPageControl : UserControl
+    internal partial class OptionsConfigControl : UserControl
     {
         private ProfileViewModel _profileViewModel;
 
@@ -24,7 +24,7 @@ namespace LibraryOrganizer.Controls
             }
         }
 
-        public OptionsPageControl()
+        public OptionsConfigControl()
         {
             InitializeComponent();
             removeEmptyFolderExclusions.SelectedIndex = -1;

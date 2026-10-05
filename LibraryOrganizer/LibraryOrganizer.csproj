@@ -59,11 +59,11 @@
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
-    <Compile Include="Controls\EmptyValuesConfigurationControl.cs">
+    <Compile Include="Controls\EmptyValuesConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\EmptyValuesConfigurationControl.Designer.cs">
-      <DependentUpon>EmptyValuesConfigurationControl.cs</DependentUpon>
+    <Compile Include="Controls\EmptyValuesConfigControl.Designer.cs">
+      <DependentUpon>EmptyValuesConfigControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\FolderBrowserUtil.cs" />
     <Compile Include="Controls\MatcherGroupControl.cs">
@@ -85,17 +85,17 @@
     <Compile Include="Controls\NumberMatcherValueControl.Designer.cs">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\OptionsPageControl.cs">
+    <Compile Include="Controls\OptionsConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\OptionsPageControl.Designer.cs">
-      <DependentUpon>OptionsPageControl.cs</DependentUpon>
+    <Compile Include="Controls\OptionsConfigControl.Designer.cs">
+      <DependentUpon>OptionsConfigControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\OverviewPageControl.cs">
+    <Compile Include="Controls\OverviewConfigControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\OverviewPageControl.Designer.cs">
-      <DependentUpon>OverviewPageControl.cs</DependentUpon>
+    <Compile Include="Controls\OverviewConfigControl.Designer.cs">
+      <DependentUpon>OverviewConfigControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\YesNoMatcherValueControl.cs">
       <SubType>UserControl</SubType>
@@ -167,8 +167,8 @@
     <Compile Include="ViewModel\YesNoMatcherValueViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\EmptyValuesConfigurationControl.resx">
-      <DependentUpon>EmptyValuesConfigurationControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\EmptyValuesConfigControl.resx">
+      <DependentUpon>EmptyValuesConfigControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
@@ -179,11 +179,11 @@
     <EmbeddedResource Include="Controls\NumberMatcherValueControl.resx">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\OptionsPageControl.resx">
-      <DependentUpon>OptionsPageControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\OptionsConfigControl.resx">
+      <DependentUpon>OptionsConfigControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\OverviewPageControl.resx">
-      <DependentUpon>OverviewPageControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\OverviewConfigControl.resx">
+      <DependentUpon>OverviewConfigControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\YesNoMatcherValueControl.resx">
       <DependentUpon>YesNoMatcherValueControl.cs</DependentUpon>

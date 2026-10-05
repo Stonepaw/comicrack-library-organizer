@@ -5,7 +5,7 @@ using LibraryOrganizer.ViewModel;
 
 namespace LibraryOrganizer.Controls
 {
-    internal partial class OverviewPageControl : UserControl
+    internal partial class OverviewConfigControl : UserControl
     {
         private ProfileViewModel _profileViewModel;
 
@@ -22,7 +22,7 @@ namespace LibraryOrganizer.Controls
             }
         }
 
-        public OverviewPageControl()
+        public OverviewConfigControl()
         {
             _profileViewModel = new ProfileViewModel(new Profile());
             InitializeComponent();

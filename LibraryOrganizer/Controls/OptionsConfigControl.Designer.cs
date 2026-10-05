@@ -1,6 +1,6 @@
 namespace LibraryOrganizer.Controls
 {
-    partial class OptionsPageControl
+    partial class OptionsConfigControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -358,7 +358,7 @@ namespace LibraryOrganizer.Controls
             this.normalizeMultipleSpaces.Text = "Replace multiple spaces with a single space";
             this.normalizeMultipleSpaces.UseVisualStyleBackColor = true;
             // 
-            // OptionsPageControl
+            // OptionsConfigControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -370,7 +370,7 @@ namespace LibraryOrganizer.Controls
             this.Controls.Add(this.autoSelectSingleMultiValueField);
             this.Controls.Add(this.copyReadPercentageToReplacement);
             this.Controls.Add(this.normalizeMultipleSpaces);
-            this.Name = "OptionsPageControl";
+            this.Name = "OptionsConfigControl";
             this.Size = new System.Drawing.Size(818, 664);
             this.removeEmptyFolderExclusionsLayout.ResumeLayout(false);
             this.removeEmptyFolderExclusionsLayout.PerformLayout();

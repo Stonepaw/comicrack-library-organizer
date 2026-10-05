@@ -1,6 +1,6 @@
 namespace LibraryOrganizer.Controls
 {
-    partial class OverviewPageControl
+    partial class OverviewConfigControl
     {
         /// <summary> 
         /// Required designer variable.
