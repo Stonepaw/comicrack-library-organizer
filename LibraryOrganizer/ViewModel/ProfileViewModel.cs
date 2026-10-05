@@ -126,6 +126,11 @@ namespace LibraryOrganizer.ViewModel
         }
 
         /// <summary>
+        /// Folder paths to always ignore when comics are located within them.
+        /// </summary>
+        public List<string> ExcludeFolders => _profile.ExcludeFolders;
+
+        /// <summary>
         /// When enabled fail an operation when a configured empty field value is encountered.
         ///
         /// <see cref="FailOperationOnEmptyValueFields"/>

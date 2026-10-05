@@ -186,6 +186,7 @@ namespace LibraryOrganizer.Dialog
             overviewConfig.ProfileViewModel = current;
             optionsConfig.ProfileViewModel = current;
             emptyValuesConfig.ProfileViewModel = current;
+            folderRulesConfig.ProfileViewModel = current;
         }
     }
 }

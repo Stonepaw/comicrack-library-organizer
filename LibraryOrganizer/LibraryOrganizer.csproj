@@ -66,6 +66,12 @@
       <DependentUpon>EmptyValuesConfigControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\FolderBrowserUtil.cs" />
+    <Compile Include="Controls\FolderRulesConfigControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FolderRulesConfigControl.Designer.cs">
+      <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -169,6 +175,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Controls\EmptyValuesConfigControl.resx">
       <DependentUpon>EmptyValuesConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\FolderRulesConfigControl.resx">
+      <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>

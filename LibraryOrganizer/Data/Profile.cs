@@ -59,6 +59,11 @@ namespace LibraryOrganizer.Data
         public string EmptyFolderNameReplacement { get; set; } = string.Empty;
 
         /// <summary>
+        /// Folder paths to always ignore when comics are located within them.
+        /// </summary>
+        public List<string> ExcludeFolders { get; } = new List<string>();
+
+        /// <summary>
         /// When enabled fail an operation when a configured empty field value is encountered.
         ///
         /// <see cref="FailOperationOnEmptyValueFields"/>
