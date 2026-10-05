@@ -5,7 +5,7 @@ using LibraryOrganizer.ViewModel;
 
 namespace LibraryOrganizer.Controls
 {
-    internal partial class EmptyValuesConfigurationControl : UserControl
+    internal partial class EmptyValuesConfigControl : UserControl
     {
         private ProfileViewModel _profileViewModel;
 
@@ -22,7 +22,7 @@ namespace LibraryOrganizer.Controls
             }
         }
 
-        public EmptyValuesConfigurationControl()
+        public EmptyValuesConfigControl()
         {
             InitializeComponent();
         }

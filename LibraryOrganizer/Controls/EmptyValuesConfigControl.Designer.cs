@@ -1,6 +1,6 @@
 namespace LibraryOrganizer.Controls
 {
-    partial class EmptyValuesConfigurationControl
+    partial class EmptyValuesConfigControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -348,7 +348,7 @@ namespace LibraryOrganizer.Controls
             this.emptyFolderNameReplacementLabel.TabIndex = 0;
             this.emptyFolderNameReplacementLabel.Text = "Replace empty folder names with:";
             // 
-            // EmptyValuesConfigurationControl
+            // EmptyValuesConfigControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -360,7 +360,7 @@ namespace LibraryOrganizer.Controls
             this.Controls.Add(this.emptyFieldReplacementLabel);
             this.Controls.Add(this.emptyFolderNameReplacementLabel2);
             this.Controls.Add(this.emptyFolderNameReplacementLayout);
-            this.Name = "EmptyValuesConfigurationControl";
+            this.Name = "EmptyValuesConfigControl";
             this.Size = new System.Drawing.Size(711, 341);
             this.failOperationOnEmptyValueDestinationFolderLayout.ResumeLayout(false);
             this.failOperationOnEmptyValueDestinationFolderLayout.PerformLayout();

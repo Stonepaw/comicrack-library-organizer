@@ -85,7 +85,7 @@ namespace LibraryOrganizer.Dialog
             this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.overviewConfig = new LibraryOrganizer.Controls.OverviewConfigControl();
             this.optionsConfig = new LibraryOrganizer.Controls.OptionsConfigControl();
-            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigurationControl();
+            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigControl();
             this.configFormViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.folderRulesConfig = new LibraryOrganizer.Controls.FolderRulesConfigControl();
             toolStrip = new System.Windows.Forms.ToolStrip();
@@ -875,7 +875,7 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private OverviewConfigControl overviewConfig;
         private OptionsConfigControl optionsConfig;
-        private EmptyValuesConfigurationControl emptyValuesConfig;
+        private EmptyValuesConfigControl emptyValuesConfig;
         private FolderRulesConfigControl folderRulesConfig;
     }
 }
