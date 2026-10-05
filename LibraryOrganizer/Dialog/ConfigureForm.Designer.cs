@@ -46,43 +46,8 @@ namespace LibraryOrganizer.Dialog
             this.profileSelector = new System.Windows.Forms.ToolStripComboBox();
             this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.configurationPanel = new System.Windows.Forms.Panel();
-            this.overviewPage = new LibraryOrganizer.Controls.OverviewPageControl();
-            this.rulesPage = new System.Windows.Forms.TabControl();
-            this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
-            this.profileMetadataRulesControl1 = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
-            this.folderRulesTabPage = new System.Windows.Forms.TabPage();
-            this.excludedFoldersList = new System.Windows.Forms.ListView();
-            this.folderRulesActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.addExcludedFolder = new System.Windows.Forms.Button();
-            this.removeExcludedFolder = new System.Windows.Forms.Button();
-            this.excludedFolderLabel = new System.Windows.Forms.Label();
             this.optionsPage = new System.Windows.Forms.TabControl();
             this.optionsTabPage = new System.Windows.Forms.TabPage();
-            this.removeEmptyFolderExclusionsLayout = new System.Windows.Forms.Panel();
-            this.removeEmptyFolderExclusions = new System.Windows.Forms.ListBox();
-            this.removeEmptyFoldersExclusionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.removeEmptyFolderExclusionsActionPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.addEmptyFolderExclusion = new System.Windows.Forms.Button();
-            this.removeEmptyFolderExclusion = new System.Windows.Forms.Button();
-            this.removeEmptyFoldersLabel = new System.Windows.Forms.Label();
-            this.removeEmptyFolders = new System.Windows.Forms.CheckBox();
-            this.illegalCharacterReplacementsLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.illegalCharacterReplacementsLabel = new System.Windows.Forms.Label();
-            this.illegalCharacterReplacementsCharacterSelector = new System.Windows.Forms.ComboBox();
-            this.illegalCharacterReplacementsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.illegalCharacterReplacementsWith = new System.Windows.Forms.Label();
-            this.illegalCharacterReplacementsReplacement = new System.Windows.Forms.TextBox();
-            this.addIllegalCharacterReplacement = new System.Windows.Forms.Button();
-            this.removeIllegalCharacterReplacement = new System.Windows.Forms.Button();
-            this.monthReplacementsLayout = new System.Windows.Forms.FlowLayoutPanel();
-            this.monthReplacementsMonth = new System.Windows.Forms.Label();
-            this.monthReplacementsMonthSelector = new System.Windows.Forms.ComboBox();
-            this.monthReplacementsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.monthReplacementsWith = new System.Windows.Forms.Label();
-            this.monthReplacementsReplacement = new System.Windows.Forms.TextBox();
-            this.autoSelectSingleMultiValueField = new System.Windows.Forms.CheckBox();
-            this.copyReadPercentageToReplacement = new System.Windows.Forms.CheckBox();
-            this.normalizeMultipleSpaces = new System.Windows.Forms.CheckBox();
             this.emptyValuesTabPage = new System.Windows.Forms.TabPage();
             this.failOperationOnEmptyValueDestinationFolderLayout = new System.Windows.Forms.TableLayoutPanel();
             this.failOperationOnEmptyValueDestinationFolderBrowse = new System.Windows.Forms.Button();
@@ -105,6 +70,16 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacementLayout = new System.Windows.Forms.TableLayoutPanel();
             this.emptyFolderNameReplacement = new System.Windows.Forms.TextBox();
             this.emptyFolderNameReplacementLabel = new System.Windows.Forms.Label();
+            this.overviewPage = new LibraryOrganizer.Controls.OverviewPageControl();
+            this.rulesPage = new System.Windows.Forms.TabControl();
+            this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
+            this.profileMetadataRulesControl1 = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
+            this.folderRulesTabPage = new System.Windows.Forms.TabPage();
+            this.excludedFoldersList = new System.Windows.Forms.ListView();
+            this.folderRulesActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.addExcludedFolder = new System.Windows.Forms.Button();
+            this.removeExcludedFolder = new System.Windows.Forms.Button();
+            this.excludedFolderLabel = new System.Windows.Forms.Label();
             this.fileStructurePage = new System.Windows.Forms.Panel();
             this.fileStructureInsertControlsPanel = new System.Windows.Forms.Panel();
             this.insertControlsTabPanel = new System.Windows.Forms.TabControl();
@@ -137,25 +112,15 @@ namespace LibraryOrganizer.Dialog
             this.formActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.optionsPageControl = new LibraryOrganizer.Controls.OptionsPageControl();
             toolStrip = new System.Windows.Forms.ToolStrip();
             profileLabel = new System.Windows.Forms.ToolStripLabel();
             profileSeparator = new System.Windows.Forms.ToolStripSeparator();
             toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).BeginInit();
             this.configurationPanel.SuspendLayout();
-            this.rulesPage.SuspendLayout();
-            this.metadataRulesTabPage.SuspendLayout();
-            this.folderRulesTabPage.SuspendLayout();
-            this.folderRulesActionsLayout.SuspendLayout();
             this.optionsPage.SuspendLayout();
             this.optionsTabPage.SuspendLayout();
-            this.removeEmptyFolderExclusionsLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.removeEmptyFoldersExclusionsBindingSource)).BeginInit();
-            this.removeEmptyFolderExclusionsActionPanel.SuspendLayout();
-            this.illegalCharacterReplacementsLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.illegalCharacterReplacementsBindingSource)).BeginInit();
-            this.monthReplacementsLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.monthReplacementsBindingSource)).BeginInit();
             this.emptyValuesTabPage.SuspendLayout();
             this.failOperationOnEmptyValueDestinationFolderLayout.SuspendLayout();
             this.failOperationOnEmptyValueFieldsLayout.SuspendLayout();
@@ -164,6 +129,10 @@ namespace LibraryOrganizer.Dialog
             this.emptyFieldReplacementLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).BeginInit();
             this.emptyFolderNameReplacementLayout.SuspendLayout();
+            this.rulesPage.SuspendLayout();
+            this.metadataRulesTabPage.SuspendLayout();
+            this.folderRulesTabPage.SuspendLayout();
+            this.folderRulesActionsLayout.SuspendLayout();
             this.fileStructurePage.SuspendLayout();
             this.fileStructureInsertControlsPanel.SuspendLayout();
             this.insertControlsTabPanel.SuspendLayout();
@@ -325,8 +294,8 @@ namespace LibraryOrganizer.Dialog
             // 
             this.configurationPanel.AutoSize = true;
             this.configurationPanel.Controls.Add(this.overviewPage);
-            this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Controls.Add(this.optionsPage);
+            this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Controls.Add(this.fileStructurePage);
             this.configurationPanel.Controls.Add(this.folderStructurePage);
             this.configurationPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -336,120 +305,6 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel.Padding = new System.Windows.Forms.Padding(0, 12, 13, 4);
             this.configurationPanel.Size = new System.Drawing.Size(761, 605);
             this.configurationPanel.TabIndex = 0;
-            // 
-            // overviewPage
-            // 
-            this.overviewPage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.overviewPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewPage.Location = new System.Drawing.Point(0, 12);
-            this.overviewPage.Name = "overviewPage";
-            this.overviewPage.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.overviewPage.Size = new System.Drawing.Size(748, 589);
-            this.overviewPage.TabIndex = 4;
-            // 
-            // rulesPage
-            // 
-            this.rulesPage.Controls.Add(this.metadataRulesTabPage);
-            this.rulesPage.Controls.Add(this.folderRulesTabPage);
-            this.rulesPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rulesPage.Location = new System.Drawing.Point(0, 12);
-            this.rulesPage.Margin = new System.Windows.Forms.Padding(4);
-            this.rulesPage.Name = "rulesPage";
-            this.rulesPage.SelectedIndex = 0;
-            this.rulesPage.Size = new System.Drawing.Size(748, 589);
-            this.rulesPage.TabIndex = 9;
-            // 
-            // metadataRulesTabPage
-            // 
-            this.metadataRulesTabPage.Controls.Add(this.profileMetadataRulesControl1);
-            this.metadataRulesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.metadataRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.metadataRulesTabPage.Name = "metadataRulesTabPage";
-            this.metadataRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.metadataRulesTabPage.Size = new System.Drawing.Size(740, 560);
-            this.metadataRulesTabPage.TabIndex = 0;
-            this.metadataRulesTabPage.Text = "Metadata Rules";
-            this.metadataRulesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // profileMetadataRulesControl1
-            // 
-            this.profileMetadataRulesControl1.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.profileMetadataRulesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.profileMetadataRulesControl1.Location = new System.Drawing.Point(4, 4);
-            this.profileMetadataRulesControl1.Matcher = null;
-            this.profileMetadataRulesControl1.Name = "profileMetadataRulesControl1";
-            this.profileMetadataRulesControl1.Size = new System.Drawing.Size(732, 552);
-            this.profileMetadataRulesControl1.TabIndex = 0;
-            // 
-            // folderRulesTabPage
-            // 
-            this.folderRulesTabPage.Controls.Add(this.excludedFoldersList);
-            this.folderRulesTabPage.Controls.Add(this.folderRulesActionsLayout);
-            this.folderRulesTabPage.Controls.Add(this.excludedFolderLabel);
-            this.folderRulesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.folderRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.folderRulesTabPage.Name = "folderRulesTabPage";
-            this.folderRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.folderRulesTabPage.Size = new System.Drawing.Size(740, 560);
-            this.folderRulesTabPage.TabIndex = 1;
-            this.folderRulesTabPage.Text = "Folder Rules";
-            this.folderRulesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // excludedFoldersList
-            // 
-            this.excludedFoldersList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.excludedFoldersList.HideSelection = false;
-            this.excludedFoldersList.Location = new System.Drawing.Point(4, 32);
-            this.excludedFoldersList.Margin = new System.Windows.Forms.Padding(4);
-            this.excludedFoldersList.Name = "excludedFoldersList";
-            this.excludedFoldersList.Size = new System.Drawing.Size(624, 524);
-            this.excludedFoldersList.TabIndex = 1;
-            this.excludedFoldersList.UseCompatibleStateImageBehavior = false;
-            // 
-            // folderRulesActionsLayout
-            // 
-            this.folderRulesActionsLayout.AutoSize = true;
-            this.folderRulesActionsLayout.Controls.Add(this.addExcludedFolder);
-            this.folderRulesActionsLayout.Controls.Add(this.removeExcludedFolder);
-            this.folderRulesActionsLayout.Dock = System.Windows.Forms.DockStyle.Right;
-            this.folderRulesActionsLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.folderRulesActionsLayout.Location = new System.Drawing.Point(628, 32);
-            this.folderRulesActionsLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.folderRulesActionsLayout.Name = "folderRulesActionsLayout";
-            this.folderRulesActionsLayout.Size = new System.Drawing.Size(108, 524);
-            this.folderRulesActionsLayout.TabIndex = 2;
-            // 
-            // addExcludedFolder
-            // 
-            this.addExcludedFolder.Location = new System.Drawing.Point(4, 4);
-            this.addExcludedFolder.Margin = new System.Windows.Forms.Padding(4);
-            this.addExcludedFolder.Name = "addExcludedFolder";
-            this.addExcludedFolder.Size = new System.Drawing.Size(100, 28);
-            this.addExcludedFolder.TabIndex = 0;
-            this.addExcludedFolder.Text = "Add";
-            this.addExcludedFolder.UseVisualStyleBackColor = true;
-            // 
-            // removeExcludedFolder
-            // 
-            this.removeExcludedFolder.Location = new System.Drawing.Point(4, 40);
-            this.removeExcludedFolder.Margin = new System.Windows.Forms.Padding(4);
-            this.removeExcludedFolder.Name = "removeExcludedFolder";
-            this.removeExcludedFolder.Size = new System.Drawing.Size(100, 28);
-            this.removeExcludedFolder.TabIndex = 1;
-            this.removeExcludedFolder.Text = "Remove";
-            this.removeExcludedFolder.UseVisualStyleBackColor = true;
-            // 
-            // excludedFolderLabel
-            // 
-            this.excludedFolderLabel.AutoSize = true;
-            this.excludedFolderLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.excludedFolderLabel.Location = new System.Drawing.Point(4, 4);
-            this.excludedFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.excludedFolderLabel.Name = "excludedFolderLabel";
-            this.excludedFolderLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 6);
-            this.excludedFolderLabel.Size = new System.Drawing.Size(365, 28);
-            this.excludedFolderLabel.TabIndex = 0;
-            this.excludedFolderLabel.Text = "Do not move books if they are located in the following folders";
             // 
             // optionsPage
             // 
@@ -465,14 +320,7 @@ namespace LibraryOrganizer.Dialog
             // 
             // optionsTabPage
             // 
-            this.optionsTabPage.Controls.Add(this.removeEmptyFolderExclusionsLayout);
-            this.optionsTabPage.Controls.Add(this.removeEmptyFoldersLabel);
-            this.optionsTabPage.Controls.Add(this.removeEmptyFolders);
-            this.optionsTabPage.Controls.Add(this.illegalCharacterReplacementsLayout);
-            this.optionsTabPage.Controls.Add(this.monthReplacementsLayout);
-            this.optionsTabPage.Controls.Add(this.autoSelectSingleMultiValueField);
-            this.optionsTabPage.Controls.Add(this.copyReadPercentageToReplacement);
-            this.optionsTabPage.Controls.Add(this.normalizeMultipleSpaces);
+            this.optionsTabPage.Controls.Add(this.optionsPageControl);
             this.optionsTabPage.Location = new System.Drawing.Point(4, 25);
             this.optionsTabPage.Margin = new System.Windows.Forms.Padding(4);
             this.optionsTabPage.Name = "optionsTabPage";
@@ -481,297 +329,6 @@ namespace LibraryOrganizer.Dialog
             this.optionsTabPage.TabIndex = 0;
             this.optionsTabPage.Text = "Options";
             this.optionsTabPage.UseVisualStyleBackColor = true;
-            // 
-            // removeEmptyFolderExclusionsLayout
-            // 
-            this.removeEmptyFolderExclusionsLayout.Controls.Add(this.removeEmptyFolderExclusions);
-            this.removeEmptyFolderExclusionsLayout.Controls.Add(this.removeEmptyFolderExclusionsActionPanel);
-            this.removeEmptyFolderExclusionsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.removeEmptyFolderExclusionsLayout.Location = new System.Drawing.Point(9, 203);
-            this.removeEmptyFolderExclusionsLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.removeEmptyFolderExclusionsLayout.Name = "removeEmptyFolderExclusionsLayout";
-            this.removeEmptyFolderExclusionsLayout.Size = new System.Drawing.Size(722, 348);
-            this.removeEmptyFolderExclusionsLayout.TabIndex = 6;
-            // 
-            // removeEmptyFolderExclusions
-            // 
-            this.removeEmptyFolderExclusions.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "RemoveEmptyFolders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.removeEmptyFolderExclusions.DataSource = this.removeEmptyFoldersExclusionsBindingSource;
-            this.removeEmptyFolderExclusions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.removeEmptyFolderExclusions.FormattingEnabled = true;
-            this.removeEmptyFolderExclusions.ItemHeight = 16;
-            this.removeEmptyFolderExclusions.Location = new System.Drawing.Point(0, 0);
-            this.removeEmptyFolderExclusions.Name = "removeEmptyFolderExclusions";
-            this.removeEmptyFolderExclusions.Size = new System.Drawing.Size(614, 348);
-            this.removeEmptyFolderExclusions.TabIndex = 2;
-            this.removeEmptyFolderExclusions.EnabledChanged += new System.EventHandler(this.removeEmptyFolderExclusions_EnabledChanged);
-            // 
-            // removeEmptyFoldersExclusionsBindingSource
-            // 
-            this.removeEmptyFoldersExclusionsBindingSource.AllowNew = true;
-            this.removeEmptyFoldersExclusionsBindingSource.DataMember = "RemoveEmptyFoldersExclusions";
-            this.removeEmptyFoldersExclusionsBindingSource.DataSource = this.profileBindingSource;
-            // 
-            // removeEmptyFolderExclusionsActionPanel
-            // 
-            this.removeEmptyFolderExclusionsActionPanel.AutoSize = true;
-            this.removeEmptyFolderExclusionsActionPanel.Controls.Add(this.addEmptyFolderExclusion);
-            this.removeEmptyFolderExclusionsActionPanel.Controls.Add(this.removeEmptyFolderExclusion);
-            this.removeEmptyFolderExclusionsActionPanel.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.profileBindingSource, "RemoveEmptyFolders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.removeEmptyFolderExclusionsActionPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.removeEmptyFolderExclusionsActionPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.removeEmptyFolderExclusionsActionPanel.Location = new System.Drawing.Point(614, 0);
-            this.removeEmptyFolderExclusionsActionPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.removeEmptyFolderExclusionsActionPanel.Name = "removeEmptyFolderExclusionsActionPanel";
-            this.removeEmptyFolderExclusionsActionPanel.Size = new System.Drawing.Size(108, 348);
-            this.removeEmptyFolderExclusionsActionPanel.TabIndex = 1;
-            // 
-            // addEmptyFolderExclusion
-            // 
-            this.addEmptyFolderExclusion.Location = new System.Drawing.Point(4, 0);
-            this.addEmptyFolderExclusion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
-            this.addEmptyFolderExclusion.Name = "addEmptyFolderExclusion";
-            this.addEmptyFolderExclusion.Size = new System.Drawing.Size(100, 28);
-            this.addEmptyFolderExclusion.TabIndex = 0;
-            this.addEmptyFolderExclusion.Text = "Add";
-            this.addEmptyFolderExclusion.UseVisualStyleBackColor = true;
-            this.addEmptyFolderExclusion.Click += new System.EventHandler(this.addEmptyFolderExclusion_Click);
-            // 
-            // removeEmptyFolderExclusion
-            // 
-            this.removeEmptyFolderExclusion.Location = new System.Drawing.Point(4, 36);
-            this.removeEmptyFolderExclusion.Margin = new System.Windows.Forms.Padding(4);
-            this.removeEmptyFolderExclusion.Name = "removeEmptyFolderExclusion";
-            this.removeEmptyFolderExclusion.Size = new System.Drawing.Size(100, 28);
-            this.removeEmptyFolderExclusion.TabIndex = 1;
-            this.removeEmptyFolderExclusion.Text = "Remove";
-            this.removeEmptyFolderExclusion.UseVisualStyleBackColor = true;
-            this.removeEmptyFolderExclusion.Click += new System.EventHandler(this.removeEmptyFolderExclusion_Click);
-            // 
-            // removeEmptyFoldersLabel
-            // 
-            this.removeEmptyFoldersLabel.AutoSize = true;
-            this.removeEmptyFoldersLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.removeEmptyFoldersLabel.Location = new System.Drawing.Point(9, 184);
-            this.removeEmptyFoldersLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.removeEmptyFoldersLabel.Name = "removeEmptyFoldersLabel";
-            this.removeEmptyFoldersLabel.Padding = new System.Windows.Forms.Padding(3, 0, 0, 3);
-            this.removeEmptyFoldersLabel.Size = new System.Drawing.Size(241, 19);
-            this.removeEmptyFoldersLabel.TabIndex = 5;
-            this.removeEmptyFoldersLabel.Text = "But do not remove the following folders:";
-            // 
-            // removeEmptyFolders
-            // 
-            this.removeEmptyFolders.AutoSize = true;
-            this.removeEmptyFolders.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "RemoveEmptyFolders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.removeEmptyFolders.Dock = System.Windows.Forms.DockStyle.Top;
-            this.removeEmptyFolders.Location = new System.Drawing.Point(9, 158);
-            this.removeEmptyFolders.Margin = new System.Windows.Forms.Padding(4);
-            this.removeEmptyFolders.Name = "removeEmptyFolders";
-            this.removeEmptyFolders.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.removeEmptyFolders.Size = new System.Drawing.Size(722, 26);
-            this.removeEmptyFolders.TabIndex = 4;
-            this.removeEmptyFolders.Text = "Remove empty folders";
-            this.removeEmptyFolders.UseVisualStyleBackColor = true;
-            // 
-            // illegalCharacterReplacementsLayout
-            // 
-            this.illegalCharacterReplacementsLayout.AutoSize = true;
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.illegalCharacterReplacementsLabel);
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.illegalCharacterReplacementsCharacterSelector);
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.illegalCharacterReplacementsWith);
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.illegalCharacterReplacementsReplacement);
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.addIllegalCharacterReplacement);
-            this.illegalCharacterReplacementsLayout.Controls.Add(this.removeIllegalCharacterReplacement);
-            this.illegalCharacterReplacementsLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.illegalCharacterReplacementsLayout.Location = new System.Drawing.Point(9, 120);
-            this.illegalCharacterReplacementsLayout.Name = "illegalCharacterReplacementsLayout";
-            this.illegalCharacterReplacementsLayout.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.illegalCharacterReplacementsLayout.Size = new System.Drawing.Size(722, 38);
-            this.illegalCharacterReplacementsLayout.TabIndex = 0;
-            // 
-            // illegalCharacterReplacementsLabel
-            // 
-            this.illegalCharacterReplacementsLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.illegalCharacterReplacementsLabel.AutoSize = true;
-            this.illegalCharacterReplacementsLabel.Location = new System.Drawing.Point(0, 14);
-            this.illegalCharacterReplacementsLabel.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.illegalCharacterReplacementsLabel.Name = "illegalCharacterReplacementsLabel";
-            this.illegalCharacterReplacementsLabel.Size = new System.Drawing.Size(157, 16);
-            this.illegalCharacterReplacementsLabel.TabIndex = 0;
-            this.illegalCharacterReplacementsLabel.Text = "Replace illegal character";
-            // 
-            // illegalCharacterReplacementsCharacterSelector
-            // 
-            this.illegalCharacterReplacementsCharacterSelector.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.illegalCharacterReplacementsCharacterSelector.DataSource = this.illegalCharacterReplacementsBindingSource;
-            this.illegalCharacterReplacementsCharacterSelector.DisplayMember = "Character";
-            this.illegalCharacterReplacementsCharacterSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.illegalCharacterReplacementsCharacterSelector.FormattingEnabled = true;
-            this.illegalCharacterReplacementsCharacterSelector.Location = new System.Drawing.Point(165, 10);
-            this.illegalCharacterReplacementsCharacterSelector.Margin = new System.Windows.Forms.Padding(4);
-            this.illegalCharacterReplacementsCharacterSelector.Name = "illegalCharacterReplacementsCharacterSelector";
-            this.illegalCharacterReplacementsCharacterSelector.Size = new System.Drawing.Size(44, 24);
-            this.illegalCharacterReplacementsCharacterSelector.TabIndex = 1;
-            this.illegalCharacterReplacementsCharacterSelector.ValueMember = "Character";
-            // 
-            // illegalCharacterReplacementsBindingSource
-            // 
-            this.illegalCharacterReplacementsBindingSource.DataMember = "IllegalCharacterReplacements";
-            this.illegalCharacterReplacementsBindingSource.DataSource = this.profileBindingSource;
-            // 
-            // illegalCharacterReplacementsWith
-            // 
-            this.illegalCharacterReplacementsWith.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.illegalCharacterReplacementsWith.AutoSize = true;
-            this.illegalCharacterReplacementsWith.Location = new System.Drawing.Point(217, 14);
-            this.illegalCharacterReplacementsWith.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.illegalCharacterReplacementsWith.Name = "illegalCharacterReplacementsWith";
-            this.illegalCharacterReplacementsWith.Size = new System.Drawing.Size(29, 16);
-            this.illegalCharacterReplacementsWith.TabIndex = 2;
-            this.illegalCharacterReplacementsWith.Text = "with";
-            // 
-            // illegalCharacterReplacementsReplacement
-            // 
-            this.illegalCharacterReplacementsReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.illegalCharacterReplacementsReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.illegalCharacterReplacementsBindingSource, "Replacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.illegalCharacterReplacementsReplacement.Location = new System.Drawing.Point(253, 11);
-            this.illegalCharacterReplacementsReplacement.Name = "illegalCharacterReplacementsReplacement";
-            this.illegalCharacterReplacementsReplacement.Size = new System.Drawing.Size(57, 22);
-            this.illegalCharacterReplacementsReplacement.TabIndex = 6;
-            this.illegalCharacterReplacementsReplacement.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.illegalCharacterReplacementsReplacement_KeyPress);
-            // 
-            // addIllegalCharacterReplacement
-            // 
-            this.addIllegalCharacterReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.addIllegalCharacterReplacement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.addIllegalCharacterReplacement.Location = new System.Drawing.Point(317, 10);
-            this.addIllegalCharacterReplacement.Margin = new System.Windows.Forms.Padding(4);
-            this.addIllegalCharacterReplacement.Name = "addIllegalCharacterReplacement";
-            this.addIllegalCharacterReplacement.Size = new System.Drawing.Size(24, 24);
-            this.addIllegalCharacterReplacement.TabIndex = 4;
-            this.addIllegalCharacterReplacement.Text = "+";
-            this.addIllegalCharacterReplacement.UseVisualStyleBackColor = true;
-            this.addIllegalCharacterReplacement.Click += new System.EventHandler(this.addIllegalCharacterReplacement_Click);
-            // 
-            // removeIllegalCharacterReplacement
-            // 
-            this.removeIllegalCharacterReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.removeIllegalCharacterReplacement.Location = new System.Drawing.Point(349, 10);
-            this.removeIllegalCharacterReplacement.Margin = new System.Windows.Forms.Padding(4);
-            this.removeIllegalCharacterReplacement.Name = "removeIllegalCharacterReplacement";
-            this.removeIllegalCharacterReplacement.Size = new System.Drawing.Size(24, 24);
-            this.removeIllegalCharacterReplacement.TabIndex = 5;
-            this.removeIllegalCharacterReplacement.Text = "-";
-            this.removeIllegalCharacterReplacement.UseVisualStyleBackColor = true;
-            this.removeIllegalCharacterReplacement.Click += new System.EventHandler(this.removeIllegalCharacterReplacement_Click);
-            // 
-            // monthReplacementsLayout
-            // 
-            this.monthReplacementsLayout.AutoSize = true;
-            this.monthReplacementsLayout.Controls.Add(this.monthReplacementsMonth);
-            this.monthReplacementsLayout.Controls.Add(this.monthReplacementsMonthSelector);
-            this.monthReplacementsLayout.Controls.Add(this.monthReplacementsWith);
-            this.monthReplacementsLayout.Controls.Add(this.monthReplacementsReplacement);
-            this.monthReplacementsLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.monthReplacementsLayout.Location = new System.Drawing.Point(9, 82);
-            this.monthReplacementsLayout.Margin = new System.Windows.Forms.Padding(4);
-            this.monthReplacementsLayout.Name = "monthReplacementsLayout";
-            this.monthReplacementsLayout.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.monthReplacementsLayout.Size = new System.Drawing.Size(722, 38);
-            this.monthReplacementsLayout.TabIndex = 3;
-            // 
-            // monthReplacementsMonth
-            // 
-            this.monthReplacementsMonth.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.monthReplacementsMonth.AutoSize = true;
-            this.monthReplacementsMonth.Location = new System.Drawing.Point(0, 14);
-            this.monthReplacementsMonth.Margin = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.monthReplacementsMonth.Name = "monthReplacementsMonth";
-            this.monthReplacementsMonth.Size = new System.Drawing.Size(43, 16);
-            this.monthReplacementsMonth.TabIndex = 0;
-            this.monthReplacementsMonth.Text = "Month";
-            // 
-            // monthReplacementsMonthSelector
-            // 
-            this.monthReplacementsMonthSelector.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.monthReplacementsMonthSelector.DataSource = this.monthReplacementsBindingSource;
-            this.monthReplacementsMonthSelector.DisplayMember = "Month";
-            this.monthReplacementsMonthSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.monthReplacementsMonthSelector.FormattingEnabled = true;
-            this.monthReplacementsMonthSelector.Location = new System.Drawing.Point(51, 10);
-            this.monthReplacementsMonthSelector.Margin = new System.Windows.Forms.Padding(4);
-            this.monthReplacementsMonthSelector.Name = "monthReplacementsMonthSelector";
-            this.monthReplacementsMonthSelector.Size = new System.Drawing.Size(63, 24);
-            this.monthReplacementsMonthSelector.TabIndex = 1;
-            this.monthReplacementsMonthSelector.ValueMember = "Month";
-            // 
-            // monthReplacementsBindingSource
-            // 
-            this.monthReplacementsBindingSource.DataMember = "MonthReplacements";
-            this.monthReplacementsBindingSource.DataSource = this.profileBindingSource;
-            // 
-            // monthReplacementsWith
-            // 
-            this.monthReplacementsWith.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.monthReplacementsWith.AutoSize = true;
-            this.monthReplacementsWith.Location = new System.Drawing.Point(122, 14);
-            this.monthReplacementsWith.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.monthReplacementsWith.Name = "monthReplacementsWith";
-            this.monthReplacementsWith.Size = new System.Drawing.Size(17, 16);
-            this.monthReplacementsWith.TabIndex = 2;
-            this.monthReplacementsWith.Text = "is";
-            // 
-            // monthReplacementsReplacement
-            // 
-            this.monthReplacementsReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.monthReplacementsReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.monthReplacementsBindingSource, "Replacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.monthReplacementsReplacement.Location = new System.Drawing.Point(147, 11);
-            this.monthReplacementsReplacement.Margin = new System.Windows.Forms.Padding(4);
-            this.monthReplacementsReplacement.Name = "monthReplacementsReplacement";
-            this.monthReplacementsReplacement.Size = new System.Drawing.Size(192, 22);
-            this.monthReplacementsReplacement.TabIndex = 3;
-            // 
-            // autoSelectSingleMultiValueField
-            // 
-            this.autoSelectSingleMultiValueField.AutoSize = true;
-            this.autoSelectSingleMultiValueField.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "AutoSelectSingleMultiValueField", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.autoSelectSingleMultiValueField.Dock = System.Windows.Forms.DockStyle.Top;
-            this.autoSelectSingleMultiValueField.Location = new System.Drawing.Point(9, 56);
-            this.autoSelectSingleMultiValueField.Margin = new System.Windows.Forms.Padding(4);
-            this.autoSelectSingleMultiValueField.Name = "autoSelectSingleMultiValueField";
-            this.autoSelectSingleMultiValueField.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.autoSelectSingleMultiValueField.Size = new System.Drawing.Size(722, 26);
-            this.autoSelectSingleMultiValueField.TabIndex = 2;
-            this.autoSelectSingleMultiValueField.Text = "If there is only one value in a multiple value field then insert it without askin" +
-    "g";
-            this.autoSelectSingleMultiValueField.UseVisualStyleBackColor = true;
-            // 
-            // copyReadPercentageToReplacement
-            // 
-            this.copyReadPercentageToReplacement.AutoSize = true;
-            this.copyReadPercentageToReplacement.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "CopyReadPercentageToReplacement", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.copyReadPercentageToReplacement.Dock = System.Windows.Forms.DockStyle.Top;
-            this.copyReadPercentageToReplacement.Location = new System.Drawing.Point(9, 30);
-            this.copyReadPercentageToReplacement.Margin = new System.Windows.Forms.Padding(4);
-            this.copyReadPercentageToReplacement.Name = "copyReadPercentageToReplacement";
-            this.copyReadPercentageToReplacement.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.copyReadPercentageToReplacement.Size = new System.Drawing.Size(722, 26);
-            this.copyReadPercentageToReplacement.TabIndex = 1;
-            this.copyReadPercentageToReplacement.Text = "When overwriting an existing file, copy the read percentage to the new file";
-            this.copyReadPercentageToReplacement.UseVisualStyleBackColor = true;
-            // 
-            // normalizeMultipleSpaces
-            // 
-            this.normalizeMultipleSpaces.DataBindings.Add(new System.Windows.Forms.Binding("Checked", this.profileBindingSource, "NormalizeMultipleSpaces", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.normalizeMultipleSpaces.Dock = System.Windows.Forms.DockStyle.Top;
-            this.normalizeMultipleSpaces.Location = new System.Drawing.Point(9, 9);
-            this.normalizeMultipleSpaces.Margin = new System.Windows.Forms.Padding(4);
-            this.normalizeMultipleSpaces.Name = "normalizeMultipleSpaces";
-            this.normalizeMultipleSpaces.Size = new System.Drawing.Size(722, 21);
-            this.normalizeMultipleSpaces.TabIndex = 0;
-            this.normalizeMultipleSpaces.Text = "Replace multiple spaces with a single space";
-            this.normalizeMultipleSpaces.UseVisualStyleBackColor = true;
             // 
             // emptyValuesTabPage
             // 
@@ -1073,6 +630,120 @@ namespace LibraryOrganizer.Dialog
             this.emptyFolderNameReplacementLabel.Size = new System.Drawing.Size(208, 16);
             this.emptyFolderNameReplacementLabel.TabIndex = 0;
             this.emptyFolderNameReplacementLabel.Text = "Replace empty folder names with:";
+            // 
+            // overviewPage
+            // 
+            this.overviewPage.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.overviewPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewPage.Location = new System.Drawing.Point(0, 12);
+            this.overviewPage.Name = "overviewPage";
+            this.overviewPage.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.overviewPage.Size = new System.Drawing.Size(748, 589);
+            this.overviewPage.TabIndex = 4;
+            // 
+            // rulesPage
+            // 
+            this.rulesPage.Controls.Add(this.metadataRulesTabPage);
+            this.rulesPage.Controls.Add(this.folderRulesTabPage);
+            this.rulesPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rulesPage.Location = new System.Drawing.Point(0, 12);
+            this.rulesPage.Margin = new System.Windows.Forms.Padding(4);
+            this.rulesPage.Name = "rulesPage";
+            this.rulesPage.SelectedIndex = 0;
+            this.rulesPage.Size = new System.Drawing.Size(748, 589);
+            this.rulesPage.TabIndex = 9;
+            // 
+            // metadataRulesTabPage
+            // 
+            this.metadataRulesTabPage.Controls.Add(this.profileMetadataRulesControl1);
+            this.metadataRulesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.metadataRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.metadataRulesTabPage.Name = "metadataRulesTabPage";
+            this.metadataRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
+            this.metadataRulesTabPage.Size = new System.Drawing.Size(740, 560);
+            this.metadataRulesTabPage.TabIndex = 0;
+            this.metadataRulesTabPage.Text = "Metadata Rules";
+            this.metadataRulesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // profileMetadataRulesControl1
+            // 
+            this.profileMetadataRulesControl1.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.profileMetadataRulesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.profileMetadataRulesControl1.Location = new System.Drawing.Point(4, 4);
+            this.profileMetadataRulesControl1.Matcher = null;
+            this.profileMetadataRulesControl1.Name = "profileMetadataRulesControl1";
+            this.profileMetadataRulesControl1.Size = new System.Drawing.Size(732, 552);
+            this.profileMetadataRulesControl1.TabIndex = 0;
+            // 
+            // folderRulesTabPage
+            // 
+            this.folderRulesTabPage.Controls.Add(this.excludedFoldersList);
+            this.folderRulesTabPage.Controls.Add(this.folderRulesActionsLayout);
+            this.folderRulesTabPage.Controls.Add(this.excludedFolderLabel);
+            this.folderRulesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.folderRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.folderRulesTabPage.Name = "folderRulesTabPage";
+            this.folderRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
+            this.folderRulesTabPage.Size = new System.Drawing.Size(740, 560);
+            this.folderRulesTabPage.TabIndex = 1;
+            this.folderRulesTabPage.Text = "Folder Rules";
+            this.folderRulesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // excludedFoldersList
+            // 
+            this.excludedFoldersList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.excludedFoldersList.HideSelection = false;
+            this.excludedFoldersList.Location = new System.Drawing.Point(4, 32);
+            this.excludedFoldersList.Margin = new System.Windows.Forms.Padding(4);
+            this.excludedFoldersList.Name = "excludedFoldersList";
+            this.excludedFoldersList.Size = new System.Drawing.Size(624, 524);
+            this.excludedFoldersList.TabIndex = 1;
+            this.excludedFoldersList.UseCompatibleStateImageBehavior = false;
+            // 
+            // folderRulesActionsLayout
+            // 
+            this.folderRulesActionsLayout.AutoSize = true;
+            this.folderRulesActionsLayout.Controls.Add(this.addExcludedFolder);
+            this.folderRulesActionsLayout.Controls.Add(this.removeExcludedFolder);
+            this.folderRulesActionsLayout.Dock = System.Windows.Forms.DockStyle.Right;
+            this.folderRulesActionsLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.folderRulesActionsLayout.Location = new System.Drawing.Point(628, 32);
+            this.folderRulesActionsLayout.Margin = new System.Windows.Forms.Padding(4);
+            this.folderRulesActionsLayout.Name = "folderRulesActionsLayout";
+            this.folderRulesActionsLayout.Size = new System.Drawing.Size(108, 524);
+            this.folderRulesActionsLayout.TabIndex = 2;
+            // 
+            // addExcludedFolder
+            // 
+            this.addExcludedFolder.Location = new System.Drawing.Point(4, 4);
+            this.addExcludedFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.addExcludedFolder.Name = "addExcludedFolder";
+            this.addExcludedFolder.Size = new System.Drawing.Size(100, 28);
+            this.addExcludedFolder.TabIndex = 0;
+            this.addExcludedFolder.Text = "Add";
+            this.addExcludedFolder.UseVisualStyleBackColor = true;
+            // 
+            // removeExcludedFolder
+            // 
+            this.removeExcludedFolder.Location = new System.Drawing.Point(4, 40);
+            this.removeExcludedFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.removeExcludedFolder.Name = "removeExcludedFolder";
+            this.removeExcludedFolder.Size = new System.Drawing.Size(100, 28);
+            this.removeExcludedFolder.TabIndex = 1;
+            this.removeExcludedFolder.Text = "Remove";
+            this.removeExcludedFolder.UseVisualStyleBackColor = true;
+            // 
+            // excludedFolderLabel
+            // 
+            this.excludedFolderLabel.AutoSize = true;
+            this.excludedFolderLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.excludedFolderLabel.Location = new System.Drawing.Point(4, 4);
+            this.excludedFolderLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.excludedFolderLabel.Name = "excludedFolderLabel";
+            this.excludedFolderLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 6);
+            this.excludedFolderLabel.Size = new System.Drawing.Size(365, 28);
+            this.excludedFolderLabel.TabIndex = 0;
+            this.excludedFolderLabel.Text = "Do not move books if they are located in the following folders";
             // 
             // fileStructurePage
             // 
@@ -1455,6 +1126,15 @@ namespace LibraryOrganizer.Dialog
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
+            // optionsPageControl
+            // 
+            this.optionsPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsPageControl.Location = new System.Drawing.Point(9, 9);
+            this.optionsPageControl.Name = "optionsPageControl";
+            this.optionsPageControl.ProfileViewModel = null;
+            this.optionsPageControl.Size = new System.Drawing.Size(722, 542);
+            this.optionsPageControl.TabIndex = 7;
+            // 
             // ConfigureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1473,24 +1153,8 @@ namespace LibraryOrganizer.Dialog
             toolStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).EndInit();
             this.configurationPanel.ResumeLayout(false);
-            this.rulesPage.ResumeLayout(false);
-            this.metadataRulesTabPage.ResumeLayout(false);
-            this.folderRulesTabPage.ResumeLayout(false);
-            this.folderRulesTabPage.PerformLayout();
-            this.folderRulesActionsLayout.ResumeLayout(false);
             this.optionsPage.ResumeLayout(false);
             this.optionsTabPage.ResumeLayout(false);
-            this.optionsTabPage.PerformLayout();
-            this.removeEmptyFolderExclusionsLayout.ResumeLayout(false);
-            this.removeEmptyFolderExclusionsLayout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.removeEmptyFoldersExclusionsBindingSource)).EndInit();
-            this.removeEmptyFolderExclusionsActionPanel.ResumeLayout(false);
-            this.illegalCharacterReplacementsLayout.ResumeLayout(false);
-            this.illegalCharacterReplacementsLayout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.illegalCharacterReplacementsBindingSource)).EndInit();
-            this.monthReplacementsLayout.ResumeLayout(false);
-            this.monthReplacementsLayout.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.monthReplacementsBindingSource)).EndInit();
             this.emptyValuesTabPage.ResumeLayout(false);
             this.emptyValuesTabPage.PerformLayout();
             this.failOperationOnEmptyValueDestinationFolderLayout.ResumeLayout(false);
@@ -1503,6 +1167,11 @@ namespace LibraryOrganizer.Dialog
             ((System.ComponentModel.ISupportInitialize)(this.emptyFieldReplacementsBindingSource)).EndInit();
             this.emptyFolderNameReplacementLayout.ResumeLayout(false);
             this.emptyFolderNameReplacementLayout.PerformLayout();
+            this.rulesPage.ResumeLayout(false);
+            this.metadataRulesTabPage.ResumeLayout(false);
+            this.folderRulesTabPage.ResumeLayout(false);
+            this.folderRulesTabPage.PerformLayout();
+            this.folderRulesActionsLayout.ResumeLayout(false);
             this.fileStructurePage.ResumeLayout(false);
             this.fileStructurePage.PerformLayout();
             this.fileStructureInsertControlsPanel.ResumeLayout(false);
@@ -1527,8 +1196,6 @@ namespace LibraryOrganizer.Dialog
             this.PerformLayout();
 
         }
-
-        private System.Windows.Forms.ListBox removeEmptyFolderExclusions;
 
         #endregion
 
@@ -1574,26 +1241,6 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.TabControl optionsPage;
         private System.Windows.Forms.TabPage optionsTabPage;
         private System.Windows.Forms.TabPage emptyValuesTabPage;
-        private System.Windows.Forms.CheckBox autoSelectSingleMultiValueField;
-        private System.Windows.Forms.CheckBox copyReadPercentageToReplacement;
-        private System.Windows.Forms.CheckBox normalizeMultipleSpaces;
-        private System.Windows.Forms.FlowLayoutPanel illegalCharacterReplacementsLayout;
-        private System.Windows.Forms.FlowLayoutPanel monthReplacementsLayout;
-        private System.Windows.Forms.Label monthReplacementsMonth;
-        private System.Windows.Forms.ComboBox monthReplacementsMonthSelector;
-        private System.Windows.Forms.Label monthReplacementsWith;
-        private System.Windows.Forms.TextBox monthReplacementsReplacement;
-        private System.Windows.Forms.Label illegalCharacterReplacementsLabel;
-        private System.Windows.Forms.ComboBox illegalCharacterReplacementsCharacterSelector;
-        private System.Windows.Forms.Label illegalCharacterReplacementsWith;
-        private System.Windows.Forms.Button addIllegalCharacterReplacement;
-        private System.Windows.Forms.Button removeIllegalCharacterReplacement;
-        private System.Windows.Forms.Panel removeEmptyFolderExclusionsLayout;
-        private System.Windows.Forms.Label removeEmptyFoldersLabel;
-        private System.Windows.Forms.CheckBox removeEmptyFolders;
-        private System.Windows.Forms.FlowLayoutPanel removeEmptyFolderExclusionsActionPanel;
-        private System.Windows.Forms.Button addEmptyFolderExclusion;
-        private System.Windows.Forms.Button removeEmptyFolderExclusion;
         private System.Windows.Forms.Label emptyFieldReplacementLabel;
         private System.Windows.Forms.Label emptyFolderNameReplacementLabel2;
         private System.Windows.Forms.TextBox emptyFolderNameReplacement;
@@ -1610,12 +1257,8 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.Button failOperationOnEmptyValueDestinationFolderBrowse;
         private System.Windows.Forms.TextBox failOperationOnEmptyValueDestinationFolder;
         private System.Windows.Forms.TableLayoutPanel emptyFolderNameReplacementLayout;
-        private System.Windows.Forms.TextBox illegalCharacterReplacementsReplacement;
         private System.Windows.Forms.DataGridView failOperationOnEmptyValueFields;
         private System.Windows.Forms.BindingSource profileBindingSource;
-        private System.Windows.Forms.BindingSource monthReplacementsBindingSource;
-        private System.Windows.Forms.BindingSource illegalCharacterReplacementsBindingSource;
-        private System.Windows.Forms.BindingSource removeEmptyFoldersExclusionsBindingSource;
         private System.Windows.Forms.BindingSource emptyFieldReplacementsBindingSource;
         private System.Windows.Forms.BindingSource failOperationOnEmptyValueFieldsBindingSource;
         private System.Windows.Forms.DataGridViewCheckBoxColumn emptyValueFieldEnabledColumn;
@@ -1632,6 +1275,7 @@ namespace LibraryOrganizer.Dialog
         private ProfileMatcherGroupControl profileMetadataRulesControl1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private OverviewPageControl overviewPage;
+        private OptionsPageControl optionsPageControl;
     }
 }
 

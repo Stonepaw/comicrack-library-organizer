@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
+using LibraryOrganizer.Controls;
 using LibraryOrganizer.Data;
 using LibraryOrganizer.ViewModel;
 
@@ -70,7 +70,6 @@ namespace LibraryOrganizer.Dialog
             profileBindingSource.DataSource = _profiles;
             configFormViewModelBindingSource.DataSource = _configFormViewModel;
 
-            removeEmptyFolderExclusions.SelectedIndex = -1;
             overviewButton.Tag = ConfigFormPage.Overview;
             filesButton.Tag = ConfigFormPage.Files;
             foldersButton.Tag = ConfigFormPage.Folders;
@@ -92,6 +91,7 @@ namespace LibraryOrganizer.Dialog
                 new Binding("FolderButtonEnabled", profileBindingSource, "UseFolderOrganization")
             );
             DataBindings.Add("CurrentPage", _configFormViewModel, "CurrentPage");
+
             FileButtonEnabled = CurrentProfileViewModel.UseFileNaming;
             FolderButtonEnabled = CurrentProfileViewModel.UseFolderOrganization;
             SetCurrentPage(ConfigFormPage.Overview);
@@ -102,9 +102,11 @@ namespace LibraryOrganizer.Dialog
                 if (CurrentProfileViewModel != null)
                 {
                     overviewPage.ProfileViewModel = CurrentProfileViewModel;
+                    optionsPageControl.ProfileViewModel = CurrentProfileViewModel;
                 }
             };
             overviewPage.ProfileViewModel = CurrentProfileViewModel;
+            optionsPageControl.ProfileViewModel = CurrentProfileViewModel;
 
             ResumeLayout();
         }
@@ -122,34 +124,6 @@ namespace LibraryOrganizer.Dialog
             }
         }
 
-        private void addEmptyFolderExclusion_Click(object sender, EventArgs e)
-        {
-            string folder = SelectFolder();
-
-            if (folder != null)
-            {
-                removeEmptyFoldersExclusionsBindingSource.Add(folder);
-            }
-        }
-
-        private void removeEmptyFolderExclusion_Click(object sender, EventArgs e)
-        {
-            if (removeEmptyFolderExclusions.SelectedIndex >= 0)
-            {
-                removeEmptyFoldersExclusionsBindingSource.RemoveAt(
-                    removeEmptyFolderExclusions.SelectedIndex
-                );
-            }
-        }
-
-        private void removeEmptyFolderExclusions_EnabledChanged(object sender, EventArgs e)
-        {
-            if (!removeEmptyFolderExclusions.Enabled)
-            {
-                removeEmptyFolderExclusions.ClearSelected();
-            }
-        }
-
         private void failOperationOnEmptyValueFields_EnabledChanged(object sender, EventArgs e)
         {
             if (failOperationOnEmptyValueFields.Enabled)
@@ -164,47 +138,6 @@ namespace LibraryOrganizer.Dialog
                 failOperationOnEmptyValueFields.DefaultCellStyle.ForeColor = SystemColors.GrayText;
                 failOperationOnEmptyValueFields.DefaultCellStyle.SelectionForeColor =
                     SystemColors.GrayText;
-            }
-        }
-
-        private void addIllegalCharacterReplacement_Click(object sender, EventArgs e)
-        {
-            var addIllegalCharacterDialog = new AddIllegalCharacterDialog(
-                CurrentProfileViewModel.IllegalCharacterReplacements
-            );
-
-            if (addIllegalCharacterDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                var index = illegalCharacterReplacementsBindingSource.Add(
-                    new IllegalCharacterReplacement(addIllegalCharacterDialog.GetCharacter(), "")
-                );
-                illegalCharacterReplacementsBindingSource.Position = index;
-            }
-        }
-
-        private void removeIllegalCharacterReplacement_Click(object sender, EventArgs e)
-        {
-            if (
-                !(
-                    (IllegalCharacterReplacement)illegalCharacterReplacementsBindingSource.Current
-                ).IsRequired()
-            )
-            {
-                illegalCharacterReplacementsBindingSource.RemoveCurrent();
-            }
-        }
-
-        /// <summary>
-        /// Disallows entering required illegal characters since they would just get replaced anyway.
-        /// </summary>
-        private void illegalCharacterReplacementsReplacement_KeyPress(
-            object sender,
-            KeyPressEventArgs e
-        )
-        {
-            if (IllegalCharacterReplacement.IsRequiredIllegalCharacter(e.KeyChar))
-            {
-                e.Handled = true;
             }
         }
 

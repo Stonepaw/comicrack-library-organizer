@@ -79,6 +79,12 @@
     <Compile Include="Controls\NumberMatcherValueControl.Designer.cs">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OptionsPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\OptionsPageControl.Designer.cs">
+      <DependentUpon>OptionsPageControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\OverviewPageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -109,10 +115,10 @@
     <Compile Include="Data\MonthReplacement.cs" />
     <Compile Include="Data\OperationMode.cs" />
     <Compile Include="Data\Profile.cs" />
-    <Compile Include="Dialog\AddIllegalCharacterDialog.cs">
+    <Compile Include="Controls\AddIllegalCharacterDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialog\AddIllegalCharacterDialog.Designer.cs">
+    <Compile Include="Controls\AddIllegalCharacterDialog.Designer.cs">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialog\AddProfileDialog.cs">
@@ -164,6 +170,9 @@
     <EmbeddedResource Include="Controls\NumberMatcherValueControl.resx">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\OptionsPageControl.resx">
+      <DependentUpon>OptionsPageControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\OverviewPageControl.resx">
       <DependentUpon>OverviewPageControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -176,7 +185,7 @@
     <EmbeddedResource Include="Controls\StringMatcherValueControl.resx">
       <DependentUpon>StringMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialog\AddIllegalCharacterDialog.resx">
+    <EmbeddedResource Include="Controls\AddIllegalCharacterDialog.resx">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddProfileDialog.resx">

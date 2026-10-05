@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using LibraryOrganizer.Data;
 
-namespace LibraryOrganizer.Dialog
+namespace LibraryOrganizer.Controls
 {
     public partial class AddIllegalCharacterDialog : Form
     {

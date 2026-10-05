@@ -1,4 +1,4 @@
-namespace LibraryOrganizer.Dialog
+namespace LibraryOrganizer.Controls
 {
     partial class AddIllegalCharacterDialog
     {
