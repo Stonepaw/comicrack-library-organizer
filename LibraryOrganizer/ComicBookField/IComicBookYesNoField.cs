@@ -1,4 +1,4 @@
-﻿using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine;
 
 namespace LibraryOrganizer.ComicBookField
 {

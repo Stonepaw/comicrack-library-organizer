@@ -54,9 +54,11 @@
     <Compile Include="ComicBookField\ComicBookFieldBase.cs" />
     <Compile Include="ComicBookField\ComicBookIntField.cs" />
     <Compile Include="ComicBookField\ComicBookStringField.cs" />
+    <Compile Include="ComicBookField\ComicBookMangaYesNoField.cs" />
     <Compile Include="ComicBookField\ComicBookYesNoField.cs" />
     <Compile Include="ComicBookField\IComicBookField.cs" />
     <Compile Include="ComicBookField\IComicBookIntField.cs" />
+    <Compile Include="ComicBookField\IComicBookMangaYesNoField.cs" />
     <Compile Include="ComicBookField\IComicBookStringField.cs" />
     <Compile Include="ComicBookField\IComicBookYesNoField.cs" />
     <Compile Include="Controls\EmptyValuesConfigControl.cs">
@@ -226,6 +228,8 @@
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.YesNoMatcherValueViewModel.datasource" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="todo.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
