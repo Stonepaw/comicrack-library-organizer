@@ -56,6 +56,18 @@ namespace LibraryOrganizer.ViewModel
 
             switch (matcher)
             {
+                case IBookFieldIntMatcher bookFieldIntMatcher:
+                {
+                    _field = bookFieldIntMatcher.Field;
+                    _value = new NumberMatcherValueViewModel(bookFieldIntMatcher);
+                    break;
+                }
+                case IBookFieldMangaYesNoMatcher bookFieldMangaYesNoMatcher:
+                {
+                    _field = bookFieldMangaYesNoMatcher.Field;
+                    _value = new MangaYesNoMatcherValueViewModel(bookFieldMangaYesNoMatcher);
+                    break;
+                }
                 case IBookFieldStringMatcher bookFieldStringMatcher:
                 {
                     _field = bookFieldStringMatcher.Field;
@@ -66,12 +78,6 @@ namespace LibraryOrganizer.ViewModel
                 {
                     _field = bookFieldYesNoMatcher.Field;
                     _value = new YesNoMatcherValueViewModel(bookFieldYesNoMatcher);
-                    break;
-                }
-                case IBookFieldIntMatcher bookFieldIntMatcher:
-                {
-                    _field = bookFieldIntMatcher.Field;
-                    _value = new NumberMatcherValueViewModel(bookFieldIntMatcher);
                     break;
                 }
             }
@@ -98,6 +104,9 @@ namespace LibraryOrganizer.ViewModel
             {
                 case ComicBookIntField _ when !(_value is NumberMatcherValueViewModel):
                     _value = new NumberMatcherValueViewModel();
+                    return true;
+                case ComicBookMangaYesNoField _ when !(_value is MangaYesNoMatcherValueViewModel):
+                    _value = new MangaYesNoMatcherValueViewModel();
                     return true;
                 case ComicBookStringField _ when !(_value is StringMatcherValueViewModel):
                     _value = new StringMatcherValueViewModel();

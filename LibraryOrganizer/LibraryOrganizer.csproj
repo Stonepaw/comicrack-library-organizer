@@ -74,6 +74,12 @@
     <Compile Include="Controls\FolderRulesConfigControl.Designer.cs">
       <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MangaYesNoMatcherValueControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MangaYesNoMatcherValueControl.Designer.cs">
+      <DependentUpon>MangaYesNoMatcherValueControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MatcherGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -149,6 +155,7 @@
     </Compile>
     <Compile Include="Matcher\GroupMatcherMode.cs" />
     <Compile Include="Matcher\IBookFieldIntMatcher.cs" />
+    <Compile Include="Matcher\IBookFieldMangaYesNoMatcher.cs" />
     <Compile Include="Matcher\NumberMatcherMode.cs" />
     <Compile Include="Matcher\IBookFieldStringMatcher.cs" />
     <Compile Include="Matcher\StringMatcherMode.cs" />
@@ -167,6 +174,7 @@
     <Compile Include="ViewModel\IMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\IMatcherViewModel.cs" />
     <Compile Include="ViewModel\GroupMatcherViewModel.cs" />
+    <Compile Include="ViewModel\MangaYesNoMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\NumberMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\BookFieldMatcherViewModel.cs" />
     <Compile Include="ViewModel\ProfileViewModel.cs" />
@@ -180,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\FolderRulesConfigControl.resx">
       <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MangaYesNoMatcherValueControl.resx">
+      <DependentUpon>MangaYesNoMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\MatcherGroupControl.resx">
       <DependentUpon>MatcherGroupControl.cs</DependentUpon>
@@ -223,6 +234,7 @@
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.BookFieldMatcherViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ConfigFormViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.GroupMatcherViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.MangaYesNoMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.NumberMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />

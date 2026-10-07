@@ -62,6 +62,9 @@ namespace LibraryOrganizer.Controls
         {
             switch (_viewModel.Value)
             {
+                case MangaYesNoMatcherValueViewModel mangaYesNoMatcherValueViewModel:
+                    UseMangaYesNoMatcherValueControl(mangaYesNoMatcherValueViewModel);
+                    break;
                 case NumberMatcherValueViewModel numberMatcherValueViewModel:
                     UseNumberMatcherValueControl(numberMatcherValueViewModel);
                     break;
@@ -77,6 +80,19 @@ namespace LibraryOrganizer.Controls
                     matcherValuePanel.ResumeLayout();
                     break;
             }
+        }
+
+        private void UseMangaYesNoMatcherValueControl(MangaYesNoMatcherValueViewModel viewModel)
+        {
+            if (
+                matcherValuePanel.Controls.Count > 0
+                && matcherValuePanel.Controls[0] is MangaYesNoMatcherValueControl
+            )
+            {
+                return;
+            }
+
+            SetValueControl(new MangaYesNoMatcherValueControl(viewModel));
         }
 
         private void UseNumberMatcherValueControl(NumberMatcherValueViewModel viewModel)
