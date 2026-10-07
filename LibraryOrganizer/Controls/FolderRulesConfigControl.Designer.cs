@@ -34,11 +34,11 @@ namespace LibraryOrganizer.Controls
             this.removeExcludedFolder = new System.Windows.Forms.Button();
             this.excludedFolderLabel = new System.Windows.Forms.Label();
             this.excludedFoldersList = new System.Windows.Forms.ListBox();
-            this.profileViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.excludeFoldersBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.profileViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.folderRulesActionsLayout.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.profileViewModelBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.excludeFoldersBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileViewModelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // folderRulesActionsLayout
@@ -99,14 +99,14 @@ namespace LibraryOrganizer.Controls
             this.excludedFoldersList.Size = new System.Drawing.Size(489, 464);
             this.excludedFoldersList.TabIndex = 6;
             // 
-            // profileViewModelBindingSource
-            // 
-            this.profileViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
-            // 
             // excludeFoldersBindingSource
             // 
             this.excludeFoldersBindingSource.DataMember = "ExcludeFolders";
             this.excludeFoldersBindingSource.DataSource = this.profileViewModelBindingSource;
+            // 
+            // profileViewModelBindingSource
+            // 
+            this.profileViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
             // 
             // FolderRulesConfigControl
             // 
@@ -118,8 +118,8 @@ namespace LibraryOrganizer.Controls
             this.Name = "FolderRulesConfigControl";
             this.Size = new System.Drawing.Size(597, 492);
             this.folderRulesActionsLayout.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.profileViewModelBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.excludeFoldersBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileViewModelBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
