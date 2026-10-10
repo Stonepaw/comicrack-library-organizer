@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using LibraryOrganizer.Data;
 
@@ -363,5 +364,23 @@ namespace LibraryOrganizer.ViewModel
                     (v) => _profile.UseFolderOrganization = v
                 );
         }
+
+        public List<TemplateViewModel> Templates { get; } =
+            new List<TemplateViewModel>
+            {
+                // TODO: Use ComicBookField instead
+                new TemplateViewModel("Editor", "Editor", new CsvTemplateFormatViewModel()),
+                new TemplateViewModel("Series", "Series", new EmptyInsertTemplateFormatViewModel()),
+                new TemplateViewModel("Count", "Count", new NumberInsertTemplateFormatConfig())
+                {
+                    Prefix = "(of ",
+                    Suffix = ")",
+                },
+                new TemplateViewModel(
+                    "SeriesComplete",
+                    "Series Complete",
+                    new YesNoInsertTemplateFormatConfig { Text = "Complete" }
+                ),
+            };
     }
 }

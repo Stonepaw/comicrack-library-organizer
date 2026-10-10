@@ -44,23 +44,10 @@ namespace LibraryOrganizer.Dialog
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.profileSelector = new System.Windows.Forms.ToolStripComboBox();
             this.configurationPanel = new System.Windows.Forms.Panel();
-            this.rulesPage = new System.Windows.Forms.TabControl();
-            this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
-            this.profileMetadataRules = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
-            this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.folderRulesTabPage = new System.Windows.Forms.TabPage();
-            this.folderRulesConfig = new LibraryOrganizer.Controls.FolderRulesConfigControl();
-            this.overviewConfig = new LibraryOrganizer.Controls.OverviewConfigControl();
-            this.optionsPage = new System.Windows.Forms.TabControl();
-            this.optionsTabPage = new System.Windows.Forms.TabPage();
-            this.optionsConfig = new LibraryOrganizer.Controls.OptionsConfigControl();
-            this.emptyValuesTabPage = new System.Windows.Forms.TabPage();
-            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigControl();
             this.fileStructurePage = new System.Windows.Forms.Panel();
-            this.fileStructureInsertControlsPanel = new System.Windows.Forms.Panel();
-            this.insertControlsTabPanel = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.insertTemplateControl1 = new LibraryOrganizer.Controls.InsertTemplateControl();
+            this.templatesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.profileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.fileSpaceAutomatically = new System.Windows.Forms.CheckBox();
             this.fileStructurePreviewLayout = new System.Windows.Forms.TableLayoutPanel();
             this.fileStructurePreviewLabel = new System.Windows.Forms.Label();
@@ -70,6 +57,7 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePanel = new System.Windows.Forms.Panel();
             this.fileStructureLabel = new System.Windows.Forms.Label();
             this.fileStructureTextBox = new System.Windows.Forms.TextBox();
+            this.overviewConfig = new LibraryOrganizer.Controls.OverviewConfigControl();
             this.folderStructurePage = new System.Windows.Forms.Panel();
             this.folderInsertControlsPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -84,25 +72,29 @@ namespace LibraryOrganizer.Dialog
             this.folderStructurePanel = new System.Windows.Forms.Panel();
             this.folderStructureLabel = new System.Windows.Forms.Label();
             this.folderStructure = new System.Windows.Forms.TextBox();
+            this.rulesPage = new System.Windows.Forms.TabControl();
+            this.metadataRulesTabPage = new System.Windows.Forms.TabPage();
+            this.profileMetadataRules = new LibraryOrganizer.Controls.ProfileMatcherGroupControl();
+            this.folderRulesTabPage = new System.Windows.Forms.TabPage();
+            this.folderRulesConfig = new LibraryOrganizer.Controls.FolderRulesConfigControl();
+            this.optionsPage = new System.Windows.Forms.TabControl();
+            this.optionsTabPage = new System.Windows.Forms.TabPage();
+            this.optionsConfig = new LibraryOrganizer.Controls.OptionsConfigControl();
+            this.emptyValuesTabPage = new System.Windows.Forms.TabPage();
+            this.emptyValuesConfig = new LibraryOrganizer.Controls.EmptyValuesConfigControl();
             this.formActionsLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.configFormViewModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             toolStrip = new System.Windows.Forms.ToolStrip();
             profileLabel = new System.Windows.Forms.ToolStripLabel();
             profileSeparator = new System.Windows.Forms.ToolStripSeparator();
             toolStrip.SuspendLayout();
             this.configurationPanel.SuspendLayout();
-            this.rulesPage.SuspendLayout();
-            this.metadataRulesTabPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).BeginInit();
-            this.folderRulesTabPage.SuspendLayout();
-            this.optionsPage.SuspendLayout();
-            this.optionsTabPage.SuspendLayout();
-            this.emptyValuesTabPage.SuspendLayout();
             this.fileStructurePage.SuspendLayout();
-            this.fileStructureInsertControlsPanel.SuspendLayout();
-            this.insertControlsTabPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.templatesBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).BeginInit();
             this.fileStructurePreviewLayout.SuspendLayout();
             this.fileStructurePanel.SuspendLayout();
             this.folderStructurePage.SuspendLayout();
@@ -111,8 +103,15 @@ namespace LibraryOrganizer.Dialog
             this.folderStructurePreviewLayout.SuspendLayout();
             this.folderStructureActionsLayout.SuspendLayout();
             this.folderStructurePanel.SuspendLayout();
+            this.rulesPage.SuspendLayout();
+            this.metadataRulesTabPage.SuspendLayout();
+            this.folderRulesTabPage.SuspendLayout();
+            this.optionsPage.SuspendLayout();
+            this.optionsTabPage.SuspendLayout();
+            this.emptyValuesTabPage.SuspendLayout();
             this.formActionsLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -256,8 +255,8 @@ namespace LibraryOrganizer.Dialog
             // configurationPanel
             // 
             this.configurationPanel.AutoSize = true;
-            this.configurationPanel.Controls.Add(this.overviewConfig);
             this.configurationPanel.Controls.Add(this.fileStructurePage);
+            this.configurationPanel.Controls.Add(this.overviewConfig);
             this.configurationPanel.Controls.Add(this.folderStructurePage);
             this.configurationPanel.Controls.Add(this.rulesPage);
             this.configurationPanel.Controls.Add(this.optionsPage);
@@ -269,133 +268,10 @@ namespace LibraryOrganizer.Dialog
             this.configurationPanel.Size = new System.Drawing.Size(761, 605);
             this.configurationPanel.TabIndex = 0;
             // 
-            // rulesPage
-            // 
-            this.rulesPage.Controls.Add(this.metadataRulesTabPage);
-            this.rulesPage.Controls.Add(this.folderRulesTabPage);
-            this.rulesPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rulesPage.Location = new System.Drawing.Point(0, 12);
-            this.rulesPage.Margin = new System.Windows.Forms.Padding(4);
-            this.rulesPage.Name = "rulesPage";
-            this.rulesPage.SelectedIndex = 0;
-            this.rulesPage.Size = new System.Drawing.Size(748, 589);
-            this.rulesPage.TabIndex = 9;
-            // 
-            // metadataRulesTabPage
-            // 
-            this.metadataRulesTabPage.Controls.Add(this.profileMetadataRules);
-            this.metadataRulesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.metadataRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.metadataRulesTabPage.Name = "metadataRulesTabPage";
-            this.metadataRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.metadataRulesTabPage.Size = new System.Drawing.Size(740, 560);
-            this.metadataRulesTabPage.TabIndex = 0;
-            this.metadataRulesTabPage.Text = "Metadata Rules";
-            this.metadataRulesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // profileMetadataRules
-            // 
-            this.profileMetadataRules.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.profileMetadataRules.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.profileMetadataRules.Location = new System.Drawing.Point(4, 4);
-            this.profileMetadataRules.Matcher = null;
-            this.profileMetadataRules.Name = "profileMetadataRules";
-            this.profileMetadataRules.Size = new System.Drawing.Size(732, 552);
-            this.profileMetadataRules.TabIndex = 0;
-            // 
-            // profileBindingSource
-            // 
-            this.profileBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
-            // 
-            // folderRulesTabPage
-            // 
-            this.folderRulesTabPage.Controls.Add(this.folderRulesConfig);
-            this.folderRulesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.folderRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.folderRulesTabPage.Name = "folderRulesTabPage";
-            this.folderRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.folderRulesTabPage.Size = new System.Drawing.Size(740, 560);
-            this.folderRulesTabPage.TabIndex = 1;
-            this.folderRulesTabPage.Text = "Folder Rules";
-            this.folderRulesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // folderRulesConfig
-            // 
-            this.folderRulesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.folderRulesConfig.Location = new System.Drawing.Point(4, 4);
-            this.folderRulesConfig.Name = "folderRulesConfig";
-            this.folderRulesConfig.ProfileViewModel = null;
-            this.folderRulesConfig.Size = new System.Drawing.Size(732, 552);
-            this.folderRulesConfig.TabIndex = 0;
-            // 
-            // overviewConfig
-            // 
-            this.overviewConfig.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.overviewConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewConfig.Location = new System.Drawing.Point(0, 12);
-            this.overviewConfig.Name = "overviewConfig";
-            this.overviewConfig.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
-            this.overviewConfig.Size = new System.Drawing.Size(748, 589);
-            this.overviewConfig.TabIndex = 4;
-            // 
-            // optionsPage
-            // 
-            this.optionsPage.Controls.Add(this.optionsTabPage);
-            this.optionsPage.Controls.Add(this.emptyValuesTabPage);
-            this.optionsPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsPage.Location = new System.Drawing.Point(0, 12);
-            this.optionsPage.Margin = new System.Windows.Forms.Padding(4);
-            this.optionsPage.Name = "optionsPage";
-            this.optionsPage.SelectedIndex = 0;
-            this.optionsPage.Size = new System.Drawing.Size(748, 589);
-            this.optionsPage.TabIndex = 10;
-            // 
-            // optionsTabPage
-            // 
-            this.optionsTabPage.Controls.Add(this.optionsConfig);
-            this.optionsTabPage.Location = new System.Drawing.Point(4, 25);
-            this.optionsTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.optionsTabPage.Name = "optionsTabPage";
-            this.optionsTabPage.Padding = new System.Windows.Forms.Padding(9);
-            this.optionsTabPage.Size = new System.Drawing.Size(740, 560);
-            this.optionsTabPage.TabIndex = 0;
-            this.optionsTabPage.Text = "Options";
-            this.optionsTabPage.UseVisualStyleBackColor = true;
-            // 
-            // optionsConfig
-            // 
-            this.optionsConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsConfig.Location = new System.Drawing.Point(9, 9);
-            this.optionsConfig.Name = "optionsConfig";
-            this.optionsConfig.ProfileViewModel = null;
-            this.optionsConfig.Size = new System.Drawing.Size(722, 542);
-            this.optionsConfig.TabIndex = 7;
-            // 
-            // emptyValuesTabPage
-            // 
-            this.emptyValuesTabPage.Controls.Add(this.emptyValuesConfig);
-            this.emptyValuesTabPage.Location = new System.Drawing.Point(4, 25);
-            this.emptyValuesTabPage.Margin = new System.Windows.Forms.Padding(4);
-            this.emptyValuesTabPage.Name = "emptyValuesTabPage";
-            this.emptyValuesTabPage.Padding = new System.Windows.Forms.Padding(4);
-            this.emptyValuesTabPage.Size = new System.Drawing.Size(740, 560);
-            this.emptyValuesTabPage.TabIndex = 1;
-            this.emptyValuesTabPage.Text = "Empty Values";
-            this.emptyValuesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // emptyValuesConfig
-            // 
-            this.emptyValuesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.emptyValuesConfig.Location = new System.Drawing.Point(4, 4);
-            this.emptyValuesConfig.Name = "emptyValuesConfig";
-            this.emptyValuesConfig.ProfileViewModel = null;
-            this.emptyValuesConfig.Size = new System.Drawing.Size(732, 552);
-            this.emptyValuesConfig.TabIndex = 0;
-            // 
             // fileStructurePage
             // 
             this.fileStructurePage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.fileStructurePage.Controls.Add(this.fileStructureInsertControlsPanel);
+            this.fileStructurePage.Controls.Add(this.insertTemplateControl1);
             this.fileStructurePage.Controls.Add(this.fileSpaceAutomatically);
             this.fileStructurePage.Controls.Add(this.fileStructurePreviewLayout);
             this.fileStructurePage.Controls.Add(this.fileStructurePanel);
@@ -404,62 +280,41 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePage.Location = new System.Drawing.Point(0, 12);
             this.fileStructurePage.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructurePage.Name = "fileStructurePage";
+            this.fileStructurePage.Padding = new System.Windows.Forms.Padding(6);
             this.fileStructurePage.Size = new System.Drawing.Size(748, 589);
             this.fileStructurePage.TabIndex = 0;
             // 
-            // fileStructureInsertControlsPanel
+            // insertTemplateControl1
             // 
-            this.fileStructureInsertControlsPanel.Controls.Add(this.insertControlsTabPanel);
-            this.fileStructureInsertControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.fileStructureInsertControlsPanel.Location = new System.Drawing.Point(0, 118);
-            this.fileStructureInsertControlsPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.fileStructureInsertControlsPanel.Name = "fileStructureInsertControlsPanel";
-            this.fileStructureInsertControlsPanel.Size = new System.Drawing.Size(748, 471);
-            this.fileStructureInsertControlsPanel.TabIndex = 6;
+            this.insertTemplateControl1.AutoSize = true;
+            this.insertTemplateControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.insertTemplateControl1.DataSource = this.templatesBindingSource;
+            this.insertTemplateControl1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.insertTemplateControl1.Location = new System.Drawing.Point(6, 124);
+            this.insertTemplateControl1.MinimumSize = new System.Drawing.Size(300, 0);
+            this.insertTemplateControl1.Name = "insertTemplateControl1";
+            this.insertTemplateControl1.Size = new System.Drawing.Size(736, 48);
+            this.insertTemplateControl1.TabIndex = 6;
+            this.insertTemplateControl1.Load += new System.EventHandler(this.insertTemplateControl1_Load);
             // 
-            // insertControlsTabPanel
+            // templatesBindingSource
             // 
-            this.insertControlsTabPanel.Controls.Add(this.tabPage1);
-            this.insertControlsTabPanel.Controls.Add(this.tabPage2);
-            this.insertControlsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.insertControlsTabPanel.Location = new System.Drawing.Point(0, 0);
-            this.insertControlsTabPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.insertControlsTabPanel.Name = "insertControlsTabPanel";
-            this.insertControlsTabPanel.SelectedIndex = 0;
-            this.insertControlsTabPanel.Size = new System.Drawing.Size(748, 471);
-            this.insertControlsTabPanel.TabIndex = 0;
+            this.templatesBindingSource.DataMember = "Templates";
+            this.templatesBindingSource.DataSource = this.profileBindingSource;
             // 
-            // tabPage1
+            // profileBindingSource
             // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(740, 442);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(740, 442);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.profileBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ProfileViewModel);
             // 
             // fileSpaceAutomatically
             // 
             this.fileSpaceAutomatically.AutoSize = true;
             this.fileSpaceAutomatically.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileSpaceAutomatically.Location = new System.Drawing.Point(0, 90);
+            this.fileSpaceAutomatically.Location = new System.Drawing.Point(6, 96);
             this.fileSpaceAutomatically.Margin = new System.Windows.Forms.Padding(4);
             this.fileSpaceAutomatically.Name = "fileSpaceAutomatically";
             this.fileSpaceAutomatically.Padding = new System.Windows.Forms.Padding(7, 4, 0, 4);
-            this.fileSpaceAutomatically.Size = new System.Drawing.Size(748, 28);
+            this.fileSpaceAutomatically.Size = new System.Drawing.Size(736, 28);
             this.fileSpaceAutomatically.TabIndex = 2;
             this.fileSpaceAutomatically.Text = "Space inserted fields automatically";
             this.fileSpaceAutomatically.UseVisualStyleBackColor = true;
@@ -477,13 +332,13 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewPrevious, 2, 0);
             this.fileStructurePreviewLayout.Controls.Add(this.fileStructurePreviewNext, 3, 0);
             this.fileStructurePreviewLayout.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileStructurePreviewLayout.Location = new System.Drawing.Point(0, 56);
+            this.fileStructurePreviewLayout.Location = new System.Drawing.Point(6, 62);
             this.fileStructurePreviewLayout.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructurePreviewLayout.Name = "fileStructurePreviewLayout";
             this.fileStructurePreviewLayout.RowCount = 1;
             this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.fileStructurePreviewLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.fileStructurePreviewLayout.Size = new System.Drawing.Size(748, 34);
+            this.fileStructurePreviewLayout.Size = new System.Drawing.Size(736, 34);
             this.fileStructurePreviewLayout.TabIndex = 5;
             // 
             // fileStructurePreviewLabel
@@ -504,7 +359,7 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePreview.Location = new System.Drawing.Point(67, 9);
             this.fileStructurePreview.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.fileStructurePreview.Name = "fileStructurePreview";
-            this.fileStructurePreview.Size = new System.Drawing.Size(613, 16);
+            this.fileStructurePreview.Size = new System.Drawing.Size(601, 16);
             this.fileStructurePreview.TabIndex = 1;
             this.fileStructurePreview.Text = "label2";
             // 
@@ -512,7 +367,7 @@ namespace LibraryOrganizer.Dialog
             // 
             this.fileStructurePreviewPrevious.AutoSize = true;
             this.fileStructurePreviewPrevious.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fileStructurePreviewPrevious.Location = new System.Drawing.Point(688, 4);
+            this.fileStructurePreviewPrevious.Location = new System.Drawing.Point(676, 4);
             this.fileStructurePreviewPrevious.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructurePreviewPrevious.Name = "fileStructurePreviewPrevious";
             this.fileStructurePreviewPrevious.Size = new System.Drawing.Size(24, 26);
@@ -524,7 +379,7 @@ namespace LibraryOrganizer.Dialog
             // 
             this.fileStructurePreviewNext.AutoSize = true;
             this.fileStructurePreviewNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fileStructurePreviewNext.Location = new System.Drawing.Point(720, 4);
+            this.fileStructurePreviewNext.Location = new System.Drawing.Point(708, 4);
             this.fileStructurePreviewNext.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructurePreviewNext.Name = "fileStructurePreviewNext";
             this.fileStructurePreviewNext.Size = new System.Drawing.Size(24, 26);
@@ -538,10 +393,10 @@ namespace LibraryOrganizer.Dialog
             this.fileStructurePanel.Controls.Add(this.fileStructureLabel);
             this.fileStructurePanel.Controls.Add(this.fileStructureTextBox);
             this.fileStructurePanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fileStructurePanel.Location = new System.Drawing.Point(0, 0);
+            this.fileStructurePanel.Location = new System.Drawing.Point(6, 6);
             this.fileStructurePanel.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructurePanel.Name = "fileStructurePanel";
-            this.fileStructurePanel.Size = new System.Drawing.Size(748, 56);
+            this.fileStructurePanel.Size = new System.Drawing.Size(736, 56);
             this.fileStructurePanel.TabIndex = 3;
             // 
             // fileStructureLabel
@@ -562,8 +417,18 @@ namespace LibraryOrganizer.Dialog
             this.fileStructureTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.fileStructureTextBox.Multiline = true;
             this.fileStructureTextBox.Name = "fileStructureTextBox";
-            this.fileStructureTextBox.Size = new System.Drawing.Size(632, 48);
+            this.fileStructureTextBox.Size = new System.Drawing.Size(620, 48);
             this.fileStructureTextBox.TabIndex = 1;
+            // 
+            // overviewConfig
+            // 
+            this.overviewConfig.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.overviewConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewConfig.Location = new System.Drawing.Point(0, 12);
+            this.overviewConfig.Name = "overviewConfig";
+            this.overviewConfig.Padding = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.overviewConfig.Size = new System.Drawing.Size(748, 589);
+            this.overviewConfig.TabIndex = 4;
             // 
             // folderStructurePage
             // 
@@ -736,6 +601,115 @@ namespace LibraryOrganizer.Dialog
             this.folderStructure.Size = new System.Drawing.Size(613, 48);
             this.folderStructure.TabIndex = 1;
             // 
+            // rulesPage
+            // 
+            this.rulesPage.Controls.Add(this.metadataRulesTabPage);
+            this.rulesPage.Controls.Add(this.folderRulesTabPage);
+            this.rulesPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rulesPage.Location = new System.Drawing.Point(0, 12);
+            this.rulesPage.Margin = new System.Windows.Forms.Padding(4);
+            this.rulesPage.Name = "rulesPage";
+            this.rulesPage.SelectedIndex = 0;
+            this.rulesPage.Size = new System.Drawing.Size(748, 589);
+            this.rulesPage.TabIndex = 9;
+            // 
+            // metadataRulesTabPage
+            // 
+            this.metadataRulesTabPage.Controls.Add(this.profileMetadataRules);
+            this.metadataRulesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.metadataRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.metadataRulesTabPage.Name = "metadataRulesTabPage";
+            this.metadataRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
+            this.metadataRulesTabPage.Size = new System.Drawing.Size(740, 560);
+            this.metadataRulesTabPage.TabIndex = 0;
+            this.metadataRulesTabPage.Text = "Metadata Rules";
+            this.metadataRulesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // profileMetadataRules
+            // 
+            this.profileMetadataRules.DataBindings.Add(new System.Windows.Forms.Binding("Matcher", this.profileBindingSource, "Matchers", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.profileMetadataRules.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.profileMetadataRules.Location = new System.Drawing.Point(4, 4);
+            this.profileMetadataRules.Matcher = null;
+            this.profileMetadataRules.Name = "profileMetadataRules";
+            this.profileMetadataRules.Size = new System.Drawing.Size(732, 552);
+            this.profileMetadataRules.TabIndex = 0;
+            // 
+            // folderRulesTabPage
+            // 
+            this.folderRulesTabPage.Controls.Add(this.folderRulesConfig);
+            this.folderRulesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.folderRulesTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.folderRulesTabPage.Name = "folderRulesTabPage";
+            this.folderRulesTabPage.Padding = new System.Windows.Forms.Padding(4);
+            this.folderRulesTabPage.Size = new System.Drawing.Size(740, 560);
+            this.folderRulesTabPage.TabIndex = 1;
+            this.folderRulesTabPage.Text = "Folder Rules";
+            this.folderRulesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // folderRulesConfig
+            // 
+            this.folderRulesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.folderRulesConfig.Location = new System.Drawing.Point(4, 4);
+            this.folderRulesConfig.Name = "folderRulesConfig";
+            this.folderRulesConfig.ProfileViewModel = null;
+            this.folderRulesConfig.Size = new System.Drawing.Size(732, 552);
+            this.folderRulesConfig.TabIndex = 0;
+            // 
+            // optionsPage
+            // 
+            this.optionsPage.Controls.Add(this.optionsTabPage);
+            this.optionsPage.Controls.Add(this.emptyValuesTabPage);
+            this.optionsPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsPage.Location = new System.Drawing.Point(0, 12);
+            this.optionsPage.Margin = new System.Windows.Forms.Padding(4);
+            this.optionsPage.Name = "optionsPage";
+            this.optionsPage.SelectedIndex = 0;
+            this.optionsPage.Size = new System.Drawing.Size(748, 589);
+            this.optionsPage.TabIndex = 10;
+            // 
+            // optionsTabPage
+            // 
+            this.optionsTabPage.Controls.Add(this.optionsConfig);
+            this.optionsTabPage.Location = new System.Drawing.Point(4, 25);
+            this.optionsTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.optionsTabPage.Name = "optionsTabPage";
+            this.optionsTabPage.Padding = new System.Windows.Forms.Padding(9);
+            this.optionsTabPage.Size = new System.Drawing.Size(740, 560);
+            this.optionsTabPage.TabIndex = 0;
+            this.optionsTabPage.Text = "Options";
+            this.optionsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // optionsConfig
+            // 
+            this.optionsConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.optionsConfig.Location = new System.Drawing.Point(9, 9);
+            this.optionsConfig.Name = "optionsConfig";
+            this.optionsConfig.ProfileViewModel = null;
+            this.optionsConfig.Size = new System.Drawing.Size(722, 542);
+            this.optionsConfig.TabIndex = 7;
+            // 
+            // emptyValuesTabPage
+            // 
+            this.emptyValuesTabPage.Controls.Add(this.emptyValuesConfig);
+            this.emptyValuesTabPage.Location = new System.Drawing.Point(4, 25);
+            this.emptyValuesTabPage.Margin = new System.Windows.Forms.Padding(4);
+            this.emptyValuesTabPage.Name = "emptyValuesTabPage";
+            this.emptyValuesTabPage.Padding = new System.Windows.Forms.Padding(4);
+            this.emptyValuesTabPage.Size = new System.Drawing.Size(740, 560);
+            this.emptyValuesTabPage.TabIndex = 1;
+            this.emptyValuesTabPage.Text = "Empty Values";
+            this.emptyValuesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // emptyValuesConfig
+            // 
+            this.emptyValuesConfig.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.emptyValuesConfig.Location = new System.Drawing.Point(4, 4);
+            this.emptyValuesConfig.Name = "emptyValuesConfig";
+            this.emptyValuesConfig.ProfileViewModel = null;
+            this.emptyValuesConfig.Size = new System.Drawing.Size(732, 552);
+            this.emptyValuesConfig.TabIndex = 0;
+            // 
             // formActionsLayout
             // 
             this.formActionsLayout.AutoSize = true;
@@ -773,6 +747,11 @@ namespace LibraryOrganizer.Dialog
             // 
             this.configFormViewModelBindingSource.DataSource = typeof(LibraryOrganizer.ViewModel.ConfigFormViewModel);
             // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataMember = "Templates";
+            this.bindingSource1.DataSource = this.profileBindingSource;
+            // 
             // ConfigureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -790,17 +769,10 @@ namespace LibraryOrganizer.Dialog
             toolStrip.ResumeLayout(false);
             toolStrip.PerformLayout();
             this.configurationPanel.ResumeLayout(false);
-            this.rulesPage.ResumeLayout(false);
-            this.metadataRulesTabPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).EndInit();
-            this.folderRulesTabPage.ResumeLayout(false);
-            this.optionsPage.ResumeLayout(false);
-            this.optionsTabPage.ResumeLayout(false);
-            this.emptyValuesTabPage.ResumeLayout(false);
             this.fileStructurePage.ResumeLayout(false);
             this.fileStructurePage.PerformLayout();
-            this.fileStructureInsertControlsPanel.ResumeLayout(false);
-            this.insertControlsTabPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.templatesBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.profileBindingSource)).EndInit();
             this.fileStructurePreviewLayout.ResumeLayout(false);
             this.fileStructurePreviewLayout.PerformLayout();
             this.fileStructurePanel.ResumeLayout(false);
@@ -815,8 +787,15 @@ namespace LibraryOrganizer.Dialog
             this.folderStructureActionsLayout.PerformLayout();
             this.folderStructurePanel.ResumeLayout(false);
             this.folderStructurePanel.PerformLayout();
+            this.rulesPage.ResumeLayout(false);
+            this.metadataRulesTabPage.ResumeLayout(false);
+            this.folderRulesTabPage.ResumeLayout(false);
+            this.optionsPage.ResumeLayout(false);
+            this.optionsTabPage.ResumeLayout(false);
+            this.emptyValuesTabPage.ResumeLayout(false);
             this.formActionsLayout.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.configFormViewModelBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -838,11 +817,7 @@ namespace LibraryOrganizer.Dialog
         private System.Windows.Forms.Panel fileStructurePanel;
         private System.Windows.Forms.TableLayoutPanel fileStructurePreviewLayout;
         private System.Windows.Forms.Label fileStructurePreviewLabel;
-        private System.Windows.Forms.Panel fileStructureInsertControlsPanel;
         private System.Windows.Forms.Panel folderStructurePage;
-        private System.Windows.Forms.TabControl insertControlsTabPanel;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.FlowLayoutPanel folderStructureActionsLayout;
         private System.Windows.Forms.CheckBox folderSpaceAutomatically;
         private System.Windows.Forms.Button insertFolderSeparator;
@@ -877,6 +852,9 @@ namespace LibraryOrganizer.Dialog
         private OptionsConfigControl optionsConfig;
         private EmptyValuesConfigControl emptyValuesConfig;
         private FolderRulesConfigControl folderRulesConfig;
+        private InsertTemplateControl insertTemplateControl1;
+        private System.Windows.Forms.BindingSource bindingSource1;
+        private System.Windows.Forms.BindingSource templatesBindingSource;
     }
 }
 

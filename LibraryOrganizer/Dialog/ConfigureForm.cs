@@ -188,5 +188,7 @@ namespace LibraryOrganizer.Dialog
             emptyValuesConfig.ProfileViewModel = current;
             folderRulesConfig.ProfileViewModel = current;
         }
+
+        private void insertTemplateControl1_Load(object sender, EventArgs e) { }
     }
 }

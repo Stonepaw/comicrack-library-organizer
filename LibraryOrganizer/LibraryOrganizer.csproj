@@ -74,6 +74,12 @@
     <Compile Include="Controls\FolderRulesConfigControl.Designer.cs">
       <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InsertTemplateControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InsertTemplateControl.Designer.cs">
+      <DependentUpon>InsertTemplateControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MangaYesNoMatcherValueControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -98,6 +104,12 @@
     </Compile>
     <Compile Include="Controls\NumberMatcherValueControl.Designer.cs">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NumberTemplateFormatControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NumberTemplateFormatControl.Designer.cs">
+      <DependentUpon>NumberTemplateFormatControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\OptionsConfigControl.cs">
       <SubType>UserControl</SubType>
@@ -129,9 +141,16 @@
     <Compile Include="Controls\StringMatcherValueControl.Designer.cs">
       <DependentUpon>StringMatcherValueControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\YesNoTemplateFormatControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\YesNoTemplateFormatControl.Designer.cs">
+      <DependentUpon>YesNoTemplateFormatControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\EmptyFieldReplacement.cs" />
     <Compile Include="Data\FailedEmptyField.cs" />
     <Compile Include="Data\IllegalCharacterReplacement.cs" />
+    <Compile Include="Data\TemplateFormat.cs" />
     <Compile Include="Data\MonthReplacement.cs" />
     <Compile Include="Data\OperationMode.cs" />
     <Compile Include="Data\Profile.cs" />
@@ -174,6 +193,7 @@
     <Compile Include="ViewModel\IMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\IMatcherViewModel.cs" />
     <Compile Include="ViewModel\GroupMatcherViewModel.cs" />
+    <Compile Include="ViewModel\TemplateViewModel.cs" />
     <Compile Include="ViewModel\MangaYesNoMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\NumberMatcherValueViewModel.cs" />
     <Compile Include="ViewModel\BookFieldMatcherViewModel.cs" />
@@ -189,6 +209,9 @@
     <EmbeddedResource Include="Controls\FolderRulesConfigControl.resx">
       <DependentUpon>FolderRulesConfigControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InsertTemplateControl.resx">
+      <DependentUpon>InsertTemplateControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MangaYesNoMatcherValueControl.resx">
       <DependentUpon>MangaYesNoMatcherValueControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -200,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\NumberMatcherValueControl.resx">
       <DependentUpon>NumberMatcherValueControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NumberTemplateFormatControl.resx">
+      <DependentUpon>NumberTemplateFormatControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\OptionsConfigControl.resx">
       <DependentUpon>OptionsConfigControl.cs</DependentUpon>
@@ -218,6 +244,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\AddIllegalCharacterDialog.resx">
       <DependentUpon>AddIllegalCharacterDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\YesNoTemplateFormatControl.resx">
+      <DependentUpon>YesNoTemplateFormatControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog\AddProfileDialog.resx">
       <DependentUpon>AddProfileDialog.cs</DependentUpon>
@@ -238,6 +267,7 @@
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.NumberMatcherValueViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.ProfileViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.StringMatcherValueViewModel.datasource" />
+    <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.TemplateViewModel.datasource" />
     <None Include="Properties\DataSources\LibraryOrganizer.ViewModel.YesNoMatcherValueViewModel.datasource" />
   </ItemGroup>
   <ItemGroup>
